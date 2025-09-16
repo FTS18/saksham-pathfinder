@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { InternshipCard } from '@/components/InternshipCard';
-import { FeedbackModal } from '@/components/FeedbackModal';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { InternshipCard } from '../components/InternshipCard';
+import { FeedbackModal } from '../components/FeedbackModal';
 import { User, Target, FileText, MessageSquare } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const translations = {
   en: {
@@ -33,38 +33,87 @@ const translations = {
   }
 };
 
-// Sample data
-const sampleInternships = [
-  {
-    role: 'Frontend Developer Intern',
-    company: 'TechCorp',
-    location: 'Mumbai, Remote',
-    eligibility: 'BTech/BCA, React knowledge',
-    featured: true
-  },
-  {
-    role: 'Data Science Intern',
-    company: 'DataViz Solutions',
-    location: 'Bangalore',
-    eligibility: 'BTech/MSc, Python, ML basics'
-  },
-  {
-    role: 'UI/UX Design Intern',
-    company: 'DesignHub',
-    location: 'Delhi, Hybrid',
-    eligibility: 'Any degree, Figma/Adobe XD'
-  },
-  {
-    role: 'Backend Developer Intern',
-    company: 'CloudTech',
-    location: 'Pune, Remote',
-    eligibility: 'BTech/BCA, Node.js/Java'
-  }
-];
+// Helper function to calculate distance between two coordinates
+const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng: number }) => {
+  const R = 6371; // Radius of Earth in kilometers
+  const dLat = (loc2.lat - loc1.lat) * (Math.PI / 180);
+  const dLng = (loc2.lng - loc1.lng) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(loc1.lat * (Math.PI / 180)) * Math.cos(loc2.lat * (Math.PI / 180)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+
+const score = (profile: any, internship: any) => {
+    // Skill score
+    const required = internship.required_skills || [];
+    let skill_score = 0;
+    let matched = 0;
+    if (required.length === 0) {
+        skill_score = 0.5;
+    } else {
+        matched = required.filter((s: string) => (profile.skills || []).map((x: string)=>x.toLowerCase()).includes(s.toLowerCase())).length;
+        skill_score = matched / required.length;
+    }
+
+    // Sector score
+    const sector_tags = internship.sector_tags || [];
+    const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t)).length;
+    const sector_score = sector_matched / Math.max(sector_tags.length, 1);
+
+    // Education score
+    const education_hierarchy: { [key: string]: number } = {
+        "Class 12th": 1,
+        "Diploma": 2,
+        "Undergraduate": 3,
+        "Postgraduate": 4
+    };
+    const profile_edu_level = education_hierarchy[profile.education] || 0;
+    const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
+    const education_score = preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level) ? 1 : 0;
+
+
+    // Location score
+    let location_score = 0;
+    let dist = 0;
+    if (profile.location && internship.location) {
+        dist = haversine(profile.location, internship.location);
+        if (internship.location.city === "Remote") {
+             location_score = 1;
+        } else {
+            location_score = dist <= profile.search_radius_km ? 1 : Math.max(0, 1 - ((dist - profile.search_radius_km) / 500));
+        }
+    }
+
+    const total = (skill_score * 0.6 +
+             sector_score * 0.15 +
+             education_score * 0.1 +
+             location_score * 0.15);
+
+    // Explanation
+    const dist_str = dist ? `${dist.toFixed(2)} km` : "N/A";
+    const explain = `Matched skills: ${matched}/${required.length}; Near: ${dist_str}; Sector match: ${sector_matched}/${sector_tags.length}`;
+
+
+    return { score: Math.round(total * 100), explain };
+}
+
+const recommendInternships = (profile: any, allInternships: any[]) => {
+    if (!profile) return [];
+    const scores = allInternships.map(internship => {
+        const {score: s, explain} = score(profile, internship);
+        return { internship, score: s, explain };
+    });
+
+    return scores.sort((a, b) => b.score - a.score).slice(0, 5);
+}
+
 
 const userProfile = {
-  name: 'Priya Sharma',
-  studentId: 'ST2024001',
+  name: 'Vansham Nigga',
+  studentId: '25104096',
   email: 'priya.sharma@email.com',
   phone: '+91 98765 43210'
 };
@@ -74,6 +123,32 @@ export default function Dashboard() {
   const t = translations[language];
   const [activeSection, setActiveSection] = useState('recommendations');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [userProfileData, setUserProfileData] = useState<any>(null);
+  const [allInternships, setAllInternships] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/internships.json')
+      .then(response => response.json())
+      .then(data => setAllInternships(data))
+      .catch(error => console.error("Failed to load internships:", error));
+
+    const storedProfile = localStorage.getItem('userProfile');
+    if (storedProfile) {
+        const profile = JSON.parse(storedProfile);
+        // Add location data for demonstration. In a real app, you'd get this from the user.
+        profile.location = { "city": "Chandigarh", "lat": 30.7333, "lng": 76.7794 };
+        profile.search_radius_km = 500;
+        setUserProfileData(profile);
+    }
+  }, []);
+
+  useEffect(() => {
+    if(userProfileData && allInternships.length > 0) {
+        const recs = recommendInternships(userProfileData, allInternships);
+        setRecommendations(recs);
+    }
+  }, [userProfileData, allInternships]);
 
   const sidebarItems = [
     { id: 'profile', label: t.profile, icon: User },
@@ -134,15 +209,24 @@ export default function Dashboard() {
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {sampleInternships.map((internship, index) => (
-                <InternshipCard
-                  key={index}
-                  {...internship}
-                  onApply={() => console.log(`Applied for ${internship.role}`)}
-                />
-              ))}
-            </div>
+            {recommendations.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {recommendations.map((rec, index) => (
+                        <InternshipCard
+                            key={index}
+                            internship={rec.internship}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <Card className="glass-card">
+                    <CardContent className="p-8 text-center">
+                        <p className="text-muted-foreground">
+                            Please complete your profile to get internship recommendations.
+                        </p>
+                    </CardContent>
+                </Card>
+            )}
             
             <div className="text-center">
               <Button variant="outline" size="lg">
@@ -226,3 +310,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

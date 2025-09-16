@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         inter: ['Inter', 'system-ui', 'sans-serif'],
         poppins: ['Poppins', 'system-ui', 'sans-serif'],
+        racing: ['"Racing Sans One"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
