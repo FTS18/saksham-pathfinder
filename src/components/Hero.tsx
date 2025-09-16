@@ -38,42 +38,42 @@ export const Hero = () => {
         <div className="max-w-4xl mx-auto">
           
           {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full glass-card mb-8">
-            <Sparkles className="w-4 h-4 text-primary mr-2" />
-            <span className="text-sm font-medium text-foreground">
+          <div className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 sm:mb-8">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-2" />
+            <span className="text-xs sm:text-sm font-medium text-primary">
               Powered by AI Technology
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-poppins font-bold text-white mb-6 leading-tight">
+          <h1 className="text-hero font-poppins font-bold text-white mb-4 sm:mb-6 leading-tight px-2">
             {t.headline}
           </h1>
 
           {/* Subtext */}
-          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-subtitle text-white/80 mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
             {t.subtext}
           </p>
 
           {/* CTA Button */}
-          <div className="mb-12">
+          <div className="mb-8 sm:mb-12 px-4">
             <Button 
               size="lg" 
-              className="bg-primary hover:bg-primary-dark text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-button hover-lift group"
+              className="bg-primary hover:bg-primary-dark text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-lg shadow-clean hover-lift group"
             >
               {t.cta}
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 smooth-transition" />
             </Button>
           </div>
 
           {/* Feature Pills */}
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 px-4">
             {t.features.map((feature, index) => (
               <div
                 key={index}
-                className="glass-card px-4 py-2 rounded-full"
+                className="bg-white/10 border border-white/20 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full"
               >
-                <span className="text-sm font-medium text-white/90">
+                <span className="text-xs sm:text-sm font-medium text-white/90">
                   {feature}
                 </span>
               </div>
