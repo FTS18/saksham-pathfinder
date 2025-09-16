@@ -1,42 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Saksham AI Design System - Black & Blue Theme */
 
 @layer base {
   :root {
+    /* Core Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 0 0% 3.9%;
+    
+    /* Saksham AI Brand Colors */
+    --primary: 217 91% 50%; /* Vibrant Blue */
+    --primary-foreground: 0 0% 98%;
+    --primary-dark: 217 91% 35%;
+    --primary-light: 217 91% 65%;
+    
+    --secondary: 0 0% 9%; /* Deep Black */
+    --secondary-foreground: 0 0% 98%;
+    
+    --accent: 217 91% 60%; /* Bright Blue Accent */
+    --accent-foreground: 0 0% 98%;
+    
+    /* Glassmorphism & Effects */
+    --glass-bg: 0 0% 100% / 0.1;
+    --glass-border: 0 0% 100% / 0.2;
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 50%), hsl(217 91% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 9%), hsl(217 91% 20%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.05), hsl(0 0% 100% / 0.02));
+    
+    /* UI Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
+    --popover-foreground: 0 0% 3.9%;
+    
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --ring: 217 91% 50%;
+    
+    /* Shadows & Effects */
+    --shadow-glass: 0 8px 32px hsl(217 91% 50% / 0.15);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.1);
+    --shadow-button: 0 4px 14px hsl(217 91% 50% / 0.4);
+    
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +75,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Dark Mode - Enhanced Black & Blue */
+    --background: 0 0% 3%;
+    --foreground: 0 0% 98%;
+    
+    --primary: 217 91% 60%; /* Brighter blue in dark mode */
+    --primary-foreground: 0 0% 9%;
+    --primary-dark: 217 91% 45%;
+    --primary-light: 217 91% 75%;
+    
+    --secondary: 0 0% 98%; /* White text in dark mode */
+    --secondary-foreground: 0 0% 9%;
+    
+    --accent: 217 91% 70%;
+    --accent-foreground: 0 0% 9%;
+    
+    /* Dark Glassmorphism */
+    --glass-bg: 0 0% 100% / 0.05;
+    --glass-border: 0 0% 100% / 0.1;
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 3%), hsl(217 91% 15%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.03), hsl(0 0% 100% / 0.01));
+    
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+    
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 76% 46%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 0 0% 98%;
+    
+    --border: 0 0% 15%;
+    --input: 0 0% 12%;
+    --ring: 217 91% 60%;
+    
+    /* Dark Mode Shadows */
+    --shadow-glass: 0 8px 32px hsl(217 91% 60% / 0.2);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.4);
+    --shadow-button: 0 4px 14px hsl(217 91% 60% / 0.5);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +137,82 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter antialiased;
+  }
+}
+
+@layer components {
+  /* Glass Card Component */
+  .glass-card {
+    @apply backdrop-blur-sm border border-white/20 rounded-xl;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .dark .glass-card {
+    @apply border-white/10;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  }
+  
+  /* Hero Gradient */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  /* Animation Utilities */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  /* Hover Animations */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .hover-lift:hover {
+    @apply transform -translate-y-1 shadow-2xl;
+  }
+}
+
+@layer utilities {
+  /* Font Utilities */
+  .font-inter {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  .font-poppins {
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  
+  /* Custom Shadows */
+  .shadow-glass {
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .shadow-button {
+    box-shadow: var(--shadow-button);
+  }
+}
+
+/* Keyframe Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px hsl(217 91% 50% / 0.5);
+  }
+  to {
+    box-shadow: 0 0 30px hsl(217 91% 50% / 0.8);
   }
 }
