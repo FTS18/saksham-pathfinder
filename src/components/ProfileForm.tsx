@@ -104,20 +104,20 @@ export const ProfileForm = () => {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <Card className="glass-card border-white/10 hover-lift">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl md:text-3xl font-poppins font-bold text-foreground">
+        <Card className="minimal-card">
+          <CardHeader className="text-center padding-responsive">
+            <CardTitle className="text-xl sm:text-2xl md:text-3xl font-poppins font-bold text-foreground">
               {t.title}
             </CardTitle>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 text-responsive">
               {t.subtitle}
             </p>
           </CardHeader>
           
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="padding-responsive space-responsive">
+            <form onSubmit={handleSubmit} className="space-responsive">
               {formFields.map(({ key, label, placeholder, icon: Icon }) => (
                 <div key={key} className="space-y-2">
                   <Label htmlFor={key} className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -130,7 +130,7 @@ export const ProfileForm = () => {
                     placeholder={placeholder}
                     value={formData[key]}
                     onChange={(e) => handleInputChange(key, e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-border bg-background/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg border border-border bg-input focus:border-primary focus:ring-2 focus:ring-primary/20 smooth-transition"
                     required
                   />
                 </div>
@@ -138,7 +138,7 @@ export const ProfileForm = () => {
               
               <Button 
                 type="submit"
-                className="w-full bg-primary hover:bg-primary-dark text-white py-3 text-lg font-semibold rounded-lg shadow-button hover-lift"
+                className="w-full bg-primary hover:bg-primary-dark text-white py-2.5 sm:py-3 text-base sm:text-lg font-semibold rounded-lg shadow-clean hover-lift"
                 size="lg"
               >
                 {t.submit}

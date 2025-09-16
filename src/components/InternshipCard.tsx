@@ -50,10 +50,10 @@ export const InternshipCard = ({
   };
 
   return (
-    <Card className={`glass-card hover-lift transition-all duration-300 ${
-      featured ? 'ring-2 ring-primary/50 bg-gradient-to-br from-primary/5 to-accent/5' : ''
+    <Card className={`minimal-card ${
+      featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
     }`}>
-      <CardContent className="p-6">
+      <CardContent className="padding-responsive">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
             {/* Company Logo */}
@@ -101,10 +101,10 @@ export const InternshipCard = ({
         {/* Apply Button */}
         <Button 
           onClick={handleApply}
-          className="w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-lg font-medium transition-all duration-200 group"
+          className="w-full bg-primary hover:bg-primary-dark text-white py-2 sm:py-2.5 rounded-lg font-medium smooth-transition group"
         >
-          {t.apply}
-          <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+          <span className="text-sm sm:text-base">{t.apply}</span>
+          <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 ml-2 group-hover:translate-x-1 smooth-transition" />
         </Button>
       </CardContent>
     </Card>
