@@ -7,6 +7,7 @@ interface ThemeContextType {
   theme: Theme;
   language: Language;
   fontSize: number;
+  isTransitioning: boolean;
   toggleTheme: () => void;
   setLanguage: (lang: Language) => void;
   increaseFontSize: () => void;
@@ -31,6 +32,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>('light');
   const [language, setLanguage] = useState<Language>('en');
   const [fontSize, setFontSize] = useState(16); // Base font size
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
@@ -61,15 +63,29 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   }, [fontSize]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setTheme(prev => prev === 'light' ? 'dark' : 'light');
+      setTimeout(() => setIsTransitioning(false), 800);
+    }, 400);
   };
 
   const increaseFontSize = () => setFontSize(fz => Math.min(fz + 2, 24));
   const decreaseFontSize = () => setFontSize(fz => Math.max(fz - 2, 12));
 
   return (
-    <ThemeContext.Provider value={{ theme, language, fontSize, toggleTheme, setLanguage, increaseFontSize, decreaseFontSize }}>
+    <ThemeContext.Provider value={{ theme, language, fontSize, isTransitioning, toggleTheme, setLanguage, increaseFontSize, decreaseFontSize }}>
       {children}
+      {isTransitioning && (
+        <div className="fixed inset-0 z-[9999] pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-black opacity-0 animate-[fadeIn_0.4s_ease-in-out_forwards]" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400 shadow-2xl animate-[moonTransition_0.8s_ease-in-out_forwards] relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-600 rounded-full transform translate-x-full animate-[moonSlide_0.8s_ease-in-out_forwards]" />
+            </div>
+          </div>
+        </div>
+      )}
     </ThemeContext.Provider>
   );
 };

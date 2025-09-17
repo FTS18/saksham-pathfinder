@@ -2,6 +2,12 @@ import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Globe, Github, Twitter, Linkedin, Mail } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const translations = {
   en: {
@@ -35,12 +41,53 @@ const translations = {
     builtBy: 'HexaCoders द्वारा निर्मित',
     teamMembers: 'अनन्य, आदित्य, वंशम, अनिकेत, रिया, भाव्या',
     rights: 'सभी अधिकार सुरक्षित।'
+  },
+  bn: {
+    brand: 'সক্ষম AI',
+    tagline: 'AI-চালিত ক্যারিয়ার নির্দেশিকা দিয়ে ছাত্রদের ক্ষমতায়ন',
+    quickLinks: 'দ্রুত লিঙ্ক',
+    home: 'হোম',
+    dashboard: 'ড্যাশবোর্ড',
+    about: 'আমাদের সম্পর্কে',
+    contact: 'যোগাযোগ',
+    support: 'সহায়তা',
+    privacy: 'গোপনীয়তা নীতি',
+    terms: 'পরিষেবার শর্তাবলী',
+    connect: 'আমাদের সাথে সংযোগ করুন',
+    builtBy: 'HexaCoders দ্বারা নির্মিত',
+    teamMembers: 'অনন্য, আদিত্য, বংশম, অনিকেত, রিয়া, ভব্য',
+    rights: 'সমস্ত অধিকার সংরক্ষিত।'
+  },
+  ta: {
+    brand: 'சக்ஷம் AI',
+    tagline: 'AI-চালিত தொழில் வழிகாட்டுதலுடன் மாணவர்களை மேம்படுத்துதல்',
+    quickLinks: 'விரைவு இணைப்புகள்',
+    home: 'முகப்பு',
+    dashboard: 'டாஷ்போர்டு',
+    about: 'பற்றி',
+    contact: 'தொடர்பு',
+    support: 'ஆதரவு',
+    privacy: 'தனியுரிமைக் கொள்கை',
+    terms: 'சேவை விதிமுறைகள்',
+    connect: 'எங்களுடன் இணையுங்கள்',
+    builtBy: 'HexaCoders ஆல் கட்டப்பட்டது',
+    teamMembers: 'அனன்யா, ஆதித்யா, வம்சம், அனிகேத், ரியா, பவ்யா',
+    rights: 'அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.'
   }
 };
 
+type Language = 'en' | 'hi' | 'bn' | 'ta';
+
 export const Footer = () => {
-  const { language, toggleLanguage } = useTheme();
+  const { language, setLanguage } = useTheme();
   const t = translations[language];
+
+  const languages: { code: Language; label: string; flag: string }[] = [
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'hi', label: 'हिंदी', flag: '🇮🇳' },
+    { code: 'bn', label: 'বাংলা', flag: '🇧🇩' },
+    { code: 'ta', label: 'தமிழ்', flag: '🇮🇳' },
+  ];
 
   const quickLinks = [
     { href: '/', label: t.home },
@@ -81,16 +128,21 @@ export const Footer = () => {
               {t.tagline}
             </p>
             
-            {/* Language Toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleLanguage}
-              className="flex items-center space-x-2"
-            >
-              <Globe className="w-4 h-4" />
-              <span>{language === 'en' ? 'English 🇬🇧' : 'Hindi 🇮🇳'}</span>
-            </Button>
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4" />
+                   <span>{languages.find(l => l.code === language)?.label}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {languages.map(lang => (
+                  <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code)}>
+                    {lang.flag} {lang.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Quick Links */}
