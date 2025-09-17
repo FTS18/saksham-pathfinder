@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Globe, Bell, ZoomIn, ZoomOut, Volume2, Heart } from 'lucide-react';
+import { Moon, Sun, Menu, X, Globe, Bell, ZoomIn, ZoomOut, Volume2, Heart, MapPin } from 'lucide-react';
+import { useLocation as useGeoLocation } from '@/hooks/useLocation';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +25,7 @@ export const Navbar = () => {
   const { theme, language, setLanguage, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const location = useLocation();
+  const { location: geoLocation, loading } = useGeoLocation();
   const t = translations[language];
 
   const navLinks = [
@@ -50,7 +53,7 @@ export const Navbar = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-poppins font-bold text-xl text-foreground">
+            <span className="font-racing font-bold text-xl text-foreground">
               {t.brand}
             </span>
           </Link>
@@ -75,33 +78,71 @@ export const Navbar = () => {
                 )}
               </Link>
             ))}
+            <div className="h-4 w-px bg-border mx-2" />
+            {geoLocation && !loading && (
+              <div className="flex items-center space-x-1 text-xs text-accent">
+                <MapPin className="w-3 h-3" />
+                <span>{geoLocation.city}, {geoLocation.country}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center space-x-1 sm:space-x-2">
-             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 h-8 px-2 text-xs">
-                  <Globe className="w-4 h-4" />
+             <div className="h-4 w-px bg-border mx-2 hidden md:block" />
+             <Tooltip>
+               <TooltipTrigger asChild>
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="hidden sm:flex items-center space-x-1 h-8 px-2 text-xs">
+                      <Globe className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {languages.map(lang => (
+                      <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code)}>
+                        {lang.flag} {lang.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+               </TooltipTrigger>
+               <TooltipContent>Change language</TooltipContent>
+             </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-8 h-8 p-0">
+                  {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {languages.map(lang => (
-                  <DropdownMenuItem key={lang.code} onClick={() => setLanguage(lang.code)}>
-                    {lang.flag} {lang.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-8 h-8 p-0">
-              {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </Button>
-            <Button variant="ghost" size="sm" className="w-8 h-8 p-0 relative">
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary animate-ping"></span>
-            </Button>
-            <Button variant="ghost" size="sm" onClick={increaseFontSize} className="w-8 h-8 p-0 hidden sm:inline-flex"><ZoomIn className="w-4 h-4"/></Button>
-            <Button variant="ghost" size="sm" onClick={decreaseFontSize} className="w-8 h-8 p-0 hidden sm:inline-flex"><ZoomOut className="w-4 h-4"/></Button>
-            <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hidden sm:inline-flex"><Volume2 className="w-4 h-4"/></Button>
+              </TooltipTrigger>
+              <TooltipContent>{theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0 relative">
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary animate-ping"></span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Notifications</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={increaseFontSize} className="w-8 h-8 p-0 hidden sm:inline-flex"><ZoomIn className="w-4 h-4"/></Button>
+              </TooltipTrigger>
+              <TooltipContent>Increase font size</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={decreaseFontSize} className="w-8 h-8 p-0 hidden sm:inline-flex"><ZoomOut className="w-4 h-4"/></Button>
+              </TooltipTrigger>
+              <TooltipContent>Decrease font size</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hidden sm:inline-flex"><Volume2 className="w-4 h-4"/></Button>
+              </TooltipTrigger>
+              <TooltipContent>Audio support</TooltipContent>
+            </Tooltip>
 
             <Button
               variant="ghost"
@@ -109,31 +150,32 @@ export const Navbar = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden w-8 h-8 p-0"
             >
-              {isOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              <div className="relative w-4 h-4">
+                <Menu className={`w-4 h-4 absolute transition-all duration-300 ${isOpen ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100'}`} />
+                <X className={`w-4 h-4 absolute transition-all duration-300 ${isOpen ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0'}`} />
+              </div>
             </Button>
           </div>
         </div>
 
-        {isOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 border-t border-border">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 text-base font-medium rounded-lg transition-colors ${
-                    isActive(link.href)
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 border-t border-border">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`block px-3 py-2 text-base font-medium rounded-lg transition-colors ${
+                  isActive(link.href)
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );

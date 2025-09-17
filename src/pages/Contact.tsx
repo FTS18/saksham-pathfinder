@@ -128,7 +128,7 @@ export default function Contact() {
         
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-poppins font-bold text-foreground mb-4">
+          <h1 className="text-4xl md:text-5xl font-racing font-bold text-foreground mb-4">
             {t.title}
           </h1>
           <p className="text-xl text-muted-foreground">
@@ -142,7 +142,7 @@ export default function Contact() {
           <div className="lg:col-span-2">
             <Card className="glass-card">
               <CardHeader>
-                <CardTitle className="text-2xl font-poppins">
+                <CardTitle className="text-2xl font-racing">
                   Send us a Message
                 </CardTitle>
               </CardHeader>
@@ -225,7 +225,7 @@ export default function Contact() {
           <div className="space-y-6">
             <Card className="glass-card">
               <CardHeader>
-                <CardTitle className="text-xl font-poppins">
+                <CardTitle className="text-xl font-racing">
                   {t.contact.title}
                 </CardTitle>
               </CardHeader>

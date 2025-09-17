@@ -3,34 +3,71 @@
     "id": "1",
     "company": "Google",
     "role": "Software Engineering Intern",
-    "required_skills": ["Python", "Data Structures", "Algorithms"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
+    "required_skills": [
+      "Python",
+      "Data Structures",
+      "Algorithms"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
     "stipend": "₹80,000/month",
     "eligibility_text": "Currently enrolled in a Bachelor's or Master's degree in Computer Science or related technical field.",
     "apply_link": "https://careers.google.com/internships/"
   },
   {
     "id": "2",
-    "company": "Web Weavers",
+    "company": "TechStart Solutions",
     "role": "Frontend Developer Intern",
-    "required_skills": ["HTML", "CSS", "JavaScript"],
-    "preferred_education_levels": ["Diploma", "Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Jaipur", "lat": 26.9124, "lng": 75.7873 },
+    "required_skills": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
     "stipend": "₹15,000/month",
     "eligibility_text": "Students with a passion for web development and a good understanding of frontend technologies.",
     "apply_link": "#"
   },
   {
     "id": "3",
-    "company": "Data Insights Ltd.",
+    "company": "DataFlow Analytics",
     "role": "Data Entry Intern",
-    "required_skills": ["Excel"],
-    "preferred_education_levels": ["Class 12th", "Diploma"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Kolkata", "lat": 22.5726, "lng": 88.3639 },
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
     "stipend": "₹10,000/month",
     "eligibility_text": "Students with good typing speed and proficiency in MS Excel.",
     "apply_link": "#"
@@ -39,1165 +76,5791 @@
     "id": "4",
     "company": "Microsoft",
     "role": "Research Intern",
-    "required_skills": ["Machine Learning", "Python", "PyTorch"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Tech", "AI/ML"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
+    "required_skills": [
+      "Machine Learning",
+      "Python",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech",
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
     "stipend": "₹90,000/month",
     "eligibility_text": "Currently pursuing a Master's or PhD in Computer Science, with a focus on AI/ML.",
     "apply_link": "https://careers.microsoft.com/us/en/job/1524684/Research-Intern"
   },
   {
     "id": "5",
-    "company": "Goldman Sachs",
-    "role": "Financial Analyst Intern",
-    "required_skills": ["Financial Modeling", "Excel"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹1,00,000/month",
-    "eligibility_text": "Students in their penultimate year of a degree in Finance, Economics, or a related field.",
-    "apply_link": "https://www.goldmansachs.com/careers/students/programs/emea/summer-analyst-programme.html"
+    "company": "LocalTech Hub",
+    "role": "Web Developer Intern",
+    "required_skills": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Basic knowledge of web technologies required.",
+    "apply_link": "#"
   },
   {
     "id": "6",
-    "company": "Nvidia",
-    "role": "Hardware Engineering Intern",
-    "required_skills": ["Verilog", "VHDL", "Circuit Design"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹75,000/month",
-    "eligibility_text": "Pursuing a degree in Electrical Engineering, Computer Engineering, or a related field.",
-    "apply_link": "https://www.nvidia.com/en-in/about-nvidia/careers/"
+    "company": "StartupXYZ",
+    "role": "Marketing Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Good communication skills and enthusiasm for marketing.",
+    "apply_link": "#"
   },
   {
     "id": "7",
-    "company": "Adobe",
-    "role": "Product Design Intern",
-    "required_skills": ["UI/UX Design", "Figma", "Adobe XD"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Students with a strong portfolio in UI/UX design.",
-    "apply_link": "https://careers.adobe.com/us/en/students"
+    "company": "CodeCraft Studios",
+    "role": "Mobile App Intern",
+    "required_skills": [
+      "Java",
+      "Android"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Basic Android development knowledge preferred.",
+    "apply_link": "#"
   },
   {
     "id": "8",
-    "company": "Apple",
-    "role": "Firmware Engineer Intern",
-    "required_skills": ["C++", "Embedded Systems"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹95,000/month",
-    "eligibility_text": "Enrolled in a Computer Engineering or Electrical Engineering program.",
-    "apply_link": "https://www.apple.com/careers/in/"
+    "company": "FinanceFirst",
+    "role": "Accounting Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Commerce background preferred.",
+    "apply_link": "#"
   },
   {
     "id": "9",
-    "company": "J.P. Morgan",
-    "role": "Investment Banking Intern",
-    "required_skills": ["Valuation", "Excel"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹1,20,000/month",
-    "eligibility_text": "MBA students with a specialization in Finance.",
-    "apply_link": "https://careers.jpmorgan.com/in/en/students/programs"
+    "company": "DesignHub",
+    "role": "Graphic Design Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Portfolio showcasing design skills required.",
+    "apply_link": "#"
   },
   {
     "id": "10",
-    "company": "Intel",
-    "role": "VLSI Design Intern",
-    "required_skills": ["Verilog", "SystemVerilog"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Students pursuing a degree in Electronics and Communication Engineering.",
-    "apply_link": "https://www.intel.in/content/www/in/en/jobs/jobs-at-intel.html"
+    "company": "TechNova",
+    "role": "Python Developer Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Good understanding of Python programming.",
+    "apply_link": "#"
   },
   {
     "id": "11",
+    "company": "SmallBiz Solutions",
+    "role": "Content Writer Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Good writing skills in English.",
+    "apply_link": "#"
+  },
+  {
+    "id": "12",
+    "company": "ElectroTech",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹16,000/month",
+    "eligibility_text": "Electronics engineering students preferred.",
+    "apply_link": "#"
+  },
+  {
+    "id": "13",
+    "company": "DataMinds",
+    "role": "Data Analysis Intern",
+    "required_skills": [
+      "Python",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech",
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Basic knowledge of data analysis tools.",
+    "apply_link": "#"
+  },
+  {
+    "id": "14",
+    "company": "WebWorks",
+    "role": "Full Stack Intern",
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "Node.js"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Knowledge of full stack development.",
+    "apply_link": "#"
+  },
+  {
+    "id": "15",
+    "company": "FinTech Startup",
+    "role": "Business Analyst Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Tech"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Interest in financial technology.",
+    "apply_link": "#"
+  },
+  {
+    "id": "16",
     "company": "Amazon",
     "role": "Cloud Support Intern",
-    "required_skills": ["AWS", "Linux"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Cloud Computing"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
+    "required_skills": [
+      "AWS",
+      "Linux"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech",
+      "Cloud Computing"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
     "stipend": "₹60,000/month",
     "eligibility_text": "Familiarity with cloud computing concepts and AWS services.",
     "apply_link": "https://www.amazon.jobs/en/business_categories/student-programs"
   },
   {
-    "id": "12",
+    "id": "17",
+    "company": "LocalDesign Co",
+    "role": "UI Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹14,000/month",
+    "eligibility_text": "Creative portfolio required.",
+    "apply_link": "#"
+  },
+  {
+    "id": "18",
+    "company": "TechSupport Inc",
+    "role": "Technical Support Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Good communication and problem-solving skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "19",
+    "company": "StartupHub",
+    "role": "Social Media Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Active on social media platforms.",
+    "apply_link": "#"
+  },
+  {
+    "id": "20",
+    "company": "CodeAcademy",
+    "role": "Teaching Assistant Intern",
+    "required_skills": [
+      "Python",
+      "Java"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Good programming knowledge and teaching aptitude.",
+    "apply_link": "#"
+  },
+  {
+    "id": "21",
     "company": "Meta",
     "role": "Data Science Intern",
-    "required_skills": ["SQL", "Python", "Statistics"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Tech", "AI/ML"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
+    "required_skills": [
+      "SQL",
+      "Python",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech",
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
     "stipend": "₹1,10,000/month",
     "eligibility_text": "Pursuing a degree in Data Science, Statistics, or a related field.",
     "apply_link": "https://www.metacareers.com/areas-of-work/internships"
   },
   {
-    "id": "13",
-    "company": "Morgan Stanley",
-    "role": "Technology Analyst Intern",
-    "required_skills": ["Java", "Spring Boot"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹90,000/month",
-    "eligibility_text": "Students in their final year of a Computer Science or IT degree.",
-    "apply_link": "https://www.morganstanley.com/people-opportunities/students-graduates"
+    "id": "22",
+    "company": "LocalTech Solutions",
+    "role": "Junior Developer",
+    "required_skills": [
+      "HTML",
+      "CSS"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Basic web development knowledge.",
+    "apply_link": "#"
   },
   {
-    "id": "14",
-    "company": "Qualcomm",
-    "role": "Wireless Communication Intern",
-    "required_skills": ["5G", "C++"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Electronics", "Telecommunication"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹85,000/month",
-    "eligibility_text": "Master's students specializing in wireless communication.",
-    "apply_link": "https://www.qualcomm.com/company/careers/interns"
+    "id": "23",
+    "company": "SmallBiz Tech",
+    "role": "IT Support Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Basic computer knowledge required.",
+    "apply_link": "#"
   },
   {
-    "id": "15",
-    "company": "Atlassian",
-    "role": "Frontend Developer Intern",
-    "required_skills": ["JavaScript", "React", "CSS"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹75,000/month",
-    "eligibility_text": "Experience with modern JavaScript frameworks.",
-    "apply_link": "https://www.atlassian.com/company/careers/students"
-  },
-  {
-    "id": "16",
-    "company": "DE Shaw",
-    "role": "Quantitative Analyst Intern",
-    "required_skills": ["C++", "Statistics", "Algorithms"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹1,50,000/month",
-    "eligibility_text": "Students with a strong quantitative and programming background.",
-    "apply_link": "https://www.deshawindia.com/careers"
-  },
-  {
-    "id": "17",
-    "company": "Samsung",
-    "role": "Embedded Systems Intern",
-    "required_skills": ["C", "Embedded Systems", "Linux"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Knowledge of embedded systems and C programming.",
-    "apply_link": "https://www.samsung.com/in/about-us/careers/"
-  },
-  {
-    "id": "18",
-    "company": "Salesforce",
-    "role": "Software Engineer Intern, Backend",
-    "required_skills": ["Java", "SQL"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Cloud Computing"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹80,000/month",
-    "eligibility_text": "Proficiency in Java and database concepts.",
-    "apply_link": "https://www.salesforce.com/company/careers/university-recruiting/"
-  },
-  {
-    "id": "19",
+    "id": "24",
     "company": "Netflix",
     "role": "UI Engineer Intern",
-    "required_skills": ["JavaScript", "React", "UI/UX Design"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech",
+      "Designing"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
     "stipend": "₹1,00,000/month",
     "eligibility_text": "Strong understanding of UI design principles and React.",
     "apply_link": "https://jobs.netflix.com/search?team=internships"
   },
   {
-    "id": "20",
-    "company": "BlackRock",
-    "role": "Portfolio Management Intern",
-    "required_skills": ["Financial Modeling", "Python"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹1,10,000/month",
-    "eligibility_text": "Pursuing an MBA in Finance or a related discipline.",
-    "apply_link": "https://careers.blackrock.com/early-careers/"
-  },
-  {
-    "id": "21",
-    "company": "Texas Instruments",
-    "role": "Analog Design Intern",
-    "required_skills": ["Circuit Design", "Verilog"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Students in Electrical or Electronics Engineering.",
-    "apply_link": "https://careers.ti.com/search-jobs/India/1567/4/6252001-4433158-4428059-4428058/19/78/50/2"
-  },
-  {
-    "id": "22",
-    "company": "Uber",
-    "role": "Mobile Developer Intern (Android)",
-    "required_skills": ["Java", "Android"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹85,000/month",
-    "eligibility_text": "Experience in Android app development.",
-    "apply_link": "https://www.uber.com/global/en/careers/list/?department=Internships-and-Early-Career"
-  },
-  {
-    "id": "23",
-    "company": "Flipkart",
-    "role": "SDE Intern",
-    "required_skills": ["Data Structures", "Algorithms", "Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "E-commerce"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Strong problem-solving and coding skills.",
-    "apply_link": "https://www.flipkartcareers.com/#!/service/runway"
-  },
-  {
-    "id": "24",
-    "company": "Citadel",
-    "role": "Software Engineer Intern, Quant",
-    "required_skills": ["C++", "Python", "Algorithms"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹2,00,000/month",
-    "eligibility_text": "Exceptional programming and quantitative skills.",
-    "apply_link": "https://www.citadel.com/careers/students/"
-  },
-  {
     "id": "25",
-    "company": "ARM",
-    "role": "CPU Design Intern",
-    "required_skills": ["Verilog", "SystemVerilog"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹75,000/month",
-    "eligibility_text": "Pursuing a Master's degree in VLSI or a related field.",
-    "apply_link": "https://careers.arm.com/student-hub"
+    "company": "TechCorp",
+    "role": "Database Intern",
+    "required_skills": [
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹16,000/month",
+    "eligibility_text": "Knowledge of database management systems.",
+    "apply_link": "#"
   },
   {
     "id": "26",
-    "company": "Oracle",
-    "role": "Database Management Intern",
-    "required_skills": ["SQL", "Linux"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "Understanding of database management systems.",
-    "apply_link": "https://www.oracle.com/in/careers/university/"
+    "company": "DesignStudio",
+    "role": "Creative Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Creative portfolio showcasing design work.",
+    "apply_link": "#"
   },
   {
     "id": "27",
-    "company": "Figma",
-    "role": "Design Intern",
-    "required_skills": ["UI/UX Design", "Figma"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Remote", "lat": 20.5937, "lng": 78.9629 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "A strong portfolio showcasing your design skills in Figma.",
-    "apply_link": "https://www.figma.com/careers/"
+    "company": "Apple",
+    "role": "Firmware Engineer Intern",
+    "required_skills": [
+      "C++",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics",
+      "Hardware"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹95,000/month",
+    "eligibility_text": "Enrolled in a Computer Engineering or Electrical Engineering program.",
+    "apply_link": "https://www.apple.com/careers/in/"
   },
   {
     "id": "28",
-    "company": "Deutsche Bank",
-    "role": "Risk Management Intern",
-    "required_skills": ["Statistics", "Excel"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹95,000/month",
-    "eligibility_text": "Students with a background in statistics or financial engineering.",
-    "apply_link": "https://careers.db.com/students-graduates/"
+    "company": "LocalFinance",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹14,000/month",
+    "eligibility_text": "Commerce or finance background preferred.",
+    "apply_link": "#"
   },
   {
     "id": "29",
-    "company": "AMD",
-    "role": "Graphics Hardware Intern",
-    "required_skills": ["Verilog", "VHDL"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Knowledge of graphics architecture and hardware design.",
-    "apply_link": "https://careers.amd.com/careers-home/jobs"
+    "company": "TechStartup Inc",
+    "role": "QA Tester Intern",
+    "required_skills": [],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Attention to detail and testing mindset.",
+    "apply_link": "#"
   },
   {
     "id": "30",
-    "company": "Twilio",
-    "role": "Developer Evangelist Intern",
-    "required_skills": ["JavaScript", "Public Speaking"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Excellent communication skills and a passion for technology.",
-    "apply_link": "https://www.twilio.com/company/jobs#offices-bangalore"
+    "company": "Goldman Sachs",
+    "role": "Financial Analyst Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students in their penultimate year of a degree in Finance, Economics, or a related field.",
+    "apply_link": "https://www.goldmansachs.com/careers/students/programs/emea/summer-analyst-programme.html"
   },
   {
     "id": "31",
-    "company": "Jane Street",
-    "role": "Trading Intern",
-    "required_skills": ["Statistics", "Algorithms"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹2,50,000/month",
-    "eligibility_text": "Exceptional quantitative and problem-solving abilities.",
-    "apply_link": "https://www.janestreet.com/join-jane-street/internships/"
+    "company": "Goldman Sachs",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "TensorFlow",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "https://goldmansachs.com/careers"
   },
   {
     "id": "32",
-    "company": "Bosch",
-    "role": "Automotive Electronics Intern",
-    "required_skills": ["Embedded Systems", "C"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics", "Automotive"],
-    "location": { "city": "Coimbatore", "lat": 11.0168, "lng": 76.9558 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Interest in automotive electronics and embedded systems.",
-    "apply_link": "https://www.bosch.in/careers/"
+    "company": "Nvidia",
+    "role": "QA Tester Intern",
+    "required_skills": [
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://nvidia.com/careers"
   },
   {
     "id": "33",
-    "company": "Intuit",
-    "role": "Data Analyst Intern",
-    "required_skills": ["SQL", "Excel", "Statistics"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Strong analytical skills and proficiency in SQL and Excel.",
-    "apply_link": "https://www.intuit.com/careers/university/"
+    "company": "Nvidia",
+    "role": "IT Support Intern",
+    "required_skills": [
+      "Node.js"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://nvidia.com/careers"
   },
   {
     "id": "34",
-    "company": "Spotify",
-    "role": "Backend Engineering Intern",
-    "required_skills": ["Java", "Spring Boot", "Python"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹90,000/month",
-    "eligibility_text": "Experience with backend development and distributed systems.",
-    "apply_link": "https://www.lifeatspotify.com/student-opportunities"
+    "company": "Goldman Sachs",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://goldmansachs.com/careers"
   },
   {
     "id": "35",
-    "company": "Barclays",
-    "role": "Cyber Security Intern",
-    "required_skills": ["Linux", "Cyber Security"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "A strong interest in cybersecurity and networking concepts.",
-    "apply_link": "https://home.barclays/careers/early-careers/"
+    "company": "Morgan Stanley",
+    "role": "IT Support Intern",
+    "required_skills": [
+      "Java"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "36",
-    "company": "Siemens",
-    "role": "Control Systems Intern",
-    "required_skills": ["Embedded Systems", "C++"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "Knowledge of control systems and industrial automation.",
-    "apply_link": "https://www.siemens.com/in/en/company/jobs.html"
+    "company": "Nvidia",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "Embedded Systems",
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹70,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "https://nvidia.com/careers"
   },
   {
     "id": "37",
-    "company": "LinkedIn",
-    "role": "User Experience Researcher Intern",
-    "required_skills": ["UI/UX Design"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹80,000/month",
-    "eligibility_text": "Pursuing a degree in Human-Computer Interaction, Psychology, or a related field.",
-    "apply_link": "https://www.linkedin.com/company/linkedin/jobs"
+    "company": "BlackRock",
+    "role": "Investment Banking Intern",
+    "required_skills": [
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "38",
-    "company": "American Express",
-    "role": "Data Science & Analytics Intern",
-    "required_skills": ["Python", "SQL", "Machine Learning"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance", "AI/ML"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹85,000/month",
-    "eligibility_text": "Strong foundation in data science and machine learning concepts.",
-    "apply_link": "https://www.americanexpress.com/en-us/careers/student-programs/"
+    "company": "Microsoft",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://microsoft.com/careers"
   },
   {
     "id": "39",
-    "company": "Sony",
-    "role": "Image Processing Intern",
-    "required_skills": ["C++", "Python"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Experience with image processing algorithms and computer vision.",
-    "apply_link": "https://www.sony.com/en/SonyInfo/Careers/"
+    "company": "Morgan Stanley",
+    "role": "Portfolio Management Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "40",
-    "company": "VMware",
-    "role": "Virtualization Intern",
-    "required_skills": ["Linux", "Python"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Cloud Computing"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Understanding of operating systems and virtualization technologies.",
-    "apply_link": "https://careers.vmware.com/university-talent"
+    "company": "J.P. Morgan",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Illustrator",
+      "Figma",
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "https://j.p.morgan.com/careers"
   },
   {
     "id": "41",
-    "company": "Canva",
-    "role": "Graphic Design Intern",
-    "required_skills": ["UI/UX Design"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Remote", "lat": 20.5937, "lng": 78.9629 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "A creative portfolio demonstrating your design skills.",
-    "apply_link": "https://www.canva.com/careers/"
+    "company": "Microsoft",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Verilog",
+      "Circuit Design",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Undergraduate with relevant skills.",
+    "apply_link": "https://microsoft.com/careers"
   },
   {
     "id": "42",
-    "company": "HSBC",
-    "role": "Global Markets Intern",
-    "required_skills": ["Financial Modeling"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
+    "company": "Nvidia",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design",
+      "C"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
     "stipend": "₹90,000/month",
-    "eligibility_text": "A strong interest in financial markets and trading.",
-    "apply_link": "https://www.hsbc.com/careers/students-and-graduates"
+    "eligibility_text": "Students pursuing Class 12th or Undergraduate with relevant skills.",
+    "apply_link": "https://nvidia.com/careers"
   },
   {
     "id": "43",
-    "company": "Honeywell",
-    "role": "Aerospace Engineering Intern",
-    "required_skills": ["C++", "Embedded Systems"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Aerospace"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Pursuing a degree in Aerospace, Mechanical, or Electrical Engineering.",
-    "apply_link": "https://careers.honeywell.com/us/en/students"
+    "company": "Amazon",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "Machine Learning",
+      "PyTorch",
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://amazon.com/careers"
   },
   {
     "id": "44",
-    "company": "GitHub",
-    "role": "DevOps Intern",
-    "required_skills": ["Linux", "AWS"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Remote", "lat": 20.5937, "lng": 78.9629 },
-    "stipend": "₹75,000/month",
-    "eligibility_text": "Familiarity with CI/CD pipelines and cloud infrastructure.",
-    "apply_link": "https://github.com/careers"
+    "company": "Morgan Stanley",
+    "role": "Frontend Developer Intern",
+    "required_skills": [
+      "Python",
+      "CSS",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "45",
-    "company": "Slack",
-    "role": "Frontend Engineer Intern",
-    "required_skills": ["JavaScript", "React"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹80,000/month",
-    "eligibility_text": "Proficiency in modern frontend technologies.",
-    "apply_link": "https://slack.com/careers"
+    "company": "Morgan Stanley",
+    "role": "IT Support Intern",
+    "required_skills": [
+      "HTML",
+      "Java",
+      "Git"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹70,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "46",
-    "company": "Credit Suisse",
-    "role": "Wealth Management Intern",
-    "required_skills": ["Financial Modeling", "Excel"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
+    "company": "Morgan Stanley",
+    "role": "Frontend Developer Intern",
+    "required_skills": [
+      "HTML",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
     "stipend": "₹1,00,000/month",
-    "eligibility_text": "A strong understanding of financial products and wealth management.",
-    "apply_link": "https://www.credit-suisse.com/careers/en/students-graduates.html"
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "47",
-    "company": "Philips",
-    "role": "Healthcare Technology Intern",
-    "required_skills": ["Embedded Systems", "C"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Healthcare"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Interest in medical devices and healthcare technology.",
-    "apply_link": "https://www.careers.philips.com/global/en/student-and-graduates"
+    "company": "BlackRock",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "48",
-    "company": "Zomato",
-    "role": "Product Manager Intern",
-    "required_skills": ["SQL", "Data Structures"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "E-commerce"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Analytical mindset and a passion for building products.",
-    "apply_link": "https://www.zomato.com/careers"
+    "company": "Google",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "Verilog",
+      "VHDL",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "https://google.com/careers"
   },
   {
     "id": "49",
-    "company": "Paytm",
-    "role": "Mobile App Developer Intern",
-    "required_skills": ["Java", "Android"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Experience in developing Android applications.",
-    "apply_link": "https://paytm.com/careers/"
+    "company": "BlackRock",
+    "role": "Network Admin Intern",
+    "required_skills": [
+      "JavaScript",
+      "Java"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "50",
-    "company": "BNY Mellon",
-    "role": "Data Analyst Intern",
-    "required_skills": ["SQL", "Excel"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Strong analytical and data handling skills.",
-    "apply_link": "https://www.bnymellon.com/us/en/careers/students.html"
+    "company": "Salesforce",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD",
+      "Illustrator"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹1,20,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://salesforce.com/careers"
   },
   {
     "id": "51",
-    "company": "LG",
-    "role": "Display Technology Intern",
-    "required_skills": ["Circuit Design"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "Knowledge of display technologies and electronics.",
-    "apply_link": "https://www.lg.com/in/careers"
+    "company": "Salesforce",
+    "role": "Investment Banking Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹70,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "https://salesforce.com/careers"
   },
   {
     "id": "52",
-    "company": "Airbnb",
-    "role": "Full Stack Engineer Intern",
-    "required_skills": ["JavaScript", "React", "Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹95,000/month",
-    "eligibility_text": "Experience in both frontend and backend development.",
-    "apply_link": "https://careers.airbnb.com/university/"
+    "company": "Apple",
+    "role": "DevOps Intern",
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "HTML"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://apple.com/careers"
   },
   {
     "id": "53",
-    "company": "Cisco",
-    "role": "Network Engineering Intern",
-    "required_skills": ["Linux", "Python"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Telecommunication"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Understanding of computer networking and protocols.",
-    "apply_link": "https://www.cisco.com/c/en/us/about/careers/university-recruiting.html"
+    "company": "Apple",
+    "role": "Financial Analyst Intern",
+    "required_skills": [
+      "Valuation",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "https://apple.com/careers"
   },
   {
     "id": "54",
-    "company": "UBS",
-    "role": "Quantitative Trading Intern",
-    "required_skills": ["C++", "Statistics"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹1,30,000/month",
-    "eligibility_text": "Strong quantitative and programming skills.",
-    "apply_link": "https://www.ubs.com/global/en/careers/students-and-graduates.html"
+    "company": "BlackRock",
+    "role": "Software Developer Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "55",
-    "company": "Panasonic",
-    "role": "Consumer Electronics Intern",
-    "required_skills": ["Circuit Design"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Gurgaon", "lat": 28.4595, "lng": 77.0266 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Interest in consumer electronics and product design.",
-    "apply_link": "https://www.panasonic.com/in/corporate/careers.html"
+    "company": "Intel",
+    "role": "Software Developer Intern",
+    "required_skills": [
+      "CSS",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://intel.com/careers"
   },
   {
     "id": "56",
-    "company": "Twitter (X)",
-    "role": "Backend Services Intern",
-    "required_skills": ["Java", "SQL"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹90,000/month",
-    "eligibility_text": "Experience with building scalable backend services.",
-    "apply_link": "https://careers.twitter.com/en/university.html"
+    "company": "J.P. Morgan",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://j.p.morgan.com/careers"
   },
   {
     "id": "57",
-    "company": "Dropbox",
-    "role": "Product Design Intern",
-    "required_skills": ["UI/UX Design", "Figma"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Remote", "lat": 20.5937, "lng": 78.9629 },
-    "stipend": "₹75,000/month",
-    "eligibility_text": "A strong design portfolio and proficiency in Figma.",
-    "apply_link": "https://experience.dropbox.com/jobs/university"
+    "company": "BlackRock",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "SQL",
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "58",
-    "company": "Capital One",
-    "role": "Machine Learning Engineer Intern",
-    "required_skills": ["Python", "Machine Learning", "PyTorch"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance", "AI/ML"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
+    "company": "Citadel",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Illustrator"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
     "stipend": "₹1,00,000/month",
-    "eligibility_text": "Experience with machine learning models and frameworks.",
-    "apply_link": "https://www.capitalonecareers.com/students-and-grads"
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://citadel.com/careers"
   },
   {
     "id": "59",
-    "company": "Ericsson",
-    "role": "Telecommunication Intern",
-    "required_skills": ["5G"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics", "Telecommunication"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Understanding of 5G technology and wireless networks.",
-    "apply_link": "https://www.ericsson.com/en/careers/student-young-professionals"
+    "company": "Apple",
+    "role": "Risk Management Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "https://apple.com/careers"
   },
   {
     "id": "60",
-    "company": "SAP",
-    "role": "Cloud Engineer Intern",
-    "required_skills": ["AWS", "Linux"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Cloud Computing"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Knowledge of cloud platforms and DevOps practices.",
-    "apply_link": "https://www.sap.com/india/about/careers/students-graduates.html"
+    "company": "Netflix",
+    "role": "Hardware Engineer Intern",
+    "required_skills": [
+      "Embedded Systems",
+      "VHDL",
+      "C"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "https://netflix.com/careers"
   },
   {
     "id": "61",
-    "company": "Stripe",
-    "role": "Payments Engineering Intern",
-    "required_skills": ["Java", "Python"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Remote", "lat": 20.5937, "lng": 78.9629 },
-    "stipend": "₹1,20,000/month",
-    "eligibility_text": "Strong programming skills and an interest in financial technology.",
-    "apply_link": "https://stripe.com/jobs/search?q=intern"
+    "company": "Adobe",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "C++",
+      "C",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹70,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://adobe.com/careers"
   },
   {
     "id": "62",
-    "company": "Wells Fargo",
-    "role": "Quantitative Finance Intern",
-    "required_skills": ["C++", "Statistics", "Financial Modeling"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹1,10,000/month",
-    "eligibility_text": "Pursuing a quantitative discipline with strong programming skills.",
-    "apply_link": "https://www.wellsfargo.com/careers/university-programs/"
+    "company": "Meta",
+    "role": "Credit Analyst Intern",
+    "required_skills": [
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://meta.com/careers"
   },
   {
     "id": "63",
-    "company": "MediaTek",
-    "role": "SoC Design Intern",
-    "required_skills": ["Verilog", "SystemVerilog"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Experience with SoC design and verification.",
-    "apply_link": "https://corp.mediatek.com/careers"
+    "company": "Adobe",
+    "role": "Portfolio Management Intern",
+    "required_skills": [
+      "Excel",
+      "SQL",
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://adobe.com/careers"
   },
   {
     "id": "64",
-    "company": "Ola",
-    "role": "SDE Intern (Backend)",
-    "required_skills": ["Java", "Spring Boot"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Automotive"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
+    "company": "Netflix",
+    "role": "Investment Banking Intern",
+    "required_skills": [
+      "Excel",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
     "stipend": "₹60,000/month",
-    "eligibility_text": "Strong backend development skills.",
-    "apply_link": "https://ola.skillate.com/"
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "https://netflix.com/careers"
   },
   {
     "id": "65",
-    "company": "Razorpay",
-    "role": "Fintech Product Intern",
-    "required_skills": ["SQL"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "An interest in fintech and product management.",
-    "apply_link": "https://razorpay.com/careers/"
+    "company": "Adobe",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "Embedded Systems",
+      "Verilog",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://adobe.com/careers"
   },
   {
     "id": "66",
-    "company": "Nomura",
-    "role": "Global Markets Summer Analyst",
-    "required_skills": ["Valuation", "Excel"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹1,00,000/month",
-    "eligibility_text": "Penultimate year students with a strong interest in finance.",
-    "apply_link": "https://www.nomura.com/asia/careers/early-careers/"
+    "company": "Salesforce",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Statistics",
+      "TensorFlow",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://salesforce.com/careers"
   },
   {
     "id": "67",
-    "company": "Havells",
-    "role": "Electrical Engineering Intern",
-    "required_skills": ["Circuit Design"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "Pursuing a degree in Electrical Engineering.",
-    "apply_link": "https://www.havells.com/en/discover-havells/career.html"
+    "company": "J.P. Morgan",
+    "role": "Software Developer Intern",
+    "required_skills": [
+      "Python",
+      "Java"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://j.p.morgan.com/careers"
   },
   {
     "id": "68",
-    "company": "Databricks",
-    "role": "Software Engineer Intern, Big Data",
-    "required_skills": ["Java", "Python"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Tech", "AI/ML"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹1,00,000/month",
-    "eligibility_text": "Experience with big data technologies like Spark.",
-    "apply_link": "https://www.databricks.com/company/careers/university"
+    "company": "Meta",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://meta.com/careers"
   },
   {
     "id": "69",
-    "company": "Zerodha",
-    "role": "Frontend Developer Intern (Web)",
-    "required_skills": ["JavaScript", "React"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "Strong proficiency in web development technologies.",
-    "apply_link": "https://zerodha.com/careers/"
+    "company": "BlackRock",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "70",
-    "company": "PwC",
-    "role": "Tech Consulting Intern",
-    "required_skills": ["Excel"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Kolkata", "lat": 22.5726, "lng": 88.3639 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Strong analytical and communication skills.",
-    "apply_link": "https://www.pwc.in/careers/campus-recruitment.html"
+    "company": "J.P. Morgan",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹1,20,000/month",
+    "eligibility_text": "Students pursuing Diploma or Class 12th with relevant skills.",
+    "apply_link": "https://j.p.morgan.com/careers"
   },
   {
     "id": "71",
-    "company": "ABB",
-    "role": "Robotics & Automation Intern",
-    "required_skills": ["C++"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Interest in robotics and automation technologies.",
-    "apply_link": "https://global.abb/group/en/careers"
+    "company": "Apple",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹1,20,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://apple.com/careers"
   },
   {
     "id": "72",
-    "company": "TCS",
-    "role": "Digital Intern",
-    "required_skills": ["Java", "SQL"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Chennai", "lat": 13.0827, "lng": 80.2707 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "A good understanding of software development principles.",
-    "apply_link": "https://www.tcs.com/careers/india"
+    "company": "Morgan Stanley",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "73",
-    "company": "Infosys",
-    "role": "Power Programmer Intern",
-    "required_skills": ["Python", "Data Structures"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Exceptional coding and problem-solving skills.",
-    "apply_link": "https://www.infosys.com/careers/instep.html"
+    "company": "Intel",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "C",
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://intel.com/careers"
   },
   {
     "id": "74",
-    "company": "HDFC Bank",
-    "role": "Credit Analyst Intern",
-    "required_skills": ["Financial Modeling", "Excel"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Students with a strong understanding of financial statements.",
-    "apply_link": "https://www.hdfcbank.com/personal/about-us/careers"
+    "company": "Meta",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "VHDL",
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹1,20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://meta.com/careers"
   },
   {
     "id": "75",
-    "company": "BEL",
-    "role": "Electronics Trainee",
-    "required_skills": ["Circuit Design"],
-    "preferred_education_levels": ["Diploma", "Undergraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Ghaziabad", "lat": 28.6692, "lng": 77.4538 },
-    "stipend": "₹35,000/month",
-    "eligibility_text": "Diploma or Degree in Electronics Engineering.",
-    "apply_link": "https://bel-india.in/CareersGridbind.aspx?MId=9&LId=1&type=1"
+    "company": "Citadel",
+    "role": "Portfolio Management Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://citadel.com/careers"
   },
   {
     "id": "76",
-    "company": "Wipro",
-    "role": "Project Intern",
-    "required_skills": ["Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Final year engineering students.",
-    "apply_link": "https://careers.wipro.com/elite-nth"
+    "company": "Nvidia",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://nvidia.com/careers"
   },
   {
     "id": "77",
-    "company": "Swiggy",
-    "role": "UI/UX Design Intern",
-    "required_skills": ["UI/UX Design", "Figma"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing", "E-commerce"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "A portfolio demonstrating your UI/UX design skills.",
-    "apply_link": "https://careers.swiggy.com/"
+    "company": "J.P. Morgan",
+    "role": "Data Science Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://j.p.morgan.com/careers"
   },
   {
     "id": "78",
-    "company": "ICICI Bank",
-    "role": "Relationship Manager Intern",
-    "required_skills": [],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Delhi", "lat": 28.7041, "lng": 77.1025 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Students with strong communication and interpersonal skills.",
-    "apply_link": "https://www.icicicareers.com/website/Opportunities/Internship-Opportunities.aspx"
+    "company": "Citadel",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "https://citadel.com/careers"
   },
   {
     "id": "79",
-    "company": "DRDO",
-    "role": "Research Fellow",
-    "required_skills": ["Embedded Systems"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹55,000/month",
-    "eligibility_text": "Postgraduate students in science or engineering disciplines.",
-    "apply_link": "https://www.drdo.gov.in/careers"
+    "company": "BlackRock",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "80",
-    "company": "Zoho",
-    "role": "Technical Writer Intern",
-    "required_skills": [],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Chennai", "lat": 13.0827, "lng": 80.2707 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Excellent written and verbal communication skills.",
-    "apply_link": "https://www.zohocorp.com/en-in/careers/"
+    "company": "Google",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "https://google.com/careers"
   },
   {
     "id": "81",
-    "company": "Freshworks",
-    "role": "Marketing Intern",
-    "required_skills": [],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Chennai", "lat": 13.0827, "lng": 80.2707 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "A passion for marketing and technology.",
-    "apply_link": "https://www.freshworks.com/company/careers/"
+    "company": "Morgan Stanley",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "82",
-    "company": "Axis Bank",
-    "role": "Digital Banking Intern",
-    "required_skills": [],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance", "Tech"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "An interest in the intersection of finance and technology.",
-    "apply_link": "https://www.axisbank.com/careers"
+    "company": "Microsoft",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://microsoft.com/careers"
   },
   {
     "id": "83",
-    "company": "Micron",
-    "role": "Semiconductor Intern",
-    "required_skills": ["Verilog", "VHDL"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Hardware"],
-    "location": { "city": "Hyderabad", "lat": 17.3850, "lng": 78.4867 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Students in Electronics or a related engineering field.",
-    "apply_link": "https://www.micron.com/careers"
+    "company": "BlackRock",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "Verilog",
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "84",
-    "company": "Myntra",
-    "role": "Fashion Design Intern",
-    "required_skills": ["UI/UX Design"],
-    "preferred_education_levels": ["Diploma", "Undergraduate"],
-    "sector_tags": ["Designing", "E-commerce"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "A portfolio of your fashion design work.",
-    "apply_link": "https://careers.myntra.com/"
+    "company": "Adobe",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Bloomberg",
+      "Valuation",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹1,10,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://adobe.com/careers"
   },
   {
     "id": "85",
-    "company": "Kotak Mahindra Bank",
-    "role": "Financial Services Intern",
-    "required_skills": ["Excel"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Delhi", "lat": 28.7041, "lng": 77.1025 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "Students with an interest in banking and financial services.",
-    "apply_link": "https://www.kotak.com/en/careers.html"
+    "company": "Amazon",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://amazon.com/careers"
   },
   {
     "id": "86",
-    "company": "Tata Elxsi",
-    "role": "Embedded Software Intern",
-    "required_skills": ["C", "Embedded Systems"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Thiruvananthapuram", "lat": 8.5241, "lng": 76.9366 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Proficiency in C and embedded systems programming.",
-    "apply_link": "https://www.tataelxsi.com/careers"
+    "company": "Meta",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹1,20,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "https://meta.com/careers"
   },
   {
     "id": "87",
-    "company": "Accenture",
-    "role": "Technology Analyst Intern",
-    "required_skills": ["Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "Final year students of engineering and science.",
-    "apply_link": "https://www.accenture.com/in-en/careers/jobsearch"
+    "company": "Meta",
+    "role": "Data Engineer Intern",
+    "required_skills": [
+      "R",
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://meta.com/careers"
   },
   {
     "id": "88",
-    "company": "PhonePe",
-    "role": "Android Developer Intern",
-    "required_skills": ["Android", "Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "Experience in Android app development.",
-    "apply_link": "https://www.phonepe.com/careers/"
+    "company": "Salesforce",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Adobe XD",
+      "Figma",
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "https://salesforce.com/careers"
   },
   {
     "id": "89",
-    "company": "L&T Finance",
-    "role": "Finance Intern",
-    "required_skills": ["Financial Modeling"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "MBA students specializing in Finance.",
-    "apply_link": "https://www.ltfs.com/companies/lt-finance/careers.html"
+    "company": "Goldman Sachs",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "Circuit Design",
+      "C++",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹60,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://goldmansachs.com/careers"
   },
   {
     "id": "90",
-    "company": "Havells",
-    "role": "R&D Intern (Electronics)",
-    "required_skills": ["Circuit Design"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics"],
-    "location": { "city": "Noida", "lat": 28.5355, "lng": 77.3910 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "A strong foundation in electronics and circuit design.",
-    "apply_link": "https://www.havells.com/en/discover-havells/career.html"
+    "company": "BlackRock",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "91",
-    "company": "Capgemini",
-    "role": "Graduate Intern",
-    "required_skills": ["Java", "Python"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Open to final year engineering students.",
-    "apply_link": "https://www.capgemini.com/in-en/careers/your-career-path/students-graduates/"
+    "company": "Morgan Stanley",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹90,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "92",
-    "company": "Postman",
-    "role": "Developer Relations Intern",
-    "required_skills": ["JavaScript"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹70,000/month",
-    "eligibility_text": "A passion for APIs and developer communities.",
-    "apply_link": "https://www.postman.com/company/careers/"
+    "company": "Goldman Sachs",
+    "role": "Risk Management Intern",
+    "required_skills": [
+      "Bloomberg",
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹1,00,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Class 12th with relevant skills.",
+    "apply_link": "https://goldmansachs.com/careers"
   },
   {
     "id": "93",
-    "company": "Motilal Oswal",
-    "role": "Equity Research Intern",
-    "required_skills": ["Valuation", "Excel"],
-    "preferred_education_levels": ["Postgraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹60,000/month",
-    "eligibility_text": "MBA Finance students with a keen interest in the stock market.",
-    "apply_link": "https://www.motilaloswal.com/careers"
+    "company": "BlackRock",
+    "role": "Full Stack Developer Intern",
+    "required_skills": [
+      "Node.js",
+      "SQL",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "https://blackrock.com/careers"
   },
   {
     "id": "94",
-    "company": "BEL",
-    "role": "Defense Electronics Intern",
-    "required_skills": ["Embedded Systems", "Verilog"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Electronics", "Defense"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Students in Electronics and Communication Engineering.",
-    "apply_link": "https://bel-india.in/CareersGridbind.aspx?MId=9&LId=1&type=1"
+    "company": "Apple",
+    "role": "Python Developer Intern",
+    "required_skills": [
+      "React",
+      "HTML",
+      "CSS"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹80,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "https://apple.com/careers"
   },
   {
     "id": "95",
-    "company": "Cognizant",
-    "role": "Programmer Analyst Trainee",
-    "required_skills": ["Java", "SQL"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Chennai", "lat": 13.0827, "lng": 80.2707 },
-    "stipend": "₹40,000/month",
-    "eligibility_text": "Open to all engineering and science graduates.",
-    "apply_link": "https://careers.cognizant.com/global/en/students-and-graduates"
+    "company": "Microsoft",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling",
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹1,50,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "https://microsoft.com/careers"
   },
   {
     "id": "96",
-    "company": "Dunzo",
-    "role": "Graphic Design Intern",
-    "required_skills": ["UI/UX Design"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Designing"],
-    "location": { "city": "Bangalore", "lat": 12.9716, "lng": 77.5946 },
-    "stipend": "₹45,000/month",
-    "eligibility_text": "A creative portfolio is a must.",
-    "apply_link": "https://www.dunzo.com/careers"
+    "company": "Morgan Stanley",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "Circuit Design",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹70,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Class 12th with relevant skills.",
+    "apply_link": "https://morganstanley.com/careers"
   },
   {
     "id": "97",
-    "company": "HDFC Securities",
+    "company": "TechFlow",
     "role": "Trading Intern",
-    "required_skills": [],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹35,000/month",
-    "eligibility_text": "An interest in the stock market and trading.",
-    "apply_link": "https://www.hdfcsec.com/careers"
+    "required_skills": [
+      "Excel",
+      "Financial Modeling",
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
   },
   {
     "id": "98",
-    "company": "ISRO",
-    "role": "Electronics Intern",
-    "required_skills": ["Embedded Systems"],
-    "preferred_education_levels": ["Undergraduate", "Postgraduate"],
-    "sector_tags": ["Electronics", "Aerospace"],
-    "location": { "city": "Thiruvananthapuram", "lat": 8.5241, "lng": 76.9366 },
-    "stipend": "₹50,000/month",
-    "eligibility_text": "Students in Electronics, Electrical, or related fields.",
-    "apply_link": "https://www.isro.gov.in/Careers.html"
+    "company": "TechSupport Inc",
+    "role": "Network Admin Intern",
+    "required_skills": [
+      "Node.js",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
   },
   {
     "id": "99",
-    "company": "Tech Mahindra",
-    "role": "IT Intern",
-    "required_skills": ["Java"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech"],
-    "location": { "city": "Pune", "lat": 18.5204, "lng": 73.8567 },
-    "stipend": "₹35,000/month",
-    "eligibility_text": "Final year BE/B.Tech students.",
-    "apply_link": "https://careers.techmahindra.com/"
+    "company": "FinanceFirst",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "C",
+      "Embedded Systems",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
   },
   {
     "id": "100",
-    "company": "Upstox",
-    "role": "Frontend Intern",
-    "required_skills": ["React", "JavaScript"],
-    "preferred_education_levels": ["Undergraduate"],
-    "sector_tags": ["Tech", "Finance"],
-    "location": { "city": "Mumbai", "lat": 19.0760, "lng": 72.8777 },
-    "stipend": "₹65,000/month",
-    "eligibility_text": "Experience with React and modern web technologies.",
-    "apply_link": "https://upstox.com/careers/"
+    "company": "SoftwareCorp",
+    "role": "Python Developer Intern",
+    "required_skills": [
+      "SQL",
+      "JavaScript",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "101",
+    "company": "TechStartup Inc",
+    "role": "IT Support Intern",
+    "required_skills": [
+      "CSS",
+      "Python",
+      "Git"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "102",
+    "company": "TechCraft",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Diploma or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "103",
+    "company": "WebWorks",
+    "role": "Mobile App Developer Intern",
+    "required_skills": [
+      "JavaScript",
+      "Git"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "104",
+    "company": "FinTech Startup",
+    "role": "Investment Banking Intern",
+    "required_skills": [
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "105",
+    "company": "TechSupport Inc",
+    "role": "DevOps Intern",
+    "required_skills": [
+      "SQL",
+      "Python",
+      "CSS"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "106",
+    "company": "LocalTech Hub",
+    "role": "Graphic Designer Intern",
+    "required_skills": [
+      "Figma",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "107",
+    "company": "SmallBiz Tech",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "SQL",
+      "Excel",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "108",
+    "company": "FinTech Startup",
+    "role": "Data Science Intern",
+    "required_skills": [
+      "TensorFlow",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "109",
+    "company": "FinTech Startup",
+    "role": "Network Admin Intern",
+    "required_skills": [
+      "SQL",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "110",
+    "company": "DigitalCraft",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "111",
+    "company": "DesignStudio",
+    "role": "Investment Banking Intern",
+    "required_skills": [
+      "Bloomberg",
+      "Valuation",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "112",
+    "company": "TechStartup Inc",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "113",
+    "company": "CodeStudio",
+    "role": "Frontend Developer Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "114",
+    "company": "SmallBiz Solutions",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "115",
+    "company": "CodeBase",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "116",
+    "company": "FinTech Startup",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "117",
+    "company": "WebLab",
+    "role": "System Admin Intern",
+    "required_skills": [
+      "Git",
+      "CSS"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "118",
+    "company": "LocalFinance",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Illustrator",
+      "Figma",
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "119",
+    "company": "TechVenture",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Machine Learning",
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "120",
+    "company": "WebCraft",
+    "role": "Credit Analyst Intern",
+    "required_skills": [
+      "Excel",
+      "SQL",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "121",
+    "company": "DataCorp",
+    "role": "Database Developer Intern",
+    "required_skills": [
+      "Python",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "122",
+    "company": "WebCraft",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "C",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "123",
+    "company": "SmallBiz Tech",
+    "role": "Web Developer Intern",
+    "required_skills": [
+      "HTML",
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "124",
+    "company": "TechStart Solutions",
+    "role": "Graphic Designer Intern",
+    "required_skills": [
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "125",
+    "company": "LocalFinance",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "126",
+    "company": "TechSupport Inc",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "C++",
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "127",
+    "company": "TechStartup Inc",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "128",
+    "company": "CodeCraft Studios",
+    "role": "Visual Designer Intern",
+    "required_skills": [
+      "Illustrator",
+      "Photoshop",
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "129",
+    "company": "TechCorp",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "C++",
+      "Circuit Design",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "130",
+    "company": "TechCraft",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "131",
+    "company": "SoftwareCorp",
+    "role": "Risk Management Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Valuation"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "132",
+    "company": "TechStart Solutions",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "133",
+    "company": "DigitalCraft",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "134",
+    "company": "DataWorks",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "C++",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "135",
+    "company": "ElectroTech",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Bloomberg",
+      "Excel",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "136",
+    "company": "SmartSolutions",
+    "role": "Hardware Engineer Intern",
+    "required_skills": [
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "137",
+    "company": "CodeBase",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Adobe XD",
+      "Photoshop",
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "138",
+    "company": "DataFlow",
+    "role": "Data Engineer Intern",
+    "required_skills": [
+      "Machine Learning",
+      "TensorFlow",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "139",
+    "company": "DataFlow",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Illustrator",
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "140",
+    "company": "FinanceFirst",
+    "role": "Hardware Engineer Intern",
+    "required_skills": [
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "141",
+    "company": "DataFlow",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Python",
+      "R",
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "142",
+    "company": "TechStartup Inc",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Verilog",
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "143",
+    "company": "TechMind",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "C"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "144",
+    "company": "CodeWorks",
+    "role": "Risk Management Intern",
+    "required_skills": [
+      "Excel",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "145",
+    "company": "WebFlow",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "TensorFlow",
+      "R",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "146",
+    "company": "TechVenture",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "R",
+      "TensorFlow",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "147",
+    "company": "WebWorks",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "148",
+    "company": "CodeWorks",
+    "role": "Credit Analyst Intern",
+    "required_skills": [
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "149",
+    "company": "CodeCraft Studios",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "150",
+    "company": "WebCraft",
+    "role": "Backend Developer Intern",
+    "required_skills": [
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "151",
+    "company": "DataStudio",
+    "role": "Data Science Intern",
+    "required_skills": [
+      "Python",
+      "Machine Learning",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "152",
+    "company": "TechStartup Inc",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Adobe XD",
+      "Photoshop",
+      "Illustrator"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "153",
+    "company": "TechStart Solutions",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "154",
+    "company": "DevCorp",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "PyTorch",
+      "Machine Learning",
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "155",
+    "company": "LocalDesign Co",
+    "role": "Visual Designer Intern",
+    "required_skills": [
+      "Figma",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "156",
+    "company": "StartupXYZ",
+    "role": "Accounting Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "157",
+    "company": "FinTech Startup",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "Verilog",
+      "C"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "158",
+    "company": "CodeFactory",
+    "role": "Portfolio Management Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Excel",
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "159",
+    "company": "DigitalCraft",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "Illustrator"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "160",
+    "company": "TechNova",
+    "role": "Java Developer Intern",
+    "required_skills": [
+      "Python",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "161",
+    "company": "CodeFactory",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "162",
+    "company": "LocalFinance",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "R"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "163",
+    "company": "SmallBiz Solutions",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Valuation",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "164",
+    "company": "WebCraft",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "165",
+    "company": "DevCorp",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "166",
+    "company": "TechCraft",
+    "role": "Portfolio Management Intern",
+    "required_skills": [
+      "Valuation",
+      "Financial Modeling",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "167",
+    "company": "SoftwareLab",
+    "role": "DevOps Intern",
+    "required_skills": [
+      "Python",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "168",
+    "company": "TechNova",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "169",
+    "company": "WebSolutions",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Figma",
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "170",
+    "company": "StartupLab",
+    "role": "Java Developer Intern",
+    "required_skills": [
+      "HTML",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "171",
+    "company": "TechSupport Inc",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "SQL",
+      "R"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "172",
+    "company": "StartupHub",
+    "role": "Database Developer Intern",
+    "required_skills": [
+      "Java",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "173",
+    "company": "CodeStudio",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "174",
+    "company": "TechStart Solutions",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "SQL",
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "175",
+    "company": "SoftwareStudio",
+    "role": "React Developer Intern",
+    "required_skills": [
+      "Node.js",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "176",
+    "company": "FinanceFirst",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "177",
+    "company": "TechFlow",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "C++",
+      "Circuit Design",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Patna",
+      "lat": 25.5941,
+      "lng": 85.1376
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "178",
+    "company": "CodeStudio",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Excel",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "179",
+    "company": "WebCraft",
+    "role": "React Developer Intern",
+    "required_skills": [
+      "Node.js",
+      "React",
+      "Git"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "180",
+    "company": "CodeStudio",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Valuation",
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "181",
+    "company": "WebSolutions",
+    "role": "Cybersecurity Intern",
+    "required_skills": [
+      "JavaScript",
+      "Java",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "182",
+    "company": "DesignStudio",
+    "role": "Finance Intern",
+    "required_skills": [
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "183",
+    "company": "SmallBiz Tech",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma",
+      "Illustrator"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "184",
+    "company": "DataTech",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "TensorFlow",
+      "PyTorch",
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "185",
+    "company": "TechCorp",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "186",
+    "company": "TechFlow",
+    "role": "Software Developer Intern",
+    "required_skills": [
+      "JavaScript",
+      "Git"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "187",
+    "company": "LocalFinance",
+    "role": "Data Science Intern",
+    "required_skills": [
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "188",
+    "company": "WebSolutions",
+    "role": "Python Developer Intern",
+    "required_skills": [
+      "JavaScript",
+      "Python",
+      "Java"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "189",
+    "company": "CodeStudio",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "Circuit Design",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "190",
+    "company": "StartupLab",
+    "role": "Backend Developer Intern",
+    "required_skills": [
+      "React",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "191",
+    "company": "TechStartup Inc",
+    "role": "Node.js Developer Intern",
+    "required_skills": [
+      "CSS",
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "192",
+    "company": "WebCraft",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "PyTorch",
+      "Machine Learning",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "193",
+    "company": "LocalTech Hub",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Excel",
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "194",
+    "company": "WebWorks",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Adobe XD",
+      "Photoshop",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "195",
+    "company": "DesignHub",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Verilog",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "196",
+    "company": "DataStudio",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "Financial Modeling",
+      "Excel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "197",
+    "company": "FinanceFirst",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "198",
+    "company": "WebTech",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "C",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "199",
+    "company": "DataWorks",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Embedded Systems",
+      "VHDL",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Diploma or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "200",
+    "company": "TechStart Solutions",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Embedded Systems",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "201",
+    "company": "TechStartup Inc",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "VHDL",
+      "Embedded Systems",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "202",
+    "company": "CodeTech",
+    "role": "Graphic Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Diploma or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "203",
+    "company": "StartupLab",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "Verilog",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "204",
+    "company": "WebCraft",
+    "role": "Hardware Engineer Intern",
+    "required_skills": [
+      "Verilog",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "205",
+    "company": "SoftwareStudio",
+    "role": "Frontend Developer Intern",
+    "required_skills": [
+      "React"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "206",
+    "company": "SoftwareStudio",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "C",
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "207",
+    "company": "WebLab",
+    "role": "Graphic Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "208",
+    "company": "LocalFinance",
+    "role": "Full Stack Developer Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "209",
+    "company": "DesignHub",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "210",
+    "company": "FinanceFirst",
+    "role": "DevOps Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "211",
+    "company": "LocalDesign Co",
+    "role": "Financial Analyst Intern",
+    "required_skills": [
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "212",
+    "company": "DataTech",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "213",
+    "company": "DataFlow",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Embedded Systems",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Gurgaon",
+      "lat": 28.4595,
+      "lng": 77.0266
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "214",
+    "company": "FinTech Startup",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "Statistics",
+      "TensorFlow",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "215",
+    "company": "DataCorp",
+    "role": "UI/UX Designer Intern",
+    "required_skills": [
+      "Adobe XD",
+      "Illustrator",
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "216",
+    "company": "SoftwareStudio",
+    "role": "Technical Support Intern",
+    "required_skills": [
+      "Python",
+      "SQL",
+      "HTML"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "217",
+    "company": "WebSolutions",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "C++",
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Bhopal",
+      "lat": 23.2599,
+      "lng": 77.4126
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "218",
+    "company": "InnovateTech",
+    "role": "Circuit Design Intern",
+    "required_skills": [
+      "Circuit Design",
+      "C++",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "219",
+    "company": "CodeTech",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "VHDL",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "220",
+    "company": "TechStartup Inc",
+    "role": "Data Science Intern",
+    "required_skills": [
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "221",
+    "company": "StartupXYZ",
+    "role": "Backend Developer Intern",
+    "required_skills": [
+      "Java",
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Diploma or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "222",
+    "company": "DataWorks",
+    "role": "Creative Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Illustrator",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Diploma or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "223",
+    "company": "CodeAcademy",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma",
+      "Adobe XD"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "224",
+    "company": "LocalDesign Co",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "C++",
+      "Embedded Systems",
+      "Circuit Design"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Jaipur",
+      "lat": 26.9124,
+      "lng": 75.7873
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "225",
+    "company": "StartupHub",
+    "role": "AI Research Intern",
+    "required_skills": [
+      "SQL",
+      "Statistics",
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "226",
+    "company": "TechVenture",
+    "role": "Java Developer Intern",
+    "required_skills": [
+      "Python",
+      "Java",
+      "JavaScript"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Surat",
+      "lat": 21.1702,
+      "lng": 72.8311
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "227",
+    "company": "LocalTech Solutions",
+    "role": "IT Support Intern",
+    "required_skills": [
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Tech"
+    ],
+    "location": {
+      "city": "Noida",
+      "lat": 28.5355,
+      "lng": 77.391
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "228",
+    "company": "DataFlow",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "TensorFlow"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Hyderabad",
+      "lat": 17.385,
+      "lng": 78.4867
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "229",
+    "company": "DevCorp",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "230",
+    "company": "WebLab",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Vadodara",
+      "lat": 22.3072,
+      "lng": 73.1812
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "231",
+    "company": "TechStart Solutions",
+    "role": "Business Intelligence Intern",
+    "required_skills": [
+      "TensorFlow",
+      "PyTorch",
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹10,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "232",
+    "company": "DataFlow",
+    "role": "Web Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Illustrator",
+      "UI/UX Design"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "233",
+    "company": "CodeFactory",
+    "role": "Credit Analyst Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "234",
+    "company": "WebFlow",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Verilog",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Bangalore",
+      "lat": 12.9716,
+      "lng": 77.5946
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "235",
+    "company": "StartupHub",
+    "role": "VLSI Design Intern",
+    "required_skills": [
+      "VHDL",
+      "C++"
+    ],
+    "preferred_education_levels": [
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Kochi",
+      "lat": 9.9312,
+      "lng": 76.2673
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "236",
+    "company": "WebSolutions",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Valuation",
+      "Bloomberg"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Mumbai",
+      "lat": 19.076,
+      "lng": 72.8777
+    },
+    "stipend": "₹18,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "237",
+    "company": "StartupHub",
+    "role": "Electronics Engineer Intern",
+    "required_skills": [
+      "C",
+      "VHDL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Indore",
+      "lat": 22.7196,
+      "lng": 75.8577
+    },
+    "stipend": "₹6,000/month",
+    "eligibility_text": "Students pursuing Undergraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "238",
+    "company": "LocalTech Solutions",
+    "role": "Embedded Systems Intern",
+    "required_skills": [
+      "Circuit Design",
+      "Verilog"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "239",
+    "company": "SoftwareStudio",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "TensorFlow",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Chandigarh",
+      "lat": 30.7333,
+      "lng": 76.7794
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "240",
+    "company": "TechNova",
+    "role": "Finance Intern",
+    "required_skills": [
+      "Financial Modeling"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹12,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "241",
+    "company": "TechMind",
+    "role": "Wealth Management Intern",
+    "required_skills": [
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Class 12th"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Chennai",
+      "lat": 13.0827,
+      "lng": 80.2707
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Diploma or Class 12th with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "242",
+    "company": "LocalFinance",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "Python",
+      "Machine Learning",
+      "PyTorch"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Diploma"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Lucknow",
+      "lat": 26.8467,
+      "lng": 80.9462
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Diploma with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "243",
+    "company": "LocalTech Solutions",
+    "role": "Product Designer Intern",
+    "required_skills": [
+      "Photoshop"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Delhi",
+      "lat": 28.7041,
+      "lng": 77.1025
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "244",
+    "company": "SoftwareCorp",
+    "role": "Data Engineer Intern",
+    "required_skills": [
+      "TensorFlow",
+      "PyTorch",
+      "Statistics"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Pune",
+      "lat": 18.5204,
+      "lng": 73.8567
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Postgraduate or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "245",
+    "company": "WebWorks",
+    "role": "PCB Design Intern",
+    "required_skills": [
+      "C++",
+      "C",
+      "Embedded Systems"
+    ],
+    "preferred_education_levels": [
+      "Diploma",
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Electronics"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Diploma or Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "246",
+    "company": "DataStudio",
+    "role": "Graphic Designer Intern",
+    "required_skills": [
+      "Photoshop",
+      "Illustrator",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹8,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "247",
+    "company": "TechNova",
+    "role": "Visual Designer Intern",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "Designing"
+    ],
+    "location": {
+      "city": "Coimbatore",
+      "lat": 11.0168,
+      "lng": 76.9558
+    },
+    "stipend": "₹24,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "248",
+    "company": "SmallBiz Solutions",
+    "role": "Data Analyst Intern",
+    "required_skills": [
+      "Python",
+      "Machine Learning"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Kolkata",
+      "lat": 22.5726,
+      "lng": 88.3639
+    },
+    "stipend": "₹22,000/month",
+    "eligibility_text": "Students pursuing Postgraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "249",
+    "company": "WebTech",
+    "role": "Trading Intern",
+    "required_skills": [
+      "Excel",
+      "Financial Modeling",
+      "SQL"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "sector_tags": [
+      "Finance"
+    ],
+    "location": {
+      "city": "Remote",
+      "lat": 20.5937,
+      "lng": 78.9629
+    },
+    "stipend": "₹20,000/month",
+    "eligibility_text": "Students pursuing Undergraduate with relevant skills.",
+    "apply_link": "#"
+  },
+  {
+    "id": "250",
+    "company": "StartupHub",
+    "role": "Machine Learning Intern",
+    "required_skills": [
+      "Machine Learning",
+      "TensorFlow",
+      "Python"
+    ],
+    "preferred_education_levels": [
+      "Class 12th",
+      "Postgraduate"
+    ],
+    "sector_tags": [
+      "AI/ML"
+    ],
+    "location": {
+      "city": "Ahmedabad",
+      "lat": 23.0225,
+      "lng": 72.5714
+    },
+    "stipend": "₹15,000/month",
+    "eligibility_text": "Students pursuing Class 12th or Postgraduate with relevant skills.",
+    "apply_link": "#"
   }
 ]
-

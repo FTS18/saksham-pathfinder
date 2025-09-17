@@ -1,40 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Racing+Sans+One&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}
 
 /* Saksham AI Design System - Minimalistic Black & Blue */
 
 @layer base {
   :root {
-    /* Light Mode - Clean White */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
+    /* Light Mode - Better Contrast */
+    --background: 231 48% 94%;
+    --foreground: 0 0% 5%;
     
-    /* Saksham AI Brand Colors */
-    --primary: 217 91% 50%; /* Vibrant Blue */
+    /* Saksham AI Brand Colors - Indigo for Light Mode */
+    --primary: 231 48% 48%; /* Indigo Blue */
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 217 91% 35%;
-    --primary-light: 217 91% 65%;
+    --primary-dark: 231 48% 35%;
+    --primary-light: 231 48% 65%;
     
-    --secondary: 0 0% 96%; /* Light Gray */
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 231 48% 85%; /* Darker indigo background for better contrast */
+    --secondary-foreground: 0 0% 5%;
     
-    --accent: 217 91% 60%; /* Bright Blue Accent */
+    --accent: 231 48% 60%; /* Indigo Accent */
     --accent-foreground: 0 0% 100%;
     
-    /* Minimalistic Design */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 50%), hsl(217 91% 35%));
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 3%), hsl(0 0% 6%));
+    /* Minimalistic Design with Clean Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(231 48% 48%), hsl(231 48% 35%));
+    --gradient-hero: linear-gradient(180deg, hsl(231 48% 94%), hsl(231 48% 90%));
+    --gradient-clean: linear-gradient(135deg, hsl(231 48% 94%) 0%, hsl(231 48% 88%) 100%);
     
-    /* UI Colors */
-    --card: 0 0% 100%;
+    /* UI Colors - Better Contrast */
+    --card: 231 48% 98%; /* Light indigo for cards */
     --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
     
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 231 48% 82%; /* Darker indigo background for better contrast */
+    --muted-foreground: 0 0% 10%; /* Much darker text for better readability */
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -43,9 +57,9 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
     
-    --border: 0 0% 90%;
-    --input: 0 0% 96%;
-    --ring: 217 91% 50%;
+    --border: 231 48% 80%; /* Indigo border for better definition */
+    --input: 0 0% 100%; /* White input backgrounds */
+    --ring: 231 48% 48%;
     
     /* Clean Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -73,24 +87,25 @@
   }
 
   .dark {
-    /* Dark Mode - Pure Black & Blue */
+    /* Dark Mode - Sky Blue */
     --background: 0 0% 3%;
     --foreground: 0 0% 98%;
     
-    --primary: 217 91% 60%; /* Brighter blue in dark mode */
+    --primary: 199 89% 48%; /* Sky Blue for dark mode */
     --primary-foreground: 0 0% 3%;
-    --primary-dark: 217 91% 45%;
-    --primary-light: 217 91% 75%;
+    --primary-dark: 199 89% 35%;
+    --primary-light: 199 89% 65%;
     
     --secondary: 0 0% 9%; /* Dark Gray */
     --secondary-foreground: 0 0% 98%;
     
-    --accent: 217 91% 70%;
+    --accent: 199 89% 60%; /* Sky Blue Accent */
     --accent-foreground: 0 0% 3%;
     
-    /* Minimalistic Dark */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 45%));
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 3%), hsl(0 0% 6%));
+    /* Minimalistic Dark with Clean Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(199 89% 48%), hsl(199 89% 35%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 3%), hsl(199 89% 8%));
+    --gradient-clean: linear-gradient(135deg, hsl(0 0% 3%) 0%, hsl(199 89% 5%) 100%);
     
     --card: 0 0% 6%;
     --card-foreground: 0 0% 98%;
@@ -109,7 +124,7 @@
     
     --border: 0 0% 15%;
     --input: 0 0% 9%;
-    --ring: 217 91% 60%;
+    --ring: 199 89% 48%;
     
     /* Clean Dark Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -147,9 +162,36 @@
     @apply shadow-lg transform -translate-y-0.5;
   }
   
-  /* Hero Gradient */
+  /* Glass Card with Better Contrast */
+  .glass-card {
+    @apply bg-card backdrop-blur-sm border border-border rounded-lg shadow-clean transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply shadow-clean-lg border-border;
+  }
+  
+  /* High Contrast Text */
+  .text-readable {
+    @apply text-foreground;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  .text-readable-muted {
+    @apply text-muted-foreground;
+    color: hsl(var(--muted-foreground)) !important;
+  }
+  
+  /* Ensure cards have proper backgrounds */
+  .card-readable {
+    @apply bg-card border border-border;
+    background-color: hsl(var(--card)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+  
+  /* Hero Gradient - Clean and Fast */
   .hero-gradient {
-    background: var(--gradient-hero);
+    background: var(--gradient-clean);
   }
   
   /* Smooth Navigation */
@@ -188,6 +230,10 @@
   
   .font-poppins {
     font-family: 'Poppins', system-ui, sans-serif;
+  }
+  
+  .font-racing {
+    font-family: 'Racing Sans One', system-ui, sans-serif;
   }
   
   /* Responsive Text Sizes */
@@ -234,6 +280,50 @@
     transform: translateY(10px);
   }
   to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes moonTransition {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes moonSlide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
     opacity: 1;
     transform: translateY(0);
   }

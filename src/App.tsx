@@ -26,14 +26,16 @@ const App = () => (
           <BrowserRouter>
             <div className="min-h-screen bg-background">
               <Navbar />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <main>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
               <Footer />
             </div>
           </BrowserRouter>
