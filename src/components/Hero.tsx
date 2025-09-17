@@ -41,7 +41,7 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
 
   return (
     <>
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-20">
       <div className="absolute inset-0 hero-gradient" />
       
       <div className="absolute inset-0">
@@ -50,10 +50,10 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
         <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-primary/25 rounded-full animate-float blur-xl" style={{ animationDelay: '4s' }} />
       </div>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center mb-12 mt-8">
-            <div className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 rounded-full bg-green-500/10 border border-green-500/20 shadow-lg">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-center mb-8 mt-20 lg:mt-40">
+            <div className="inline-flex items-center px-4 py-2 sm:px-4 sm:py-2 rounded-full bg-green-500/10 border border-green-500/20 shadow-lg">
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-3" />
               <span className="text-sm sm:text-base font-semibold text-green-500">
                 Powered by AI Technology
@@ -65,11 +65,11 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
             Find the Right <span className="bg-gradient-to-r from-sky-500 to-indigo-600 bg-clip-text text-transparent">Internship</span> for You with AI
           </h1>
 
-          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
             {t.subtext}
           </p>
 
-          <div className="mb-8 sm:mb-12 px-4">
+          <div className="mb-8 sm:mb-8 px-4">
             <Button 
               size="lg" 
               onClick={onGetStartedClick}

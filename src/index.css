@@ -21,7 +21,7 @@
 @layer base {
   :root {
     /* Light Mode - Better Contrast */
-    --background: 231 48% 94%;
+    --background: 220 60% 92%;
     --foreground: 0 0% 5%;
     
     /* Saksham AI Brand Colors - Indigo for Light Mode */
@@ -30,7 +30,7 @@
     --primary-dark: 231 48% 35%;
     --primary-light: 231 48% 65%;
     
-    --secondary: 231 48% 85%; /* Darker indigo background for better contrast */
+    --secondary: 220 50% 80%; /* Blue-purple background for better contrast */
     --secondary-foreground: 0 0% 5%;
     
     --accent: 231 48% 60%; /* Indigo Accent */
@@ -38,17 +38,17 @@
     
     /* Minimalistic Design with Clean Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(231 48% 48%), hsl(231 48% 35%));
-    --gradient-hero: linear-gradient(180deg, hsl(231 48% 94%), hsl(231 48% 90%));
-    --gradient-clean: linear-gradient(135deg, hsl(231 48% 94%) 0%, hsl(231 48% 88%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(220 60% 92%), hsl(240 70% 88%));
+    --gradient-clean: linear-gradient(135deg, hsl(220 60% 92%) 0%, hsl(240 70% 85%) 100%);
     
     /* UI Colors - Better Contrast */
-    --card: 231 48% 98%; /* Light indigo for cards */
+    --card: 220 60% 96%; /* Light blue for cards */
     --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 9%;
     
-    --muted: 231 48% 82%; /* Darker indigo background for better contrast */
-    --muted-foreground: 0 0% 10%; /* Much darker text for better readability */
+    --muted: 220 50% 78%; /* Blue-purple background for better contrast */
+    --muted-foreground: 0 0% 8%; /* Much darker text for better readability */
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -57,7 +57,7 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
     
-    --border: 231 48% 80%; /* Indigo border for better definition */
+    --border: 220 50% 75%; /* Blue-purple border for better definition */
     --input: 0 0% 100%; /* White input backgrounds */
     --ring: 231 48% 48%;
     
@@ -96,8 +96,8 @@
     --primary-dark: 199 89% 35%;
     --primary-light: 199 89% 65%;
     
-    --secondary: 0 0% 9%; /* Dark Gray */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 15%; /* Lighter gray for better visibility */
+    --secondary-foreground: 0 0% 95%;
     
     --accent: 199 89% 60%; /* Sky Blue Accent */
     --accent-foreground: 0 0% 3%;
@@ -112,8 +112,8 @@
     --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
     
-    --muted: 0 0% 9%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
