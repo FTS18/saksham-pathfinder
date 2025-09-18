@@ -189,7 +189,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                   themeOption.isDark ? 'text-white' : 'text-black'
                 }`}>{themeOption.name}</p>
               </button>
-            ))
+            ))}
           </div>
         </CardContent>
       </Card>
