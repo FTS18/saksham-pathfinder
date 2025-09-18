@@ -349,7 +349,7 @@ const Index = () => {
   const totalPages = Math.ceil(displayItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentRecommendations = recommendations.slice(startIndex, endIndex);
+  const currentItems = displayItems.slice(startIndex, endIndex);
   
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -451,7 +451,7 @@ const Index = () => {
 
                 {displayItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        {displayItems.slice(startIndex, endIndex).map((item, index) => (
+                        {currentItems.map((item, index) => (
                             <InternshipCard 
                                 key={item.internship.id} 
                                 internship={item.internship}
@@ -560,7 +560,7 @@ const Index = () => {
 
                 {displayItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        {displayItems.slice(startIndex, endIndex).map((item, index) => (
+                        {currentItems.map((item, index) => (
                             <InternshipCard 
                                 key={item.internship.id} 
                                 internship={item.internship}

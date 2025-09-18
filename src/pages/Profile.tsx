@@ -16,7 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { CitySelector } from '@/components/CitySelector';
 import { PhoneInput } from '@/components/PhoneInput';
 import { CurrencyInput } from '@/components/CurrencyInput';
-import { LanguageSelector } from '@/components/LanguageSelector';
+
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
 import { extractAllSkills, extractAllSectors } from '@/lib/dataExtractor';
@@ -427,12 +427,9 @@ const Profile = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">{t('profile.title')}</h1>
-          <div className="flex items-center gap-4">
-            <LanguageSelector />
-            <Button onClick={saveProfile} disabled={saving}>
-              {saving ? 'Saving...' : t('profile.save')}
-            </Button>
-          </div>
+          <Button onClick={saveProfile} disabled={saving}>
+            {saving ? 'Saving...' : t('profile.save')}
+          </Button>
         </div>
 
         {/* Basic Info */}

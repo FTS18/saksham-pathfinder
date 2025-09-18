@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+type Theme = 'light' | 'dark' | 'blue' | 'green' | 'purple' | 'orange' | 'teal' | 'rose';
 type Language = 'en' | 'hi' | 'bn' | 'ta';
 
 interface ThemeContextType {
@@ -9,6 +9,7 @@ interface ThemeContextType {
   fontSize: number;
   isTransitioning: boolean;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
   setLanguage: (lang: Language) => void;
   increaseFontSize: () => void;
   decreaseFontSize: () => void;
@@ -29,26 +30,32 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>('dark'); // Default to dark
   const [language, setLanguage] = useState<Language>('en');
-  const [fontSize, setFontSize] = useState(16); // Base font size
+  const [fontSize, setFontSize] = useState(16);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
     const savedLanguage = localStorage.getItem('language') as Language;
     
-    if (savedTheme) setTheme(savedTheme);
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      // Default to dark mode for first-time users
+      setTheme('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    
     if (savedLanguage) setLanguage(savedLanguage);
 
     const savedFontSize = localStorage.getItem('fontSize');
     if (savedFontSize) setFontSize(Number(savedFontSize));
-
   }, []);
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
+    root.classList.remove('light', 'dark', 'blue', 'green', 'purple', 'orange', 'teal', 'rose');
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
@@ -74,7 +81,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const decreaseFontSize = () => setFontSize(fz => Math.max(fz - 2, 12));
 
   return (
-    <ThemeContext.Provider value={{ theme, language, fontSize, isTransitioning, toggleTheme, setLanguage, increaseFontSize, decreaseFontSize }}>
+    <ThemeContext.Provider value={{ theme, language, fontSize, isTransitioning, toggleTheme, setTheme, setLanguage, increaseFontSize, decreaseFontSize }}>
       {children}
       {isTransitioning && (
         <div className="fixed inset-0 z-[9999] pointer-events-none">
