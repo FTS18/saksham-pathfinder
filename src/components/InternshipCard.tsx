@@ -41,14 +41,21 @@ const translations = {
 
 interface Internship {
   id: string;
+  title: string;
   role: string;
   company: string;
   location: { city: string; lat?: number; lng?: number; } | string;
-  eligibility_text: string;
+  eligibility_text?: string;
   stipend: string;
   sector_tags: string[];
   required_skills: string[];
-  apply_link: string;
+  apply_link?: string;
+  description?: string;
+  responsibilities?: string[];
+  perks?: string[];
+  work_mode?: string;
+  openings?: number;
+  application_deadline?: string;
   logo?: string;
   featured?: boolean;
 }
@@ -56,6 +63,7 @@ interface Internship {
 interface InternshipCardProps {
   internship: Internship;
   matchExplanation?: string;
+  aiTags?: string[];
   userProfile?: any;
   onNext?: () => void;
   onPrev?: () => void;
@@ -63,9 +71,10 @@ interface InternshipCardProps {
   totalCount?: number;
 }
 
-export const InternshipCard = ({ internship, matchExplanation, userProfile, onNext, onPrev, currentIndex, totalCount }: InternshipCardProps) => {
+export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount }: InternshipCardProps) => {
   const {
     id,
+    title,
     role,
     company,
     location,
@@ -74,6 +83,12 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
     sector_tags,
     required_skills,
     apply_link,
+    description,
+    responsibilities,
+    perks,
+    work_mode,
+    openings,
+    application_deadline,
     logo,
     featured = false,
   } = internship;
@@ -116,6 +131,71 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
     speak(text, language);
   }
 
+  const getCompanyTheme = (companyName: string) => {
+    const themes: { [key: string]: string } = {
+      // FAANG + Big Tech (60k+ stipends)
+      'Google': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
+      'Microsoft': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
+      'Meta': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Apple': 'border-l-4 border-l-gray-800 bg-gray-50/30 dark:bg-gray-950/20',
+      'Netflix': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      
+      // High-paying Tech Companies
+      'Nvidia': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      'Uber': 'border-l-4 border-l-black bg-gray-50/30 dark:bg-gray-950/20',
+      'Airbnb': 'border-l-4 border-l-pink-500 bg-pink-50/30 dark:bg-pink-950/20',
+      'Spotify': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      'Tesla': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'Salesforce': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
+      'Adobe': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'PayPal': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Stripe': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20',
+      'Coinbase': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
+      'Snapchat': 'border-l-4 border-l-yellow-400 bg-yellow-50/30 dark:bg-yellow-950/20',
+      'Twitter': 'border-l-4 border-l-blue-400 bg-blue-50/30 dark:bg-blue-950/20',
+      'LinkedIn': 'border-l-4 border-l-blue-700 bg-blue-50/30 dark:bg-blue-950/20',
+      'Dropbox': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
+      'Slack': 'border-l-4 border-l-purple-500 bg-purple-50/30 dark:bg-purple-950/20',
+      'Zoom': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
+      'Atlassian': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Palantir': 'border-l-4 border-l-gray-700 bg-gray-50/30 dark:bg-gray-950/20',
+      'Databricks': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
+      'Snowflake': 'border-l-4 border-l-blue-400 bg-blue-50/30 dark:bg-blue-950/20',
+      'MongoDB': 'border-l-4 border-l-green-600 bg-green-50/30 dark:bg-green-950/20',
+      'Twilio': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
+      'Square': 'border-l-4 border-l-black bg-gray-50/30 dark:bg-gray-950/20',
+      'DoorDash': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
+      'Instacart': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      'Robinhood': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      
+      // Chip Companies
+      'Intel': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'AMD': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'Qualcomm': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Broadcom': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      
+      // Cloud/Enterprise
+      'IBM': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Oracle': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'VMware': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'ServiceNow': 'border-l-4 border-l-green-600 bg-green-50/30 dark:bg-green-950/20',
+      
+      // Indian Companies
+      'Infosys': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'TCS': 'border-l-4 border-l-blue-800 bg-blue-50/30 dark:bg-blue-950/20',
+      'Wipro': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
+      'Accenture': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20',
+      'Flipkart': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Paytm': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
+      'Zomato': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
+      'Swiggy': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
+      'Ola': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      'BYJU\'S': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20'
+    };
+    return themes[companyName] || '';
+  };
+
   const generateMatchExplanation = () => {
     if (matchExplanation) return matchExplanation;
     if (!userProfile) return null;
@@ -148,7 +228,12 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
     <>
     <Card className={`relative minimal-card flex flex-col h-full ${
       featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
-    }`}>
+    } ${getCompanyTheme(company)}`}>
+      {aiTags && aiTags.includes('AI Recommended') && (
+        <div className="absolute top-0 left-0 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-br-lg z-10">
+          🤖 AI Recommended
+        </div>
+      )}
        <Button
             variant="ghost"
             size="icon"
@@ -160,7 +245,7 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
       <CardContent className="padding-responsive flex flex-col flex-grow">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3 pr-8">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
               {logo ? (
                 <img src={logo} alt={company} className="w-8 h-8 rounded" />
               ) : sector_tags && sector_tags.length > 0 ? (
@@ -172,54 +257,53 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
             
             <div>
               <h3 className="font-poppins font-semibold text-lg text-foreground mb-1 text-left">
-                {role}
+                {title}
               </h3>
-              <p className="text-muted-foreground text-sm flex items-center">
+              <p className="text-muted-foreground text-sm flex items-center mb-1">
                 <Building2 className="w-3 h-3 mr-1" />
                 {company}
+              </p>
+              <p className="text-xs text-primary font-medium">
+                {role}
               </p>
             </div>
           </div>
           
-          {featured && (
-            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 shrink-0">
-              Featured
-            </Badge>
-          )}
+          <div className="flex flex-col gap-1">
+            {featured && (
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 shrink-0">
+                Featured
+              </Badge>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-3 mb-4 flex-grow text-left">
+        <div className="space-y-3 mb-4 text-left">
           <div className="flex items-center text-sm text-muted-foreground">
             <MapPin className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-            <span className="font-medium mr-2">{t.location}:</span>
             <span>{locationText}</span>
           </div>
           
-          <div className="flex items-center text-sm text-muted-foreground">
-            <IndianRupee className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-            <span className="font-medium mr-2">{t.stipend}:</span>
-            <span>{stipend}</span>
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center text-muted-foreground">
+              <IndianRupee className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
+              <span className="font-semibold">{stipend}</span>
+            </div>
+            {work_mode && (
+              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium">
+                {work_mode}
+              </span>
+            )}
           </div>
 
           {required_skills && required_skills.length > 0 && (
-            <div className="flex items-start text-sm text-muted-foreground">
-              <Lightbulb className="w-4 h-4 mr-2 text-primary flex-shrink-0 mt-0.5" />
-              <span className="font-medium mr-2 shrink-0">{t.requiredSkills}:</span>
+            <div className="text-sm">
+              <span className="font-medium text-muted-foreground mb-2 block">Skills:</span>
               <div className="flex flex-wrap gap-1">
-                {required_skills.map((skill) => (
-                  <Badge key={skill} variant="secondary">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {sector_tags && sector_tags.length > 0 && (
-            <div className="flex items-start text-sm text-muted-foreground">
-              <Tag className="w-4 h-4 mr-2 text-primary flex-shrink-0 mt-0.5" />
-              <span className="font-medium mr-2 shrink-0">{t.sectors}:</span>
-              <div className="flex flex-wrap gap-1">
-                {sector_tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">{tag}</Badge>
+                {required_skills.slice(0, 4).map((skill, index) => (
+                  <span key={index} className="bg-secondary/50 px-2 py-1 rounded text-xs">
+                    {skill}
+                  </span>
                 ))}
               </div>
             </div>
@@ -228,39 +312,16 @@ export const InternshipCard = ({ internship, matchExplanation, userProfile, onNe
 
 
 
-        {eligibility_text && (
-          <div className="mt-auto pt-4 border-t border-border/50">
-             <div className="flex items-start text-xs text-muted-foreground bg-secondary/50 p-3 rounded-md">
-                <Info className="w-4 h-4 mr-2 text-primary flex-shrink-0 mt-0.5" />
-                <div>
-                    <span className="font-semibold">{t.eligibility}: </span>
-                    <span>{eligibility_text}</span>
-                </div>
-            </div>
-          </div>
-        )}
+
 
         <div className="mt-4">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowModal(true)}
-              className="flex-1"
-            >
-              {t.viewDetails}
-            </Button>
-            <a href={apply_link} target="_blank" rel="noopener noreferrer" className="flex-1" onClick={() => {
-              const applications = JSON.parse(localStorage.getItem('applications') || '[]');
-              const newApp = { internshipId: id, company, role, appliedAt: new Date().toISOString() };
-              applications.push(newApp);
-              localStorage.setItem('applications', JSON.stringify(applications));
-            }}>
-              <Button className="w-full bg-primary hover:bg-primary-dark text-white font-medium smooth-transition group">
-                <span className="text-sm">{t.apply}</span>
-                <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 smooth-transition" />
-              </Button>
-            </a>
-          </div>
+          <Button 
+            onClick={() => setShowModal(true)}
+            className="w-full bg-primary hover:bg-primary-dark text-white font-medium smooth-transition group"
+          >
+            <span className="text-sm">{t.apply}</span>
+            <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 smooth-transition" />
+          </Button>
         </div>
       </CardContent>
     </Card>
