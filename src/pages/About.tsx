@@ -84,7 +84,7 @@ const About = () => {
           </p>
           <div className="bg-primary/10 rounded-lg p-6 max-w-2xl mx-auto">
             <p className="text-primary font-semibold mb-2">
-              Team Hexacoders • PEC Chandigarh • Problem Statement #25034
+              Team HexaCoders • PEC Chandigarh • Problem Statement #25034
             </p>
             <p className="text-sm text-muted-foreground">
               Ministry of Corporate Affairs (MoCA) • Smart Education Theme
@@ -221,7 +221,7 @@ const About = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Users className="w-6 h-6 text-primary" />
-              Meet Team Hexacoders
+              Meet Team HexaCoders
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -341,7 +341,7 @@ const About = () => {
 
 
 
-        <Card className="glass-card">
+        <Card className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Heart className="w-5 h-5 text-primary" />
@@ -389,16 +389,65 @@ const About = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Contact Section */}
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Users className="w-6 h-6 text-primary" />
+              Get in Touch
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center mb-8">
+              <p className="text-muted-foreground mb-6">
+                Have questions about Saksham AI or want to collaborate? We'd love to hear from you!
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-blue-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Team Email</h3>
+                <a 
+                  href="mailto:team@sakshamai.com" 
+                  className="text-primary hover:underline"
+                >
+                  team@sakshamai.com
+                </a>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Briefcase className="w-6 h-6 text-green-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Project Lead</h3>
+                <a 
+                  href="mailto:dubeyananay@gmail.com" 
+                  className="text-primary hover:underline"
+                >
+                  Ananay Dubey
+                </a>
+                <p className="text-sm text-muted-foreground mt-1">+91 7719767324</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Target className="w-6 h-6 text-purple-500" />
+                </div>
+                <h3 className="font-semibold mb-2">Institution</h3>
+                <p className="text-sm text-muted-foreground">
+                  Punjab Engineering College<br/>
+                  Chandigarh, India
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
-        {/* Footer */}
-        <footer className="mt-16 pt-8 border-t border-border text-center">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Saksham AI. All rights reserved.
-          </p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Developed by Ananay, Aditya, Vansham, Aniket, Riya, Bhavya
-          </p>
-        </footer>
+
       </div>
     </div>
   );

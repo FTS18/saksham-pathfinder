@@ -12,6 +12,11 @@ import { Progress } from './ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Slider } from './ui/slider';
 
+import { CurrencyInput } from './CurrencyInput';
+import { t } from '@/lib/translation';
+
+
+
 const translations = {
   en: {
     title: 'Complete Your Profile',
@@ -63,17 +68,31 @@ export interface ProfileData {
   interests: string[];
   location: string;
   searchRadius: number;
+  minStipend: number;
 }
 
-const educationLevels = ["Class 12th", "Diploma", "Undergraduate", "Postgraduate"];
-const skills = [
-  "Python", "Data Structures", "Algorithms", "HTML", "CSS", "JavaScript", "Excel",
-  "Machine Learning", "PyTorch", "Financial Modeling", "Verilog", "VHDL",
-  "Circuit Design", "UI/UX Design", "Figma", "Adobe XD", "C++", "Embedded Systems",
-  "Valuation", "SystemVerilog", "AWS", "Linux", "SQL", "Statistics", "Java",
-  "Spring Boot", "5G", "React", "Public Speaking", "Android"
-];
-const sectors = ["Tech", "Finance", "Electronics", "Designing", "AI/ML", "Hardware", "E-commerce", "Telecommunication", "Automotive", "Healthcare", "Aerospace", "Defense"];
+const educationLevels = ["Undergraduate", "Postgraduate"];
+const skillsBySector = {
+  "Technology": ["Python", "JavaScript", "React", "HTML", "CSS", "Java", "C++", "Data Structures", "Algorithms", "SQL", "AWS", "Linux", "Android", "Node.js", "TypeScript", "Docker", "Kubernetes"],
+  "Finance": ["Excel", "Financial Modeling", "Valuation", "Statistics", "Python", "SQL", "Public Speaking", "Risk Management", "Investment Analysis", "Accounting"],
+  "Healthcare": ["Python", "Statistics", "Machine Learning", "SQL", "Excel", "Medical Research", "Clinical Trials", "Healthcare IT", "Biotechnology"],
+  "Education": ["Curriculum Development", "Educational Technology", "Teaching", "Training", "E-learning", "Academic Research", "Learning Management Systems"],
+  "Marketing": ["Digital Marketing", "Content Marketing", "Social Media Marketing", "SEO", "SEM", "Email Marketing", "Brand Management", "Market Research", "Analytics"],
+  "E-commerce": ["JavaScript", "React", "HTML", "CSS", "Python", "SQL", "Excel", "Public Speaking", "Digital Marketing", "Customer Service"],
+  "Manufacturing": ["Quality Control", "Process Improvement", "Supply Chain", "Lean Manufacturing", "Six Sigma", "AutoCAD", "Project Management"],
+  "Media": ["Content Creation", "Video Editing", "Graphic Design", "Social Media", "Photography", "Writing", "Adobe Creative Suite"],
+  "Gaming": ["Unity", "Unreal Engine", "C#", "C++", "Game Design", "3D Modeling", "Animation", "JavaScript"],
+  "Consulting": ["Problem Solving", "Data Analysis", "Presentation Skills", "Excel", "PowerPoint", "Project Management", "Strategic Planning"]
+};
+
+const getAllSkills = () => {
+  const allSkills = new Set();
+  Object.values(skillsBySector).forEach(skills => {
+    skills.forEach(skill => allSkills.add(skill));
+  });
+  return Array.from(allSkills).sort();
+};
+const sectors = ["Technology", "Finance", "Healthcare", "Education", "Marketing", "E-commerce", "Manufacturing", "Media", "Gaming", "Consulting"];
 
 interface ProfileFormProps {
     initialData?: ProfileData;
@@ -91,8 +110,10 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
     skills: [],
     interests: [],
     location: '',
-    searchRadius: 50
+    searchRadius: 50,
+    minStipend: 0
   });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     if(initialData) {
@@ -100,15 +121,29 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
     }
   }, [initialData])
 
-  // Auto-fill location when detected
   useEffect(() => {
-    if (detectedLocation && !formData.location && !initialData) {
-      setFormData(prev => ({
-        ...prev,
-        location: detectedLocation.city
-      }));
+    setIsMobile(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  }, []);
+
+  // Load saved form data on mount
+  useEffect(() => {
+    if (!initialData) {
+      const savedData = localStorage.getItem('profileFormData');
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          setFormData(parsed);
+        } catch (error) {
+          console.error('Error loading saved form data:', error);
+        }
+      }
     }
-  }, [detectedLocation, formData.location, initialData]);
+  }, [initialData]);
+
+  // Save form data on every change
+  useEffect(() => {
+    localStorage.setItem('profileFormData', JSON.stringify(formData));
+  }, [formData]);
 
   const profileStrength = useMemo(() => {
     let score = 0;
@@ -116,7 +151,8 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
     if (formData.skills.length > 0) score += 25;
     if (formData.interests.length > 0) score += 25;
     if (formData.location) score += 20;
-    if (formData.searchRadius > 0) score += 10;
+    if (formData.searchRadius > 0) score += 5;
+    if (formData.minStipend > 0) score += 5;
     return score;
   }, [formData]);
 
@@ -155,7 +191,14 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
         <CardContent className="padding-responsive space-responsive">
            <div className="space-y-2">
             <Label className="text-sm font-medium">{t.profileStrength}</Label>
-            <Progress value={profileStrength} className="w-full" />
+            <Progress 
+              value={profileStrength} 
+              className="w-full" 
+              style={{
+                '--progress-background': profileStrength >= 80 ? '#22c55e' : profileStrength >= 50 ? '#eab308' : '#ef4444'
+              } as React.CSSProperties}
+            />
+            <p className="text-xs text-muted-foreground">{profileStrength}% complete</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
              <div className="space-y-2">
@@ -184,35 +227,6 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                 </SelectContent>
               </Select>
             </div>
-          
-            <div className="space-y-2">
-               <Label htmlFor="skills" className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Lightbulb className="w-4 h-4 text-primary" />
-                {t.skills}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">{t.skillsTooltip}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal">
-                  {formData.skills.length > 0 ? formData.skills.join(', ') : t.skillsPlaceholder}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {skills.map(skill => (
-                    <Button key={skill} variant={formData.skills.includes(skill) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('skills', skill)} className={formData.skills.includes(skill) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{skill}</Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
 
             <div className="space-y-2">
                <Label htmlFor="interests" className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -227,45 +241,134 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                   </TooltipContent>
                 </Tooltip>
               </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal">
-                  {formData.interests.length > 0 ? formData.interests.join(', ') : t.interestsPlaceholder}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {sectors.map(sector => (
-                    <Button key={sector} variant={formData.interests.includes(sector) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('interests', sector)} className={formData.interests.includes(sector) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{sector}</Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
+            {isMobile ? (
+              <select 
+                multiple
+                className="w-full p-2 border border-border rounded-md bg-background text-foreground"
+                value={formData.interests}
+                onChange={(e) => {
+                  const values = Array.from(e.target.selectedOptions, option => option.value);
+                  setFormData(prev => ({...prev, interests: values}));
+                }}
+              >
+                {sectors.map(sector => (
+                  <option key={sector} value={sector}>{sector}</option>
+                ))}
+              </select>
+            ) : (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal">
+                    {formData.interests.length > 0 ? formData.interests.join(', ') : t.interestsPlaceholder}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {sectors.map(sector => (
+                      <Button key={sector} variant={formData.interests.includes(sector) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('interests', sector)} className={formData.interests.includes(sector) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{sector}</Button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
           
             <div className="space-y-2">
-                <Label htmlFor='location' className="text-sm font-medium text-foreground flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  {t.location}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="max-w-xs">{t.locationTooltip}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
-                <Input
-                  id='location'
-                  type="text"
-                  placeholder={t.locationPlaceholder}
-                  value={formData.location}
-                  onChange={(e) => setFormData(p => ({...p, location: e.target.value}))}
-                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg border border-border bg-input focus:border-primary focus:ring-2 focus:ring-primary/20 smooth-transition"
-                  required
-                />
-              </div>
+               <Label htmlFor="skills" className="text-sm font-medium text-foreground flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-primary" />
+                {t.skills}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">{t.skillsTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
+              {formData.interests.length === 0 && (
+                <p className="text-sm text-muted-foreground italic">Please select your sector interests first</p>
+              )}
+            {isMobile ? (
+              <select 
+                multiple
+                disabled={formData.interests.length === 0}
+                className="w-full p-2 border border-border rounded-md bg-background text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                value={formData.skills}
+                onChange={(e) => {
+                  const values = Array.from(e.target.selectedOptions, option => option.value);
+                  setFormData(prev => ({...prev, skills: values}));
+                }}
+              >
+                {(formData.interests.length > 0 
+                  ? formData.interests.flatMap(interest => skillsBySector[interest] || []).filter((skill, index, arr) => arr.indexOf(skill) === index)
+                  : []
+                ).map(skill => (
+                  <option key={skill} value={skill}>{skill}</option>
+                ))}
+              </select>
+            ) : (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    disabled={formData.interests.length === 0}
+                    className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {formData.interests.length === 0 
+                      ? 'Select sector interests first' 
+                      : formData.skills.length > 0 
+                        ? formData.skills.join(', ') 
+                        : t.skillsPlaceholder
+                    }
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {(formData.interests.length > 0 
+                      ? formData.interests.flatMap(interest => skillsBySector[interest] || []).filter((skill, index, arr) => arr.indexOf(skill) === index)
+                      : []
+                    ).map(skill => (
+                      <Button key={skill} variant={formData.skills.includes(skill) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('skills', skill)} className={formData.skills.includes(skill) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{skill}</Button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
+          
+            <div className="space-y-2">
+              <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                {t.location} *
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">{t.locationTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
+              <Input
+                id="location"
+                type="text"
+                value={formData.location}
+                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                placeholder={t.locationPlaceholder}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <CurrencyInput
+                value={formData.minStipend}
+                onChange={(minStipend) => setFormData(prev => ({ ...prev, minStipend }))}
+                country="India"
+                label="Minimum Expected Stipend (per month)"
+                placeholder="15000"
+              />
+            </div>
               
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-foreground flex items-center gap-2">

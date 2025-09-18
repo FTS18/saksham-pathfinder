@@ -213,7 +213,7 @@ export const Footer = () => {
               {t.teamMembers}
             </p>
             <p className="text-sm text-muted-foreground">
-              © 2024 {t.brand}. {t.rights}
+              © 2025 {t.brand}. {t.rights}
             </p>
           </div>
         </div>

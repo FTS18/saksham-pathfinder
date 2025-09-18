@@ -5,8 +5,12 @@ import { Badge } from '../components/ui/badge';
 import { InternshipCard } from '../components/InternshipCard';
 import { FeedbackModal } from '../components/FeedbackModal';
 import { FeedbackAnalytics } from '../components/FeedbackAnalytics';
-import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X } from 'lucide-react';
+import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Heart } from 'lucide-react';
+import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { AdvancedFilters } from '../components/AdvancedFilters';
 import { SkillGapAnalysis } from '../components/SkillGapAnalysis';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../components/ui/tooltip';
@@ -14,6 +18,7 @@ import { Input } from '../components/ui/input';
 import { useInternships } from '../hooks/useInternships';
 import { VirtualizedList } from '../components/VirtualizedList';
 import { debounce } from '../utils/debounce';
+import { useToast } from '../hooks/use-toast';
 
 const translations = {
   en: {
@@ -189,21 +194,20 @@ const recommendInternships = (profile: any, allInternships: any[]) => {
 }
 
 
-const userProfile = {
-  name: 'Vansham Nigga',
-  studentId: '25034096',
-  email: 'priya.sharma@email.com',
-  phone: '+91 98765 43210'
-};
+
 
 export default function Dashboard() {
   const { language } = useTheme();
+  const { wishlist, removeFromWishlist } = useWishlist();
+  const { currentUser } = useAuth();
+  const { toast } = useToast();
   const t = translations[language];
   const [activeSection, setActiveSection] = useState('recommendations');
   const [showFeedback, setShowFeedback] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState<any[]>([]);
   const [userProfileData, setUserProfileData] = useState<any>(null);
+  const [dashboardProfile, setDashboardProfile] = useState<any>(null);
   const { allInternships, visibleInternships, loading, loadMore, hasMore } = useInternships({ pageSize: 20, initialLoad: 10 });
   const [filters, setFilters] = useState({
     salaryRange: [0, 100000] as [number, number],
@@ -212,9 +216,17 @@ export default function Dashboard() {
     sectors: [] as string[]
   });
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [editedProfile, setEditedProfile] = useState(userProfile);
+  const [editedProfile, setEditedProfile] = useState<any>({
+    skills: [],
+    education: [],
+    experience: []
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
+    if (currentUser) {
+      loadDashboardProfile();
+    }
     const storedProfile = localStorage.getItem('userProfile');
     if (storedProfile) {
         const profile = JSON.parse(storedProfile);
@@ -223,7 +235,46 @@ export default function Dashboard() {
         }
         setUserProfileData(profile);
     }
-  }, []);
+  }, [currentUser]);
+
+  const loadDashboardProfile = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const docRef = doc(db, 'profiles', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const profileData = docSnap.data();
+        setDashboardProfile(profileData);
+        setEditedProfile({
+          ...profileData,
+          skills: profileData.skills || [],
+          education: profileData.education || [],
+          experience: profileData.experience || []
+        });
+      } else {
+        // Initialize with current user data
+        const initialProfile = {
+          username: currentUser.displayName || '',
+          email: currentUser.email || '',
+          phone: '',
+          studentId: '',
+          photoURL: currentUser.photoURL || '',
+          location: '',
+          sector: '',
+          bio: '',
+          skills: [],
+          education: [],
+          experience: []
+        };
+        setDashboardProfile(initialProfile);
+        setEditedProfile(initialProfile);
+      }
+    } catch (error) {
+      console.error('Error loading dashboard profile:', error);
+    }
+  };
 
   useEffect(() => {
     if(userProfileData && allInternships.length > 0) {
@@ -295,15 +346,28 @@ export default function Dashboard() {
     return Array.from(sectors);
   }, [allInternships]);
 
-  const handleSaveProfile = () => {
-    // In a real app, this would save to backend
-    setIsEditingProfile(false);
-    // Update userProfile state if needed
+  const handleSaveProfile = async () => {
+    if (!currentUser) return;
+    
+    setSavingProfile(true);
+    try {
+      const docRef = doc(db, 'profiles', currentUser.uid);
+      await setDoc(docRef, editedProfile, { merge: true });
+      setDashboardProfile(editedProfile);
+      setIsEditingProfile(false);
+      toast({ title: 'Success', description: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({ title: 'Error', description: 'Failed to save profile', variant: 'destructive' });
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   const sidebarItems = [
     { id: 'profile', label: t.profile, icon: User, tooltip: 'View and edit your profile' },
     { id: 'recommendations', label: t.recommendations, icon: Target, tooltip: 'AI-powered internship matches' },
+    { id: 'wishlist', label: 'Wishlist', icon: MessageSquare, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View feedback analytics' },
@@ -312,8 +376,23 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case 'profile':
+        const profileUrl = `${window.location.origin}/profile/${currentUser?.uid}`;
+        const shareProfile = () => {
+          if (navigator.share) {
+            navigator.share({
+              title: `${dashboardProfile?.username || 'User'}'s Profile`,
+              text: 'Check out my profile on Saksham AI',
+              url: profileUrl
+            });
+          } else {
+            navigator.clipboard.writeText(profileUrl);
+            toast({ title: 'Link Copied', description: 'Profile link copied to clipboard' });
+          }
+        };
+        
         return (
           <div className="space-y-6">
+            {/* Profile Header */}
             <Card className="glass-card">
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -321,91 +400,156 @@ export default function Dashboard() {
                     <User className="w-5 h-5 text-primary" />
                     {t.profile}
                   </CardTitle>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setIsEditingProfile(!isEditingProfile)}
-                      >
-                        {isEditingProfile ? <X className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {isEditingProfile ? 'Cancel editing' : 'Edit profile'}
-                    </TooltipContent>
-                  </Tooltip>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={shareProfile}>
+                      Share Profile
+                    </Button>
+                    <Button asChild size="sm">
+                      <a href="/profile">Edit Profile</a>
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Name</label>
-                    {isEditingProfile ? (
-                      <Input
-                        value={editedProfile.name}
-                        onChange={(e) => setEditedProfile({...editedProfile, name: e.target.value})}
-                        className="mt-1"
-                      />
+              <CardContent className="space-y-6">
+                {/* Basic Info */}
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    {dashboardProfile?.photoURL ? (
+                      <img src={dashboardProfile.photoURL} alt="Profile" className="w-16 h-16 rounded-full object-cover" />
                     ) : (
-                      <p className="text-foreground font-medium">{userProfile.name}</p>
+                      <span className="text-2xl font-bold text-primary">
+                        {(dashboardProfile?.username || currentUser?.displayName || 'U').charAt(0).toUpperCase()}
+                      </span>
                     )}
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">{t.studentId}</label>
-                    {isEditingProfile ? (
-                      <Input
-                        value={editedProfile.studentId}
-                        onChange={(e) => setEditedProfile({...editedProfile, studentId: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="text-foreground font-medium">{userProfile.studentId}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">{t.email}</label>
-                    {isEditingProfile ? (
-                      <Input
-                        type="email"
-                        value={editedProfile.email}
-                        onChange={(e) => setEditedProfile({...editedProfile, email: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="text-foreground font-medium">{userProfile.email}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">{t.phone}</label>
-                    {isEditingProfile ? (
-                      <Input
-                        type="tel"
-                        value={editedProfile.phone}
-                        onChange={(e) => setEditedProfile({...editedProfile, phone: e.target.value})}
-                        className="mt-1"
-                      />
-                    ) : (
-                      <p className="text-foreground font-medium">{userProfile.phone}</p>
-                    )}
+                    <h3 className="text-xl font-bold">{dashboardProfile?.username || currentUser?.displayName || 'Not set'}</h3>
+                    <p className="text-muted-foreground">{dashboardProfile?.studentId || 'Student ID not set'}</p>
+                    <p className="text-sm text-muted-foreground">{dashboardProfile?.email || currentUser?.email}</p>
                   </div>
                 </div>
-                {isEditingProfile && (
-                  <div className="flex gap-2 pt-4">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button onClick={handleSaveProfile} className="flex items-center gap-2">
-                          <Save className="w-4 h-4" />
-                          Save Changes
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Save your profile changes
-                      </TooltipContent>
-                    </Tooltip>
-                    <Button variant="outline" onClick={() => setIsEditingProfile(false)}>
-                      Cancel
-                    </Button>
+
+                {/* Contact & Location */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Phone</label>
+                    <p className="text-foreground">{dashboardProfile?.phone || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Location</label>
+                    <p className="text-foreground">
+                      {dashboardProfile?.location ? 
+                        `${dashboardProfile.location.city}, ${dashboardProfile.location.state}, ${dashboardProfile.location.country}` : 
+                        'Not set'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Desired Location</label>
+                    <p className="text-foreground">
+                      {dashboardProfile?.desiredLocation ? 
+                        `${dashboardProfile.desiredLocation.city}, ${dashboardProfile.desiredLocation.state}, ${dashboardProfile.desiredLocation.country}` : 
+                        'Not set'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Min Stipend</label>
+                    <p className="text-foreground">
+                      {dashboardProfile?.minStipend ? `₹${dashboardProfile.minStipend}/month` : 'Not set'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bio */}
+                {dashboardProfile?.bio && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Bio</label>
+                    <p className="text-foreground mt-1">{dashboardProfile.bio}</p>
+                  </div>
+                )}
+
+                {/* Skills */}
+                {dashboardProfile?.skills?.length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Skills</label>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {dashboardProfile.skills.map((skill: string, index: number) => (
+                        <Badge key={index} variant="secondary">{skill}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sectors */}
+                {dashboardProfile?.sectors?.length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Interested Sectors</label>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {dashboardProfile.sectors.map((sector: string, index: number) => (
+                        <Badge key={index} variant="outline">{sector}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Education */}
+                {dashboardProfile?.education?.length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Education</label>
+                    <div className="space-y-2 mt-2">
+                      {dashboardProfile.education.map((edu: any, index: number) => (
+                        <div key={index} className="p-3 border rounded-lg">
+                          <div className="font-medium">{edu.degree}</div>
+                          <div className="text-sm text-muted-foreground">{edu.institution} • {edu.year}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Experience */}
+                {dashboardProfile?.experience?.length > 0 && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Experience</label>
+                    <div className="space-y-2 mt-2">
+                      {dashboardProfile.experience.map((exp: any, index: number) => (
+                        <div key={index} className="p-3 border rounded-lg">
+                          <div className="font-medium">{exp.title}</div>
+                          <div className="text-sm text-muted-foreground">{exp.company} • {exp.duration}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Social Links */}
+                {dashboardProfile?.socialLinks && Object.values(dashboardProfile.socialLinks).some((link: any) => link) && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Social Links</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                      {Object.entries(dashboardProfile.socialLinks).map(([platform, url]: [string, any]) => 
+                        url && (
+                          <a key={platform} href={url} target="_blank" rel="noopener noreferrer" 
+                             className="text-sm text-primary hover:underline capitalize">
+                            {platform}
+                          </a>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Resume */}
+                {dashboardProfile?.resumeURL && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Resume</label>
+                    <div className="mt-2">
+                      <a href={dashboardProfile.resumeURL} target="_blank" rel="noopener noreferrer" 
+                         className="text-primary hover:underline">
+                        View Resume
+                      </a>
+                    </div>
                   </div>
                 )}
               </CardContent>
@@ -483,6 +627,37 @@ export default function Dashboard() {
           </div>
         );
 
+      case 'wishlist':
+        const wishlistInternships = allInternships.filter(internship => wishlist.includes(internship.id));
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-racing font-bold text-foreground">
+              Wishlist ({wishlist.length})
+            </h2>
+            
+            {wishlistInternships.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {wishlistInternships.map((internship) => (
+                  <InternshipCard
+                    key={internship.id}
+                    internship={internship}
+                    userProfile={userProfileData}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Card className="glass-card">
+                <CardContent className="p-8 text-center">
+                  <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    No internships in your wishlist yet. Start adding some!
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        );
+        
       case 'applications':
         const applications = JSON.parse(localStorage.getItem('applications') || '[]');
         return (
@@ -567,19 +742,7 @@ export default function Dashboard() {
                   {t.dashboard}
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {t.welcome}, 
-                  {userProfile.name === 'Vansham Nigga' ? (
-                    <a 
-                      href="https://ananay.netlify.app" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:text-primary transition-colors cursor-pointer"
-                    >
-                      {userProfile.name.split(' ')[0]}
-                    </a>
-                  ) : (
-                    userProfile.name.split(' ')[0]
-                  )}
+                  {t.welcome}, {dashboardProfile?.username?.split(' ')[0] || currentUser?.displayName?.split(' ')[0] || 'User'}
                 </p>
               </CardHeader>
               <CardContent className="space-y-2">
