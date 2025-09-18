@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Features from "./pages/Features";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -43,6 +44,7 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                     <Route path="/about" element={<About />} />
+                    <Route path="/features" element={<Features />} />
 
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />

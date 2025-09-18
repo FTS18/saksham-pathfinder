@@ -206,14 +206,8 @@ export const Footer = () => {
         {/* Team Credits */}
         <div className="mt-8 pt-8 border-t border-border">
           <div className="text-center">
-            <h4 className="font-poppins font-semibold text-foreground mb-2">
-              {t.builtBy}
-            </h4>
-            <p className="text-muted-foreground mb-4">
-              {t.teamMembers}
-            </p>
             <p className="text-sm text-muted-foreground">
-              © 2025 {t.brand}. {t.rights}
+              © 2025 Saksham AI. {t.rights}
             </p>
           </div>
         </div>

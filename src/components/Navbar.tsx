@@ -42,6 +42,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
+    { href: '/features', label: 'Features' },
     { href: '/about', label: t.about },
   ];
   
@@ -49,6 +50,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
+    { href: '/features', label: 'Features' },
     { href: '/profile', label: 'Profile' },
     { href: '/wishlist', label: t.wishlist },
     { href: '/about', label: t.about },

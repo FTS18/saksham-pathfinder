@@ -1,54 +1,57 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
-import { TranslationService, Language } from '@/lib/translation';
+import { useTheme } from '@/contexts/ThemeContext';
+import { initGoogleTranslate } from '@/lib/googleTranslate';
 
 const languages = [
-  { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
-  { code: 'hi' as Language, name: 'हिंदी', flag: '🇮🇳' },
-  { code: 'pa' as Language, name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
-  { code: 'ur' as Language, name: 'اردو', flag: '🇵🇰' }
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' }
 ];
 
-interface LanguageSelectorProps {
-  onLanguageChange?: (language: Language) => void;
-}
+export const LanguageSelector = () => {
+  const { language, setLanguage } = useTheme();
 
-export const LanguageSelector = ({ onLanguageChange }: LanguageSelectorProps) => {
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('en');
-  const translationService = TranslationService.getInstance();
+  useEffect(() => {
+    initGoogleTranslate();
+  }, []);
 
-  const handleLanguageChange = (language: Language) => {
-    setCurrentLanguage(language);
-    translationService.setLanguage(language);
-    onLanguageChange?.(language);
+  const handleLanguageChange = (newLanguage: 'en' | 'hi') => {
+    setLanguage(newLanguage);
     
-    // Trigger page refresh to apply translations
-    window.location.reload();
+    // Trigger Google Translate
+    const googleTranslateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (googleTranslateElement) {
+      googleTranslateElement.value = newLanguage === 'hi' ? 'hi' : 'en';
+      googleTranslateElement.dispatchEvent(new Event('change'));
+    }
   };
 
-  const currentLang = languages.find(lang => lang.code === currentLanguage);
+  const currentLang = languages.find(lang => lang.code === language);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Globe className="w-4 h-4" />
-          {currentLang?.flag} {currentLang?.name}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className="gap-2"
-          >
-            {language.flag} {language.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <div id="google_translate_element" className="hidden"></div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-2">
+            <Globe className="w-4 h-4" />
+            {currentLang?.flag} {currentLang?.name}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {languages.map((lang) => (
+            <DropdownMenuItem
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code as 'en' | 'hi')}
+              className="gap-2"
+            >
+              {lang.flag} {lang.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };

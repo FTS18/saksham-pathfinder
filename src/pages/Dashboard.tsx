@@ -5,7 +5,7 @@ import { Badge } from '../components/ui/badge';
 import { InternshipCard } from '../components/InternshipCard';
 import { FeedbackModal } from '../components/FeedbackModal';
 import { FeedbackAnalytics } from '../components/FeedbackAnalytics';
-import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Heart } from 'lucide-react';
+import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Heart, Settings as SettingsIcon } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,6 +19,7 @@ import { useInternships } from '../hooks/useInternships';
 import { VirtualizedList } from '../components/VirtualizedList';
 import { debounce } from '../utils/debounce';
 import { useToast } from '../hooks/use-toast';
+import { Settings } from '../components/Settings';
 
 const translations = {
   en: {
@@ -188,9 +189,9 @@ const recommendInternships = (profile: any, allInternships: any[]) => {
 
     // Filter out low scores and return top recommendations
     return scores
-        .filter(item => item.score > 10) // Only show meaningful matches
+        .filter(item => item.score > 5) // Show more matches with lower threshold
         .sort((a, b) => b.score - a.score)
-        .slice(0, 5);
+        .slice(0, 20); // Show more recommendations
 }
 
 
@@ -277,10 +278,21 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if(userProfileData && allInternships.length > 0) {
-        const recs = recommendInternships(userProfileData, allInternships);
-        setRecommendations(recs);
-        setFilteredRecommendations(recs);
+    if(allInternships.length > 0) {
+        if(userProfileData) {
+            const recs = recommendInternships(userProfileData, allInternships);
+            setRecommendations(recs);
+            setFilteredRecommendations(recs);
+        } else {
+            // Show all internships if no user profile
+            const allRecs = allInternships.map(internship => ({
+                internship,
+                score: 50,
+                explanation: 'Complete your profile to get personalized recommendations'
+            }));
+            setRecommendations(allRecs);
+            setFilteredRecommendations(allRecs);
+        }
     }
   }, [userProfileData, allInternships]);
 
@@ -365,16 +377,27 @@ export default function Dashboard() {
   };
 
   const sidebarItems = [
-    { id: 'profile', label: t.profile, icon: User, tooltip: 'View and edit your profile' },
     { id: 'recommendations', label: t.recommendations, icon: Target, tooltip: 'AI-powered internship matches' },
-    { id: 'wishlist', label: 'Wishlist', icon: MessageSquare, tooltip: 'Your saved internships' },
+    { id: 'wishlist', label: 'Wishlist', icon: Heart, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View feedback analytics' },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon, tooltip: 'Profile and app settings' },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'settings':
+        return (
+          <Settings 
+            dashboardProfile={dashboardProfile} 
+            onProfileUpdate={(profile) => {
+              setDashboardProfile(profile);
+              loadDashboardProfile();
+            }}
+          />
+        );
+
       case 'profile':
         const profileUrl = `${window.location.origin}/profile/${currentUser?.uid}`;
         const shareProfile = () => {

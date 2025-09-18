@@ -15,8 +15,8 @@ export const VirtualizedList = memo(({
   containerHeight = 800 
 }: VirtualizedListProps) => {
   const visibleItems = useMemo(() => {
-    // Simple virtualization - show only first 6 items initially
-    return items.slice(0, 6);
+    // Simple virtualization - show first 12 items initially
+    return items.slice(0, 12);
   }, [items]);
 
   return (
