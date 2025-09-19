@@ -5,7 +5,7 @@ import { Badge } from '../components/ui/badge';
 import { InternshipCard } from '../components/InternshipCard';
 import { FeedbackModal } from '../components/FeedbackModal';
 import { FeedbackAnalytics } from '../components/FeedbackAnalytics';
-import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Heart, Settings as SettingsIcon } from 'lucide-react';
+import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Bookmark, Settings as SettingsIcon, Lightbulb, Bell } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -86,46 +86,75 @@ const getAllSkills = (internships: any[]) => {
 
 
 const score = (profile: any, internship: any, allSkills: string[]) => {
-    // Rule-based filtering first
-    let passes_rules = true;
+    // Parse internship stipend
+    const parseStipend = (stipend: string) => {
+        const match = stipend.match(/₹([\d,]+)/);
+        return match ? parseInt(match[1].replace(/,/g, '')) : 0;
+    };
     
-    // Education filter
+    const internshipStipend = parseStipend(internship.stipend || '₹0');
+    
+    // Sector matching (preferred but not mandatory)
+    const sector_tags = internship.sector_tags || [];
+    const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t));
+    
+    // Minimum stipend filter (only if user specified and internship is significantly below)
+    if (profile.minStipend && profile.minStipend > 0 && internshipStipend < (profile.minStipend * 0.7)) {
+        return { score: 0, explanation: 'Stipend significantly below your minimum requirement' };
+    }
+    
+    // Education filter (more lenient)
     const education_hierarchy: { [key: string]: number } = {
         "Class 12th": 1,
         "Diploma": 2,
         "Undergraduate": 3,
         "Postgraduate": 4
     };
-    const profile_edu_level = education_hierarchy[profile.education] || 0;
+    const profile_edu_level = education_hierarchy[profile.education] || 3; // Default to Undergraduate
     const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
     const education_match = preferred_edu_levels.length === 0 || preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level);
     
-    // Location filter
-    let location_match = true;
+    // Location scoring (if user specified preferred location)
+    let location_score = 0.5; // Default neutral score
     let distance = 0;
-    if (profile.location && internship.location && typeof internship.location === 'object') {
-        if (internship.location.city !== "Remote" && profile.location.toLowerCase() !== 'remote') {
-            // For demo, we'll use city name matching. In real app, use geocoding.
-            const profileCity = profile.location.toLowerCase();
-            const internshipCity = internship.location.city.toLowerCase();
-            if (profileCity !== internshipCity) {
-                // Simulate distance calculation
-                distance = Math.random() * 1000; // Random distance for demo
-                location_match = distance <= (profile.searchRadius || 50);
+    
+    if (profile.desiredLocation || profile.location) {
+        const userLocation = profile.desiredLocation || profile.location;
+        const userCity = (typeof userLocation === 'string' ? userLocation : userLocation.city || '').toLowerCase();
+        const internshipCity = (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase();
+        
+        if (internshipCity === 'remote') {
+            location_score = 1; // Remote is always good
+        } else if (internshipCity === userCity) {
+            location_score = 1; // Perfect match
+        } else if (userCity) {
+            // City proximity mapping
+            const cityProximity: { [key: string]: string[] } = {
+                'delhi': ['gurgaon', 'noida', 'faridabad', 'ghaziabad', 'new delhi'],
+                'mumbai': ['pune', 'navi mumbai', 'thane'],
+                'bangalore': ['bengaluru', 'mysore'],
+                'bengaluru': ['bangalore', 'mysore'],
+                'hyderabad': ['secunderabad'],
+                'chennai': ['coimbatore'],
+                'pune': ['mumbai', 'navi mumbai'],
+                'gurgaon': ['delhi', 'noida', 'faridabad'],
+                'noida': ['delhi', 'gurgaon', 'ghaziabad']
+            };
+            
+            const nearbyCities = cityProximity[userCity] || [];
+            if (nearbyCities.includes(internshipCity)) {
+                location_score = 0.8; // Nearby city
+            } else {
+                location_score = 0.2; // Different region
             }
         }
     }
     
-    if (!education_match || !location_match) {
-        return { score: 0, explanation: 'Filtered out by rules' };
-    }
-    
-    // ML-Light Vector-based scoring
+    // Skills scoring
     const userSkillVector = createSkillVector(profile.skills || [], allSkills);
     const internshipSkillVector = createSkillVector(internship.required_skills || [], allSkills);
     const skill_similarity = calculateCosineSimilarity(userSkillVector, internshipSkillVector);
     
-    // Enhanced skill scoring with exact matches
     const required = internship.required_skills || [];
     const matched_skills = required.filter((s: string) => 
         (profile.skills || []).some((userSkill: string) => 
@@ -133,41 +162,44 @@ const score = (profile: any, internship: any, allSkills: string[]) => {
         )
     );
     const exact_skill_score = required.length > 0 ? matched_skills.length / required.length : 0.5;
-    
-    // Combine vector similarity with exact matches
     const skill_score = (skill_similarity * 0.4) + (exact_skill_score * 0.6);
     
-    // Sector/Interest matching
-    const sector_tags = internship.sector_tags || [];
-    const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t));
-    const sector_score = sector_tags.length > 0 ? sector_matched.length / sector_tags.length : 0.5;
+    // Sector score (already filtered, so give bonus for matches)
+    const sector_score = sector_matched.length > 0 ? 1 : 0.5;
     
-    // Location proximity scoring
-    let location_score = 1;
-    if (distance > 0) {
-        const maxDistance = profile.searchRadius || 50;
-        location_score = Math.max(0, 1 - (distance / (maxDistance * 2)));
-    }
+    // Stipend score (bonus for higher stipends)
+    const stipend_score = profile.minStipend ? 
+        Math.min(1, internshipStipend / (profile.minStipend * 2)) : 
+        Math.min(1, internshipStipend / 30000); // Default benchmark
     
-    // Weighted final score
-    const total = (skill_score * 0.5 +
-                  sector_score * 0.25 +
-                  location_score * 0.25);
+    // Weighted scoring with base score to ensure minimum 65+
+    const base_score = 0.65; // Minimum 65% base score
+    const bonus_score = (skill_score * 0.25 +
+                        location_score * 0.15 +
+                        stipend_score * 0.1 +
+                        sector_score * 0.15 +
+                        (education_match ? 0.1 : 0)) * 0.35; // 35% bonus possible
     
-    // Generate explanation (only skills and location)
+    const total = base_score + bonus_score;
+    
+    // Generate explanation
     let explanation = '';
     if (matched_skills.length > 0) {
-        explanation += `Matches your skills: ${matched_skills.join(', ')}. `;
+        explanation += `Matches ${matched_skills.length}/${required.length} required skills. `;
     }
-    if (distance === 0 || internship.location?.city === "Remote") {
-        explanation += 'Perfect location match. ';
-    } else if (location_score > 0.7) {
-        explanation += 'Good location proximity. ';
+    if (sector_matched.length > 0) {
+        explanation += `Aligns with ${sector_matched.join(', ')} sector. `;
+    }
+    if (location_score >= 0.8) {
+        explanation += 'Great location match. ';
+    }
+    if (internshipStipend >= (profile.minStipend || 0)) {
+        explanation += `Good stipend (₹${internshipStipend.toLocaleString()}). `;
     }
     
     return { 
         score: Math.round(total * 100), 
-        explanation: explanation.trim() || 'Good overall match based on your profile'
+        explanation: explanation.trim() || 'Good match based on your profile'
     };
 }
 
@@ -187,11 +219,11 @@ const recommendInternships = (profile: any, allInternships: any[]) => {
         };
     });
 
-    // Filter out low scores and return top recommendations
+    // Filter and sort: show matches with score 65+
     return scores
-        .filter(item => item.score > 5) // Show more matches with lower threshold
+        .filter(item => item.score >= 65) // Only show quality matches (65+)
         .sort((a, b) => b.score - a.score)
-        .slice(0, 20); // Show more recommendations
+        .slice(0, 50); // Show more recommendations
 }
 
 
@@ -238,6 +270,18 @@ export default function Dashboard() {
     }
   }, [currentUser]);
 
+  // Auto-fill localStorage profile from Firebase if empty
+  useEffect(() => {
+    if (dashboardProfile && !localStorage.getItem('userProfile')) {
+      const profileForLocalStorage = {
+        ...dashboardProfile,
+        searchRadius: 50
+      };
+      localStorage.setItem('userProfile', JSON.stringify(profileForLocalStorage));
+      setUserProfileData(profileForLocalStorage);
+    }
+  }, [dashboardProfile]);
+
   const loadDashboardProfile = async () => {
     if (!currentUser) return;
     
@@ -255,6 +299,16 @@ export default function Dashboard() {
           experience: profileData.experience || []
         });
       } else {
+        // Generate referral code
+        const generateReferralCode = () => {
+          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+          let result = '';
+          for (let i = 0; i < 5; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+        };
+
         // Initialize with current user data
         const initialProfile = {
           username: currentUser.displayName || '',
@@ -267,7 +321,8 @@ export default function Dashboard() {
           bio: '',
           skills: [],
           education: [],
-          experience: []
+          experience: [],
+          referralCode: generateReferralCode()
         };
         setDashboardProfile(initialProfile);
         setEditedProfile(initialProfile);
@@ -282,12 +337,19 @@ export default function Dashboard() {
         if(userProfileData) {
             const recs = recommendInternships(userProfileData, allInternships);
             setRecommendations(recs);
+            // Reset filters when new recommendations are loaded
+            setFilters({
+              salaryRange: [0, 100000],
+              companySize: 'Any',
+              workMode: [],
+              sectors: []
+            });
             setFilteredRecommendations(recs);
         } else {
-            // Show all internships if no user profile
+            // Show all internships with base scoring if no user profile
             const allRecs = allInternships.map(internship => ({
                 internship,
-                score: 50,
+                score: 65, // Base score for all internships
                 explanation: 'Complete your profile to get personalized recommendations'
             }));
             setRecommendations(allRecs);
@@ -308,14 +370,30 @@ export default function Dashboard() {
   }, [filters, recommendations, debouncedApplyFilters]);
 
   const applyFilters = useCallback(() => {
+    if (recommendations.length === 0) return;
+    
     let filtered = [...recommendations];
 
+    // Only apply filters if they are not in default state
+    const hasActiveFilters = 
+      filters.salaryRange[0] > 0 || 
+      filters.salaryRange[1] < 100000 || 
+      filters.workMode.length > 0 || 
+      filters.sectors.length > 0;
+
+    if (!hasActiveFilters) {
+      setFilteredRecommendations(filtered);
+      return;
+    }
+
     // Salary filter
-    filtered = filtered.filter(rec => {
-      const stipend = rec.internship.stipend;
-      const amount = parseInt(stipend.replace(/[^\d]/g, '')) || 0;
-      return amount >= filters.salaryRange[0] && amount <= filters.salaryRange[1];
-    });
+    if (filters.salaryRange[0] > 0 || filters.salaryRange[1] < 100000) {
+      filtered = filtered.filter(rec => {
+        const stipend = rec.internship.stipend;
+        const amount = parseInt(stipend.replace(/[^\d]/g, '')) || 0;
+        return amount >= filters.salaryRange[0] && amount <= filters.salaryRange[1];
+      });
+    }
 
     // Work mode filter
     if (filters.workMode.length > 0) {
@@ -348,6 +426,8 @@ export default function Dashboard() {
       workMode: [],
       sectors: []
     });
+    // Reset to original recommendations
+    setFilteredRecommendations(recommendations);
   };
 
   const availableSectors = useMemo(() => {
@@ -378,7 +458,7 @@ export default function Dashboard() {
 
   const sidebarItems = [
     { id: 'recommendations', label: t.recommendations, icon: Target, tooltip: 'AI-powered internship matches' },
-    { id: 'wishlist', label: 'Wishlist', icon: Heart, tooltip: 'Your saved internships' },
+    { id: 'wishlist', label: 'Saved', icon: Bookmark, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View feedback analytics' },
@@ -399,7 +479,9 @@ export default function Dashboard() {
         );
 
       case 'profile':
-        const profileUrl = `${window.location.origin}/profile/${currentUser?.uid}`;
+        const profileUrl = dashboardProfile?.username ? 
+          `${window.location.origin}/u/${dashboardProfile.username}` : 
+          `${window.location.origin}/profile/${currentUser?.uid}`;
         const shareProfile = () => {
           if (navigator.share) {
             navigator.share({
@@ -620,17 +702,29 @@ export default function Dashboard() {
                 <Card className="glass-card">
                     <CardContent className="p-8 text-center">
                         <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground">
-                            No internships match your current filters. Try adjusting them.
+                        <p className="text-muted-foreground mb-4">
+                            No internships match your current filters.
                         </p>
+                        <Button onClick={clearFilters} variant="outline">
+                            Clear Filters
+                        </Button>
+                    </CardContent>
+                </Card>
+            ) : loading ? (
+                <Card className="glass-card">
+                    <CardContent className="p-8 text-center">
+                        <p className="text-muted-foreground">Loading internships...</p>
                     </CardContent>
                 </Card>
             ) : (
                 <Card className="glass-card">
                     <CardContent className="p-8 text-center">
-                        <p className="text-muted-foreground">
-                            Please complete your profile on the home page to get internship recommendations.
+                        <p className="text-muted-foreground mb-4">
+                            No internships available at the moment.
                         </p>
+                        <Button asChild variant="outline">
+                          <a href="/">Complete Profile for Better Matches</a>
+                        </Button>
                     </CardContent>
                 </Card>
             )}
@@ -652,29 +746,109 @@ export default function Dashboard() {
 
       case 'wishlist':
         const wishlistInternships = allInternships.filter(internship => wishlist.includes(internship.id));
+        
+        // Generate similar internships based on saved ones
+        const getSimilarInternships = () => {
+          if (wishlistInternships.length === 0) return [];
+          
+          const savedSkills = new Set<string>();
+          const savedSectors = new Set<string>();
+          const savedCompanies = new Set<string>();
+          
+          wishlistInternships.forEach(internship => {
+            internship.required_skills?.forEach(skill => savedSkills.add(skill.toLowerCase()));
+            internship.sector_tags?.forEach(sector => savedSectors.add(sector));
+            savedCompanies.add(internship.company.toLowerCase());
+          });
+          
+          return allInternships
+            .filter(internship => !wishlist.includes(internship.id)) // Exclude already saved
+            .map(internship => {
+              let similarity = 0;
+              
+              // Skill similarity (40% weight)
+              const skillMatches = internship.required_skills?.filter(skill => 
+                savedSkills.has(skill.toLowerCase())
+              ).length || 0;
+              const skillSimilarity = skillMatches / Math.max(internship.required_skills?.length || 1, 1);
+              similarity += skillSimilarity * 0.4;
+              
+              // Sector similarity (30% weight)
+              const sectorMatches = internship.sector_tags?.filter(sector => 
+                savedSectors.has(sector)
+              ).length || 0;
+              const sectorSimilarity = sectorMatches / Math.max(internship.sector_tags?.length || 1, 1);
+              similarity += sectorSimilarity * 0.3;
+              
+              // Company similarity (20% weight)
+              const companySimilarity = savedCompanies.has(internship.company.toLowerCase()) ? 1 : 0;
+              similarity += companySimilarity * 0.2;
+              
+              // Location similarity (10% weight)
+              const savedLocations = wishlistInternships.map(i => 
+                typeof i.location === 'string' ? i.location.toLowerCase() : i.location.city?.toLowerCase()
+              );
+              const currentLocation = typeof internship.location === 'string' ? 
+                internship.location.toLowerCase() : internship.location.city?.toLowerCase();
+              const locationSimilarity = savedLocations.includes(currentLocation) ? 1 : 0;
+              similarity += locationSimilarity * 0.1;
+              
+              return { internship, similarity };
+            })
+            .filter(item => item.similarity > 0.2) // Only show reasonably similar ones
+            .sort((a, b) => b.similarity - a.similarity)
+            .slice(0, 6)
+            .map(item => item.internship);
+        };
+        
+        const similarInternships = getSimilarInternships();
+        
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-racing font-bold text-foreground">
-              Wishlist ({wishlist.length})
+              Saved Internships ({wishlist.length})
             </h2>
             
             {wishlistInternships.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {wishlistInternships.map((internship) => (
-                  <InternshipCard
-                    key={internship.id}
-                    internship={internship}
-                    userProfile={userProfileData}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {wishlistInternships.map((internship) => (
+                    <InternshipCard
+                      key={internship.id}
+                      internship={internship}
+                      userProfile={userProfileData}
+                    />
+                  ))}
+                </div>
+                
+                {similarInternships.length > 0 && (
+                  <div className="mt-8">
+                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <Lightbulb className="w-5 h-5 text-primary" />
+                      Similar Internships You Might Like
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {similarInternships.map((internship) => (
+                        <InternshipCard
+                          key={internship.id}
+                          internship={internship}
+                          userProfile={userProfileData}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             ) : (
               <Card className="glass-card">
                 <CardContent className="p-8 text-center">
-                  <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
-                    No internships in your wishlist yet. Start adding some!
+                  <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    No saved internships yet. Start bookmarking internships you're interested in!
                   </p>
+                  <Button asChild variant="outline">
+                    <a href="/">Browse Internships</a>
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -767,6 +941,15 @@ export default function Dashboard() {
                 <p className="text-sm text-muted-foreground">
                   {t.welcome}, {dashboardProfile?.username?.split(' ')[0] || currentUser?.displayName?.split(' ')[0] || 'User'}
                 </p>
+                {dashboardProfile?.points && (
+                  <div className="flex items-center gap-2 mt-2 p-2 bg-primary/10 rounded-lg">
+                    <span className="text-lg">⭐</span>
+                    <div>
+                      <p className="text-sm font-semibold text-primary">{dashboardProfile.points} Points</p>
+                      <p className="text-xs text-muted-foreground">Earned rewards</p>
+                    </div>
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="space-y-2">
                 {sidebarItems.map((item) => (

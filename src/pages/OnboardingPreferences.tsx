@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Plus } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { X, Plus, Gift } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { t } from '@/lib/translation';
@@ -16,6 +18,7 @@ const OnboardingPreferences = () => {
   const { toast } = useToast();
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [referralCode, setReferralCode] = useState('');
   const [saving, setSaving] = useState(false);
 
   const sectorsList = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'E-commerce', 'Manufacturing', 'Media', 'Gaming', 'Consulting'];
@@ -59,6 +62,10 @@ const OnboardingPreferences = () => {
     );
   };
 
+  const generateReferralCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
+
   const handleSave = async () => {
     if (!currentUser) return;
     
@@ -69,20 +76,59 @@ const OnboardingPreferences = () => {
 
     setSaving(true);
     try {
+      const userReferralCode = generateReferralCode();
+      let referrerPoints = 0;
+
+      // Handle referral code if provided
+      if (referralCode.trim()) {
+        try {
+          // Find referrer by code
+          const referrerQuery = await getDoc(doc(db, 'referrals', referralCode.trim().toUpperCase()));
+          if (referrerQuery.exists()) {
+            const referrerUid = referrerQuery.data().userId;
+            // Award points to referrer
+            await updateDoc(doc(db, 'profiles', referrerUid), {
+              points: increment(100)
+            });
+            referrerPoints = 100;
+            toast({ title: 'Referral Success!', description: 'Your referrer earned 100 points!' });
+          }
+        } catch (error) {
+          console.log('Referral processing failed, continuing with onboarding');
+        }
+      }
+
       const preferences = {
         sectors: selectedSectors,
         skills: selectedSkills,
         onboardingCompleted: true,
+        referralCode: userReferralCode,
+        points: 50, // Welcome bonus
+        badges: ['Welcome'],
         updatedAt: new Date().toISOString()
       };
 
+      // Save user profile
       const docRef = doc(db, 'profiles', currentUser.uid);
       await setDoc(docRef, preferences, { merge: true });
       
-      toast({ title: 'Success', description: 'Preferences saved successfully!' });
+      // Create referral code mapping
+      await setDoc(doc(db, 'referrals', userReferralCode), {
+        userId: currentUser.uid,
+        createdAt: new Date().toISOString()
+      });
+      
+      toast({ 
+        title: 'Welcome to Saksham AI!', 
+        description: `Preferences saved! Your referral code: ${userReferralCode}` 
+      });
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving preferences:', error);
+      // Fallback for offline mode
+      localStorage.setItem('onboardingCompleted', 'true');
+      localStorage.setItem('userSectors', JSON.stringify(selectedSectors));
+      localStorage.setItem('userSkills', JSON.stringify(selectedSkills));
       toast({ title: 'Info', description: 'Preferences saved locally. Will sync when database is available.' });
       navigate('/dashboard');
     } finally {
@@ -134,6 +180,30 @@ const OnboardingPreferences = () => {
             )}
           </div>
 
+          {/* Referral Code */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+                <Gift className="w-5 h-5 text-primary" />
+                Referral Code (Optional)
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Have a referral code? Enter it to give your friend 100 points!
+              </p>
+            </div>
+            
+            <div>
+              <Label htmlFor="referralCode">Referral Code</Label>
+              <Input
+                id="referralCode"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                placeholder="Enter referral code"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
           {/* Skills */}
           <div className="space-y-4">
             <div>
@@ -182,7 +252,10 @@ const OnboardingPreferences = () => {
           <div className="flex gap-4 pt-4">
             <Button 
               variant="outline" 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {
+                localStorage.setItem('onboardingCompleted', 'true');
+                navigate('/dashboard');
+              }}
               className="flex-1"
             >
               Skip for now

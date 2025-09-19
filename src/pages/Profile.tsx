@@ -427,9 +427,31 @@ const Profile = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">{t('profile.title')}</h1>
-          <Button onClick={saveProfile} disabled={saving}>
-            {saving ? 'Saving...' : t('profile.save')}
-          </Button>
+          <div className="flex gap-2">
+            {profile.username && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const profileUrl = `${window.location.origin}/u/${profile.username}`;
+                  if (navigator.share) {
+                    navigator.share({
+                      title: `${profile.username}'s Profile`,
+                      text: 'Check out my profile on Saksham AI',
+                      url: profileUrl
+                    });
+                  } else {
+                    navigator.clipboard.writeText(profileUrl);
+                    toast({ title: 'Link Copied', description: 'Profile link copied to clipboard' });
+                  }
+                }}
+              >
+                Share Profile
+              </Button>
+            )}
+            <Button onClick={saveProfile} disabled={saving}>
+              {saving ? 'Saving...' : t('profile.save')}
+            </Button>
+          </div>
         </div>
 
         {/* Basic Info */}
@@ -473,7 +495,9 @@ const Profile = () => {
                 {usernameChecking && <p className="text-xs text-muted-foreground mt-1">Checking...</p>}
                 {usernameAvailable === true && <p className="text-xs text-green-600 mt-1">✓ Available</p>}
                 {usernameAvailable === false && <p className="text-xs text-red-600 mt-1">✗ Already taken</p>}
-                <p className="text-xs text-muted-foreground mt-1">Your profile will be at: /u/{profile.username}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Your profile will be at: {window.location.origin}/u/{profile.username || 'username'}
+                </p>
               </div>
               <div>
                 <Label htmlFor="studentId">Student ID</Label>

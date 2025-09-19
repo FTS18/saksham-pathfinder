@@ -32,41 +32,51 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
   
   
   const score = (profile: any, internship: any) => {
-      // Skill score with match explanation
+      // Parse internship stipend
+      const parseStipend = (stipend: string) => {
+          const match = stipend.match(/₹([\d,]+)/);
+          return match ? parseInt(match[1].replace(/,/g, '')) : 0;
+      };
+      
+      const internshipStipend = parseStipend(internship.stipend || '₹0');
+      
+      // Sector matching (preferred but not mandatory)
+      const sector_tags = internship.sector_tags || [];
+      const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t));
+      
+      // Minimum stipend filter (only if user specified and internship is significantly below)
+      if (profile.minStipend && profile.minStipend > 0 && internshipStipend < (profile.minStipend * 0.7)) {
+          return { score: 0, explanation: 'Stipend significantly below your minimum requirement', aiTags: [] };
+      }
+      
+      // Education filter (more lenient)
+      const education_hierarchy: { [key: string]: number } = {
+          "Class 12th": 1,
+          "Diploma": 2,
+          "Undergraduate": 3,
+          "Postgraduate": 4
+      };
+      const profile_edu_level = education_hierarchy[profile.education] || 3; // Default to Undergraduate
+      const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
+      const education_match = preferred_edu_levels.length === 0 || preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level);
+      
+      // Skills scoring
       const required = internship.required_skills || [];
-      let skill_score = 0;
       const matched_skills = required.filter((s: string) => 
           (profile.skills || []).some((userSkill: string) => 
               userSkill.toLowerCase() === s.toLowerCase()
           )
       );
+      const skill_score = required.length > 0 ? matched_skills.length / required.length : 0.5;
       
-      if (required.length === 0) {
-          skill_score = 0.5;
-      } else {
-          skill_score = matched_skills.length / required.length;
-      }
-  
-      // Sector score
-      const sector_tags = internship.sector_tags || [];
-      const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t));
-      const sector_score = sector_tags.length > 0 ? sector_matched.length / sector_tags.length : 0.5;
-  
-      // Education score
-      const education_hierarchy: { [key: string]: number } = {
-          "Undergraduate": 1,
-          "Postgraduate": 2
-      };
-      const profile_edu_level = education_hierarchy[profile.education] || 0;
-      const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
-      const education_score = preferred_edu_levels.length === 0 || preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level) ? 1 : 0;
-  
-      // Enhanced location score with city proximity - Higher weight for location
-      let location_score = 0;
+      // Location scoring (if user specified preferred location)
+      let location_score = 0.5; // Default neutral score
       let location_reason = '';
-      if(profile.location && internship.location) {
-          const userCity = (typeof profile.location === 'string' ? profile.location : profile.location.city || '').toLowerCase();
-          const internshipCity = (typeof internship.location === 'string' ? internship.location : internship.location.city).toLowerCase();
+      
+      if (profile.desiredLocation || profile.location) {
+          const userLocation = profile.desiredLocation || profile.location;
+          const userCity = (typeof userLocation === 'string' ? userLocation : userLocation.city || '').toLowerCase();
+          const internshipCity = (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase();
           
           if (internshipCity === 'remote') {
               location_score = 1;
@@ -74,59 +84,68 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
           } else if (internshipCity === userCity) {
               location_score = 1;
               location_reason = 'Same city match';
-          } else {
-              // City proximity scoring with better mapping
-              const cityProximity = {
+          } else if (userCity) {
+              // City proximity mapping
+              const cityProximity: { [key: string]: string[] } = {
                   'delhi': ['gurgaon', 'noida', 'faridabad', 'ghaziabad', 'new delhi'],
-                  'mumbai': ['pune', 'navi mumbai', 'thane', 'mumbai'],
-                  'bangalore': ['bengaluru', 'mysore', 'mangalore'],
-                  'bengaluru': ['bangalore', 'mysore', 'mangalore'],
-                  'hyderabad': ['secunderabad', 'warangal'],
-                  'chennai': ['coimbatore', 'madurai'],
-                  'pune': ['mumbai', 'nashik', 'navi mumbai'],
-                  'gurgaon': ['delhi', 'noida', 'faridabad', 'new delhi'],
-                  'noida': ['delhi', 'gurgaon', 'ghaziabad', 'new delhi'],
-                  'new delhi': ['delhi', 'gurgaon', 'noida', 'faridabad']
+                  'mumbai': ['pune', 'navi mumbai', 'thane'],
+                  'bangalore': ['bengaluru', 'mysore'],
+                  'bengaluru': ['bangalore', 'mysore'],
+                  'hyderabad': ['secunderabad'],
+                  'chennai': ['coimbatore'],
+                  'pune': ['mumbai', 'navi mumbai'],
+                  'gurgaon': ['delhi', 'noida', 'faridabad'],
+                  'noida': ['delhi', 'gurgaon', 'ghaziabad']
               };
               
               const nearbyCities = cityProximity[userCity] || [];
               if (nearbyCities.includes(internshipCity)) {
-                  location_score = 0.9; // Higher score for nearby cities
+                  location_score = 0.8;
                   location_reason = 'Nearby city';
               } else {
-                  const searchRadius = profile.searchRadius || 50;
-                  location_score = searchRadius > 200 ? 0.3 : 0.05; // Lower penalty for distant cities
+                  location_score = 0.2;
                   location_reason = 'Different region';
               }
           }
       }
-  
-      // Increased location weight from 0.2 to 0.35 for better location prioritization
-      const total = (skill_score * 0.35 +
-               sector_score * 0.25 +
-               location_score * 0.35 +
-               education_score * 0.05);
-               
-      // Generate explanation with AI tags
-      let explanation = '';
-      let aiTags = [];
       
+      // Sector score (already filtered, so give bonus for matches)
+      const sector_score = sector_matched.length > 0 ? 1 : 0.5;
+      
+      // Stipend score (bonus for higher stipends)
+      const stipend_score = profile.minStipend ? 
+          Math.min(1, internshipStipend / (profile.minStipend * 2)) : 
+          Math.min(1, internshipStipend / 30000); // Default benchmark
+      
+      // Weighted scoring with base score to ensure minimum 65+
+      const base_score = 0.65; // Minimum 65% base score
+      const bonus_score = (skill_score * 0.25 +
+                          location_score * 0.15 +
+                          stipend_score * 0.1 +
+                          sector_score * 0.15 +
+                          (education_match ? 0.1 : 0)) * 0.35; // 35% bonus possible
+      
+      const total = base_score + bonus_score;
+      
+      // Generate explanation
+      let explanation = '';
       if (matched_skills.length > 0) {
-          explanation += `Matches your skills: ${matched_skills.join(', ')}. `;
+          explanation += `Matches ${matched_skills.length}/${required.length} required skills. `;
       }
       if (sector_matched.length > 0) {
-          explanation += `Aligns with your interest in ${sector_matched.join(', ')}. `;
+          explanation += `Aligns with ${sector_matched.join(', ')} sector. `;
       }
       if (location_score >= 0.8) {
           explanation += `${location_reason}. `;
       }
+      if (internshipStipend >= (profile.minStipend || 0)) {
+          explanation += `Good stipend (₹${internshipStipend.toLocaleString()}). `;
+      }
       
-      // AI tags will be added later for top 3 only
-  
       return { 
           score: Math.round(total * 100),
-          explanation: explanation.trim() || 'Good overall match based on your profile',
-          aiTags: aiTags
+          explanation: explanation.trim() || 'Good match based on your profile',
+          aiTags: []
       };
   }
   
@@ -143,7 +162,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       });
   
       const sorted = scores
-          .filter(item => item.score > 10)
+          .filter(item => item.score >= 65) // Only show quality matches (65+)
           .sort((a, b) => b.score - a.score);
       
       // Add AI Recommended tag only to top 3

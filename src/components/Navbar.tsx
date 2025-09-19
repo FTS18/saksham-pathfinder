@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { LanguageSelector } from './LanguageSelector';
+import { NotificationSystem } from './NotificationSystem';
 
 const translations = {
   en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'Saksham AI', wishlist: 'Wishlist' },
@@ -42,6 +43,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
+    { href: '/ai-assistant', label: 'AI Assistant' },
     { href: '/features', label: 'Features' },
     { href: '/about', label: t.about },
   ];
@@ -50,6 +52,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
+    { href: '/ai-assistant', label: 'AI Assistant' },
     { href: '/features', label: 'Features' },
     { href: '/profile', label: 'Profile' },
     { href: '/wishlist', label: t.wishlist },
@@ -99,6 +102,7 @@ export const Navbar = () => {
 
           <div className="flex items-center space-x-1 sm:space-x-2">
              <div className="h-4 w-px bg-border mx-2 hidden md:block" />
+             <NotificationSystem />
              <div className="hidden sm:block">
                <LanguageSelector />
              </div>

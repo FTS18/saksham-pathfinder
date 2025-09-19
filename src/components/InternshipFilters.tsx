@@ -87,7 +87,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-3">
           {/* Sector */}
           <div className="relative">
             <select
@@ -98,21 +98,6 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               <option value="all">All Sectors</option>
               {sectors.map(sector => (
                 <option key={sector} value={sector}>{sector}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-          </div>
-
-          {/* Location */}
-          <div className="relative">
-            <select
-              value={filters.location}
-              onChange={(e) => updateFilter('location', e.target.value)}
-              className="w-full h-10 px-3 pr-10 py-2 text-sm bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="all">All Locations</option>
-              {locations.map(location => (
-                <option key={location} value={location}>{location}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />

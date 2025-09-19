@@ -74,7 +74,7 @@ const techStack = [
 const About = () => {
   return (
     <div className="min-h-screen bg-background pt-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-racing font-bold text-foreground mb-4">
             Saksham AI
@@ -247,10 +247,10 @@ const About = () => {
                       <div className="space-y-1 text-sm text-muted-foreground">
                         <p><strong>ID:</strong> {member.id}</p>
                         <p><strong>Branch:</strong> {member.branch}</p>
-                        <p><strong>Email:</strong> 
+                        <p className="break-all"><strong>Email:</strong> 
                           <a 
                             href={`mailto:${member.email}`}
-                            className="hover:text-primary transition-colors cursor-pointer ml-1"
+                            className="hover:text-primary transition-colors cursor-pointer ml-1 break-all"
                           >
                             {member.email}
                           </a>
