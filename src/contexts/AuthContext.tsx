@@ -62,10 +62,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkOnboardingStatus = async (user: User) => {
     try {
+      // Check localStorage first for immediate response
+      const localOnboarding = localStorage.getItem('onboardingCompleted');
+      if (localOnboarding === 'true') {
+        setNeedsOnboarding(false);
+        return;
+      }
+      
       const docRef = doc(db, 'profiles', user.uid);
       const docSnap = await getDoc(docRef);
       const data = docSnap.data();
-      setNeedsOnboarding(!data?.onboardingCompleted);
+      const completed = data?.onboardingCompleted || false;
+      
+      setNeedsOnboarding(!completed);
+      
+      // Update localStorage to match Firebase
+      if (completed) {
+        localStorage.setItem('onboardingCompleted', 'true');
+      }
     } catch (error) {
       console.error('Error checking onboarding status:', error);
       setNeedsOnboarding(true);
@@ -83,7 +97,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(false);
     });
 
-    return unsubscribe;
+    // Listen for onboarding completion
+    const handleOnboardingCompleted = () => {
+      setNeedsOnboarding(false);
+    };
+    
+    window.addEventListener('onboardingCompleted', handleOnboardingCompleted);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('onboardingCompleted', handleOnboardingCompleted);
+    };
   }, []);
 
   const value = {

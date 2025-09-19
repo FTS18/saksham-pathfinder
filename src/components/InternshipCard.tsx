@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Heart, ThumbsUp, ThumbsDown, Volume2 } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Bookmark, ThumbsUp, ThumbsDown, Volume2 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -69,9 +69,10 @@ interface InternshipCardProps {
   onPrev?: () => void;
   currentIndex?: number;
   totalCount?: number;
+  matchScore?: number;
 }
 
-export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount }: InternshipCardProps) => {
+export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore }: InternshipCardProps) => {
   const {
     id,
     title,
@@ -234,13 +235,19 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           🤖 AI Recommended
         </div>
       )}
+      {matchScore && matchScore >= 65 && (
+        <div className="absolute top-0 right-12 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-bl-lg z-10">
+          {matchScore}% Match
+        </div>
+      )}
        <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm"
+            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm hover:bg-primary/10"
             onClick={handleWishlistToggle}
+            title={isWishlisted(id) ? 'Remove from saved' : 'Save internship'}
         >
-            <Heart className={`w-5 h-5 transition-colors ${isWishlisted(id) ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
+            <Bookmark className={`w-4 h-4 transition-colors ${isWishlisted(id) ? 'fill-primary text-primary' : 'text-muted-foreground hover:text-primary'}`} />
         </Button>
       <CardContent className="padding-responsive flex flex-col flex-grow">
         <div className="flex items-start justify-between mb-4">
