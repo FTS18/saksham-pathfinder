@@ -23,6 +23,7 @@ const translations = {
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const { theme, language, setLanguage, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const { currentUser, logout } = useAuth();
@@ -32,12 +33,16 @@ export const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const heroHeight = window.innerHeight;
-      setScrolled(window.scrollY > heroHeight);
+      const isScrolled = window.scrollY > heroHeight;
+      if (isScrolled && !hasAnimated) {
+        setHasAnimated(true);
+      }
+      setScrolled(isScrolled);
     };
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [hasAnimated]);
   
   const handleLogout = async () => {
     try {
@@ -51,7 +56,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/features', label: 'Features' },
+    
     { href: '/about', label: t.about },
   ];
   
@@ -59,7 +64,7 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/features', label: 'Features' },
+    
     { href: '/profile', label: 'Profile' },
     { href: '/wishlist', label: t.wishlist },
     { href: '/about', label: t.about },
@@ -83,19 +88,19 @@ export const Navbar = () => {
               <span className="text-white font-bold text-sm">S</span>
             </div>
             <span className="font-racing font-bold text-xl">
-              <span className={`transition-all duration-700 ease-in-out transform ${
+              <span className={`${hasAnimated ? 'transition-all duration-500' : 'transition-all duration-700'} ease-in-out transform ${
                 scrolled 
-                  ? 'text-orange-500 animate-pulse' 
+                  ? 'text-orange-500' 
                   : 'text-foreground'
               }`}>Sak</span>
-              <span className={`transition-all duration-700 ease-in-out transform delay-100 ${
+              <span className={`${hasAnimated ? 'transition-all duration-500' : 'transition-all duration-700 delay-100'} ease-in-out transform ${
                 scrolled 
-                  ? 'text-white animate-pulse' 
+                  ? 'text-white' 
                   : 'text-foreground'
               }`}>sha</span>
-              <span className={`transition-all duration-700 ease-in-out transform delay-200 ${
+              <span className={`${hasAnimated ? 'transition-all duration-500' : 'transition-all duration-700 delay-200'} ease-in-out transform ${
                 scrolled 
-                  ? 'text-green-500 animate-pulse' 
+                  ? 'text-green-500' 
                   : 'text-foreground'
               }`}>m AI</span>
             </span>

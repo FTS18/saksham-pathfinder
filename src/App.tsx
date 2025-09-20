@@ -19,7 +19,7 @@ import { Footer } from "@/components/Footer";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
-import Features from "./pages/Features";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
@@ -47,7 +47,7 @@ const AppContent = () => {
                     <Route path="/" element={<Index />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/features" element={<Features />} />
+
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/wishlist" element={<Wishlist />} />

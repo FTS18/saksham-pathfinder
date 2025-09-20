@@ -6,7 +6,6 @@ export const Footer = () => {
     { href: '/', label: 'Home' },
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/about', label: 'About' },
-    { href: '/features', label: 'Features' },
   ];
 
   const supportLinks = [
@@ -95,6 +94,20 @@ export const Footer = () => {
                     <Icon className="w-5 h-5" />
                   </a>
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* PM Internship Contact Info */}
+        <div className="mt-8 pt-8 border-t border-border">
+          <div className="text-center space-y-4">
+            <div className="bg-primary/10 rounded-lg p-4 max-w-2xl mx-auto">
+              <h4 className="font-semibold text-foreground mb-2">PM Internship Scheme - Official Information</h4>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p><strong>Official Portal:</strong> <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">pminternship.mca.gov.in</a></p>
+                <p><strong>Contact:</strong> Email: <a href="mailto:pminternship@mca.gov.in" className="text-primary hover:underline">pminternship@mca.gov.in</a> | Call: <a href="tel:18001160900" className="text-primary hover:underline">1800 11 6090</a></p>
+                <p><strong>Application Fee:</strong> Free for all candidates</p>
               </div>
             </div>
           </div>
