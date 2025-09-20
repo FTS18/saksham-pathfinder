@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X, Plus, Gift } from 'lucide-react';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { X, Gift, ChevronDown, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { t } from '@/lib/translation';
+import { extractAllSectors, extractSkillsBySector } from '@/lib/dataExtractor';
+import { cn } from '@/lib/utils';
+
 
 const OnboardingPreferences = () => {
   const { currentUser } = useAuth();
@@ -20,21 +24,29 @@ const OnboardingPreferences = () => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [referralCode, setReferralCode] = useState('');
   const [saving, setSaving] = useState(false);
+  const [skillsOpen, setSkillsOpen] = useState(false);
 
-  const sectorsList = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'E-commerce', 'Manufacturing', 'Media', 'Gaming', 'Consulting'];
+  const [sectorsList, setSectorsList] = useState<string[]>([]);
+  const [skillsBySection, setSkillsBySection] = useState<Record<string, string[]>>({});
   
-  const skillsBySection: Record<string, string[]> = {
-    'Technology': ['JavaScript', 'Python', 'React', 'Node.js', 'Java', 'C++', 'HTML', 'CSS', 'SQL', 'AWS'],
-    'Healthcare': ['Medical Research', 'Clinical Trials', 'Healthcare IT', 'Biotechnology', 'Medical Writing'],
-    'Finance': ['Financial Analysis', 'Investment Banking', 'Risk Management', 'Accounting', 'Trading'],
-    'Education': ['Curriculum Development', 'Educational Technology', 'Teaching', 'E-learning'],
-    'Marketing': ['Digital Marketing', 'Content Marketing', 'Social Media Marketing', 'SEO', 'Analytics'],
-    'E-commerce': ['Digital Marketing', 'Customer Service', 'Supply Chain', 'Data Analysis'],
-    'Manufacturing': ['Quality Control', 'Process Improvement', 'Supply Chain', 'Project Management'],
-    'Media': ['Content Creation', 'Video Editing', 'Graphic Design', 'Social Media'],
-    'Gaming': ['Unity', 'Unreal Engine', 'C#', 'Game Design', '3D Modeling'],
-    'Consulting': ['Problem Solving', 'Data Analysis', 'Presentation Skills', 'Strategic Planning']
-  };
+  // Load real data from internships.json
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [sectors, skillsMap] = await Promise.all([
+          extractAllSectors(),
+          extractSkillsBySector()
+        ]);
+        setSectorsList(sectors);
+        setSkillsBySection(skillsMap);
+      } catch (error) {
+        console.error('Failed to load sectors/skills:', error);
+        // Fallback data
+        setSectorsList(['Technology', 'Finance', 'Healthcare', 'Marketing', 'Education']);
+      }
+    };
+    loadData();
+  }, []);
 
   const getAvailableSkills = () => {
     if (selectedSectors.length === 0) return [];
@@ -47,11 +59,21 @@ const OnboardingPreferences = () => {
   };
 
   const toggleSector = (sector: string) => {
-    setSelectedSectors(prev => 
-      prev.includes(sector) 
+    setSelectedSectors(prev => {
+      const newSectors = prev.includes(sector) 
         ? prev.filter(s => s !== sector)
-        : [...prev, sector]
-    );
+        : [...prev, sector];
+      
+      // If removing a sector, remove its skills too
+      if (prev.includes(sector)) {
+        const sectorSkills = skillsBySection[sector] || [];
+        setSelectedSkills(prevSkills => 
+          prevSkills.filter(skill => !sectorSkills.includes(skill))
+        );
+      }
+      
+      return newSectors;
+    });
   };
 
   const toggleSkill = (skill: string) => {
@@ -77,24 +99,34 @@ const OnboardingPreferences = () => {
     setSaving(true);
     try {
       const userReferralCode = generateReferralCode();
-      let referrerPoints = 0;
+      let referralProcessed = false;
 
       // Handle referral code if provided
       if (referralCode.trim()) {
         try {
-          // Find referrer by code
-          const referrerQuery = await getDoc(doc(db, 'referrals', referralCode.trim().toUpperCase()));
+          const referralCodeUpper = referralCode.trim().toUpperCase();
+          const referrerQuery = await getDoc(doc(db, 'referrals', referralCodeUpper));
+          
           if (referrerQuery.exists()) {
             const referrerUid = referrerQuery.data().userId;
-            // Award points to referrer
-            await updateDoc(doc(db, 'profiles', referrerUid), {
-              points: increment(100)
+            
+            // Check if referrer exists and award points
+            const referrerProfile = await getDoc(doc(db, 'profiles', referrerUid));
+            if (referrerProfile.exists()) {
+              await updateDoc(doc(db, 'profiles', referrerUid), {
+                points: increment(100)
+              });
+              referralProcessed = true;
+            }
+          } else {
+            toast({ 
+              title: 'Invalid Referral Code', 
+              description: 'The referral code you entered is not valid.',
+              variant: 'destructive'
             });
-            referrerPoints = 100;
-            toast({ title: 'Referral Success!', description: 'Your referrer earned 100 points!' });
           }
         } catch (error) {
-          console.log('Referral processing failed, continuing with onboarding');
+          console.error('Referral processing failed:', error);
         }
       }
 
@@ -103,8 +135,9 @@ const OnboardingPreferences = () => {
         skills: selectedSkills,
         onboardingCompleted: true,
         referralCode: userReferralCode,
-        points: 50, // Welcome bonus
+        points: 50,
         badges: ['Welcome'],
+        referralUsed: referralCode.trim() || null,
         updatedAt: new Date().toISOString()
       };
 
@@ -118,18 +151,33 @@ const OnboardingPreferences = () => {
         createdAt: new Date().toISOString()
       });
       
-      toast({ 
-        title: 'Welcome to Saksham AI!', 
-        description: `Preferences saved! Your referral code: ${userReferralCode}` 
-      });
-      navigate('/dashboard');
+      // Set onboarding completion in localStorage
+      localStorage.setItem('onboardingCompleted', 'true');
+      
+      if (referralProcessed) {
+        toast({ 
+          title: '🎉 Referral Success!', 
+          description: 'Your referrer earned 100 points! You earned 50 welcome points.',
+          duration: 5000
+        });
+      } else {
+        toast({ 
+          title: 'Welcome to Saksham AI!', 
+          description: `Setup complete! Your referral code: ${userReferralCode}`
+        });
+      }
+      
+      // Navigate after a short delay
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+      
     } catch (error) {
       console.error('Error saving preferences:', error);
-      // Fallback for offline mode
       localStorage.setItem('onboardingCompleted', 'true');
       localStorage.setItem('userSectors', JSON.stringify(selectedSectors));
       localStorage.setItem('userSkills', JSON.stringify(selectedSkills));
-      toast({ title: 'Info', description: 'Preferences saved locally. Will sync when database is available.' });
+      toast({ title: 'Setup Complete', description: 'Preferences saved locally.' });
       navigate('/dashboard');
     } finally {
       setSaving(false);
@@ -147,7 +195,7 @@ const OnboardingPreferences = () => {
           {/* Sectors */}
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium mb-2">{t('profile.sectors')}</h3>
+              <h3 className="text-lg font-medium mb-2">Sector Interests</h3>
               <p className="text-sm text-muted-foreground mb-4">Select the sectors you're interested in</p>
             </div>
             
@@ -207,30 +255,56 @@ const OnboardingPreferences = () => {
           {/* Skills */}
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium mb-2">{t('profile.skills')}</h3>
+              <h3 className="text-lg font-medium mb-2">Skills</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 {selectedSectors.length === 0 
-                  ? t('profile.selectSectorsFirst')
-                  : 'Select your relevant skills'
+                  ? 'Please select your sector interests first'
+                  : 'Search and select your relevant skills'
                 }
               </p>
             </div>
 
             {selectedSectors.length > 0 && (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {getAvailableSkills().map(skill => (
+                <Popover open={skillsOpen} onOpenChange={setSkillsOpen}>
+                  <PopoverTrigger asChild>
                     <Button
-                      key={skill}
-                      variant={selectedSkills.includes(skill) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleSkill(skill)}
-                      className="justify-start text-xs"
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={skillsOpen}
+                      className="w-full justify-between"
                     >
-                      {skill}
+                      {selectedSkills.length > 0
+                        ? `${selectedSkills.length} skills selected`
+                        : "Search skills..."}
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
-                  ))}
-                </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput placeholder="Search skills..." />
+                      <CommandEmpty>No skills found.</CommandEmpty>
+                      <CommandGroup className="h-48 overflow-y-auto">
+                        {getAvailableSkills().map((skill) => (
+                          <CommandItem
+                            key={skill}
+                            onSelect={() => {
+                              toggleSkill(skill);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                selectedSkills.includes(skill) ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {skill}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
 
                 {selectedSkills.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-4">

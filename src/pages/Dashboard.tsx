@@ -3,9 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { InternshipCard } from '../components/InternshipCard';
-import { FeedbackModal } from '../components/FeedbackModal';
-import { FeedbackAnalytics } from '../components/FeedbackAnalytics';
-import { User, Target, FileText, MessageSquare, BarChart3, TrendingUp, Filter, Edit3, Save, X, Bookmark, Settings as SettingsIcon, Lightbulb, Bell } from 'lucide-react';
+
+import { User, Target, FileText, BarChart3, TrendingUp, Filter, Edit3, Save, X, Bookmark, Settings as SettingsIcon, Lightbulb, Bell } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,7 +31,7 @@ const translations = {
     email: 'Email',
     phone: 'Phone',
     viewAll: 'View All',
-    feedback: 'Give Feedback'
+
   },
   hi: {
     dashboard: 'डैशबोर्ड',
@@ -44,7 +43,7 @@ const translations = {
     email: 'ईमेल',
     phone: 'फोन',
     viewAll: 'सभी देखें',
-    feedback: 'फीडबैक दें'
+
   }
 };
 
@@ -235,8 +234,8 @@ export default function Dashboard() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
   const t = translations[language];
-  const [activeSection, setActiveSection] = useState('recommendations');
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [activeSection, setActiveSection] = useState('wishlist');
+
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState<any[]>([]);
   const [userProfileData, setUserProfileData] = useState<any>(null);
@@ -457,11 +456,10 @@ export default function Dashboard() {
   };
 
   const sidebarItems = [
-    { id: 'recommendations', label: t.recommendations, icon: Target, tooltip: 'AI-powered internship matches' },
     { id: 'wishlist', label: 'Saved', icon: Bookmark, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View feedback analytics' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View analytics' },
     { id: 'settings', label: 'Settings', icon: SettingsIcon, tooltip: 'Profile and app settings' },
   ];
 
@@ -662,87 +660,7 @@ export default function Dashboard() {
           </div>
         );
 
-      case 'recommendations':
-        return (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-              <h2 className="text-2xl font-racing font-bold text-foreground">
-                {t.recommendations}
-              </h2>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowFeedback(true)}
-                    className="flex items-center gap-2"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    {t.feedback}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  Share feedback to improve recommendations
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            
-            <AdvancedFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              onClearFilters={clearFilters}
-              availableSectors={availableSectors}
-            />
-            
-            {filteredRecommendations.length > 0 ? (
-                <VirtualizedList
-                  items={filteredRecommendations}
-                  userProfile={userProfileData}
-                />
-            ) : recommendations.length > 0 ? (
-                <Card className="glass-card">
-                    <CardContent className="p-8 text-center">
-                        <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground mb-4">
-                            No internships match your current filters.
-                        </p>
-                        <Button onClick={clearFilters} variant="outline">
-                            Clear Filters
-                        </Button>
-                    </CardContent>
-                </Card>
-            ) : loading ? (
-                <Card className="glass-card">
-                    <CardContent className="p-8 text-center">
-                        <p className="text-muted-foreground">Loading internships...</p>
-                    </CardContent>
-                </Card>
-            ) : (
-                <Card className="glass-card">
-                    <CardContent className="p-8 text-center">
-                        <p className="text-muted-foreground mb-4">
-                            No internships available at the moment.
-                        </p>
-                        <Button asChild variant="outline">
-                          <a href="/">Complete Profile for Better Matches</a>
-                        </Button>
-                    </CardContent>
-                </Card>
-            )}
-            
-            {hasMore && (
-              <div className="text-center">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  onClick={loadMore}
-                  disabled={loading}
-                >
-                  {loading ? 'Loading...' : 'Load More'}
-                </Button>
-              </div>
-            )}
-          </div>
-        );
+
 
       case 'wishlist':
         const wishlistInternships = allInternships.filter(internship => wishlist.includes(internship.id));
@@ -980,12 +898,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Feedback Modal */}
-      <FeedbackModal
-        isOpen={showFeedback}
-        onClose={() => setShowFeedback(false)}
-        context="dashboard_recommendations"
-      />
+
     </div>
   );
 }

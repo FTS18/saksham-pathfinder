@@ -32,7 +32,7 @@ export const useInternshipFilters = (internships: Internship[]) => {
     workMode: 'all',
     education: 'all',
     minStipend: 'all',
-    sortBy: 'recent'
+    sortBy: 'ai-recommended'
   });
 
   const filteredAndSortedInternships = useMemo(() => {
@@ -89,6 +89,7 @@ export const useInternshipFilters = (internships: Internship[]) => {
     // Sort
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
+        case 'ai-recommended':
         case 'recent':
           return new Date(b.posted_date || '').getTime() - new Date(a.posted_date || '').getTime();
         case 'stipend-high':
@@ -170,6 +171,8 @@ export const useInternshipFilters = (internships: Internship[]) => {
     // Sort
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
+        case 'ai-recommended':
+          return b.score - a.score; // AI score for recommendations
         case 'recent':
           return new Date(b.internship.posted_date || '').getTime() - new Date(a.internship.posted_date || '').getTime();
         case 'stipend-high':

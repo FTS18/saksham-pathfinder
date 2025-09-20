@@ -13,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 import { Slider } from './ui/slider';
 
 import { CurrencyInput } from './CurrencyInput';
-import { t } from '@/lib/translation';
+
 
 
 
@@ -72,27 +72,7 @@ export interface ProfileData {
 }
 
 const educationLevels = ["Undergraduate", "Postgraduate"];
-const skillsBySector = {
-  "Technology": ["Python", "JavaScript", "React", "HTML", "CSS", "Java", "C++", "Data Structures", "Algorithms", "SQL", "AWS", "Linux", "Android", "Node.js", "TypeScript", "Docker", "Kubernetes"],
-  "Finance": ["Excel", "Financial Modeling", "Valuation", "Statistics", "Python", "SQL", "Public Speaking", "Risk Management", "Investment Analysis", "Accounting"],
-  "Healthcare": ["Python", "Statistics", "Machine Learning", "SQL", "Excel", "Medical Research", "Clinical Trials", "Healthcare IT", "Biotechnology"],
-  "Education": ["Curriculum Development", "Educational Technology", "Teaching", "Training", "E-learning", "Academic Research", "Learning Management Systems"],
-  "Marketing": ["Digital Marketing", "Content Marketing", "Social Media Marketing", "SEO", "SEM", "Email Marketing", "Brand Management", "Market Research", "Analytics"],
-  "E-commerce": ["JavaScript", "React", "HTML", "CSS", "Python", "SQL", "Excel", "Public Speaking", "Digital Marketing", "Customer Service"],
-  "Manufacturing": ["Quality Control", "Process Improvement", "Supply Chain", "Lean Manufacturing", "Six Sigma", "AutoCAD", "Project Management"],
-  "Media": ["Content Creation", "Video Editing", "Graphic Design", "Social Media", "Photography", "Writing", "Adobe Creative Suite"],
-  "Gaming": ["Unity", "Unreal Engine", "C#", "C++", "Game Design", "3D Modeling", "Animation", "JavaScript"],
-  "Consulting": ["Problem Solving", "Data Analysis", "Presentation Skills", "Excel", "PowerPoint", "Project Management", "Strategic Planning"]
-};
-
-const getAllSkills = () => {
-  const allSkills = new Set();
-  Object.values(skillsBySector).forEach(skills => {
-    skills.forEach(skill => allSkills.add(skill));
-  });
-  return Array.from(allSkills).sort();
-};
-const sectors = ["Technology", "Finance", "Healthcare", "Education", "Marketing", "E-commerce", "Manufacturing", "Media", "Gaming", "Consulting"];
+import { extractAllSectors, extractSkillsBySector } from '@/lib/dataExtractor';
 
 interface ProfileFormProps {
     initialData?: ProfileData;
@@ -101,9 +81,9 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: ProfileFormProps) => {
-  const { language } = useTheme();
   const { location: detectedLocation } = useLocation();
-  const t = translations[language];
+  const [sectors, setSectors] = useState<string[]>([]);
+  const [skillsBySector, setSkillsBySector] = useState<Record<string, string[]>>({});
 
   const [formData, setFormData] = useState<ProfileData>(initialData || {
     education: '',
@@ -114,6 +94,23 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
     minStipend: 0
   });
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Load real data from internships.json
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [sectorsData, skillsData] = await Promise.all([
+          extractAllSectors(),
+          extractSkillsBySector()
+        ]);
+        setSectors(sectorsData);
+        setSkillsBySector(skillsData);
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      }
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     if(initialData) {
@@ -180,17 +177,17 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             { showTitle && 
                 <CardHeader className="text-center padding-responsive">
                     <CardTitle className="text-3xl font-racing font-bold text-foreground">
-                    {t.title}
+                    Complete Your Profile
                     </CardTitle>
                     <p className="text-muted-foreground mt-2 text-sm">
-                    {t.subtitle}
+                    Help us understand your background to provide better recommendations
                     </p>
                 </CardHeader>
             }
         
         <CardContent className="padding-responsive space-responsive">
            <div className="space-y-2">
-            <Label className="text-sm font-medium">{t.profileStrength}</Label>
+            <Label className="text-sm font-medium">Profile Strength</Label>
             <Progress 
               value={profileStrength} 
               className="w-full" 
@@ -204,19 +201,19 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
              <div className="space-y-2">
               <Label htmlFor="education" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-primary" />
-                {t.education}
+                Education
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">{t.educationTooltip}</p>
+                    <p className="max-w-xs">We ask for your education to match you with internships that fit your academic level!</p>
                   </TooltipContent>
                 </Tooltip>
               </Label>
               <Select onValueChange={(value) => setFormData(p => ({...p, education: value}))} value={formData.education}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={t.educationPlaceholder} />
+                  <SelectValue placeholder="e.g., Computer Science, BTech" />
                 </SelectTrigger>
                 <SelectContent>
                   {educationLevels.map((level) => (
@@ -231,13 +228,13 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             <div className="space-y-2">
                <Label htmlFor="interests" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Building className="w-4 h-4 text-primary" />
-                {t.interests}
+                Sector Interests
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">{t.interestsTooltip}</p>
+                    <p className="max-w-xs">Tell us your interests so we can find internships in fields you're passionate about!</p>
                   </TooltipContent>
                 </Tooltip>
               </Label>
@@ -259,7 +256,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal">
-                    {formData.interests.length > 0 ? formData.interests.join(', ') : t.interestsPlaceholder}
+                    {formData.interests.length > 0 ? formData.interests.join(', ') : 'Select your interests'}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -276,13 +273,13 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             <div className="space-y-2">
                <Label htmlFor="skills" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Lightbulb className="w-4 h-4 text-primary" />
-                {t.skills}
+                Skills
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">{t.skillsTooltip}</p>
+                    <p className="max-w-xs">We ask for your skills to find internships that match what you're good at!</p>
                   </TooltipContent>
                 </Tooltip>
               </Label>
@@ -319,7 +316,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                       ? 'Select sector interests first' 
                       : formData.skills.length > 0 
                         ? formData.skills.join(', ') 
-                        : t.skillsPlaceholder
+                        : 'Select your skills'
                     }
                   </Button>
                 </PopoverTrigger>
@@ -340,13 +337,13 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             <div className="space-y-2">
               <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
-                {t.location} *
+                Preferred Location *
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">{t.locationTooltip}</p>
+                    <p className="max-w-xs">We use your location to find nearby internships and save your travel time!</p>
                   </TooltipContent>
                 </Tooltip>
               </Label>
@@ -355,7 +352,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                 type="text"
                 value={formData.location}
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                placeholder={t.locationPlaceholder}
+                placeholder="e.g., Mumbai, Delhi, Remote"
                 required
               />
             </div>
@@ -373,13 +370,13 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-foreground flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-primary" />
-                  {t.searchRadius}: {formData.searchRadius} km
+                  Search Radius (km): {formData.searchRadius} km
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">{t.searchRadiusTooltip}</p>
+                      <p className="max-w-xs">How far are you willing to travel for an internship?</p>
                     </TooltipContent>
                   </Tooltip>
                 </Label>
@@ -398,7 +395,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             className="w-full bg-primary hover:bg-primary-dark text-white py-2.5 sm:py-3 text-base sm:text-lg font-semibold rounded-lg shadow-clean hover-lift"
             size="lg"
           >
-            {t.submit}
+            Get AI Recommendations
           </Button>
           </form>
         </CardContent>

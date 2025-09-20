@@ -20,15 +20,11 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Features from "./pages/Features";
-import AIAssistant from "./pages/AIAssistant";
-
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import Wishlist from "./pages/Wishlist";
 import Profile from "./pages/Profile";
-import Demo from "./pages/Demo";
-import UserProfile from "./pages/UserProfile";
 import PublicProfile from "./pages/PublicProfile";
 import OnboardingPreferences from "./pages/OnboardingPreferences";
 import OnboardingSteps from "./pages/OnboardingSteps";
@@ -49,20 +45,17 @@ const AppContent = () => {
           <main>
                     <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/features" element={<Features />} />
-                    <Route path="/ai-assistant" element={<AIAssistant />} />
-
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                    <Route path="/onboarding" element={<ProtectedRoute><OnboardingSteps /></ProtectedRoute>} />
-                    <Route path="/onboarding-old" element={<ProtectedRoute><OnboardingPreferences /></ProtectedRoute>} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/onboarding" element={<OnboardingSteps />} />
+                    <Route path="/onboarding-old" element={<OnboardingPreferences />} />
                     <Route path="/u/:username" element={<PublicProfile />} />
                     <Route path="/live-jobs" element={<LiveJobs />} />
-                    <Route path="/demo" element={<Demo />} />
                     <Route path="*" element={<NotFound />} />
                     </Routes>
           </main>

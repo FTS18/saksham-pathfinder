@@ -13,14 +13,14 @@ import { db } from '../lib/firebase';
 import { useToast } from '../hooks/use-toast';
 
 const themes = [
-  { id: 'light', name: 'Light', colors: 'bg-white text-black', isDark: false },
-  { id: 'dark', name: 'Dark', colors: 'bg-gray-900 text-white', isDark: true },
-  { id: 'blue', name: 'Ocean Blue', colors: 'bg-blue-900 text-blue-100', isDark: true },
-  { id: 'green', name: 'Forest Green', colors: 'bg-green-900 text-green-100', isDark: true },
-  { id: 'purple', name: 'Royal Purple', colors: 'bg-purple-900 text-purple-100', isDark: true },
-  { id: 'orange', name: 'Sunset Orange', colors: 'bg-orange-900 text-orange-100', isDark: true },
-  { id: 'teal', name: 'Teal Breeze', colors: 'bg-teal-900 text-teal-100', isDark: true },
-  { id: 'rose', name: 'Rose Gold', colors: 'bg-rose-900 text-rose-100', isDark: true }
+  { id: 'light', lightName: 'Light Mode', darkName: 'Light Mode', lightColor: 'bg-white', darkColor: 'bg-white' },
+  { id: 'dark', lightName: 'Dark Mode', darkName: 'Dark Mode', lightColor: 'bg-gray-900', darkColor: 'bg-gray-900' },
+  { id: 'blue', lightName: 'Sky Blue', darkName: 'Indigo', lightColor: 'bg-sky-400', darkColor: 'bg-indigo-600' },
+  { id: 'green', lightName: 'Light Green', darkName: 'Dark Green', lightColor: 'bg-green-400', darkColor: 'bg-green-700' },
+  { id: 'red', lightName: 'Rose', darkName: 'Crimson', lightColor: 'bg-rose-400', darkColor: 'bg-red-700' },
+  { id: 'orange', lightName: 'Orange', darkName: 'Burnt Orange', lightColor: 'bg-orange-400', darkColor: 'bg-orange-700' },
+  { id: 'yellow', lightName: 'Yellow', darkName: 'Amber', lightColor: 'bg-yellow-400', darkColor: 'bg-amber-600' },
+  { id: 'monochrome', lightName: 'Pure White', darkName: 'Pure Black', lightColor: 'bg-white', darkColor: 'bg-black' }
 ];
 
 const languages = [
@@ -36,7 +36,7 @@ interface SettingsProps {
 }
 
 export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) => {
-  const { theme, setTheme, language, setLanguage } = useTheme();
+  const { theme, setTheme, language, setLanguage, getThemeName } = useTheme();
   const { currentUser } = useAuth();
   const { toast } = useToast();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -224,23 +224,25 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {themes.map((themeOption) => (
               <button
                 key={themeOption.id}
                 onClick={() => setTheme(themeOption.id)}
-                className={`p-3 rounded-lg border-2 transition-all ${
+                className={`p-4 rounded-lg border-2 transition-all ${
                   theme === themeOption.id 
                     ? 'border-primary ring-2 ring-primary/20' 
                     : 'border-border hover:border-primary/50'
-                } ${
-                  themeOption.isDark ? 'bg-black/20 backdrop-blur-sm' : 'bg-white/20 backdrop-blur-sm'
-                }`}
+                } bg-card`}
               >
-                <div className={`w-full h-8 rounded mb-2 ${themeOption.colors}`}></div>
-                <p className={`text-sm font-medium ${
-                  themeOption.isDark ? 'text-white' : 'text-black'
-                }`}>{themeOption.name}</p>
+                <div className="flex gap-2 mb-3">
+                  <div className={`flex-1 h-8 rounded ${themeOption.lightColor}`}></div>
+                  <div className={`flex-1 h-8 rounded ${themeOption.darkColor}`}></div>
+                </div>
+                <div className="text-center space-y-1">
+                  <p className="text-xs font-medium text-foreground">{themeOption.lightName}</p>
+                  <p className="text-xs text-muted-foreground">{themeOption.darkName}</p>
+                </div>
               </button>
             ))}
           </div>

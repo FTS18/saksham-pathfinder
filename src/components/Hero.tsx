@@ -41,8 +41,8 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
 
   return (
     <>
-    <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-20">
-      <div className="absolute inset-0 hero-gradient" />
+    <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-20 bg-background">
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background" />
       
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full animate-float blur-xl" />

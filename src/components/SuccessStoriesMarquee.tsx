@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 const successStories = [
   "🎉 Rahul from Delhi got placed at Google with ₹1.2L/month stipend!",
   "🚀 Priya from Mumbai secured Microsoft internship through our AI recommendations!",
@@ -14,24 +12,14 @@ const successStories = [
 ];
 
 export const SuccessStoriesMarquee = () => {
-  const [currentStory, setCurrentStory] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStory((prev) => (prev + 1) % successStories.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 py-4 overflow-hidden">
-      <div className="animate-pulse">
-        <div className="whitespace-nowrap animate-marquee">
-          <span className="text-sm font-medium text-primary px-8">
-            {successStories[currentStory]}
+      <div className="whitespace-nowrap animate-marquee">
+        {successStories.map((story, index) => (
+          <span key={index} className="text-sm font-medium text-primary px-8">
+            {story}
           </span>
-        </div>
+        ))}
       </div>
     </div>
   );

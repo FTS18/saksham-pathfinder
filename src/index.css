@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Racing+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +13,7 @@
 }
 
 .animate-marquee {
-  animation: marquee 15s linear infinite;
+  animation: marquee 60s linear infinite;
 }
 
 /* Saksham AI Design System - Minimalistic Black & Blue */
@@ -237,7 +237,15 @@
   }
   
   .font-racing {
-    font-family: 'Racing Sans One', system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 700;
+  }
+  
+  .font-racing[lang="hi"],
+  [lang="hi"] .font-racing,
+  .hindi .font-racing {
+    font-family: 'Rajdhani', system-ui, sans-serif;
+    font-weight: 700;
   }
   
   /* Responsive Text Sizes */
@@ -331,6 +339,10 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Hide Google Translate branding and style it */
@@ -554,4 +566,52 @@ body {
   --sidebar-accent-foreground: 340 40% 98%;
   --sidebar-border: 340 28% 17%;
   --sidebar-ring: 346 77% 49%;
+}
+
+/* Enhanced Google Translate styling and hiding */
+.goog-te-gadget > span > a {
+  display: none !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  pointer-events: none !important;
+}
+
+.goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-ftab {
+  display: none !important;
+}
+
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+/* Ensure translated content maintains proper styling */
+font.notranslate {
+  font-family: inherit !important;
+}
+
+/* Language-specific font switching */
+body.en {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+}
+
+body.hi, body.pa, body.ur, body.bn, body.ta, body.te, body.ml, body.kn, body.gu, body.mr {
+  font-family: 'Rajdhani', system-ui, sans-serif;
+}
+
+/* Fix for Google Translate affecting page layout */
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+.skiptranslate {
+  display: none !important;
 }

@@ -10,34 +10,7 @@ import { InternshipDetailsModal } from './InternshipDetailsModal';
 import { useState } from 'react';
 
 
-const translations = {
-  en: {
-    apply: 'Apply Now',
-    eligibility: 'Eligibility',
-    location: 'Location',
-    company: 'Company',
-    stipend: 'Stipend',
-    sectors: 'Sectors',
-    requiredSkills: 'Skills Required',
-    whyGoodMatch: 'Why this is a good match',
-    listenDescription: 'Listen to description',
-    helpful: 'Helpful?',
-    viewDetails: 'View Details'
-  },
-  hi: {
-    apply: 'अभी आवेदन करें',
-    eligibility: 'योग्यता',
-    location: 'स्थान',
-    company: 'कंपनी',
-    stipend: 'वजीफा',
-    sectors: 'क्षेत्र',
-    requiredSkills: 'आवश्यक कौशल',
-    whyGoodMatch: 'यह क्यों अच्छा मैच है',
-    listenDescription: 'विवरण सुनें',
-    helpful: 'क्या यह सहायक है?',
-    viewDetails: 'विवरण देखें'
-  }
-};
+
 
 interface Internship {
   id: string;
@@ -94,10 +67,8 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
     featured = false,
   } = internship;
 
-  const { language } = useTheme();
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
   const { isSupported: audioSupported, speak, isSpeaking } = useAudioSupport();
-  const t = translations[language];
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -129,7 +100,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   const handleListen = () => {
     const text = `${role} at ${company}. Location: ${locationText}. Stipend: ${stipend}. ${eligibility_text}`;
-    speak(text, language);
+    speak(text, 'en');
   }
 
   const getCompanyTheme = (companyName: string) => {
@@ -263,14 +234,14 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             </div>
             
             <div>
-              <h3 className="font-poppins font-semibold text-lg text-foreground mb-1 text-left">
+              <h3 className="font-poppins font-semibold text-lg text-foreground mb-1 text-left notranslate">
                 {title}
               </h3>
               <p className="text-muted-foreground text-sm flex items-center mb-1">
                 <Building2 className="w-3 h-3 mr-1" />
-                {company}
+                <span className="notranslate">{company}</span>
               </p>
-              <p className="text-xs text-primary font-medium">
+              <p className="text-xs text-primary font-medium notranslate">
                 {role}
               </p>
             </div>
@@ -294,7 +265,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center text-muted-foreground">
               <IndianRupee className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-              <span className="font-semibold">{stipend}</span>
+              <span className="font-semibold notranslate">{stipend}</span>
             </div>
             {work_mode && (
               <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium">
@@ -307,11 +278,51 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             <div className="text-sm">
               <span className="font-medium text-muted-foreground mb-2 block">Skills:</span>
               <div className="flex flex-wrap gap-1">
-                {required_skills.slice(0, 4).map((skill, index) => (
-                  <span key={index} className="bg-secondary/50 px-2 py-1 rounded text-xs">
-                    {skill}
-                  </span>
-                ))}
+                {(() => {
+                  const normalizeSkill = (skill: string) => {
+                    const normalized = skill.toLowerCase().trim();
+                    if (normalized.includes('html')) return 'html';
+                    if (normalized.includes('css')) return 'css';
+                    if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
+                    if (normalized.includes('react')) return 'react';
+                    if (normalized.includes('node')) return 'nodejs';
+                    if (normalized.includes('python')) return 'python';
+                    if (normalized.includes('java') && !normalized.includes('script')) return 'java';
+                    return normalized;
+                  };
+                  
+                  const userSkills = userProfile?.skills || [];
+                  const matchedSkills = required_skills.filter(skill => 
+                    userSkills.some((userSkill: string) => 
+                      normalizeSkill(userSkill) === normalizeSkill(skill)
+                    )
+                  );
+                  const unmatchedSkills = required_skills.filter(skill => 
+                    !userSkills.some((userSkill: string) => 
+                      userSkill.toLowerCase() === skill.toLowerCase()
+                    )
+                  );
+                  
+                  // Show matched skills first, then unmatched, limit to 4 total
+                  const skillsToShow = [...matchedSkills, ...unmatchedSkills].slice(0, 4);
+                  
+                  return skillsToShow.map((skill, index) => {
+                    const isMatched = matchedSkills.includes(skill);
+                    return (
+                      <span 
+                        key={index} 
+                        className={`px-2 py-1 rounded text-xs notranslate ${
+                          isMatched 
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
+                            : 'bg-secondary/50'
+                        }`}
+                      >
+                        {skill}
+                        {isMatched && <span className="ml-1">✓</span>}
+                      </span>
+                    );
+                  });
+                })()}
               </div>
             </div>
           )}
@@ -321,12 +332,23 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
 
 
-        <div className="mt-4">
+        <div className="mt-4 space-y-2">
+          {matchScore && (
+            <div className="flex justify-center">
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                matchScore >= 80 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                matchScore >= 70 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300'
+              }`}>
+                {matchScore}/100 Match
+              </span>
+            </div>
+          )}
           <Button 
             onClick={() => setShowModal(true)}
             className="w-full bg-primary hover:bg-primary-dark text-white font-medium smooth-transition group"
           >
-            <span className="text-sm">{t.apply}</span>
+            <span className="text-sm">Apply Now</span>
             <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 smooth-transition" />
           </Button>
         </div>

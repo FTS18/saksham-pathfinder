@@ -34,11 +34,11 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
       workMode: 'all',
       education: 'all',
       minStipend: 'all',
-      sortBy: 'recent'
+      sortBy: 'ai-recommended'
     });
   };
 
-  const activeFiltersCount = Object.values(filters).filter(v => v && v !== 'recent' && v !== 'all').length;
+  const activeFiltersCount = Object.values(filters).filter(v => v && v !== 'ai-recommended' && v !== 'all').length;
 
   return (
     <Card className="mb-6">
@@ -63,6 +63,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               onChange={(e) => updateFilter('sortBy', e.target.value)}
               className="w-full h-10 pl-10 pr-10 py-2 text-sm bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring"
             >
+              <option value="ai-recommended">AI Recommended</option>
               <option value="recent">Most Recent</option>
               <option value="stipend-high">Highest Stipend</option>
               <option value="stipend-low">Lowest Stipend</option>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Moon, Sun, Menu, X, Globe, ZoomIn, ZoomOut, Heart, LogIn, LogOut, User } from 'lucide-react';
 import { Button } from './ui/button';
@@ -17,19 +17,27 @@ import { LanguageSelector } from './LanguageSelector';
 import { NotificationSystem } from './NotificationSystem';
 
 const translations = {
-  en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'Saksham AI', wishlist: 'Wishlist' },
-  hi: { home: 'होम', dashboard: 'डैशबोर्ड', about: 'हमारे बारे में', contact: 'संपर्क', brand: 'सक्षम AI', wishlist: 'इच्छा-सूची' },
-  pa: { home: 'ਘਰ', dashboard: 'ਡੈਸ਼ਬੋਰਡ', about: 'ਸਾਡੇ ਬਾਰੇ', contact: 'ਸੰਪਰਕ', brand: 'ਸਕਸ਼ਮ AI', wishlist: 'ਇੱਛਾ-ਸੂਚੀ' },
-  ur: { home: 'گھر', dashboard: 'ڈیش بورڈ', about: 'ہمارے بارے میں', contact: 'رابطہ', brand: 'سکشم AI', wishlist: 'خواہش کی فہرست' },
+  en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'Saksham AI', wishlist: 'Wishlist' }
 };
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { theme, language, setLanguage, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const { currentUser, logout } = useAuth();
   const location = useLocation();
-  const t = translations[language] || translations.en;
+  const t = translations.en;
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroHeight = window.innerHeight;
+      setScrolled(window.scrollY > heroHeight);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const handleLogout = async () => {
     try {
@@ -43,7 +51,6 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/ai-assistant', label: 'AI Assistant' },
     { href: '/features', label: 'Features' },
     { href: '/about', label: t.about },
   ];
@@ -52,7 +59,6 @@ export const Navbar = () => {
     { href: '/', label: t.home },
     { href: '/dashboard', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/ai-assistant', label: 'AI Assistant' },
     { href: '/features', label: 'Features' },
     { href: '/profile', label: 'Profile' },
     { href: '/wishlist', label: t.wishlist },
@@ -76,8 +82,22 @@ export const Navbar = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-racing font-bold text-xl text-foreground">
-              {t.brand}
+            <span className="font-racing font-bold text-xl">
+              <span className={`transition-all duration-700 ease-in-out transform ${
+                scrolled 
+                  ? 'text-orange-500 animate-pulse' 
+                  : 'text-foreground'
+              }`}>Sak</span>
+              <span className={`transition-all duration-700 ease-in-out transform delay-100 ${
+                scrolled 
+                  ? 'text-white animate-pulse' 
+                  : 'text-foreground'
+              }`}>sha</span>
+              <span className={`transition-all duration-700 ease-in-out transform delay-200 ${
+                scrolled 
+                  ? 'text-green-500 animate-pulse' 
+                  : 'text-foreground'
+              }`}>m AI</span>
             </span>
           </Link>
 
