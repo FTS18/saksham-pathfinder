@@ -20,6 +20,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,pa,ur,bn,ta,te,ml,kn,gu,mr,or,as',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false,
+          multilanguagePage: true,
+          gaTrack: false,
+          gaId: null
+        }, 'google_translate_element');
+        
+        // Force translation of all content
+        setTimeout(() => {
+          const savedLanguage = localStorage.getItem('selectedLanguage');
+          if (savedLanguage && savedLanguage !== 'en') {
+            const combo = document.querySelector('.goog-te-combo');
+            if (combo) {
+              combo.value = savedLanguage;
+              combo.dispatchEvent(new Event('change'));
+            }
+          }
+        }, 1000);
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+      .goog-te-banner-frame { display: none !important; }
+      .goog-te-menu-value { padding: 3px !important; }
+      .goog-te-gadget { font-family: inherit !important; }
+      .goog-te-combo { display: none !important; }
+      body { top: 0 !important; }
+    </style>
   </head>
 
   <body>

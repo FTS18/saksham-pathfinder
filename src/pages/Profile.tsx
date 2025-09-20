@@ -20,7 +20,7 @@ import { CurrencyInput } from '@/components/CurrencyInput';
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
 import { extractAllSkills, extractAllSectors } from '@/lib/dataExtractor';
-import { t } from '@/lib/translation';
+
 
 interface UserProfile {
   username: string;
@@ -426,7 +426,7 @@ const Profile = () => {
     <div className="container mx-auto p-6 max-w-4xl pt-20">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">{t('profile.title')}</h1>
+          <h1 className="text-3xl font-bold">Profile</h1>
           <div className="flex gap-2">
             {profile.username && (
               <Button
@@ -449,7 +449,7 @@ const Profile = () => {
               </Button>
             )}
             <Button onClick={saveProfile} disabled={saving}>
-              {saving ? 'Saving...' : t('profile.save')}
+              {saving ? 'Saving...' : 'Save Profile'}
             </Button>
           </div>
         </div>
@@ -459,7 +459,7 @@ const Profile = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="w-5 h-5" />
-              {t('profile.basicInfo')}
+              Basic Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -481,7 +481,7 @@ const Profile = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="username">{t('profile.username')}</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
                   value={profile.username}
@@ -509,7 +509,7 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="email">{t('profile.email')}</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -522,7 +522,7 @@ const Profile = () => {
                   value={profile.phone}
                   onChange={(value) => setProfile(prev => ({ ...prev, phone: value }))}
                   country="India"
-                  label={t('profile.phone')}
+                  label="Phone"
                   placeholder="1234567890"
                 />
               </div>
@@ -546,7 +546,7 @@ const Profile = () => {
                   value={profile.minStipend}
                   onChange={(minStipend) => setProfile(prev => ({ ...prev, minStipend }))}
                   country="India"
-                  label={`${t('profile.minStipend')} (per month)`}
+                  label="Minimum Expected Stipend (per month)"
                   placeholder="15000"
                 />
               </div>
@@ -568,7 +568,7 @@ const Profile = () => {
         {/* Sectors - Now comes first */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('profile.sectors')}</CardTitle>
+            <CardTitle>Sectors</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
@@ -614,7 +614,7 @@ const Profile = () => {
         {/* Skills - Now comes after sectors */}
         <Card>
           <CardHeader>
-            <CardTitle>{t('profile.skills')}</CardTitle>
+            <CardTitle>Skills</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
 

@@ -391,7 +391,7 @@ const About = () => {
         </Card>
 
         {/* Contact Section */}
-        <Card className="glass-card">
+        <Card className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Users className="w-6 h-6 text-primary" />
@@ -442,6 +442,155 @@ const About = () => {
                   Punjab Engineering College<br/>
                   Chandigarh, India
                 </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Research & References Section */}
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Brain className="w-6 h-6 text-primary" />
+              Research & References
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-8">
+              {/* Hackathon Learning Topics */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-center">📚 Hackathon Learning Resources</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">🎯 Core Technologies</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://react.dev/learn" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">React 18 Documentation</a></li>
+                      <li><a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">TypeScript Handbook</a></li>
+                      <li><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Tailwind CSS Guide</a></li>
+                      <li><a href="https://firebase.google.com/docs" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Firebase Documentation</a></li>
+                      <li><a href="https://ui.shadcn.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">shadcn/ui Components</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">🤖 AI/ML Integration</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://platform.openai.com/docs" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">OpenAI API Documentation</a></li>
+                      <li><a href="https://cloud.google.com/ai" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google Cloud AI Platform</a></li>
+                      <li><a href="https://huggingface.co/docs" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Hugging Face Transformers</a></li>
+                      <li><a href="https://developers.google.com/machine-learning/recommendation" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">ML Recommendation Systems</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Technical References */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-center">🔬 Technical References</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">📊 Algorithms & Methods</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Cosine Similarity Algorithm</a></li>
+                      <li><a href="https://developers.google.com/machine-learning/recommendation/collaborative/basics" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Collaborative Filtering</a></li>
+                      <li><a href="https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Vector Space Models</a></li>
+                      <li><a href="https://www.nltk.org/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Natural Language Processing</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">🚀 Performance & Optimization</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://web.dev/performance/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Web Performance Best Practices</a></li>
+                      <li><a href="https://react.dev/reference/react/useMemo" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">React Performance Optimization</a></li>
+                      <li><a href="https://vitejs.dev/guide/performance.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Vite Build Optimization</a></li>
+                      <li><a href="https://web.dev/progressive-web-apps/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Progressive Web Apps</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Government & Policy References */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-center">🏛️ Government & Policy</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">📋 PM Internship Scheme</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://www.mca.gov.in/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Ministry of Corporate Affairs</a></li>
+                      <li><a href="https://pminternship.mca.gov.in/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">PM Internship Portal</a></li>
+                      <li><a href="https://www.india.gov.in/spotlight/pm-internship-scheme" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Scheme Guidelines</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-3 text-primary">🎓 Digital India & Education</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li><a href="https://digitalindia.gov.in/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Digital India Initiative</a></li>
+                      <li><a href="https://www.education.gov.in/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Ministry of Education</a></li>
+                      <li><a href="https://www.aicte-india.org/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">AICTE Guidelines</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Research Papers & Studies */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-center">📖 Research Papers & Studies</h3>
+                <div className="space-y-4">
+                  <div className="bg-muted/30 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">"Recommendation Systems in Education: A Survey"</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Comprehensive review of recommendation algorithms in educational contexts, 
+                      focusing on personalized learning and career guidance systems.
+                    </p>
+                    <a href="https://arxiv.org/abs/2106.10063" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
+                      View on arXiv →
+                    </a>
+                  </div>
+                  <div className="bg-muted/30 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">"Digital Divide and Rural Youth Employment in India"</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Analysis of technology adoption challenges among rural youth and 
+                      strategies for inclusive digital platform design.
+                    </p>
+                    <a href="https://www.researchgate.net/publication/digital-divide-rural-india" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
+                      View on ResearchGate →
+                    </a>
+                  </div>
+                  <div className="bg-muted/30 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">"Accessibility in AI Systems: Design Principles"</h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Guidelines for building AI-powered applications that are accessible 
+                      to users with varying levels of digital literacy and disabilities.
+                    </p>
+                    <a href="https://dl.acm.org/doi/accessibility-ai-systems" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-sm">
+                      View on ACM Digital Library →
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Open Source & Community */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4 text-center">🌐 Open Source & Community</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-3 text-primary">💻 Code Repository</h4>
+                    <a href="https://github.com/saksham-ai/internship-platform" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      GitHub Repository
+                    </a>
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-3 text-primary">📚 Documentation</h4>
+                    <a href="https://docs.sakshamai.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      API Documentation
+                    </a>
+                  </div>
+                  <div className="text-center">
+                    <h4 className="font-semibold mb-3 text-primary">🤝 Community</h4>
+                    <a href="https://discord.gg/sakshamai" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      Join Discord
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

@@ -6,7 +6,7 @@ import { InternshipFilters } from '@/components/InternshipFilters';
 import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { InternshipCard } from '@/components/InternshipCard';
 import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
-import { t } from '@/lib/translation';
+
 
 // Lazy load heavy components
 const Stats = lazy(() => import('@/components/Stats').then(module => ({ default: module.Stats })));
@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Calendar, Briefcase, GraduationCap, Users, Building } from 'lucide-react';
 
 // Helper function to calculate distance between two coordinates
 const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng: number }) => {
@@ -60,17 +60,36 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
       const education_match = preferred_edu_levels.length === 0 || preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level);
       
-      // Skills scoring
+      // Skills scoring - HIGHEST PRIORITY with normalization
+      const normalizeSkill = (skill: string) => {
+          const normalized = skill.toLowerCase().trim();
+          // Normalize similar skills
+          if (normalized.includes('html')) return 'html';
+          if (normalized.includes('css')) return 'css';
+          if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
+          if (normalized.includes('react')) return 'react';
+          if (normalized.includes('node')) return 'nodejs';
+          if (normalized.includes('python')) return 'python';
+          if (normalized.includes('java') && !normalized.includes('script')) return 'java';
+          return normalized;
+      };
+      
       const required = internship.required_skills || [];
       const matched_skills = required.filter((s: string) => 
           (profile.skills || []).some((userSkill: string) => 
-              userSkill.toLowerCase() === s.toLowerCase()
+              normalizeSkill(userSkill) === normalizeSkill(s)
           )
       );
-      const skill_score = required.length > 0 ? matched_skills.length / required.length : 0.5;
       
-      // Location scoring (if user specified preferred location)
-      let location_score = 0.5; // Default neutral score
+      // If no skills match and user has skills, heavily penalize
+      if (required.length > 0 && matched_skills.length === 0 && (profile.skills || []).length > 0) {
+          return { score: 45, explanation: 'No matching skills found', aiTags: [] };
+      }
+      
+      const skill_score = required.length > 0 ? matched_skills.length / required.length : 0.7;
+      
+      // Location scoring - SECOND PRIORITY
+      let location_score = 0.5;
       let location_reason = '';
       
       if (profile.desiredLocation || profile.location) {
@@ -85,7 +104,6 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
               location_score = 1;
               location_reason = 'Same city match';
           } else if (userCity) {
-              // City proximity mapping
               const cityProximity: { [key: string]: string[] } = {
                   'delhi': ['gurgaon', 'noida', 'faridabad', 'ghaziabad', 'new delhi'],
                   'mumbai': ['pune', 'navi mumbai', 'thane'],
@@ -103,29 +121,41 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
                   location_score = 0.8;
                   location_reason = 'Nearby city';
               } else {
-                  location_score = 0.2;
+                  location_score = 0.3;
                   location_reason = 'Different region';
               }
           }
       }
       
-      // Sector score (already filtered, so give bonus for matches)
-      const sector_score = sector_matched.length > 0 ? 1 : 0.5;
+      // Sector score
+      const sector_score = sector_matched.length > 0 ? 1 : 0.6;
       
-      // Stipend score (bonus for higher stipends)
+      // Stipend score - THIRD PRIORITY (enhanced for high-paying internships)
       const stipend_score = profile.minStipend ? 
-          Math.min(1, internshipStipend / (profile.minStipend * 2)) : 
-          Math.min(1, internshipStipend / 30000); // Default benchmark
+          Math.min(1, internshipStipend / (profile.minStipend * 1.2)) : 
+          Math.min(1, internshipStipend / 20000); // Lower benchmark for better scoring
       
-      // Weighted scoring with base score to ensure minimum 65+
-      const base_score = 0.65; // Minimum 65% base score
-      const bonus_score = (skill_score * 0.25 +
-                          location_score * 0.15 +
-                          stipend_score * 0.1 +
-                          sector_score * 0.15 +
-                          (education_match ? 0.1 : 0)) * 0.35; // 35% bonus possible
+      // Company prestige bonus
+      const prestigeCompanies = ['Netflix', 'Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Uber', 'Airbnb', 'Tesla', 'Spotify'];
+      const company_bonus = prestigeCompanies.includes(internship.company) ? 0.05 : 0;
       
-      const total = base_score + bonus_score;
+      // NEW WEIGHTED SCORING - Skills First, Location Second, Stipend Third
+      const base_score = 0.50; // Lower base score
+      const skill_weight = 0.40; // 40% for skills matching
+      const location_weight = 0.25; // 25% for location
+      const sector_weight = 0.15; // 15% for sector
+      const stipend_weight = 0.10; // 10% for stipend
+      const education_weight = 0.10; // 10% for education
+      
+      const weighted_score = base_score + 
+                           (skill_score * skill_weight) +
+                           (location_score * location_weight) +
+                           (sector_score * sector_weight) +
+                           (stipend_score * stipend_weight) +
+                           ((education_match ? 1 : 0) * education_weight) +
+                           company_bonus; // Add company prestige bonus
+      
+      const total = Math.min(1, weighted_score); // Cap at 100%
       
       // Generate explanation
       let explanation = '';
@@ -142,8 +172,24 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
           explanation += `Good stipend (₹${internshipStipend.toLocaleString()}). `;
       }
       
+      const finalScore = Math.round(total * 100);
+      
+      // Debug logging for high-value internships
+      if (internshipStipend > 100000 || prestigeCompanies.includes(internship.company)) {
+          console.log(`${internship.company} - ${internship.title}:`, {
+              finalScore,
+              skill_score: Math.round(skill_score * 100),
+              location_score: Math.round(location_score * 100),
+              stipend_score: Math.round(stipend_score * 100),
+              sector_score: Math.round(sector_score * 100),
+              company_bonus: Math.round(company_bonus * 100),
+              matched_skills: matched_skills.length,
+              total_skills: required.length
+          });
+      }
+      
       return { 
-          score: Math.round(total * 100),
+          score: finalScore,
           explanation: explanation.trim() || 'Good match based on your profile',
           aiTags: []
       };
@@ -162,12 +208,12 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       });
   
       const sorted = scores
-          .filter(item => item.score >= 65) // Only show quality matches (65+)
+          .filter(item => item.score >= 60) // Show matches 60+ (lowered for better skill matching)
           .sort((a, b) => b.score - a.score);
       
-      // Add AI Recommended tag only to top 3
+      // Add AI Recommended tag to top matches (score 75+) or top 5
       sorted.forEach((item, index) => {
-          if (index < 3) {
+          if (item.score >= 75 || index < 5) {
               item.aiTags = ['AI Recommended'];
           } else {
               item.aiTags = [];
@@ -404,15 +450,95 @@ const Index = () => {
     <div className="min-h-screen hero-gradient">
       <Hero onGetStartedClick={handleGetStartedClick} />
       <SuccessStoriesMarquee />
+      
+      {/* PM Internship Eligibility Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
+              Are you Eligible for PM <span className="relative text-foreground">
+                Internship
+                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-white to-green-500"></div>
+              </span> Scheme?
+            </h2>
+            <p className="text-xl text-muted-foreground">Check your eligibility for Government of India's PM Internship Scheme</p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-2 hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                  <Calendar className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Age</h3>
+                <p className="text-muted-foreground">21-24 Years</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                  <Briefcase className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Job Status</h3>
+                <p className="text-muted-foreground">Not Employed Full Time</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                  <GraduationCap className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Education</h3>
+                <p className="text-muted-foreground">Not Enrolled Full Time</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Family Income</h3>
+                <p className="text-muted-foreground">No one earning more than ₹8 Lakhs PA</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+                  <Building className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Government Job</h3>
+                <p className="text-muted-foreground">No Member has a Govt. Job</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button 
+              size="lg" 
+              className="relative bg-background text-foreground border-4 px-8 py-3 hover:bg-muted/50 transition-colors"
+              style={{
+                borderImage: 'linear-gradient(to right, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%) 1'
+              }}
+              onClick={handleGetStartedClick}
+            >
+              Check Your Eligibility
+            </Button>
+          </div>
+        </div>
+      </section>
       {showProfileForm && (
         <div ref={profileFormRef} id="profile-form" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">{t('index.processing')}</h3>
-                <p className="text-muted-foreground mb-2">{t('index.analyzing')}</p>
-                <p className="text-xs text-muted-foreground/70">{t('index.teamName')}</p>
+                <h3 className="text-xl font-semibold text-foreground mb-2">Processing your profile...</h3>
+                <p className="text-muted-foreground mb-2">Analyzing your preferences and finding matches</p>
+                <p className="text-xs text-muted-foreground/70">Powered by Team HexaCoders</p>
               </div>
             ) : (
               <ProfileForm onProfileSubmit={handleProfileSubmit} />
@@ -426,14 +552,14 @@ const Index = () => {
             <div className='max-w-7xl mx-auto'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
-                        🎯 {t('index.recommendations')}
+                        🎯 AI Recommendations
                     </h2>
                     <p className="text-muted-foreground mb-6">
-                        {t('index.found')} {displayItems.length} {t('index.internships')}
+                        Found {displayItems.length} matching internships
                     </p>
                     <div className="bg-primary/10 rounded-lg p-4 mb-6">
                         <p className="text-sm text-primary font-medium">
-                            📊 {t('index.stats')}
+                            📊 Personalized matches based on your profile
                         </p>
                     </div>
                     
@@ -495,7 +621,7 @@ const Index = () => {
                                 workMode: 'all',
                                 education: 'all',
                                 minStipend: 'all',
-                                sortBy: 'recent'
+                                sortBy: 'ai-recommended'
                             })}
                             className="mt-4"
                             variant="outline"
@@ -604,7 +730,7 @@ const Index = () => {
                                 workMode: 'all',
                                 education: 'all',
                                 minStipend: 'all',
-                                sortBy: 'recent'
+                                sortBy: 'ai-recommended'
                             })}
                             className="mt-4"
                             variant="outline"
