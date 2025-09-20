@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Target, Lightbulb, Users, User, Brain, Briefcase, Heart, CheckCircle, Code } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Target, Lightbulb, Users, User, Brain, Briefcase, Heart, CheckCircle, Code, BarChart3, MessageSquare, Filter, Globe, Shield, Zap, Check, X } from 'lucide-react';
 
 const teamMembers = [
   {
@@ -341,51 +342,155 @@ const About = () => {
 
 
 
+        {/* Platform Features */}
         <Card className="glass-card mb-12">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Heart className="w-5 h-5 text-primary" />
-              Key Features
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Heart className="w-6 h-6 text-primary" />
+              Platform Features
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  AI-Powered Matching
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Advanced ML algorithms for personalized recommendations
-                </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="text-center p-6 border border-border rounded-lg">
+                <Brain className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">AI-Powered Matching</h3>
+                <p className="text-sm text-muted-foreground">Advanced ML algorithms analyze your profile to suggest the most relevant internships</p>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Location Proximity
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Smart location-based filtering with customizable search radius
-                </p>
+              <div className="text-center p-6 border border-border rounded-lg">
+                <Target className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Smart Filtering</h3>
+                <p className="text-sm text-muted-foreground">Filter by location, stipend, work mode, and education level for precise results</p>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Audio Accessibility
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Voice descriptions for users with low digital literacy
-                </p>
+              <div className="text-center p-6 border border-border rounded-lg">
+                <Users className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">User-Friendly Interface</h3>
+                <p className="text-sm text-muted-foreground">Designed for users with varying levels of digital literacy and accessibility needs</p>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  Feedback Learning
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Continuous improvement through user feedback analytics
-                </p>
+              <div className="text-center p-6 border border-border rounded-lg">
+                <Heart className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Wishlist & Bookmarks</h3>
+                <p className="text-sm text-muted-foreground">Save interesting opportunities and get similar recommendations</p>
               </div>
+              <div className="text-center p-6 border border-border rounded-lg">
+                <Briefcase className="w-12 h-12 text-orange-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Real-time Updates</h3>
+                <p className="text-sm text-muted-foreground">Get notified about new opportunities matching your profile</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg">
+                <CheckCircle className="w-12 h-12 text-teal-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Application Tracking</h3>
+                <p className="text-sm text-muted-foreground">Track your applications and get insights on your internship journey</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Platform Features from Features Page */}
+        <Card className="glass-card mb-12">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Brain className="w-6 h-6 text-primary" />
+              Current Features
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Brain className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">AI-Powered Recommendations</h3>
+                <p className="text-sm text-muted-foreground">Smart matching using ML algorithms</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Target className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Skill Gap Analysis</h3>
+                <p className="text-sm text-muted-foreground">Identify missing skills for dream roles</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Users className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Profile Management</h3>
+                <p className="text-sm text-muted-foreground">Comprehensive student profiles</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Analytics Dashboard</h3>
+                <p className="text-sm text-muted-foreground">Track applications and feedback</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Heart className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Wishlist System</h3>
+                <p className="text-sm text-muted-foreground">Save favorite internships</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <MessageSquare className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Feedback System</h3>
+                <p className="text-sm text-muted-foreground">Rate and review experiences</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Filter className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Advanced Filters</h3>
+                <p className="text-sm text-muted-foreground">Filter by location, salary, skills</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Globe className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Multi-language Support</h3>
+                <p className="text-sm text-muted-foreground">English and Hindi interface</p>
+              </div>
+              <div className="text-center p-6 border border-border rounded-lg hover:scale-105 transition-transform">
+                <Shield className="w-8 h-8 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Secure Authentication</h3>
+                <p className="text-sm text-muted-foreground">Firebase-based user security</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Why Choose Us Comparison */}
+        <Card className="glass-card mb-12">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Target className="w-6 h-6 text-primary" />
+              Why Choose Saksham AI?
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-4 font-semibold">Features</th>
+                    <th className="text-center p-4 font-semibold text-primary">Saksham AI</th>
+                    <th className="text-center p-4 font-semibold text-muted-foreground">Traditional Platforms</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="p-4">AI-Powered Matching</td>
+                    <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="p-4 text-center"><X className="w-5 h-5 text-red-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Skill Gap Analysis</td>
+                    <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="p-4 text-center"><X className="w-5 h-5 text-red-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Personalized Recommendations</td>
+                    <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="p-4 text-center"><X className="w-5 h-5 text-red-500 mx-auto" /></td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="p-4">Multi-language Support</td>
+                    <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="p-4 text-center"><X className="w-5 h-5 text-red-500 mx-auto" /></td>
+                  </tr>
+                  <tr>
+                    <td className="p-4">Student-Centric Design</td>
+                    <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+                    <td className="p-4 text-center"><X className="w-5 h-5 text-red-500 mx-auto" /></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>

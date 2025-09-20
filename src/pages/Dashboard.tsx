@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { InternshipCard } from '../components/InternshipCard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 
-import { User, Target, FileText, BarChart3, TrendingUp, Filter, Edit3, Save, X, Bookmark, Settings as SettingsIcon, Lightbulb, Bell } from 'lucide-react';
+import { User, Target, FileText, BarChart3, TrendingUp, Filter, Edit3, Save, X, Bookmark, Settings as SettingsIcon, Lightbulb, Bell, Briefcase, Users, Play, ChevronDown } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -235,6 +236,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const t = translations[language];
   const [activeSection, setActiveSection] = useState('wishlist');
+  const [selectedQuickAction, setSelectedQuickAction] = useState('');
 
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [filteredRecommendations, setFilteredRecommendations] = useState<any[]>([]);
@@ -458,6 +460,10 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: 'wishlist', label: 'Saved', icon: Bookmark, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
+    { id: 'my-internship', label: 'My Internship', icon: Briefcase, tooltip: 'Current internship details' },
+    { id: 'news-events', label: 'News & Events', icon: Bell, tooltip: 'Latest updates and events' },
+    { id: 'tutorials', label: 'Tutorials', icon: Play, tooltip: 'Video guides and tutorials' },
+    { id: 'refer-friend', label: 'Refer A Friend', icon: Users, tooltip: 'Invite friends and earn rewards' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
     { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View analytics' },
     { id: 'settings', label: 'Settings', icon: SettingsIcon, tooltip: 'Profile and app settings' },
@@ -829,13 +835,355 @@ export default function Dashboard() {
           </div>
         );
         
+      case 'my-internship':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-racing font-bold text-foreground">
+              My Internship
+            </h2>
+            <Card className="glass-card">
+              <CardContent className="p-8 text-center">
+                <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground mb-4">
+                  No active internship found. Apply to internships to track your progress here.
+                </p>
+                <Button asChild variant="outline">
+                  <a href="/">Browse Internships</a>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
+        
+      case 'news-events':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-racing font-bold text-foreground">
+              News & Events
+            </h2>
+            
+            {/* PM Internship Scheme News */}
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-primary">
+                  PM Internship Scheme 2024-25
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Latest updates on Government of India's flagship internship program
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-primary/10 p-4 rounded-lg border-l-4 border-primary">
+                  <blockquote className="text-sm italic text-foreground">
+                    "Skill development and employment are crucial needs in India. Our government is consistently working in this direction."
+                  </blockquote>
+                  <p className="text-xs text-muted-foreground mt-2">— Prime Minister Narendra Modi</p>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-3">Key Highlights</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-3 border rounded-lg">
+                      <h4 className="font-medium text-sm mb-1">Target Beneficiaries</h4>
+                      <p className="text-sm text-muted-foreground">1.25 lakh youth in pilot phase, 1 crore over 5 years</p>
+                    </div>
+                    <div className="p-3 border rounded-lg">
+                      <h4 className="font-medium text-sm mb-1">Age Criteria</h4>
+                      <p className="text-sm text-muted-foreground">21-24 years from low-income households</p>
+                    </div>
+                    <div className="p-3 border rounded-lg">
+                      <h4 className="font-medium text-sm mb-1">Duration</h4>
+                      <p className="text-sm text-muted-foreground">12-month internship opportunities</p>
+                    </div>
+                    <div className="p-3 border rounded-lg">
+                      <h4 className="font-medium text-sm mb-1">Companies</h4>
+                      <p className="text-sm text-muted-foreground">Top 500 companies across 24 sectors</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-3">Financial Benefits</h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">₹5,000</div>
+                      <p className="text-sm text-muted-foreground">Monthly Stipend</p>
+                    </div>
+                    <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">₹6,000</div>
+                      <p className="text-sm text-muted-foreground">One-time Grant</p>
+                    </div>
+                    <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                      <div className="text-lg font-bold text-purple-600">Insurance</div>
+                      <p className="text-sm text-muted-foreground">Coverage Included</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-3">Latest Updates</h3>
+                  <div className="space-y-3">
+                    <div className="p-3 border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20">
+                      <p className="text-sm font-medium">Registration Open</p>
+                      <p className="text-xs text-muted-foreground">Portal active till 31st March 2025 - Over 6.2 lakh applications received</p>
+                    </div>
+                    <div className="p-3 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20">
+                      <p className="text-sm font-medium">PM Modi Launch Event</p>
+                      <p className="text-xs text-muted-foreground">December 2, 2024 - Personal distribution of joining letters to selected candidates</p>
+                    </div>
+                    <div className="p-3 border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20">
+                      <p className="text-sm font-medium">Pilot Success</p>
+                      <p className="text-xs text-muted-foreground">Launched October 3, 2024 - Overwhelming response from youth across India</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold mb-3">Eligibility Criteria</h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <h4 className="font-medium mb-2">Education Requirements</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• ITI: Matriculation + ITI in relevant trade</li>
+                        <li>• Diploma: Intermediate + AICTE-recognized diploma</li>
+                        <li>• Degree: Bachelor's from UGC/AICTE university</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-medium mb-2">Other Requirements</h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• Age: 18-24 years (updated to 21-24 for current phase)</li>
+                        <li>• Aadhaar card mandatory</li>
+                        <li>• From low-income households</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-muted/30 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-2">How to Apply</h3>
+                  <div className="space-y-2 text-sm">
+                    <p><strong>Official Portal:</strong> <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">pminternship.mca.gov.in</a></p>
+                    <p><strong>Contact:</strong> Email: pminternship@mca.gov.in | Call: 1800 11 6090</p>
+                    <p><strong>Application Fee:</strong> Free for all candidates</p>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer">
+                      Apply Now on Official Portal
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Additional News Section */}
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-primary" />
+                  More Updates
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-semibold mb-2">Viksit Bharat Vision</h3>
+                    <p className="text-sm text-muted-foreground">
+                      The PM Internship Scheme aligns with the vision of creating a self-reliant India (Atmanirbhar Bharat) 
+                      by targeting skill enhancement, job creation, and real-time work exposure.
+                    </p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-semibold mb-2">Industry Expert Opinion</h3>
+                    <p className="text-sm text-muted-foreground italic">
+                      "This scheme is a clarion call to shape the future workforce by bridging the gap between education 
+                      and industry requirements. The focus on underrepresented groups ensures that every youth has a 
+                      chance to learn by doing and earn while learning."
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">— Ramesh Alluri Reddy, CEO, TeamLease Degree Apprenticeship</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+        
+      case 'tutorials':
+        const tutorialVideos = [
+          {
+            title: 'Candidate Registration & e-EYC',
+            hindi: 'https://youtu.be/74qVydBeUeM',
+            english: 'https://www.youtube.com/watch?v=0QQjAvzXX1M&t=9s',
+            description: 'Learn how to register and complete e-EYC process'
+          },
+          {
+            title: 'Profile Completion after Login',
+            hindi: 'https://www.youtube.com/watch?v=3bAsDCgcpCY',
+            english: 'https://www.youtube.com/watch?v=Xd47t5qGiUE&t=1s',
+            description: 'Complete your profile after successful login'
+          },
+          {
+            title: 'Candidate Dashboard Explained',
+            hindi: 'https://youtu.be/mC1__GAlKeY',
+            english: 'https://www.youtube.com/watch?v=z6StILWX0tU&t=16s',
+            description: 'Navigate and understand your dashboard features'
+          },
+          {
+            title: 'Candidate Application Process',
+            hindi: 'https://youtu.be/apegI4TM0Pk',
+            english: 'https://www.youtube.com/watch?v=TSO9DXtnTAs',
+            description: 'Step-by-step guide to apply for internships'
+          }
+        ];
+        
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-racing font-bold text-foreground">
+              Tutorials & Guidance
+            </h2>
+            
+            <div className="grid gap-6">
+              {tutorialVideos.map((video, index) => (
+                <Card key={index} className="glass-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Play className="w-5 h-5 text-primary" />
+                      {video.title}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">{video.description}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button 
+                        asChild 
+                        variant="outline" 
+                        className="flex-1 bg-orange-50 hover:bg-orange-100 border-orange-200 text-orange-700"
+                      >
+                        <a href={video.hindi} target="_blank" rel="noopener noreferrer">
+                          🇮🇳 Watch in Hindi
+                        </a>
+                      </Button>
+                      <Button 
+                        asChild 
+                        variant="outline" 
+                        className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                      >
+                        <a href={video.english} target="_blank" rel="noopener noreferrer">
+                          🇬🇧 Watch in English
+                        </a>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <Card className="glass-card bg-primary/5 border-primary/20">
+              <CardContent className="p-6 text-center">
+                <Play className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">Need More Help?</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  These official tutorial videos will guide you through the entire PM Internship Scheme application process.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  <Button asChild variant="outline" size="sm">
+                    <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer">
+                      Visit Official Portal
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" size="sm">
+                    <a href="tel:18001160900">
+                      Call Helpline: 1800 11 6090
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+        
+      case 'refer-friend':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-racing font-bold text-foreground">
+              Refer A Friend
+            </h2>
+            <Card className="glass-card">
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <Users className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Invite Friends & Earn Rewards</h3>
+                  <p className="text-muted-foreground">
+                    Share your referral code and earn 100 points for each friend who joins!
+                  </p>
+                </div>
+                
+                <div className="bg-muted/30 p-4 rounded-lg mb-4">
+                  <Label className="text-sm font-medium text-muted-foreground">Your Referral Code</Label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex-1 p-3 bg-background rounded-lg font-mono text-lg font-bold text-center border">
+                      {dashboardProfile?.referralCode || 'Loading...'}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (dashboardProfile?.referralCode) {
+                          navigator.clipboard.writeText(dashboardProfile.referralCode);
+                          toast({ title: 'Copied!', description: 'Referral code copied to clipboard' });
+                        }
+                      }}
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <Button 
+                    onClick={() => {
+                      const shareText = `Join Saksham AI and find your perfect internship! Use my referral code: ${dashboardProfile?.referralCode}`;
+                      if (navigator.share) {
+                        navigator.share({
+                          title: 'Join Saksham AI',
+                          text: shareText,
+                          url: window.location.origin
+                        });
+                      } else {
+                        navigator.clipboard.writeText(shareText);
+                        toast({ title: 'Copied!', description: 'Referral message copied to clipboard' });
+                      }
+                    }}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  >
+                    Share Referral Code
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+        
       case 'analytics':
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-racing font-bold text-foreground">
-              Feedback Analytics
+              Analytics
             </h2>
-            <FeedbackAnalytics />
+            <Card className="glass-card">
+              <CardContent className="p-8 text-center">
+                <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground mb-4">
+                  Track your internship application progress and success metrics.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Coming soon - Detailed analytics and insights!
+                </p>
+              </CardContent>
+            </Card>
           </div>
         );
 
@@ -868,6 +1216,31 @@ export default function Dashboard() {
                     </div>
                   </div>
                 )}
+                
+                {/* Quick Actions Dropdown */}
+                <div className="mt-4">
+                  <Select value={selectedQuickAction} onValueChange={(value) => {
+                    setSelectedQuickAction(value);
+                    if (value) {
+                      setActiveSection(value);
+                      setSelectedQuickAction('');
+                    }
+                  }}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Quick Actions" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="wishlist">📚 View Saved Internships</SelectItem>
+                      <SelectItem value="applications">📝 Track Applications</SelectItem>
+                      <SelectItem value="my-internship">💼 My Current Internship</SelectItem>
+                      <SelectItem value="news-events">📰 Latest News & Updates</SelectItem>
+                      <SelectItem value="tutorials">🎥 Watch Tutorials</SelectItem>
+                      <SelectItem value="refer-friend">👥 Refer Friends</SelectItem>
+                      <SelectItem value="skill-gap">📈 Skill Analysis</SelectItem>
+                      <SelectItem value="settings">⚙️ Account Settings</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent className="space-y-2">
                 {sidebarItems.map((item) => (

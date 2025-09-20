@@ -453,12 +453,16 @@ const Index = () => {
       
       {/* PM Internship Eligibility Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-foreground mb-4">
               Are you Eligible for PM <span className="relative text-foreground">
                 Internship
-                <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-white to-green-500"></div>
+                <div className="absolute -bottom-1 left-0 w-full h-1 flex">
+                  <div className="w-1/3 h-full bg-orange-500"></div>
+                  <div className="w-1/3 h-full bg-white border border-gray-300"></div>
+                  <div className="w-1/3 h-full bg-green-500"></div>
+                </div>
               </span> Scheme?
             </h2>
             <p className="text-xl text-muted-foreground">Check your eligibility for Government of India's PM Internship Scheme</p>
@@ -516,6 +520,29 @@ const Index = () => {
             </Card>
           </div>
           
+          {/* Core Benefits */}
+          <div className="mt-16 mb-12">
+            <h3 className="text-2xl font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">12 months real-life experience</h4>
+                <p className="text-muted-foreground text-sm">in India's top companies</p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Monthly assistance</h4>
+                <p className="text-muted-foreground text-sm">₹4500 by Government of India and ₹500 by Industry</p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">One-time Grant</h4>
+                <p className="text-muted-foreground text-sm">₹6000 for incidentals</p>
+              </div>
+              <div className="p-4 border border-border rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">Select from Various Sectors</h4>
+                <p className="text-muted-foreground text-sm">and from top Companies of India</p>
+              </div>
+            </div>
+          </div>
+          
           <div className="text-center mt-12">
             <Button 
               size="lg" 
@@ -530,6 +557,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+
       {showProfileForm && (
         <div ref={profileFormRef} id="profile-form" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto">
@@ -549,7 +577,7 @@ const Index = () => {
 
       {profileData && (
         <section id="recommendations-section" className="bg-card py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-            <div className='max-w-7xl mx-auto'>
+            <div className='max-w-6xl mx-auto'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
                         🎯 AI Recommendations
@@ -685,7 +713,7 @@ const Index = () => {
       
       {!profileData && allInternships.length > 0 && (
         <section className="bg-card py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-            <div className='max-w-7xl mx-auto'>
+            <div className='max-w-6xl mx-auto'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
                         🔍 Browse All Internships
