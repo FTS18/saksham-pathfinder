@@ -60,7 +60,7 @@ const OnboardingSteps = () => {
           }));
         }
       } catch (error) {
-        console.error('Error loading profile:', error);
+        console.warn('Failed to load profile data');
       }
     };
 
@@ -198,7 +198,7 @@ const OnboardingSteps = () => {
             });
           }
         } catch (error) {
-          console.error('Referral processing failed:', error);
+          console.warn('Referral processing failed');
           toast({ 
             title: 'Referral Error', 
             description: 'Failed to process referral code. Please try again.',
@@ -255,7 +255,7 @@ const OnboardingSteps = () => {
       }, 2000);
       
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.warn('Failed to save profile data');
       toast({ title: 'Error', description: 'Failed to save profile', variant: 'destructive' });
     } finally {
       setSaving(false);

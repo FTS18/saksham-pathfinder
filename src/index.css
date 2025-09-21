@@ -16,6 +16,10 @@
   animation: marquee 60s linear infinite;
 }
 
+.animate-marquee-fast {
+  animation: marquee 20s linear infinite;
+}
+
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -104,18 +108,18 @@
   }
 }
 
-.green {
-  --primary: 142 76% 36%;
-  --ring: 142 76% 36%;
-  --sidebar-primary: 142 76% 36%;
-  --sidebar-ring: 142 76% 36%;
-}
-
 .blue {
   --primary: 217 91% 60%;
   --ring: 217 91% 60%;
   --sidebar-primary: 217 91% 60%;
   --sidebar-ring: 217 91% 60%;
+}
+
+.grey {
+  --primary: 0 0% 45%;
+  --ring: 0 0% 45%;
+  --sidebar-primary: 0 0% 45%;
+  --sidebar-ring: 0 0% 45%;
 }
 
 .red {
@@ -125,25 +129,18 @@
   --sidebar-ring: 0 72% 51%;
 }
 
-.gold {
+.yellow {
   --primary: 45 93% 47%;
   --ring: 45 93% 47%;
   --sidebar-primary: 45 93% 47%;
   --sidebar-ring: 45 93% 47%;
 }
 
-.duochrome {
-  --primary: 0 0% 9%;
-  --ring: 0 0% 9%;
-  --sidebar-primary: 0 0% 9%;
-  --sidebar-ring: 0 0% 9%;
-}
-
-.dark.duochrome {
-  --primary: 0 0% 98%;
-  --ring: 0 0% 98%;
-  --sidebar-primary: 0 0% 98%;
-  --sidebar-ring: 0 0% 98%;
+.green {
+  --primary: 142 76% 36%;
+  --ring: 142 76% 36%;
+  --sidebar-primary: 142 76% 36%;
+  --sidebar-ring: 142 76% 36%;
 }
 
 @layer base {

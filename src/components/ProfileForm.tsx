@@ -3,7 +3,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { GraduationCap, Lightbulb, Building, MapPin, HelpCircle } from 'lucide-react';
+import { Badge } from './ui/badge';
+import { GraduationCap, Lightbulb, Building, MapPin, HelpCircle, X, ChevronDown } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLocation } from '@/hooks/useLocation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -11,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Progress } from './ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Slider } from './ui/slider';
+import { Checkbox } from './ui/checkbox';
 
 import { CurrencyInput } from './CurrencyInput';
 
@@ -72,7 +74,6 @@ export interface ProfileData {
 }
 
 const educationLevels = ["Undergraduate", "Postgraduate"];
-import { extractAllSectors, extractSkillsBySector } from '@/lib/dataExtractor';
 
 interface ProfileFormProps {
     initialData?: ProfileData;
@@ -99,14 +100,39 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [sectorsData, skillsData] = await Promise.all([
-          extractAllSectors(),
-          extractSkillsBySector()
-        ]);
-        setSectors(sectorsData);
-        setSkillsBySector(skillsData);
+        const response = await fetch('/internships.json');
+        if (!response.ok) throw new Error('Failed to fetch internships');
+        
+        const internships = await response.json();
+        
+        const sectorsSet = new Set<string>();
+        const sectorSkillsMap: Record<string, Set<string>> = {};
+        
+        internships.forEach((internship: any) => {
+          const sectors = internship.sector_tags || [];
+          const skills = internship.required_skills || [];
+          
+          sectors.forEach((sector: string) => {
+            sectorsSet.add(sector);
+            if (!sectorSkillsMap[sector]) sectorSkillsMap[sector] = new Set();
+            skills.forEach((skill: string) => {
+              sectorSkillsMap[sector].add(skill);
+            });
+          });
+        });
+        
+        setSectors(Array.from(sectorsSet).sort());
+        
+        const finalSectorSkills: Record<string, string[]> = {};
+        Object.keys(sectorSkillsMap).forEach(sector => {
+          finalSectorSkills[sector] = Array.from(sectorSkillsMap[sector]).sort();
+        });
+        setSkillsBySector(finalSectorSkills);
       } catch (error) {
         console.error('Failed to load data:', error);
+        // Fallback to empty arrays
+        setSectors([]);
+        setSkillsBySector({});
       }
     };
     loadData();
@@ -156,11 +182,29 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
   const handleMultiSelectChange = (field: 'skills' | 'interests', value: string) => {
     setFormData(prev => {
         const currentValues = prev[field];
-        if (currentValues.includes(value)) {
-            return { ...prev, [field]: currentValues.filter(v => v !== value) };
-        } else {
-            return { ...prev, [field]: [...currentValues, value] };
+        const isRemoving = currentValues.includes(value);
+        const newValues = isRemoving
+            ? currentValues.filter(v => v !== value)
+            : [...currentValues, value];
+        
+        // If removing a sector, remove skills that are only in that sector
+        if (field === 'interests' && isRemoving) {
+            const removedSectorSkills = skillsBySector[value] || [];
+            const remainingSectors = newValues;
+            
+            // Keep skills that exist in other selected sectors
+            const skillsToKeep = prev.skills.filter(skill => {
+                if (!removedSectorSkills.includes(skill)) return true;
+                // Check if skill exists in any remaining sector
+                return remainingSectors.some(sector => 
+                    (skillsBySector[sector] || []).includes(skill)
+                );
+            });
+            
+            return { ...prev, [field]: newValues, skills: skillsToKeep };
         }
+        
+        return { ...prev, [field]: newValues };
     });
   };
 
@@ -238,37 +282,54 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                   </TooltipContent>
                 </Tooltip>
               </Label>
-            {isMobile ? (
-              <select 
-                multiple
-                className="w-full p-2 border border-border rounded-md bg-background text-foreground"
-                value={formData.interests}
-                onChange={(e) => {
-                  const values = Array.from(e.target.selectedOptions, option => option.value);
-                  setFormData(prev => ({...prev, interests: values}));
-                }}
-              >
-                {sectors.map(sector => (
-                  <option key={sector} value={sector}>{sector}</option>
-                ))}
-              </select>
-            ) : (
+              
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal">
-                    {formData.interests.length > 0 ? formData.interests.join(', ') : 'Select your interests'}
+                  <Button variant="outline" className="w-full justify-between">
+                    {formData.interests.length > 0 
+                      ? `${formData.interests.length} sector${formData.interests.length > 1 ? 's' : ''} selected`
+                      : "Select sectors"
+                    }
+                    <ChevronDown className="h-4 w-4 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {sectors.map(sector => (
-                      <Button key={sector} variant={formData.interests.includes(sector) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('interests', sector)} className={formData.interests.includes(sector) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{sector}</Button>
-                    ))}
+                <PopoverContent className="w-full p-0" align="start">
+                  <div className="max-h-60 overflow-y-auto p-4">
+                    <div className="grid grid-cols-1 gap-2">
+                      {sectors.map((sector) => (
+                        <div key={sector} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`sector-${sector}`}
+                            checked={formData.interests.includes(sector)}
+                            onCheckedChange={() => handleMultiSelectChange('interests', sector)}
+                          />
+                          <Label htmlFor={`sector-${sector}`} className="text-sm font-normal cursor-pointer">
+                            {sector}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
-            )}
-          </div>
+              
+              {/* Selected Sectors Tags */}
+              {formData.interests.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.interests.map(sector => (
+                    <Badge 
+                      key={sector} 
+                      variant="default" 
+                      className="rounded-none cursor-pointer"
+                      onClick={() => handleMultiSelectChange('interests', sector)}
+                    >
+                      {sector}
+                      <X className="w-3 h-3 ml-1" />
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
           
             <div className="space-y-2">
                <Label htmlFor="skills" className="text-sm font-medium text-foreground flex items-center gap-2">
@@ -283,61 +344,105 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                   </TooltipContent>
                 </Tooltip>
               </Label>
-              {formData.interests.length === 0 && (
-                <p className="text-sm text-muted-foreground italic">Please select your sector interests first</p>
+              
+              {formData.interests.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="text-sm">Please select sector interests first to see available skills</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between" disabled={formData.interests.length === 0}>
+                        {formData.skills.length > 0 
+                          ? `${formData.skills.length} skill${formData.skills.length > 1 ? 's' : ''} selected`
+                          : "Select skills"
+                        }
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0" align="start">
+                      <div className="max-h-60 overflow-y-auto p-4">
+                        {formData.interests.map(sector => {
+                          const sectorSkills = skillsBySector[sector] || [];
+                          const allSectorSkillsSelected = sectorSkills.length > 0 && sectorSkills.every(skill => formData.skills.includes(skill));
+                          
+                          return (
+                            <div key={sector} className="mb-4 last:mb-0">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="text-sm font-semibold text-primary">{sector}</h4>
+                                {sectorSkills.length > 0 && (
+                                  <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`select-all-${sector}`}
+                                      checked={allSectorSkillsSelected}
+                                      onCheckedChange={() => {
+                                        if (allSectorSkillsSelected) {
+                                          // Remove all sector skills
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            skills: prev.skills.filter(skill => !sectorSkills.includes(skill))
+                                          }));
+                                        } else {
+                                          // Add all sector skills
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            skills: [...new Set([...prev.skills, ...sectorSkills])]
+                                          }));
+                                        }
+                                      }}
+                                    />
+                                    <Label htmlFor={`select-all-${sector}`} className="text-xs text-muted-foreground cursor-pointer">
+                                      Select All
+                                    </Label>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="grid grid-cols-1 gap-2">
+                                {sectorSkills.map((skill: string) => (
+                                  <div key={skill} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`skill-${skill}`}
+                                      checked={formData.skills.includes(skill)}
+                                      onCheckedChange={() => handleMultiSelectChange('skills', skill)}
+                                    />
+                                    <Label htmlFor={`skill-${skill}`} className="text-sm font-normal cursor-pointer">
+                                      {skill}
+                                    </Label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  {/* Selected Skills Tags */}
+                  {formData.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {formData.skills.map(skill => (
+                        <Badge 
+                          key={skill} 
+                          variant="secondary" 
+                          className="rounded-none cursor-pointer"
+                          onClick={() => handleMultiSelectChange('skills', skill)}
+                        >
+                          {skill}
+                          <X className="w-3 h-3 ml-1" />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
-            {isMobile ? (
-              <select 
-                multiple
-                disabled={formData.interests.length === 0}
-                className="w-full p-2 border border-border rounded-md bg-background text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
-                value={formData.skills}
-                onChange={(e) => {
-                  const values = Array.from(e.target.selectedOptions, option => option.value);
-                  setFormData(prev => ({...prev, skills: values}));
-                }}
-              >
-                {(formData.interests.length > 0 
-                  ? formData.interests.flatMap(interest => skillsBySector[interest] || []).filter((skill, index, arr) => arr.indexOf(skill) === index)
-                  : []
-                ).map(skill => (
-                  <option key={skill} value={skill}>{skill}</option>
-                ))}
-              </select>
-            ) : (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    disabled={formData.interests.length === 0}
-                    className="w-full justify-start text-left font-normal h-auto min-h-10 py-2 whitespace-normal disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {formData.interests.length === 0 
-                      ? 'Select sector interests first' 
-                      : formData.skills.length > 0 
-                        ? formData.skills.join(', ') 
-                        : 'Select your skills'
-                    }
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {(formData.interests.length > 0 
-                      ? formData.interests.flatMap(interest => skillsBySector[interest] || []).filter((skill, index, arr) => arr.indexOf(skill) === index)
-                      : []
-                    ).map(skill => (
-                      <Button key={skill} variant={formData.skills.includes(skill) ? 'default' : 'outline'} onClick={() => handleMultiSelectChange('skills', skill)} className={formData.skills.includes(skill) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border-2 border-border hover:bg-muted hover:text-foreground'}>{skill}</Button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-            )}
-          </div>
+            </div>
           
             <div className="space-y-2">
               <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
-                Preferred Location *
+                Preferred Location
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
@@ -353,7 +458,6 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                 value={formData.location}
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                 placeholder="e.g., Mumbai, Delhi, Remote"
-                required
               />
             </div>
             

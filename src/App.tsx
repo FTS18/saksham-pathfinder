@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useServiceWorker } from "./hooks/useServiceWorker";
 import { useNavigationLoading } from "./hooks/useNavigationLoading";
 import { useTimeTracking } from "./hooks/useTimeTracking";
+import { useTimeBasedPoints } from "./hooks/useTimeBasedPoints";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -13,6 +14,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OnboardingRedirect } from "@/components/OnboardingRedirect";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
+
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Navbar } from "@/components/Navbar";
@@ -36,6 +38,7 @@ import OnboardingSteps from "./pages/OnboardingSteps";
 import LiveJobs from "./pages/LiveJobs";
 import Referrals from "./pages/Referrals";
 import DashboardSettings from "./pages/DashboardSettings";
+
 import NewsEvents from "./pages/NewsEvents";
 import Tutorials from "./pages/Tutorials";
 
@@ -45,6 +48,7 @@ const AppContent = () => {
   const isNavigationLoading = useNavigationLoading();
   const { currentUser, needsEmailVerification } = useAuth();
   useTimeTracking();
+  useTimeBasedPoints();
   
   // Show email verification if needed
   if (currentUser && needsEmailVerification) {
@@ -80,6 +84,7 @@ const AppContent = () => {
                       <Route path="/onboarding-old" element={<ProtectedRoute><OnboardingPreferences /></ProtectedRoute>} />
                       <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
                       <Route path="/dashboard/settings" element={<ProtectedRoute><DashboardSettings /></ProtectedRoute>} />
+
                       <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                       <Route path="/dashboard/news-events" element={<ProtectedRoute><NewsEvents /></ProtectedRoute>} />
                       <Route path="/dashboard/tutorials" element={<ProtectedRoute><Tutorials /></ProtectedRoute>} />
@@ -90,6 +95,7 @@ const AppContent = () => {
         </OnboardingRedirect>
         <Footer />
         <InstallPrompt />
+
         <Chatbot />
       </div>
     </ErrorBoundary>

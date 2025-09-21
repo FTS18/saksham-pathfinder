@@ -1,14 +1,14 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
-type ColorTheme = 'green' | 'blue' | 'red' | 'gold' | 'duochrome';
+type ColorTheme = 'blue' | 'grey' | 'red' | 'yellow' | 'green';
 
 const colorThemeNames: Record<ColorTheme, string> = {
-  green: 'Green',
-  blue: 'Blue', 
+  blue: 'Blue',
+  grey: 'Grey',
   red: 'Red',
-  gold: 'Gold',
-  duochrome: 'White Black Grey'
+  yellow: 'Yellow',
+  green: 'Green'
 };
 type Language = 'en' | 'hi' | 'pa' | 'ur' | 'bn' | 'ta' | 'te' | 'ml' | 'kn' | 'gu' | 'mr';
 
@@ -70,7 +70,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('green', 'blue', 'red', 'gold', 'duochrome');
+    root.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
     root.classList.add(colorTheme);
     localStorage.setItem('colorTheme', colorTheme);
   }, [colorTheme]);

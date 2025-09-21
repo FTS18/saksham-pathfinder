@@ -169,12 +169,26 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
       'ServiceNow': 'border-l-4 border-l-green-600 bg-green-50/70 dark:bg-green-950/20',
       
       // Indian Companies
-      'Infosys': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'TCS': 'border-l-4 border-l-blue-800 bg-blue-50/70 dark:bg-blue-950/20',
+      'Flipkart': 'border-l-4 border-l-yellow-500 bg-yellow-50/70 dark:bg-yellow-950/20',
+      'Myntra': 'border-l-4 border-l-pink-500 bg-pink-50/70 dark:bg-pink-950/20',
+      'Infosys': 'border-l-4 border-l-cyan-500 bg-cyan-50/70 dark:bg-cyan-950/20',
+      'Microsoft': 'border-l-4 border-l-sky-600 bg-sky-50/70 dark:bg-sky-950/20',
+      'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
+      'Amazon India': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
+      'Paytm': 'border-l-4 border-l-blue-900 bg-blue-50/70 dark:bg-blue-950/20',
+      'Nestle': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'HDFC Bank': 'border-l-4 border-l-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/20',
+      'ITC': 'border-l-4 border-l-gray-500 bg-gray-50/70 dark:bg-gray-950/20',
+      'Mahindra': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'Britannia': 'border-l-4 border-l-green-400 bg-green-50/70 dark:bg-green-950/20',
+      'Airtel': 'border-l-4 border-l-red-700 bg-red-50/70 dark:bg-red-950/20',
+      'TCS': 'border-l-4 border-l-blue-700 bg-blue-50/70 dark:bg-blue-950/20',
+      'Reliance': 'border-l-4 border-l-yellow-600 bg-yellow-50/70 dark:bg-yellow-950/20',
+      'Axis Bank': 'border-l-4 border-l-pink-600 bg-pink-50/70 dark:bg-pink-950/20',
+      'Unacademy': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
+      'Cognizant': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
       'Wipro': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
       'Accenture': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20',
-      'Flipkart': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Paytm': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
       'Zomato': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
       'Swiggy': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
       'Ola': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
@@ -213,12 +227,12 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   return (
     <>
-    <Card className={`relative minimal-card flex flex-col h-full rounded border hover:shadow-md transition-shadow ${
+    <Card className={`relative minimal-card flex flex-col h-full rounded border shadow-lg hover:shadow-xl transition-all duration-300 ${
         featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
       } ${getCompanyTheme(company)}`}
     >
       {aiTags && aiTags.includes('AI Recommended') && (
-        <div className="absolute top-0 left-0 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-br-lg z-10">
+        <div className="absolute -top-2 left-2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full z-10 shadow-md">
           🤖 AI Recommended
         </div>
       )}
@@ -228,7 +242,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         </div>
       )}
 
-      <CardContent className="p-4 md:p-5 sm:p-4 flex flex-col h-full">
+      <CardContent className="p-6 md:p-7 sm:p-6 flex flex-col h-full">
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center space-x-2 pr-6">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">

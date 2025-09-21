@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee } from 'lucide-react';
+import { Slider } from '../components/ui/slider';
+import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee, Filter } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { InternshipCard } from '../components/InternshipCard';
 
@@ -11,13 +12,15 @@ export default function Wishlist() {
   const [allInternships, setAllInternships] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
+  const [minMatchScore, setMinMatchScore] = useState([70]);
+  const [showAllRecommendations, setShowAllRecommendations] = useState(false);
 
   useEffect(() => {
     // Load internships data
     fetch('/internships.json')
       .then(response => response.json())
       .then(data => setAllInternships(data))
-      .catch(error => console.error("Failed to load internships:", error));
+      .catch(() => console.warn('Failed to load internships data'));
 
     // Load profile data
     const savedProfile = localStorage.getItem('userProfile');
@@ -61,16 +64,15 @@ export default function Wishlist() {
           // Company similarity (10%)
           if (companies.includes(internship.company)) score += 10;
           
-          return { internship, score };
+          return { internship, score: Math.round(score) };
         })
-        .filter(item => item.score > 20)
+        .filter(item => item.score >= minMatchScore[0])
         .sort((a, b) => b.score - a.score)
-        .slice(0, 6)
-        .map(item => item.internship);
+        .map(item => ({ ...item.internship, matchScore: item.score }));
       
       setRecommendations(scored);
     }
-  }, [allInternships, wishlist]);
+  }, [allInternships, wishlist, minMatchScore]);
 
   const wishlistedInternships = allInternships.filter(internship => 
     wishlist.includes(internship.id)
@@ -104,24 +106,53 @@ export default function Wishlist() {
             
             {recommendations.length > 0 && (
               <div className="mt-12">
-                <div className="flex items-center gap-2 mb-6">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                  <h2 className="text-2xl font-bold text-foreground">Recommended for You</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold text-foreground">Recommended for You</h2>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Min Match:</span>
+                      <span className="text-sm font-medium">{minMatchScore[0]}%</span>
+                    </div>
+                    <div className="w-32">
+                      <Slider
+                        value={minMatchScore}
+                        onValueChange={setMinMatchScore}
+                        max={100}
+                        min={50}
+                        step={5}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <p className="text-muted-foreground mb-6">
                   Based on your wishlist preferences, we found these similar opportunities
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {recommendations.map((internship) => (
+                  {(showAllRecommendations ? recommendations : recommendations.slice(0, 3)).map((internship) => (
                     <InternshipCard 
                       key={internship.id}
                       internship={internship}
                       userProfile={profileData}
-                      matchScore={Math.floor(Math.random() * 20) + 70}
+                      matchScore={internship.matchScore}
                       aiTags={['Recommended']}
                     />
                   ))}
                 </div>
+                {recommendations.length > 3 && (
+                  <div className="flex justify-center mt-8">
+                    <Button 
+                      onClick={() => setShowAllRecommendations(!showAllRecommendations)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-2 rounded-full font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      {showAllRecommendations ? 'Show Less' : `View All ${recommendations.length} Recommendations`}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </>

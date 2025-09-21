@@ -49,6 +49,8 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
         <div className="absolute top-40 right-20 w-32 h-32 bg-accent/30 rounded-full animate-float blur-2xl" style={{ animationDelay: '2s' }} />
         <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-primary/25 rounded-full animate-float blur-xl" style={{ animationDelay: '4s' }} />
       </div>
+      
+
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
         <div className="max-w-6xl mx-auto">

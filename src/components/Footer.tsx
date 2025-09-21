@@ -3,7 +3,7 @@ import { Mail, Phone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export const Footer = () => {
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   
   return (
     <footer className="bg-background border-t border-border">
@@ -47,10 +47,10 @@ export const Footer = () => {
                 type="email"
                 name="email"
                 placeholder="Your email"
-                value={user?.email || ''}
-                readOnly={!!user?.email}
+                value={currentUser?.email || ''}
+                readOnly={!!currentUser?.email}
                 required
-                className={`w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 ${user?.email ? 'cursor-not-allowed opacity-75' : ''}`}
+                className={`w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 ${currentUser?.email ? 'cursor-not-allowed opacity-75' : ''}`}
               />
               <textarea
                 name="message"
@@ -61,7 +61,7 @@ export const Footer = () => {
               />
               <button
                 type="submit"
-                className="w-full px-3 py-2 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
+                className="w-full px-3 py-2 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-medium"
               >
                 Send
               </button>
