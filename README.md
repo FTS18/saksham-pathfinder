@@ -1,73 +1,188 @@
-# Welcome to your Lovable project
+# 🚀 Saksham AI - Intelligent Internship Platform
 
-## Project info
+> **AI-Powered Internship Discovery & Career Guidance Platform**
 
-**URL**: https://lovable.dev/projects/c1f68b57-c966-4475-bd23-8759bdb36c2e
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-12.2.1-orange.svg)](https://firebase.google.com/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.19-purple.svg)](https://vitejs.dev/)
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+### 🤖 AI-Powered Matching
+- **Smart Algorithm**: Multi-dimensional compatibility analysis with 50% skills weighting
+- **Company Tier System**: Tier 1 (Google, Microsoft) get 12% bonus, Tier 2 get 8%, Tier 3 get 5%
+- **Semantic Matching**: Advanced skill-to-internship correlation
+- **Real-time Scoring**: Dynamic AI scores based on profile compatibility
 
-**Use Lovable**
+### 🎯 Personalized Experience
+- **Profile Onboarding**: 5-step guided setup with sector-skill mapping
+- **Smart Filters**: Location, stipend, sector, and skill-based filtering
+- **Wishlist System**: Save and track favorite internships
+- **Progress Tracking**: Application status and career milestone tracking
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c1f68b57-c966-4475-bd23-8759bdb36c2e) and start prompting.
+### 🌐 Multi-Language Support
+- **Google Translate Integration**: English ⇄ Hindi translation
+- **Responsive UI**: Mobile-first design with language toggle buttons
+- **Cultural Adaptation**: India-focused content and opportunities
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🔐 Authentication & Security
+- **Firebase Auth**: Google OAuth integration
+- **Secure Data**: XSS protection, input sanitization, SSRF prevention
+- **Profile Management**: Comprehensive user data handling
 
-**Use your preferred IDE**
+### 🎨 Modern UI/UX
+- **Theme System**: 5 color themes (blue, grey, red, yellow, green) + light/dark mode
+- **Responsive Design**: Mobile, tablet, and desktop optimized
+- **Smooth Animations**: Framer Motion powered transitions
+- **Glass Morphism**: Modern glassmorphism design elements
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📊 Analytics & Insights
+- **Skill Gap Analysis**: AI-powered career guidance
+- **Market Trends**: Real-time internship market insights
+- **Success Stories**: Animated testimonials and achievements
+- **Performance Metrics**: Application success tracking
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🎁 Gamification
+- **Points System**: Earn points for profile completion, applications, referrals
+- **Referral Program**: 100 points for successful referrals
+- **Badges & Achievements**: Milestone-based reward system
+- **Leaderboards**: Community engagement features
 
-Follow these steps:
+### 📱 PWA Support
+- **Installable App**: Progressive Web App with offline capabilities
+- **Push Notifications**: Real-time updates and alerts
+- **Native Feel**: App-like experience on mobile devices
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🛠️ Tech Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend
+- **React 18.3.1** - Modern React with hooks and concurrent features
+- **TypeScript** - Type-safe development
+- **Vite** - Lightning-fast build tool
+- **Tailwind CSS** - Utility-first CSS framework
+- **Shadcn/ui** - High-quality component library
+- **Framer Motion** - Smooth animations and transitions
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Backend & Services
+- **Firebase** - Authentication, Firestore database, hosting
+- **Google Gemini AI** - Advanced AI processing and recommendations
+- **RapidAPI** - Job data aggregation (JSearch API)
+- **Adzuna API** - Additional job listings
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### State Management
+- **React Context** - Global state management
+- **React Query** - Server state management
+- **Local Storage** - Client-side data persistence
+
+### Development Tools
+- **ESLint** - Code linting and quality
+- **Prettier** - Code formatting
+- **Husky** - Git hooks for quality control
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ and npm
+- Firebase project setup
+- API keys for Gemini AI and job APIs
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/saksham-pathfinder.git
+
+# Navigate to project directory
+cd saksham-pathfinder
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Set up environment variables
+cp .env.example .env
+# Add your API keys to .env file
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+# Gemini AI
+VITE_GEMINI_API_KEY=your_gemini_api_key
 
-**Use GitHub Codespaces**
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Job APIs
+VITE_RAPIDAPI_KEY=your_rapidapi_key
+VITE_ADZUNA_APP_ID=your_adzuna_app_id
+VITE_ADZUNA_APP_KEY=your_adzuna_app_key
+```
 
-## What technologies are used for this project?
+## 📁 Project Structure
 
-This project is built with:
+```
+src/
+├── components/          # Reusable UI components
+├── pages/              # Main application pages
+├── contexts/           # React context providers
+├── hooks/              # Custom React hooks
+├── lib/                # Utility libraries and configurations
+├── services/           # API services and integrations
+└── data/              # Static data and configurations
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🎯 Key Components
 
-## How can I deploy this project?
+- **AI Matching Engine** - Multi-factor internship recommendation system
+- **Profile System** - Comprehensive user profile with skills and preferences
+- **Filter System** - Advanced filtering with sector-skill dependencies
+- **Notification System** - Real-time updates and alerts
+- **Theme Engine** - Dynamic theming with color and mode controls
 
-Simply open [Lovable](https://lovable.dev/projects/c1f68b57-c966-4475-bd23-8759bdb36c2e) and click on Share -> Publish.
+## 🔧 Build & Deploy
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# Build for production
+npm run build
 
-Yes, you can!
+# Preview production build
+npm run preview
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Deploy to Firebase (if configured)
+firebase deploy
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Team HexaCoders** - Development team
+- **Google Gemini AI** - AI processing capabilities
+- **Firebase** - Backend infrastructure
+- **Shadcn/ui** - Component library
+- **Lucide React** - Icon library
+
+---
+
+**Made with ❤️ by Team HexaCoders**
+
+*Empowering students to find their perfect internship match through AI-driven recommendations.*
