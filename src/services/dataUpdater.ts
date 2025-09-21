@@ -24,8 +24,8 @@ export class DataUpdater {
       
       return updatedData;
     } catch (error) {
-      console.error('Data update failed:', error);
-      throw error;
+      console.warn('Data update failed');
+      throw new Error('Data update failed');
     }
   }
 
@@ -91,7 +91,7 @@ export class DataUpdater {
         await this.updateInternshipData();
         console.log('Auto-update completed');
       } catch (error) {
-        console.error('Auto-update failed:', error);
+        console.warn('Auto-update failed');
       }
     }, intervalHours * 60 * 60 * 1000);
   }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useTheme } from '@/contexts/ThemeContext';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider, signInWithPopup, linkWithPopup, unlink, deleteUser } from 'firebase/auth';
 import { db, googleProvider } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,7 @@ import { CitySelector } from '@/components/CitySelector';
 import { PhoneInput } from '@/components/PhoneInput';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { ShareProfileBanner } from '@/components/ShareProfileBanner';
-import AccountSettings from '@/components/AccountSettings';
+
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
 import { extractAllSkills, extractAllSectors } from '@/lib/dataExtractor';
@@ -63,6 +64,7 @@ interface UserProfile {
 
 const Profile = () => {
   const { currentUser } = useAuth();
+  const { theme, colorTheme, language, setTheme, setColorTheme, setLanguage } = useTheme();
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile>({
     username: '',
@@ -107,6 +109,7 @@ const Profile = () => {
   const [availableSkills, setAvailableSkills] = useState<string[]>([]);
   const [availableSectors, setAvailableSectors] = useState<string[]>([]);
   const [showShareBanner, setShowShareBanner] = useState(false);
+  const [activeTab, setActiveTab] = useState<'personal' | 'account' | 'preferences'>('personal');
 
 
 
@@ -277,7 +280,34 @@ const Profile = () => {
   };
 
   const removeSector = (sector: string) => {
-    setProfile(prev => ({ ...prev, sectors: prev.sectors.filter(s => s !== sector) }));
+    setProfile(prev => {
+      const newSectors = prev.sectors.filter(s => s !== sector);
+      
+      // Remove skills that are only associated with the removed sector
+      const sectorSkills = availableSkills.filter(skill => 
+        skill.toLowerCase().includes(sector.toLowerCase()) ||
+        sector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(skill) ||
+        sector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(skill) ||
+        sector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(skill)
+      );
+      
+      // Keep skills that exist in other selected sectors
+      const skillsToKeep = prev.skills.filter(skill => {
+        if (!sectorSkills.includes(skill)) return true;
+        // Check if skill exists in any remaining sector
+        return newSectors.some(remainingSector => {
+          const remainingSectorSkills = availableSkills.filter(s => 
+            s.toLowerCase().includes(remainingSector.toLowerCase()) ||
+            remainingSector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(s) ||
+            remainingSector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(s) ||
+            remainingSector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(s)
+          );
+          return remainingSectorSkills.includes(skill);
+        });
+      });
+      
+      return { ...prev, sectors: newSectors, skills: skillsToKeep };
+    });
   };
 
   const addEducation = () => {
@@ -390,18 +420,43 @@ const Profile = () => {
     
     setDeleting(true);
     try {
+      // For password users, require re-authentication
+      if (currentUser.providerData[0]?.providerId === 'password') {
+        if (!passwordData.currentPassword) {
+          toast({
+            title: 'Password Required',
+            description: 'Please enter your current password to delete your account.',
+            variant: 'destructive'
+          });
+          setDeleting(false);
+          return;
+        }
+        
+        // Re-authenticate
+        const credential = EmailAuthProvider.credential(currentUser.email!, passwordData.currentPassword);
+        await reauthenticateWithCredential(currentUser, credential);
+      }
+      
       // Delete profile from Firestore first
       try {
         const docRef = doc(db, 'profiles', currentUser.uid);
-        await setDoc(docRef, {}, { merge: false }); // Clear the document
+        await deleteDoc(docRef);
       } catch (error) {
         console.log('Profile data will be cleaned up when database is available');
       }
+      
+      // Clear all localStorage data
+      localStorage.clear();
       
       // Delete the user account
       await deleteUser(currentUser);
       
       toast({ title: 'Account Deleted', description: 'Your account has been permanently deleted' });
+      
+      // Redirect to home
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000);
     } catch (error: any) {
       console.error('Error deleting account:', error);
       if (error.code === 'auth/requires-recent-login') {
@@ -427,25 +482,68 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl pt-20">
+    <div className="container mx-auto p-6 max-w-4xl pt-16 md:pt-20">
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Profile</h1>
-          <div className="flex gap-2">
-            {profile.username && (
-              <Button
-                variant="outline"
-                onClick={() => setShowShareBanner(true)}
-              >
-                Share Profile
+        {/* Sticky Header */}
+        <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b">
+          <div className="flex items-center justify-between py-4">
+            <h1 className="text-3xl font-bold">Settings</h1>
+            <div className="flex gap-2">
+              {profile.username && (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowShareBanner(true)}
+                  className="rounded-full"
+                >
+                  Share Profile
+                </Button>
+              )}
+              <Button onClick={saveProfile} disabled={saving} className="rounded-full">
+                {saving ? 'Saving...' : 'Save Profile'}
               </Button>
-            )}
-            <Button onClick={saveProfile} disabled={saving}>
-              {saving ? 'Saving...' : 'Save Profile'}
-            </Button>
+            </div>
+          </div>
+          
+          {/* Section Navigation */}
+          <div className="overflow-x-auto pb-2">
+            <div className="flex gap-4 min-w-max">
+              <button 
+                onClick={() => setActiveTab('personal')}
+                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'personal' 
+                    ? 'border-primary text-primary' 
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Personal Info
+              </button>
+              <button 
+                onClick={() => setActiveTab('account')}
+                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'account' 
+                    ? 'border-primary text-primary' 
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Account
+              </button>
+              <button 
+                onClick={() => setActiveTab('preferences')}
+                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
+                  activeTab === 'preferences' 
+                    ? 'border-primary text-primary' 
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Preferences
+              </button>
+            </div>
           </div>
         </div>
 
+        {/* Personal Info Tab Content */}
+        {activeTab === 'personal' && (
+          <>
         {/* Basic Info */}
         <Card>
           <CardHeader>
@@ -466,7 +564,8 @@ const Profile = () => {
                   id="photoURL"
                   value={profile.photoURL}
                   onChange={(e) => setProfile(prev => ({ ...prev, photoURL: e.target.value }))}
-                  placeholder="https://example.com/photo.jpg"
+                  placeholder="Photo URL"
+                  className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
                 />
               </div>
             </div>
@@ -482,7 +581,8 @@ const Profile = () => {
                     setProfile(prev => ({ ...prev, username: newUsername }));
                     checkUsername(newUsername);
                   }}
-                  placeholder="coolcoder123"
+                  placeholder="johndoe"
+                  className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
                 />
                 {usernameChecking && <p className="text-xs text-muted-foreground mt-1">Checking...</p>}
                 {usernameAvailable === true && <p className="text-xs text-green-600 mt-1">✓ Available</p>}
@@ -497,44 +597,20 @@ const Profile = () => {
                   id="uniqueUserId"
                   value={profile.uniqueUserId}
                   disabled
-                  className="bg-muted"
+                  placeholder="Unique ID"
+                  className="bg-muted border-2 rounded-lg h-11"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Your unique ID for transactions and tracking
                 </p>
               </div>
-              <div>
-                <Label htmlFor="studentId">Student ID</Label>
-                <Input
-                  id="studentId"
-                  value={profile.studentId}
-                  onChange={(e) => setProfile(prev => ({ ...prev, studentId: e.target.value }))}
-                  placeholder="e.g., 25034096"
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={profile.email}
-                  onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-              <div>
-                <PhoneInput
-                  value={profile.phone}
-                  onChange={(value) => setProfile(prev => ({ ...prev, phone: value }))}
-                  country="India"
-                  label="Phone"
-                  placeholder="1234567890"
-                />
-              </div>
+
               <div>
                 <CitySelector
                   value={profile.location}
                   onChange={(location) => setProfile(prev => ({ ...prev, location }))}
                   label="Current Location"
+                  placeholder="Current city"
                 />
               </div>
               <div>
@@ -542,10 +618,11 @@ const Profile = () => {
                   value={profile.desiredLocation}
                   onChange={(desiredLocation) => setProfile(prev => ({ ...prev, desiredLocation }))}
                   label="Preferred Location *"
+                  placeholder="Preferred city"
                   required
                 />
               </div>
-              <div className="md:col-span-2">
+              <div>
                 <CurrencyInput
                   value={profile.minStipend}
                   onChange={(minStipend) => setProfile(prev => ({ ...prev, minStipend }))}
@@ -562,8 +639,9 @@ const Profile = () => {
                 id="bio"
                 value={profile.bio}
                 onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
-                placeholder="Tell us about yourself..."
+                placeholder="Tell us about yourself"
                 rows={3}
+                className="border-2 rounded-lg transition-colors focus:border-ring resize-none"
               />
             </div>
           </CardContent>
@@ -575,41 +653,33 @@ const Profile = () => {
             <CardTitle>Sectors</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="relative">
-              <div className="flex gap-2">
-                <Input
-                  value={newSector}
-                  onChange={(e) => handleSectorInput(e.target.value)}
-                  placeholder="Type to search sectors..."
-                  onKeyPress={(e) => e.key === 'Enter' && addSector()}
-                />
-                <Button onClick={() => addSector()} size="sm">
-                  <Plus className="w-4 h-4" />
-                </Button>
+            {/* Selected Sectors Tags */}
+            {profile.sectors.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {profile.sectors.map((sector, index) => (
+                  <Badge key={index} variant="default" className="rounded-none cursor-pointer">
+                    {sector}
+                    <X
+                      className="w-3 h-3 ml-1 cursor-pointer hover:text-destructive"
+                      onClick={() => removeSector(sector)}
+                    />
+                  </Badge>
+                ))}
               </div>
-              {sectorSuggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 bg-background border rounded-md shadow-lg z-10 mt-1">
-                  {sectorSuggestions.map((sector, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-2 hover:bg-accent cursor-pointer"
-                      onClick={() => addSector(sector)}
-                    >
-                      {sector}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {profile.sectors.map((sector, index) => (
-                <Badge key={index} variant="outline" className="flex items-center gap-1">
+            )}
+            
+            {/* Sector Selection Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto border rounded-md p-3">
+              {availableSectors.map(sector => (
+                <Button 
+                  key={sector} 
+                  variant={profile.sectors.includes(sector) ? 'default' : 'outline'} 
+                  onClick={() => profile.sectors.includes(sector) ? removeSector(sector) : addSector(sector)} 
+                  className={`rounded-none text-xs h-8 ${profile.sectors.includes(sector) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border border-border hover:bg-muted hover:text-foreground'}`}
+                  size="sm"
+                >
                   {sector}
-                  <X
-                    className="w-3 h-3 cursor-pointer hover:text-destructive"
-                    onClick={() => removeSector(sector)}
-                  />
-                </Badge>
+                </Button>
               ))}
             </div>
           </CardContent>
@@ -621,44 +691,59 @@ const Profile = () => {
             <CardTitle>Skills</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-
-            <div className="relative">
-              <div className="flex gap-2">
-                <Input
-                  value={newSkill}
-                  onChange={(e) => handleSkillInput(e.target.value)}
-                  placeholder="Type to search skills..."
-                  onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-                />
-                <Button onClick={() => addSkill()} size="sm">
-                  <Plus className="w-4 h-4" />
-                </Button>
+            {profile.sectors.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">Please select sector interests first to see available skills</p>
               </div>
-              {skillSuggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 bg-background border rounded-md shadow-lg z-10 mt-1">
-                  {skillSuggestions.map((skill, index) => (
-                    <div
-                      key={index}
-                      className="px-3 py-2 hover:bg-accent cursor-pointer"
-                      onClick={() => addSkill(skill)}
-                    >
-                      {skill}
-                    </div>
-                  ))}
+            ) : (
+              <>
+                {/* Selected Skills Tags */}
+                {profile.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {profile.skills.map((skill, index) => (
+                      <Badge key={index} variant="secondary" className="rounded-none cursor-pointer">
+                        {skill}
+                        <X
+                          className="w-3 h-3 ml-1 cursor-pointer hover:text-destructive"
+                          onClick={() => removeSkill(skill)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Skills by Sector */}
+                <div className="max-h-60 overflow-y-auto border rounded-md p-3">
+                  {profile.sectors.map(sector => {
+                    const sectorSkills = availableSkills.filter(skill => 
+                      skill.toLowerCase().includes(sector.toLowerCase()) ||
+                      sector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(skill) ||
+                      sector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(skill) ||
+                      sector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(skill)
+                    );
+                    
+                    return (
+                      <div key={sector} className="mb-4 last:mb-0">
+                        <h4 className="text-sm font-semibold mb-2 text-primary">{sector}</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                          {sectorSkills.slice(0, 12).map((skill: string) => (
+                            <Button 
+                              key={skill} 
+                              variant={profile.skills.includes(skill) ? 'default' : 'outline'} 
+                              onClick={() => profile.skills.includes(skill) ? removeSkill(skill) : addSkill(skill)} 
+                              className={`rounded-none text-xs h-8 ${profile.skills.includes(skill) ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'bg-card text-foreground border border-border hover:bg-muted hover:text-foreground'}`}
+                              size="sm"
+                            >
+                              {skill}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {profile.skills.map((skill, index) => (
-                <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                  {skill}
-                  <X
-                    className="w-3 h-3 cursor-pointer hover:text-destructive"
-                    onClick={() => removeSkill(skill)}
-                  />
-                </Badge>
-              ))}
-            </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -676,16 +761,19 @@ const Profile = () => {
                 value={newEducation.degree}
                 onChange={(e) => setNewEducation(prev => ({ ...prev, degree: e.target.value }))}
                 placeholder="Degree"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Input
                 value={newEducation.institution}
                 onChange={(e) => setNewEducation(prev => ({ ...prev, institution: e.target.value }))}
                 placeholder="Institution"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Input
                 value={newEducation.year}
                 onChange={(e) => setNewEducation(prev => ({ ...prev, year: e.target.value }))}
                 placeholder="Year"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Button onClick={addEducation} size="sm">
                 <Plus className="w-4 h-4" />
@@ -724,17 +812,20 @@ const Profile = () => {
               <Input
                 value={newExperience.title}
                 onChange={(e) => setNewExperience(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Job Title"
+                placeholder="Job title"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Input
                 value={newExperience.company}
                 onChange={(e) => setNewExperience(prev => ({ ...prev, company: e.target.value }))}
                 placeholder="Company"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Input
                 value={newExperience.duration}
                 onChange={(e) => setNewExperience(prev => ({ ...prev, duration: e.target.value }))}
                 placeholder="Duration"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <Button onClick={addExperience} size="sm">
                 <Plus className="w-4 h-4" />
@@ -774,42 +865,42 @@ const Profile = () => {
                 value={profile.socialLinks.portfolio}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, portfolio: value } }))}
                 label="Portfolio"
-                placeholder="https://yourportfolio.com"
+                placeholder="Enter URL"
                 platform="portfolio"
               />
               <SocialLinksInput
                 value={profile.socialLinks.linkedin}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, linkedin: value } }))}
                 label="LinkedIn"
-                placeholder="username"
+                placeholder="johndoe"
                 platform="linkedin"
               />
               <SocialLinksInput
                 value={profile.socialLinks.github}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, github: value } }))}
                 label="GitHub"
-                placeholder="username"
+                placeholder="johndoe"
                 platform="github"
               />
               <SocialLinksInput
                 value={profile.socialLinks.twitter}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, twitter: value } }))}
                 label="Twitter/X"
-                placeholder="username"
+                placeholder="johndoe"
                 platform="twitter"
               />
               <SocialLinksInput
                 value={profile.socialLinks.codechef}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, codechef: value } }))}
                 label="CodeChef"
-                placeholder="username"
+                placeholder="johndoe"
                 platform="codechef"
               />
               <SocialLinksInput
                 value={profile.socialLinks.leetcode}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, leetcode: value } }))}
                 label="LeetCode"
-                placeholder="username"
+                placeholder="johndoe"
                 platform="leetcode"
               />
             </div>
@@ -830,7 +921,8 @@ const Profile = () => {
               <Input
                 value={profile.resumeURL}
                 onChange={(e) => setProfile(prev => ({ ...prev, resumeURL: e.target.value }))}
-                placeholder="https://drive.google.com/file/d/your-resume.pdf"
+                placeholder="Enter URL"
+                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <p className="text-sm text-muted-foreground mt-1">
                 Upload your resume to Google Drive and paste the shareable link here
@@ -839,16 +931,166 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Account Settings */}
+
+
+          </>
+        )}
+
+        {/* Account Tab Content */}
+        {activeTab === 'account' && (
+          <>
+        {/* Basic Account Info */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Lock className="w-5 h-5" />
-              Account Settings
+              <User className="w-5 h-5" />
+              Account Information
             </CardTitle>
           </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={profile.email}
+                  onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="Email address"
+                  className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                />
+              </div>
+              <div>
+                <PhoneInput
+                  value={profile.phone}
+                  onChange={(value) => setProfile(prev => ({ ...prev, phone: value }))}
+                  country="India"
+                  label="Phone"
+                  placeholder="1234567890"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Email Verification */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Email Verification</CardTitle>
+          </CardHeader>
           <CardContent>
-            <AccountSettings />
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <p className="text-sm text-muted-foreground">Current email: {currentUser?.email}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  {currentUser?.emailVerified ? (
+                    <>
+                      <div className="w-2 h-2 bg-green-500 rounded-full" />
+                      <span className="text-green-500 text-sm">Verified</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 bg-red-500 rounded-full" />
+                      <span className="text-red-500 text-sm">Not verified</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {!currentUser?.emailVerified && (
+                <Button size="sm" variant="outline" className="rounded-full">
+                  Send Verification
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Password Management */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Password Management</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {currentUser?.providerData[0]?.providerId === 'password' ? (
+              <>
+                <div className="space-y-3">
+                  <Button variant="outline" size="sm" className="rounded-full">
+                    Send Password Reset Email
+                  </Button>
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-3">
+                  <h4 className="font-medium">Change Password</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <Label>Current Password</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                        placeholder="Current password"
+                        className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                      />
+                    </div>
+                    <div>
+                      <Label>New Password</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                        placeholder="New password"
+                        className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                      />
+                    </div>
+                    <div>
+                      <Label>Confirm New Password</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        placeholder="Confirm password"
+                        className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                      />
+                    </div>
+                    <Button onClick={changePassword} disabled={changingPassword} size="sm" className="rounded-full">
+                      {changingPassword ? 'Updating...' : 'Update Password'}
+                    </Button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-3">
+                <h4 className="font-medium">Set Password</h4>
+                <p className="text-sm text-muted-foreground">You signed in with Google. Set a password to enable email login.</p>
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <Label>New Password</Label>
+                    <Input
+                      type="password"
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                      placeholder="New password"
+                      className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                    />
+                  </div>
+                  <div>
+                    <Label>Confirm Password</Label>
+                    <Input
+                      type="password"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      placeholder="Confirm password"
+                      className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                    />
+                  </div>
+                  <Button onClick={changePassword} disabled={changingPassword} size="sm" className="rounded-full">
+                    {changingPassword ? 'Setting...' : 'Set Password'}
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -879,6 +1121,7 @@ const Profile = () => {
                   size="sm" 
                   onClick={unlinkGoogleAccount}
                   disabled={linking}
+                  className="rounded-full"
                 >
                   {linking ? 'Unlinking...' : 'Unlink'}
                 </Button>
@@ -887,6 +1130,7 @@ const Profile = () => {
                   size="sm" 
                   onClick={linkGoogleAccount}
                   disabled={linking}
+                  className="rounded-full"
                 >
                   {linking ? 'Linking...' : 'Link Account'}
                 </Button>
@@ -894,6 +1138,157 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Delete Account */}
+        <Card className="border-red-200 dark:border-red-800">
+          <CardHeader>
+            <CardTitle className="text-red-600 dark:text-red-400">Danger Zone</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-950/20">
+              <div className="flex items-start gap-3">
+                <Trash2 className="w-5 h-5 text-red-500 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-red-800 dark:text-red-200">Delete Account</h4>
+                  <p className="text-sm text-red-700 dark:text-red-300 mt-1">
+                    This will permanently delete your account, profile, and all associated data.
+                  </p>
+                  {currentUser?.providerData[0]?.providerId === 'password' && (
+                    <div className="mt-3 mb-3">
+                      <Label className="text-red-800 dark:text-red-200">Enter your password to confirm</Label>
+                      <Input
+                        type="password"
+                        value={passwordData.currentPassword}
+                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                        placeholder="Password"
+                        className="mt-1 border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                      />
+                    </div>
+                  )}
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    className="mt-3 rounded-full"
+                    onClick={deleteAccount}
+                    disabled={deleting || (currentUser?.providerData[0]?.providerId === 'password' && !passwordData.currentPassword)}
+                  >
+                    {deleting ? 'Deleting...' : 'Delete My Account'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+          </>
+        )}
+
+        {/* Preferences Tab Content */}
+        {activeTab === 'preferences' && (
+          <>
+            {/* Theme Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme & Appearance</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label className="text-base font-medium mb-3 block">Color Theme</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      { name: 'Blue', value: 'blue', color: 'bg-blue-500' },
+                      { name: 'Grey', value: 'grey', color: 'bg-gray-500' },
+                      { name: 'Red', value: 'red', color: 'bg-red-500' },
+                      { name: 'Yellow', value: 'yellow', color: 'bg-yellow-500' },
+                      { name: 'Green', value: 'green', color: 'bg-green-500' }
+                    ].map((themeOption) => (
+                      <button
+                        key={themeOption.value}
+                        onClick={() => setColorTheme(themeOption.value as any)}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          colorTheme === themeOption.value
+                            ? 'border-primary bg-primary/10'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-4 h-4 rounded-full ${themeOption.color}`} />
+                          <span className="font-medium">{themeOption.name}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-base font-medium mb-3 block">Display Mode</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => setTheme('light')}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        theme === 'light'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 rounded bg-white border" />
+                        <span className="font-medium">Light</span>
+                      </div>
+                    </button>
+                    <button 
+                      onClick={() => setTheme('dark')}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        theme === 'dark'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 rounded bg-gray-800" />
+                        <span className="font-medium">Dark</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Language Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Language & Region</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label className="text-base font-medium mb-3 block">Language</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {[
+                      { name: 'English', value: 'en', flag: '🇺🇸' },
+                      { name: 'हिंदी', value: 'hi', flag: '🇮🇳' },
+                      { name: 'ਪੰਜਾਬੀ', value: 'pa', flag: '🇮🇳' },
+                      { name: 'اردو', value: 'ur', flag: '🇵🇰' }
+                    ].map((lang) => (
+                      <button
+                        key={lang.value}
+                        onClick={() => setLanguage(lang.value as any)}
+                        className={`p-3 rounded-lg border-2 transition-all ${
+                          language === lang.value
+                            ? 'border-primary bg-primary/10'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg">{lang.flag}</span>
+                          <span className="font-medium">{lang.name}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
 
       </div>

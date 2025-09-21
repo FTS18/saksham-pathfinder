@@ -53,6 +53,21 @@ const extractUsername = (input: string, platform: string): string => {
   return input;
 };
 
+const getPlatformURL = (username: string, platform: string) => {
+  if (!username || username.includes('http')) return username;
+  
+  const baseURLs: Record<string, string> = {
+    linkedin: 'https://linkedin.com/in/',
+    github: 'https://github.com/',
+    twitter: 'https://twitter.com/',
+    codechef: 'https://codechef.com/users/',
+    leetcode: 'https://leetcode.com/',
+    portfolio: ''
+  };
+  
+  return baseURLs[platform] + username;
+};
+
 export const SocialLinksInput = ({ value, onChange, label, placeholder, platform }: SocialLinksInputProps) => {
   const handleChange = (inputValue: string) => {
     const username = extractUsername(inputValue, platform);
@@ -73,22 +88,7 @@ export const SocialLinksInput = ({ value, onChange, label, placeholder, platform
   };
 
   const getPlaceholderText = () => {
-    switch (platform) {
-      case 'linkedin':
-        return 'username or https://linkedin.com/in/username';
-      case 'github':
-        return 'username or https://github.com/username';
-      case 'twitter':
-        return 'username or https://twitter.com/username';
-      case 'codechef':
-        return 'username or https://codechef.com/users/username';
-      case 'leetcode':
-        return 'username or https://leetcode.com/username';
-      case 'portfolio':
-        return 'https://yourportfolio.com or yoursite.com';
-      default:
-        return placeholder;
-    }
+    return placeholder;
   };
 
   return (
@@ -99,9 +99,9 @@ export const SocialLinksInput = ({ value, onChange, label, placeholder, platform
         onChange={(e) => handleChange(e.target.value)}
         placeholder={getPlaceholderText()}
       />
-      {value && !value.includes('http') && platform !== 'portfolio' && (
+      {value && platform !== 'portfolio' && !value.includes('http') && (
         <p className="text-xs text-muted-foreground mt-1">
-          Stored as: {value}
+          Profile: {getPlatformURL(value, platform)}
         </p>
       )}
     </div>

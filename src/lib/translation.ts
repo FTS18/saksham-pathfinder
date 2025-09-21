@@ -60,7 +60,7 @@ export class TranslationService {
   translate(key: string): string {
     const translation = translations[key];
     if (!translation) {
-      console.warn(`Translation key not found: ${key}`);
+      console.warn('Translation key not found');
       return key;
     }
     return translation[this.currentLanguage] || translation.en || key;
@@ -97,7 +97,7 @@ export class TranslationService {
       // For now, return original text
       return text;
     } catch (error) {
-      console.error('Translation error:', error);
+      console.warn('Translation service unavailable');
       return text;
     }
   }

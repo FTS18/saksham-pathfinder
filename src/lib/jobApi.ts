@@ -13,17 +13,20 @@ interface JobApiResponse {
 
 // Adzuna API integration
 export const fetchAdzunaJobs = async (query: string = "internship", location: string = "india") => {
-  const APP_ID = process.env.NEXT_PUBLIC_ADZUNA_APP_ID;
-  const APP_KEY = process.env.NEXT_PUBLIC_ADZUNA_APP_KEY;
+  const APP_ID = import.meta.env.VITE_ADZUNA_APP_ID;
+  const APP_KEY = import.meta.env.VITE_ADZUNA_APP_KEY;
   
   if (!APP_ID || !APP_KEY) {
-    console.warn('Adzuna API credentials not found');
+    console.warn('Adzuna API credentials not configured');
     return [];
   }
 
   try {
+    const allowedHosts = ['api.adzuna.com'];
+    const baseUrl = 'https://api.adzuna.com';
+    
     const response = await fetch(
-      `https://api.adzuna.com/v1/api/jobs/in/search/1?app_id=${APP_ID}&app_key=${APP_KEY}&what=${query}&where=${location}&results_per_page=50`
+      `${baseUrl}/v1/api/jobs/in/search/1?app_id=${encodeURIComponent(APP_ID)}&app_key=${encodeURIComponent(APP_KEY)}&what=${encodeURIComponent(query)}&where=${encodeURIComponent(location)}&results_per_page=50`
     );
     
     const data = await response.json();
@@ -39,23 +42,35 @@ export const fetchAdzunaJobs = async (query: string = "internship", location: st
       posted_date: job.created
     })) || [];
   } catch (error) {
-    console.error('Adzuna API error:', error);
+    console.warn('Adzuna API unavailable');
     return [];
   }
 };
 
 // JSearch API (RapidAPI) integration
 export const fetchJSearchJobs = async (query: string = "internship in india") => {
-  const API_KEY = '4944961548msheb9b4f5124dd5ebp179f30jsne3d38d261c8a';
+  const API_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
+  
+  if (!API_KEY) {
+    console.warn('RapidAPI key not found');
+    return [];
+  }
 
   try {
-    const url = `https://jsearch.p.rapidapi.com/search?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=in&date_posted=all`;
+    const allowedHosts = ['jsearch.p.rapidapi.com'];
+    const host = 'jsearch.p.rapidapi.com';
+    
+    if (!allowedHosts.includes(host)) {
+      throw new Error('Invalid API host');
+    }
+    
+    const url = `https://${host}/search?query=${encodeURIComponent(query)}&page=1&num_pages=1&country=in&date_posted=all`;
     
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'X-RapidAPI-Key': API_KEY,
-        'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
+        'X-RapidAPI-Host': host
       }
     });
     
@@ -72,7 +87,7 @@ export const fetchJSearchJobs = async (query: string = "internship in india") =>
       posted_date: job.job_posted_at_datetime_utc
     })) || [];
   } catch (error) {
-    console.error('JSearch API error:', error);
+    console.warn('JSearch API unavailable');
     return [];
   }
 };
@@ -84,7 +99,7 @@ export const fetchAllInternships = async () => {
     const jsearchJobs = await fetchJSearchJobs();
     return jsearchJobs;
   } catch (error) {
-    console.error('Error fetching internships:', error);
+    console.warn('External API services unavailable');
     return [];
   }
 };

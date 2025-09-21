@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { LanguageSelector } from './LanguageSelector';
 import { NotificationSystem } from './NotificationSystem';
+import GoogleTranslate from './GoogleTranslate';
 
 const translations = {
   en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'Saksham AI', wishlist: 'Wishlist' }
@@ -65,28 +65,25 @@ export const Navbar = () => {
 
   const navLinks = [
     { href: '/', label: t.home },
+    { href: '/live-jobs', label: 'Live Jobs' },
+    { href: '/about', label: t.about },
     { 
       href: '#', 
-      label: t.dashboard,
+      label: 'More',
       hasDropdown: true,
       dropdownItems: [
         { href: '/wishlist', label: `Wishlist (${wishlist.length})` },
         { href: '/dashboard/news-events', label: 'News & Events' },
         { href: '/dashboard/tutorials', label: 'Tutorials' },
         { href: '/referrals', label: 'Refer' },
-        { href: '/dashboard/settings', label: 'Settings' }
+        { href: '/profile', label: 'Settings' }
       ]
-    },
-    { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/about', label: t.about },
+    }
   ];
   
   const mobileNavLinks = [
     { href: '/', label: t.home },
-    { href: '/wishlist', label: t.dashboard },
     { href: '/live-jobs', label: 'Live Jobs' },
-    { href: '/profile', label: 'Profile' },
-    { href: '/wishlist', label: t.wishlist },
     { href: '/about', label: t.about },
   ];
 
@@ -103,14 +100,14 @@ export const Navbar = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 nav-blur">
         <div className="container-responsive">
-          <div className="flex justify-between items-center h-14 sm:h-16">
+          <div className="flex justify-between items-center h-16 sm:h-16">
             <Link to="/" className="flex items-center space-x-2">
               <span className="font-racing font-bold text-xl text-foreground">
                 Saksham AI
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <div className="hidden md:flex items-center justify-center flex-1 space-x-6 lg:space-x-8">
               {navLinks.map((link) => (
                 link.hasDropdown ? (
                   <div key={link.href} className="relative group">
@@ -123,9 +120,6 @@ export const Navbar = () => {
                     >
                       {link.label}
                       <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
-                      {isActive(link.href) && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                      )}
                     </div>
                     <div className="absolute top-full left-0 mt-1 w-48 bg-background border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       {link.dropdownItems?.map((item) => (
@@ -162,7 +156,7 @@ export const Navbar = () => {
                <div className="h-4 w-px bg-border mx-2 hidden md:block" />
                <NotificationSystem />
                <div className="hidden sm:block">
-                 <LanguageSelector />
+                 <GoogleTranslate />
                </div>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -186,33 +180,7 @@ export const Navbar = () => {
               </Tooltip>
               
               {/* Auth Section */}
-              {currentUser ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center space-x-2 h-8 px-2 rounded-md hover:bg-accent hover:text-accent-foreground">
-                    <User className="w-4 h-4" />
-                    <span className="hidden sm:inline text-sm">{currentUser.displayName || 'User'}</span>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                      <Link to="/profile" className="flex items-center">
-                        <User className="w-4 h-4 mr-2" />
-                        Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/wishlist" className="flex items-center">
-                        <User className="w-4 h-4 mr-2" />
-                        Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
+              {!currentUser && (
                 <div className="flex items-center space-x-2">
                   <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
                     <Link to="/login">
@@ -251,8 +219,8 @@ export const Navbar = () => {
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-[100]">
           <div className="absolute inset-0 bg-black/5" onClick={() => setIsOpen(false)} />
-          <div className={`absolute left-0 top-0 h-full w-64 sm:w-72 shadow-2xl transform transition-transform duration-300 ease-out animate-in slide-in-from-left ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
+          <div className={`absolute left-0 top-0 h-full w-64 sm:w-72 shadow-2xl transform transition-transform duration-300 ease-out ${
+            isOpen ? 'translate-x-0 animate-in slide-in-from-left' : '-translate-x-full animate-out slide-out-to-left'
           } bg-background border-r border-border`}>
             <div className="p-6 h-full flex flex-col">
               <div className="flex items-center justify-between mb-6">
@@ -299,76 +267,104 @@ export const Navbar = () => {
               
               <div className="flex-1 py-6">
                 {mobileNavLinks.map((link) => (
-                  link.href === '/dashboard' ? (
-                    <div key={link.href}>
-                      <button
-                        onClick={() => {
-                          const dropdown = document.getElementById('mobile-dashboard-dropdown');
-                          if (dropdown) {
-                            dropdown.classList.toggle('hidden');
-                          }
-                        }}
-                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
-                          isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
-                        }`}
-                      >
-                        {link.label}
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
-                      <div id="mobile-dashboard-dropdown" className="hidden ml-4 space-y-1">
-                        <Link to="/wishlist" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded mb-1">
-                          Wishlist ({wishlist.length})
-                        </Link>
-                        <Link to="/dashboard/news-events" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded mb-1">
-                          News & Events
-                        </Link>
-                        <Link to="/dashboard/tutorials" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded mb-1">
-                          Tutorials
-                        </Link>
-                        <Link to="/referrals" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded mb-1">
-                          Refer
-                        </Link>
-                        <Link to="/dashboard/settings" onClick={() => setIsOpen(false)} className="block px-4 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted rounded mb-1">
-                          Settings
-                        </Link>
-                      </div>
-                    </div>
-                  ) : (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
+                      isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                
+                {currentUser && (
+                  <>
                     <Link
-                      key={link.href}
-                      to={link.href}
+                      to="/wishlist"
                       onClick={() => setIsOpen(false)}
                       className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
-                        isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
+                        isActive('/wishlist') ? 'text-primary bg-primary/10' : 'text-foreground'
                       }`}
                     >
-                      {link.label}
+                      Wishlist ({wishlist.length})
                     </Link>
-                  )
-                ))}
+                    <Link
+                      to="/dashboard/news-events"
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
+                        isActive('/dashboard/news-events') ? 'text-primary bg-primary/10' : 'text-foreground'
+                      }`}
+                    >
+                      News & Events
+                    </Link>
+                    <Link
+                      to="/dashboard/tutorials"
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
+                        isActive('/dashboard/tutorials') ? 'text-primary bg-primary/10' : 'text-foreground'
+                      }`}
+                    >
+                      Tutorials
+                    </Link>
+                    <Link
+                      to="/referrals"
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
+                        isActive('/referrals') ? 'text-primary bg-primary/10' : 'text-foreground'
+                      }`}
+                    >
+                      Refer
+                    </Link>
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors mb-2 ${
+                        isActive('/profile') ? 'text-primary bg-primary/10' : 'text-foreground'
+                      }`}
+                    >
+                      Settings
+                    </Link>
+                  </>
+                )}
               </div>
               
               <div className="space-y-4 pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Language</span>
-                  <div className="flex gap-2">
-                    <Button
-                      variant={language === 'en' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setLanguage('en')}
-                      className="text-xs px-3 py-1"
-                    >
-                      EN
-                    </Button>
-                    <Button
-                      variant={language === 'hi' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setLanguage('hi')}
-                      className="text-xs px-3 py-1"
-                    >
-                      हिं
-                    </Button>
-                  </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+                      if (combo) {
+                        combo.value = 'en';
+                        combo.dispatchEvent(new Event('change'));
+                        localStorage.setItem('selectedLanguage', 'en');
+                      }
+                    }}
+                    className="flex-1 text-xs h-8"
+                  >
+                    ENG
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+                      if (combo) {
+                        combo.value = 'hi';
+                        combo.dispatchEvent(new Event('change'));
+                        localStorage.setItem('selectedLanguage', 'hi');
+                      }
+                    }}
+                    className="flex-1 text-xs h-8"
+                  >
+                    हिंदी
+                  </Button>
+                </div>
+                <div className="hidden">
+                  <GoogleTranslate />
                 </div>
                 {!currentUser && (
                   <div className="space-y-2">

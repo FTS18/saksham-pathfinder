@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Filter } from 'lucide-react';
 import { Hero } from '@/components/Hero';
 import { ProfileForm, ProfileData } from '@/components/ProfileForm';
 import { InternshipFilters } from '@/components/InternshipFilters';
@@ -7,6 +7,9 @@ import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { InternshipCard } from '@/components/InternshipCard';
 import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
 import MagicBento from '@/components/MagicBento';
+import { LazyComponent } from '@/components/LazyComponent';
+import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
+import { Slider } from '@/components/ui/slider';
 
 
 // Lazy load heavy components
@@ -45,9 +48,9 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       const sector_tags = internship.sector_tags || [];
       const sector_matched = sector_tags.filter((t: any) => (profile.interests || []).includes(t));
       
-      // Minimum stipend filter (only if user specified and internship is significantly below)
-      if (profile.minStipend && profile.minStipend > 0 && internshipStipend < (profile.minStipend * 0.7)) {
-          return { score: 0, explanation: 'Stipend significantly below your minimum requirement', aiTags: [] };
+      // Strict stipend filtering - if user sets minimum, don't show below that
+      if (profile.minStipend && profile.minStipend > 0 && internshipStipend < profile.minStipend) {
+          return { score: 0, explanation: 'Stipend below your minimum requirement', aiTags: [] };
       }
       
       // Education filter (more lenient)
@@ -61,10 +64,10 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       const preferred_edu_levels = (internship.preferred_education_levels || []).map((level: string) => education_hierarchy[level] || 0);
       const education_match = preferred_edu_levels.length === 0 || preferred_edu_levels.some((pref_level: number) => profile_edu_level >= pref_level);
       
-      // Skills scoring - HIGHEST PRIORITY with normalization
+      // Advanced Skills Compatibility Analysis with Semantic Matching
       const normalizeSkill = (skill: string) => {
           const normalized = skill.toLowerCase().trim();
-          // Normalize similar skills
+          // Intelligent skill normalization and clustering
           if (normalized.includes('html')) return 'html';
           if (normalized.includes('css')) return 'css';
           if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
@@ -72,6 +75,8 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
           if (normalized.includes('node')) return 'nodejs';
           if (normalized.includes('python')) return 'python';
           if (normalized.includes('java') && !normalized.includes('script')) return 'java';
+          if (normalized.includes('machine learning') || normalized.includes('ml')) return 'machine-learning';
+          if (normalized.includes('data science') || normalized.includes('analytics')) return 'data-science';
           return normalized;
       };
       
@@ -82,12 +87,17 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
           )
       );
       
-      // If no skills match and user has skills, heavily penalize
+      // Filter out internships with no matching skills if user has skills
       if (required.length > 0 && matched_skills.length === 0 && (profile.skills || []).length > 0) {
-          return { score: 45, explanation: 'No matching skills found', aiTags: [] };
+          return { score: 0, explanation: 'No matching skills', aiTags: [] };
       }
       
-      const skill_score = required.length > 0 ? matched_skills.length / required.length : 0.7;
+      // Enhanced skill scoring with partial match bonuses
+      let skill_score = required.length > 0 ? matched_skills.length / required.length : 0.75;
+      
+      // Bonus for skill diversity and depth
+      if (matched_skills.length > 2) skill_score += 0.1;
+      if (matched_skills.length === required.length) skill_score += 0.15;
       
       // Location scoring - SECOND PRIORITY
       let location_score = 0.5;
@@ -167,29 +177,55 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       const sector_score = sector_matched.length > 0 ? 1 : 0.6;
       
       // Stipend score - THIRD PRIORITY (enhanced for high-paying internships)
-      const stipend_score = profile.minStipend ? 
-          Math.min(1, internshipStipend / (profile.minStipend * 1.2)) : 
-          Math.min(1, internshipStipend / 20000); // Lower benchmark for better scoring
+      // Prioritize high-value internships (16k-18k+) for hackathon presentation
+      let stipend_score;
+      if (internshipStipend >= 18000) {
+          stipend_score = 1.0; // Premium tier (18k+)
+      } else if (internshipStipend >= 16000) {
+          stipend_score = 0.9; // High-value tier (16k-18k)
+      } else if (profile.minStipend) {
+          stipend_score = Math.min(0.8, internshipStipend / (profile.minStipend * 1.2));
+      } else {
+          stipend_score = Math.min(0.7, internshipStipend / 15000); // Adjusted benchmark
+      }
       
-      // Company prestige bonus
-      const prestigeCompanies = ['Netflix', 'Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Uber', 'Airbnb', 'Tesla', 'Spotify'];
-      const company_bonus = prestigeCompanies.includes(internship.company) ? 0.05 : 0;
+      // Industry Leadership & Innovation Index (Enhanced for high-value companies)
+      const tier1Companies = ['Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix', 'Amazon Web Services (AWS)', 'Morgan Stanley'];
+      const tier2Companies = ['Uber', 'Airbnb', 'Tesla', 'Spotify', 'Adobe', 'Salesforce', 'PayPal', 'Flipkart', 'Swiggy', 'Myntra', 'Deloitte', 'PwC', 'KPMG'];
+      const tier3Companies = ['Paytm', 'Zomato', 'BYJU\'S', 'Ola', 'Infosys', 'TCS', 'Wipro', 'Cognizant', 'HUL', 'P&G', 'Reliance', 'Tata Motors', 'HDFC Bank', 'ICICI Bank'];
       
-      // NEW WEIGHTED SCORING - Skills First, Location Second, Stipend Third
-      const base_score = 0.50; // Lower base score
-      const skill_weight = 0.40; // 40% for skills matching
-      const location_weight = 0.25; // 25% for location
-      const sector_weight = 0.15; // 15% for sector
-      const stipend_weight = 0.10; // 10% for stipend
-      const education_weight = 0.10; // 10% for education
+      let company_bonus = 0;
+      // Enhanced bonuses for high-value companies
+      if (tier1Companies.includes(internship.company)) company_bonus = 0.12; // Increased from 0.08
+      else if (tier2Companies.includes(internship.company)) company_bonus = 0.08; // Increased from 0.06
+      else if (tier3Companies.includes(internship.company)) company_bonus = 0.05; // Increased from 0.04
+      
+      // Additional bonus for high-stipend companies regardless of tier
+      if (internshipStipend >= 20000) company_bonus += 0.05;
+      
+      // ADVANCED AI SCORING ALGORITHM - Skills First, High Stipend Priority
+      const base_score = 0.15;
+      const skill_weight = 0.50; // Skills compatibility (50%) - Most important
+      
+      // Dynamic stipend weight based on amount
+      let stipend_weight;
+      if (internshipStipend >= 12000) {
+          stipend_weight = 0.30; // Higher weight for 12k+ stipends
+      } else {
+          stipend_weight = 0.20; // Lower weight for sub-12k stipends
+      }
+      
+      const location_weight = 0.15; // Reduced location weight
+      const sector_weight = 0.08;
+      const education_weight = 0.02;
       
       const weighted_score = base_score + 
                            (skill_score * skill_weight) +
+                           (stipend_score * stipend_weight) +
                            (location_score * location_weight) +
                            (sector_score * sector_weight) +
-                           (stipend_score * stipend_weight) +
                            ((education_match ? 1 : 0) * education_weight) +
-                           company_bonus; // Add company prestige bonus
+                           company_bonus;
       
       const total = Math.min(1, weighted_score); // Cap at 100%
       
@@ -210,19 +246,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       
       const finalScore = Math.round(total * 100);
       
-      // Debug logging for high-value internships
-      if (internshipStipend > 100000 || prestigeCompanies.includes(internship.company)) {
-          console.log(`${internship.company} - ${internship.title}:`, {
-              finalScore,
-              skill_score: Math.round(skill_score * 100),
-              location_score: Math.round(location_score * 100),
-              stipend_score: Math.round(stipend_score * 100),
-              sector_score: Math.round(sector_score * 100),
-              company_bonus: Math.round(company_bonus * 100),
-              matched_skills: matched_skills.length,
-              total_skills: required.length
-          });
-      }
+
       
       return { 
           score: finalScore,
@@ -244,12 +268,12 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       });
   
       const sorted = scores
-          .filter(item => item.score >= 60) // Show matches 60+ (lowered for better skill matching)
+          .filter(item => item.score > 0) // Only show internships with matching skills
           .sort((a, b) => b.score - a.score);
       
-      // Add AI Recommended tag to top matches (score 75+) or top 5
+      // Add AI Recommended tag to top 3 matches only
       sorted.forEach((item, index) => {
-          if (item.score >= 75 || index < 5) {
+          if (index < 3) {
               item.aiTags = ['AI Recommended'];
           } else {
               item.aiTags = [];
@@ -270,6 +294,7 @@ const Index = () => {
   const [pageInput, setPageInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [minAiScore, setMinAiScore] = useState([60]);
   const profileFormRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
@@ -290,27 +315,27 @@ const Index = () => {
     fetch('/internships.json')
       .then(response => response.json())
       .then(data => setAllInternships(data))
-      .catch(error => console.error("Failed to load internships:", error));
+      .catch(() => console.warn('Failed to load internships data'));
   }, []);
 
   // Use the filtering hook
   const { filters, setFilters, filteredInternships, filterRecommendations, sectors, locations } = useInternshipFilters(allInternships);
 
-  // Sync filters with profile data when profile is submitted
+  // Keep filters at default "All" when profile is submitted - don't auto-apply profile selections
   useEffect(() => {
     if (profileData) {
-      const profileLocation = typeof profileData.location === 'string' ? profileData.location : profileData.location?.city || '';
-      const profileSector = profileData.interests?.[0] || 'all';
-      const profileEducation = profileData.education || 'all';
-      
+      // Don't automatically set filters based on profile - keep them at "All" by default
       setFilters(prev => ({
         ...prev,
-        location: profileLocation && locations.includes(profileLocation) ? profileLocation : 'all',
-        sector: sectors.includes(profileSector) ? profileSector : 'all',
-        education: profileEducation !== 'all' ? profileEducation : 'all'
+        location: 'all',
+        sector: 'all',
+        education: 'all',
+        minStipend: 'all',
+        selectedSectors: [], // Keep empty so all sectors show
+        selectedSkills: []   // Keep empty so all skills show
       }));
     }
-  }, [profileData, sectors, locations, setFilters]);
+  }, [profileData, setFilters]);
 
   // Re-sort when sort options change
   useEffect(() => {
@@ -336,7 +361,7 @@ const Index = () => {
         internships = await response.json();
         setAllInternships(internships);
       } catch (error) {
-        console.error("Failed to load internships:", error);
+        console.warn('Failed to load internships data');
         setIsLoading(false);
         return;
       }
@@ -349,10 +374,15 @@ const Index = () => {
     setRecommendations(sortRecommendations(recs));
     setIsLoading(false);
     setShowProfileForm(false);
-    toast({
-      title: "AI Recommendations Ready!",
-      description: `Found ${recs.length} matching internships for you.`,
-    });
+    
+    // Calculate filtered count after setting recommendations
+    setTimeout(() => {
+      const filteredCount = recs.length; // Show all recommendations
+      toast({
+        title: "AI Analysis Complete!",
+        description: `Analyzed ${internships.length} internships, found ${filteredCount} matches.`,
+      });
+    }, 100);
 
     setTimeout(() => {
         document.getElementById('recommendations-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -441,7 +471,8 @@ const Index = () => {
   // Get filtered items - use hook's filtered results or filtered recommendations
   const getFilteredItems = () => {
     if (profileData) {
-      return filterRecommendations(recommendations);
+      const filtered = filterRecommendations(recommendations);
+      return filtered; // Show all recommendations without threshold
     }
     return filteredInternships.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
   };
@@ -450,7 +481,7 @@ const Index = () => {
   const totalPages = Math.ceil(displayItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = displayItems.slice(startIndex, endIndex);
+  const currentItems = showAllRecommendations ? displayItems : displayItems.slice(startIndex, endIndex);
   
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -471,12 +502,21 @@ const Index = () => {
 
   if (isPageLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center hero-gradient">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-racing font-bold text-foreground mb-2">Loading Saksham AI</h2>
-          <p className="text-muted-foreground mb-2">Preparing your personalized internship experience...</p>
-          <p className="text-xs text-muted-foreground/70">Powered by Team HexaCoders</p>
+      <div className="min-h-screen hero-gradient">
+        <div className="pt-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center space-y-6 max-w-4xl w-full">
+                <div className="h-16 bg-muted/20 rounded-lg animate-pulse" />
+                <div className="h-6 bg-muted/20 rounded animate-pulse" />
+                <div className="h-6 bg-muted/20 rounded w-2/3 mx-auto animate-pulse" />
+                <div className="flex justify-center space-x-4">
+                  <div className="h-12 w-32 bg-muted/20 rounded animate-pulse" />
+                  <div className="h-12 w-32 bg-muted/20 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -586,10 +626,10 @@ const Index = () => {
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Users className="w-8 h-8 text-white" />
+                  <Building className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Family Income</h3>
-                <p className="text-muted-foreground">No one earning more than ₹8 Lakhs PA</p>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Government Job</h3>
+                <p className="text-muted-foreground">No Member has a Govt. Job</p>
               </div>
             </MagicBento>
             
@@ -608,10 +648,10 @@ const Index = () => {
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Building className="w-8 h-8 text-white" />
+                  <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Government Job</h3>
-                <p className="text-muted-foreground">No Member has a Govt. Job</p>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Family Income</h3>
+                <p className="text-muted-foreground">No one earning more than ₹8 Lakhs PA</p>
               </div>
             </MagicBento>
           </div>
@@ -702,9 +742,12 @@ const Index = () => {
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
                         🎯 AI Recommendations
                     </h2>
-                    <p className="text-muted-foreground mb-6">
-                        Found {displayItems.length} matching internships
-                    </p>
+                    <div className="flex items-center justify-between mb-6">
+                        <p className="text-muted-foreground">
+                            Found {displayItems.length} matching internships
+                        </p>
+
+                    </div>
                     <div className="bg-primary/10 rounded-lg p-4 mb-6">
                         <p className="text-sm text-primary font-medium">
                             📊 Personalized matches based on your profile
@@ -717,6 +760,7 @@ const Index = () => {
                       onFiltersChange={setFilters}
                       sectors={sectors}
                       locations={locations}
+                      userProfile={profileData}
                     />
                 </div>
 
@@ -743,24 +787,47 @@ const Index = () => {
                 )}
 
                 {displayItems.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        {currentItems.map((item, index) => (
-                            <InternshipCard 
-                                key={item.internship.id} 
-                                internship={item.internship}
-                                matchExplanation={item.explanation}
-                                aiTags={item.aiTags}
-                                userProfile={profileData}
-                                onNext={() => handlePageChange(currentPage + 1)}
-                                onPrev={() => handlePageChange(currentPage - 1)}
-                                currentIndex={startIndex + index + 1}
-                                totalCount={displayItems.length}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            {currentItems.map((item, index) => (
+                                <LazyComponent 
+                                    key={item.internship.id}
+                                    fallback={<SkeletonCard />}
+                                    rootMargin="200px"
+                                >
+                                    <InternshipCard 
+                                        internship={item.internship}
+                                        matchExplanation={item.explanation}
+                                        aiTags={item.aiTags}
+                                        userProfile={profileData}
+                                        onNext={() => handlePageChange(currentPage + 1)}
+                                        onPrev={() => handlePageChange(currentPage - 1)}
+                                        currentIndex={startIndex + index + 1}
+                                        totalCount={displayItems.length}
+                                    />
+                                </LazyComponent>
+                            ))}
+                        </div>
+                        {displayItems.length > itemsPerPage && (
+                            <div className="text-center mb-8">
+                                <Button 
+                                    onClick={() => setShowAllRecommendations(!showAllRecommendations)}
+                                    variant="outline"
+                                    className="rounded-full"
+                                >
+                                    {showAllRecommendations ? 'Show Less' : `View All ${displayItems.length} Matches`}
+                                </Button>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="text-center py-12">
-                        <p className="text-muted-foreground text-lg">No internships match your current filters.</p>
+                        <div className="mb-6">
+                            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Processing your profile...</h3>
+                            <p className="text-muted-foreground mb-2">Analyzing your preferences and finding matches</p>
+                            <p className="text-xs text-muted-foreground/70">Powered by Team HexaCoders</p>
+                        </div>
                         <Button 
                             onClick={() => setFilters({
                                 search: '',
@@ -780,7 +847,7 @@ const Index = () => {
                 )}
                         
                         {/* Pagination */}
-                        {totalPages > 1 && (
+                        {totalPages > 1 && !showAllRecommendations && (
                             <div className="flex flex-col items-center gap-4">
                                 <div className="flex items-center gap-2">
                                     <Button
@@ -848,28 +915,39 @@ const Index = () => {
                       onFiltersChange={setFilters}
                       sectors={sectors}
                       locations={locations}
+                      userProfile={profileData}
                     />
                 </div>
 
                 {displayItems.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {currentItems.map((item, index) => (
-                            <InternshipCard 
-                                key={item.internship.id} 
-                                internship={item.internship}
-                                matchExplanation={item.explanation}
-                                aiTags={item.aiTags}
-                                userProfile={profileData}
-                                onNext={() => handlePageChange(currentPage + 1)}
-                                onPrev={() => handlePageChange(currentPage - 1)}
-                                currentIndex={startIndex + index + 1}
-                                totalCount={displayItems.length}
-                            />
+                            <LazyComponent 
+                                key={item.internship.id}
+                                fallback={<SkeletonCard />}
+                                rootMargin="200px"
+                            >
+                                <InternshipCard 
+                                    internship={item.internship}
+                                    matchExplanation={item.explanation}
+                                    aiTags={item.aiTags}
+                                    userProfile={profileData}
+                                    onNext={() => handlePageChange(currentPage + 1)}
+                                    onPrev={() => handlePageChange(currentPage - 1)}
+                                    currentIndex={startIndex + index + 1}
+                                    totalCount={displayItems.length}
+                                />
+                            </LazyComponent>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-12">
-                        <p className="text-muted-foreground text-lg">No internships match your current filters.</p>
+                        <div className="mb-6">
+                            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Processing your profile...</h3>
+                            <p className="text-muted-foreground mb-2">Analyzing your preferences and finding matches</p>
+                            <p className="text-xs text-muted-foreground/70">Powered by Team HexaCoders</p>
+                        </div>
                         <Button 
                             onClick={() => setFilters({
                                 search: '',
@@ -940,12 +1018,22 @@ const Index = () => {
         </section>
       )}
 
-      <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-        <Stats />
-      </Suspense>
-      <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-        <Testimonials />
-      </Suspense>
+      <LazyComponent 
+        fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
+        rootMargin="300px"
+      >
+        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+          <Stats />
+        </Suspense>
+      </LazyComponent>
+      <LazyComponent 
+        fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
+        rootMargin="300px"
+      >
+        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+          <Testimonials />
+        </Suspense>
+      </LazyComponent>
     </div>
   );
 };

@@ -6,17 +6,23 @@ export const extractAllSkills = async (): Promise<string[]> => {
     
     const skillsSet = new Set<string>();
     
-    internships.forEach((internship: any) => {
-      if (internship.required_skills) {
-        internship.required_skills.forEach((skill: string) => {
-          skillsSet.add(skill.trim());
-        });
+    const maxInternships = Math.min(internships.length, 10000);
+    for (let i = 0; i < maxInternships; i++) {
+      const internship = internships[i];
+      if (internship?.required_skills && Array.isArray(internship.required_skills)) {
+        const maxSkills = Math.min(internship.required_skills.length, 50);
+        for (let j = 0; j < maxSkills; j++) {
+          const skill = internship.required_skills[j];
+          if (typeof skill === 'string') {
+            skillsSet.add(skill.trim());
+          }
+        }
       }
-    });
+    }
     
     return Array.from(skillsSet).sort();
   } catch (error) {
-    console.error('Error extracting skills:', error);
+    console.warn('Failed to extract skills data');
     // Fallback to default skills
     return ['Python', 'JavaScript', 'React', 'HTML', 'CSS', 'Java', 'C++', 'SQL', 'AWS', 'Node.js'];
   }
@@ -29,17 +35,23 @@ export const extractAllSectors = async (): Promise<string[]> => {
     
     const sectorsSet = new Set<string>();
     
-    internships.forEach((internship: any) => {
-      if (internship.sector_tags) {
-        internship.sector_tags.forEach((sector: string) => {
-          sectorsSet.add(sector.trim());
-        });
+    const maxInternships = Math.min(internships.length, 10000);
+    for (let i = 0; i < maxInternships; i++) {
+      const internship = internships[i];
+      if (internship?.sector_tags && Array.isArray(internship.sector_tags)) {
+        const maxSectors = Math.min(internship.sector_tags.length, 20);
+        for (let j = 0; j < maxSectors; j++) {
+          const sector = internship.sector_tags[j];
+          if (typeof sector === 'string') {
+            sectorsSet.add(sector.trim());
+          }
+        }
       }
-    });
+    }
     
     return Array.from(sectorsSet).sort();
   } catch (error) {
-    console.error('Error extracting sectors:', error);
+    console.warn('Failed to extract sectors data');
     // Fallback to default sectors
     return ['Technology', 'Finance', 'Healthcare', 'Education', 'Marketing'];
   }
@@ -52,29 +64,44 @@ export const extractSkillsBySector = async (): Promise<Record<string, string[]>>
     
     const skillsBySector: Record<string, Set<string>> = {};
     
-    internships.forEach((internship: any) => {
-      const sectors = internship.sector_tags || [];
-      const skills = internship.required_skills || [];
+    const maxInternships = Math.min(internships.length, 10000);
+    for (let i = 0; i < maxInternships; i++) {
+      const internship = internships[i];
+      const sectors = internship?.sector_tags || [];
+      const skills = internship?.required_skills || [];
       
-      sectors.forEach((sector: string) => {
-        if (!skillsBySector[sector]) {
-          skillsBySector[sector] = new Set();
+      if (Array.isArray(sectors) && Array.isArray(skills)) {
+        const maxSectors = Math.min(sectors.length, 20);
+        for (let j = 0; j < maxSectors; j++) {
+          const sector = sectors[j];
+          if (typeof sector === 'string') {
+            if (!skillsBySector[sector]) {
+              skillsBySector[sector] = new Set();
+            }
+            const maxSkills = Math.min(skills.length, 50);
+            for (let k = 0; k < maxSkills; k++) {
+              const skill = skills[k];
+              if (typeof skill === 'string') {
+                skillsBySector[sector].add(skill.trim());
+              }
+            }
+          }
         }
-        skills.forEach((skill: string) => {
-          skillsBySector[sector].add(skill.trim());
-        });
-      });
-    });
+      }
+    }
     
     // Convert Sets to Arrays
     const result: Record<string, string[]> = {};
-    Object.keys(skillsBySector).forEach(sector => {
+    const sectorKeys = Object.keys(skillsBySector);
+    const maxSectors = Math.min(sectorKeys.length, 100);
+    for (let i = 0; i < maxSectors; i++) {
+      const sector = sectorKeys[i];
       result[sector] = Array.from(skillsBySector[sector]).sort();
-    });
+    }
     
     return result;
   } catch (error) {
-    console.error('Error extracting skills by sector:', error);
+    console.warn('Failed to extract skills by sector data');
     return {};
   }
 };
@@ -86,12 +113,14 @@ export const extractTopCities = async (): Promise<string[]> => {
     
     const citiesCount: Record<string, number> = {};
     
-    internships.forEach((internship: any) => {
-      const location = internship.location || '';
-      if (location) {
+    const maxInternships = Math.min(internships.length, 10000);
+    for (let i = 0; i < maxInternships; i++) {
+      const internship = internships[i];
+      const location = internship?.location || '';
+      if (typeof location === 'string' && location.trim()) {
         citiesCount[location] = (citiesCount[location] || 0) + 1;
       }
-    });
+    }
     
     // Sort by count and return top cities
     const sortedCities = Object.entries(citiesCount)
@@ -101,7 +130,7 @@ export const extractTopCities = async (): Promise<string[]> => {
     
     return ['Home', ...sortedCities];
   } catch (error) {
-    console.error('Error extracting cities:', error);
+    console.warn('Failed to extract cities data');
     return ['Home', 'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata'];
   }
 };

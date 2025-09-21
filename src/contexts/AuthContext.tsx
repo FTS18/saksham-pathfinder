@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const docSnap = await getDoc(docRef);
       
       if (!docSnap.exists()) {
+        // New Google user - create profile and set onboarding to false
         const uniqueUserId = generateUniqueUserId();
         await setDoc(docRef, {
           uniqueUserId,
@@ -91,8 +92,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
           createdAt: new Date().toISOString(),
-          onboardingCompleted: false
+          onboardingCompleted: false,
+          emailVerified: true // Google accounts are pre-verified
         }, { merge: true });
+        
+        // Force onboarding for new Google users
+        setNeedsOnboarding(true);
+        return;
       }
     } catch (error) {
       console.error('Error creating Google user profile:', error);

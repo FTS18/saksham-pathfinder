@@ -38,16 +38,29 @@ export default function Referrals() {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        setUserProfile(docSnap.data());
+        const data = docSnap.data();
+        // Ensure referral code exists for existing users
+        if (!data.referralCode) {
+          const updatedProfile = {
+            ...data,
+            referralCode: generateReferralCode()
+          };
+          await setDoc(docRef, updatedProfile, { merge: true });
+          setUserProfile(updatedProfile);
+        } else {
+          setUserProfile(data);
+        }
       } else {
         // Create initial profile with referral code
         const initialProfile = {
-          username: currentUser.displayName || 'User',
+          username: currentUser.displayName || currentUser.email?.split('@')[0] || 'User',
           email: currentUser.email,
-          points: 0,
+          points: 50, // Welcome bonus
           referrals: 0,
           referralCode: generateReferralCode(),
-          photoURL: currentUser.photoURL || ''
+          photoURL: currentUser.photoURL || '',
+          timeSpent: 0,
+          lastActive: Date.now()
         };
         await setDoc(docRef, initialProfile);
         setUserProfile(initialProfile);

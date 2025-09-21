@@ -11,7 +11,14 @@
     <meta property="og:title" content="Saksham AI - Find the Right Internship with AI" />
     <meta property="og:description" content="Empowering students with AI-driven career guidance and personalized internship recommendations." />
     <meta property="og:type" content="website" />
-
+<link rel="icon" type="image/png" href="/favicon/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Saksham AI" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<link rel="manifest" href="/manifest.json" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Saksham AI - AI-Powered Internship Platform" />
     <meta name="twitter:description" content="Find the perfect internship with AI recommendations tailored for students." />
@@ -20,43 +27,53 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,hi,pa,ur,bn,ta,te,ml,kn,gu,mr,or,as',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false,
-          multilanguagePage: true,
-          gaTrack: false,
-          gaId: null
-        }, 'google_translate_element');
-        
-        // Force translation of all content
-        setTimeout(() => {
-          const savedLanguage = localStorage.getItem('selectedLanguage');
-          if (savedLanguage && savedLanguage !== 'en') {
-            const combo = document.querySelector('.goog-te-combo');
-            if (combo) {
-              combo.value = savedLanguage;
-              combo.dispatchEvent(new Event('change'));
-            }
-          }
-        }, 1000);
-      }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
       .goog-te-banner-frame { display: none !important; }
       .goog-te-menu-value { padding: 3px !important; }
       .goog-te-gadget { font-family: inherit !important; }
       .goog-te-combo { display: none !important; }
       body { top: 0 !important; }
+      
+      .skeleton { background: linear-gradient(90deg, #d1d5db 25%, #9ca3af 50%, #d1d5db 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+      @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      .dark .skeleton { background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%); background-size: 200% 100%; }
+      
+      #initial-skeleton { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; z-index: 9999; }
+      .dark #initial-skeleton { background: #0a0a0a; }
     </style>
   </head>
 
   <body>
+    <div id="initial-skeleton">
+      <div style="padding: 1rem; max-width: 1200px; margin: 0 auto;">
+        <div style="height: 64px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e5e5;">
+          <div class="skeleton" style="height: 32px; width: 128px; border-radius: 4px;"></div>
+          <div style="display: flex; gap: 1rem;">
+            <div class="skeleton" style="height: 32px; width: 32px; border-radius: 50%;"></div>
+            <div class="skeleton" style="height: 32px; width: 32px; border-radius: 50%;"></div>
+          </div>
+        </div>
+        <div style="padding: 4rem 1rem; text-align: center;">
+          <div class="skeleton" style="height: 64px; width: 60%; margin: 0 auto 2rem; border-radius: 8px;"></div>
+          <div class="skeleton" style="height: 24px; width: 80%; margin: 0 auto 1rem; border-radius: 4px;"></div>
+          <div class="skeleton" style="height: 24px; width: 60%; margin: 0 auto 2rem; border-radius: 4px;"></div>
+          <div style="display: flex; justify-content: center; gap: 1rem;">
+            <div class="skeleton" style="height: 48px; width: 128px; border-radius: 6px;"></div>
+            <div class="skeleton" style="height: 48px; width: 128px; border-radius: 6px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Hide skeleton when React loads
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const skeleton = document.getElementById('initial-skeleton');
+          if (skeleton) skeleton.style.display = 'none';
+        }, 100);
+      });
+    </script>
   </body>
 </html>

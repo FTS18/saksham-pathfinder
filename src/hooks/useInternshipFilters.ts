@@ -8,6 +8,8 @@ interface FilterState {
   education: string;
   minStipend: string;
   sortBy: string;
+  selectedSectors?: string[];
+  selectedSkills?: string[];
 }
 
 interface Internship {
@@ -32,7 +34,9 @@ export const useInternshipFilters = (internships: Internship[]) => {
     workMode: 'all',
     education: 'all',
     minStipend: 'all',
-    sortBy: 'ai-recommended'
+    sortBy: 'ai-recommended',
+    selectedSectors: [],
+    selectedSkills: []
   });
 
   const filteredAndSortedInternships = useMemo(() => {
@@ -48,10 +52,21 @@ export const useInternshipFilters = (internships: Internship[]) => {
       );
     }
 
-    // Sector filter
-    if (filters.sector && filters.sector !== 'all') {
+    // Multi-sector filter
+    if (filters.selectedSectors && filters.selectedSectors.length > 0) {
+      filtered = filtered.filter(internship =>
+        (internship.sector_tags || []).some(tag => filters.selectedSectors!.includes(tag))
+      );
+    } else if (filters.sector && filters.sector !== 'all') {
       filtered = filtered.filter(internship =>
         (internship.sector_tags || []).includes(filters.sector)
+      );
+    }
+
+    // Multi-skills filter
+    if (filters.selectedSkills && filters.selectedSkills.length > 0) {
+      filtered = filtered.filter(internship =>
+        (internship.required_skills || []).some(skill => filters.selectedSkills!.includes(skill))
       );
     }
 
@@ -130,10 +145,21 @@ export const useInternshipFilters = (internships: Internship[]) => {
       });
     }
 
-    // Sector filter
-    if (filters.sector && filters.sector !== 'all') {
+    // Multi-sector filter
+    if (filters.selectedSectors && filters.selectedSectors.length > 0) {
+      filtered = filtered.filter(item =>
+        (item.internship.sector_tags || []).some(tag => filters.selectedSectors!.includes(tag))
+      );
+    } else if (filters.sector && filters.sector !== 'all') {
       filtered = filtered.filter(item =>
         (item.internship.sector_tags || []).includes(filters.sector)
+      );
+    }
+
+    // Multi-skills filter
+    if (filters.selectedSkills && filters.selectedSkills.length > 0) {
+      filtered = filtered.filter(item =>
+        (item.internship.required_skills || []).some(skill => filters.selectedSkills!.includes(skill))
       );
     }
 
