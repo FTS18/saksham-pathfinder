@@ -1,0 +1,7 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "FIRESTORE_SETUP.md,README.md,*.md"
+  SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_PROJECT_ID"

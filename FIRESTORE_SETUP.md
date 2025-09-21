@@ -4,7 +4,7 @@
 
 ### 1. Go to Firebase Console
 - Visit: https://console.firebase.google.com/
-- Select your project: `saksham-ai-81c3a`
+- Select your project: `your-project-id`
 
 ### 2. Create Firestore Database
 - Click **"Firestore Database"** in the left sidebar
