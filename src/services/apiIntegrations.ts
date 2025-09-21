@@ -3,9 +3,23 @@ export class APIIntegrations {
   
   // LinkedIn Jobs API (requires partnership)
   async getLinkedInJobs() {
-    const response = await fetch('https://api.linkedin.com/v2/jobSearch', {
+    const token = import.meta.env.VITE_LINKEDIN_TOKEN;
+    if (!token) {
+      console.warn('LinkedIn token not configured');
+      return [];
+    }
+    
+    const allowedHosts = ['api.linkedin.com'];
+    const url = 'https://api.linkedin.com/v2/jobSearch';
+    const urlObj = new URL(url);
+    
+    if (!allowedHosts.includes(urlObj.hostname)) {
+      throw new Error('Invalid API host');
+    }
+    
+    const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${process.env.LINKEDIN_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'X-Restli-Protocol-Version': '2.0.0'
       }
     });
@@ -14,7 +28,21 @@ export class APIIntegrations {
 
   // Indeed API
   async getIndeedJobs() {
-    const response = await fetch(`https://api.indeed.com/ads/apisearch?publisher=${process.env.INDEED_PUBLISHER_ID}&q=internship&l=india&format=json`);
+    const publisherId = import.meta.env.VITE_INDEED_PUBLISHER_ID;
+    if (!publisherId) {
+      console.warn('Indeed publisher ID not configured');
+      return [];
+    }
+    
+    const allowedHosts = ['api.indeed.com'];
+    const url = `https://api.indeed.com/ads/apisearch?publisher=${encodeURIComponent(publisherId)}&q=internship&l=india&format=json`;
+    const urlObj = new URL(url);
+    
+    if (!allowedHosts.includes(urlObj.hostname)) {
+      throw new Error('Invalid API host');
+    }
+    
+    const response = await fetch(url);
     return response.json();
   }
 

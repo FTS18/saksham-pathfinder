@@ -33,8 +33,7 @@ export const NotificationSystem = () => {
     if (currentUser) {
       const q = query(
         collection(db, 'notifications'),
-        where('userId', '==', currentUser.uid),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', currentUser.uid)
       );
 
       const unsubscribe = onSnapshot(q, (snapshot) => {

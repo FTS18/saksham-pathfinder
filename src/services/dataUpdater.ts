@@ -24,7 +24,8 @@ export class DataUpdater {
       
       return updatedData;
     } catch (error) {
-      console.warn('Data update failed');
+      const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
+      console.warn('Data update failed:', sanitizedError);
       throw new Error('Data update failed');
     }
   }
@@ -91,7 +92,8 @@ export class DataUpdater {
         await this.updateInternshipData();
         console.log('Auto-update completed');
       } catch (error) {
-        console.warn('Auto-update failed');
+        const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
+        console.warn('Auto-update failed:', sanitizedError);
       }
     }, intervalHours * 60 * 60 * 1000);
   }

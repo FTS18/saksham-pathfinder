@@ -60,7 +60,8 @@ const OnboardingSteps = () => {
           }));
         }
       } catch (error) {
-        console.warn('Failed to load profile data');
+        const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
+        console.warn('Failed to load profile data:', sanitizedError);
       }
     };
 
@@ -198,7 +199,8 @@ const OnboardingSteps = () => {
             });
           }
         } catch (error) {
-          console.warn('Referral processing failed');
+          const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
+          console.warn('Referral processing failed:', sanitizedError);
           toast({ 
             title: 'Referral Error', 
             description: 'Failed to process referral code. Please try again.',
@@ -255,7 +257,8 @@ const OnboardingSteps = () => {
       }, 2000);
       
     } catch (error) {
-      console.warn('Failed to save profile data');
+      const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
+      console.warn('Failed to save profile data:', sanitizedError);
       toast({ title: 'Error', description: 'Failed to save profile', variant: 'destructive' });
     } finally {
       setSaving(false);
