@@ -93,21 +93,23 @@ export const InternshipDetailsModal = ({
   totalCount
 }: InternshipDetailsModalProps) => {
   const { language } = useTheme();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const wishlistContext = useWishlist();
   const t = translations[language];
   const [showReadingAssistant, setShowReadingAssistant] = useState(false);
   const [prepGuide, setPrepGuide] = useState<string>('');
   const [loadingPrep, setLoadingPrep] = useState(false);
   
-  const isWishlisted = isInWishlist(internship.id);
+  const isWishlisted = wishlistContext?.isInWishlist ? wishlistContext.isInWishlist(internship.id) : false;
   
   useScrollLock(isOpen);
   
   const handleWishlistToggle = () => {
+    if (!wishlistContext) return;
+    
     if (isWishlisted) {
-      removeFromWishlist(internship.id);
+      wishlistContext.removeFromWishlist(internship.id);
     } else {
-      addToWishlist(internship);
+      wishlistContext.addToWishlist(internship);
     }
   };
   
