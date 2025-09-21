@@ -1,0 +1,86 @@
+/* Accessibility and Translation Support */
+
+/* Hide Google Translate toolbar */
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-menu-value {
+  display: none !important;
+}
+
+#google_translate_element {
+  display: none !important;
+}
+
+/* Font support for Indian languages */
+body.hi, body.hi * {
+  font-family: 'Noto Sans Devanagari', 'Mangal', 'Kruti Dev 010', sans-serif !important;
+}
+
+body.pa, body.pa * {
+  font-family: 'Noto Sans Gurmukhi', 'Raavi', sans-serif !important;
+}
+
+body.ur, body.ur * {
+  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', sans-serif !important;
+}
+
+body.bn, body.bn * {
+  font-family: 'Noto Sans Bengali', 'Vrinda', sans-serif !important;
+}
+
+body.ta, body.ta * {
+  font-family: 'Noto Sans Tamil', 'Latha', sans-serif !important;
+}
+
+body.te, body.te * {
+  font-family: 'Noto Sans Telugu', 'Gautami', sans-serif !important;
+}
+
+body.ml, body.ml * {
+  font-family: 'Noto Sans Malayalam', 'Kartika', sans-serif !important;
+}
+
+body.kn, body.kn * {
+  font-family: 'Noto Sans Kannada', 'Tunga', sans-serif !important;
+}
+
+body.gu, body.gu * {
+  font-family: 'Noto Sans Gujarati', 'Shruti', sans-serif !important;
+}
+
+body.mr, body.mr * {
+  font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif !important;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .chatbot-container {
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* RTL support for Urdu */
+body.ur {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Sidebar animation */
+.chatbot-sidebar {
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.chatbot-sidebar.open {
+  transform: translateX(0);
+}

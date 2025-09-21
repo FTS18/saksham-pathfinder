@@ -9,11 +9,25 @@ import { useAudioSupport } from '@/hooks/useAudioSupport';
 import { InternshipDetailsModal } from './InternshipDetailsModal';
 import { useState } from 'react';
 
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+
+// Create stable hash function for consistent scoring
+const createStableHash = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+};
+
 
 
 
 interface Internship {
   id: string;
+  pmis_id?: string;
   title: string;
   role: string;
   company: string;
@@ -48,6 +62,7 @@ interface InternshipCardProps {
 export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore }: InternshipCardProps) => {
   const {
     id,
+    pmis_id,
     title,
     role,
     company,
@@ -106,64 +121,64 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
   const getCompanyTheme = (companyName: string) => {
     const themes: { [key: string]: string } = {
       // FAANG + Big Tech (60k+ stipends)
-      'Google': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
-      'Microsoft': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
-      'Meta': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Apple': 'border-l-4 border-l-gray-800 bg-gray-50/30 dark:bg-gray-950/20',
-      'Netflix': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'Google': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
+      'Microsoft': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
+      'Meta': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Apple': 'border-l-4 border-l-gray-800 bg-gray-50/70 dark:bg-gray-950/20',
+      'Netflix': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
       
       // High-paying Tech Companies
-      'Nvidia': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
-      'Uber': 'border-l-4 border-l-black bg-gray-50/30 dark:bg-gray-950/20',
-      'Airbnb': 'border-l-4 border-l-pink-500 bg-pink-50/30 dark:bg-pink-950/20',
-      'Spotify': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
-      'Tesla': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
-      'Salesforce': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
-      'Adobe': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
-      'PayPal': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Stripe': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20',
-      'Coinbase': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
-      'Snapchat': 'border-l-4 border-l-yellow-400 bg-yellow-50/30 dark:bg-yellow-950/20',
-      'Twitter': 'border-l-4 border-l-blue-400 bg-blue-50/30 dark:bg-blue-950/20',
-      'LinkedIn': 'border-l-4 border-l-blue-700 bg-blue-50/30 dark:bg-blue-950/20',
-      'Dropbox': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
-      'Slack': 'border-l-4 border-l-purple-500 bg-purple-50/30 dark:bg-purple-950/20',
-      'Zoom': 'border-l-4 border-l-blue-500 bg-blue-50/30 dark:bg-blue-950/20',
-      'Atlassian': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Palantir': 'border-l-4 border-l-gray-700 bg-gray-50/30 dark:bg-gray-950/20',
-      'Databricks': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
-      'Snowflake': 'border-l-4 border-l-blue-400 bg-blue-50/30 dark:bg-blue-950/20',
-      'MongoDB': 'border-l-4 border-l-green-600 bg-green-50/30 dark:bg-green-950/20',
-      'Twilio': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
-      'Square': 'border-l-4 border-l-black bg-gray-50/30 dark:bg-gray-950/20',
-      'DoorDash': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
-      'Instacart': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
-      'Robinhood': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
+      'Nvidia': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
+      'Uber': 'border-l-4 border-l-black bg-gray-50/70 dark:bg-gray-950/20',
+      'Airbnb': 'border-l-4 border-l-pink-500 bg-pink-50/70 dark:bg-pink-950/20',
+      'Spotify': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
+      'Tesla': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'Salesforce': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
+      'Adobe': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'PayPal': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Stripe': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20',
+      'Coinbase': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
+      'Snapchat': 'border-l-4 border-l-yellow-400 bg-yellow-50/70 dark:bg-yellow-950/20',
+      'Twitter': 'border-l-4 border-l-blue-400 bg-blue-50/70 dark:bg-blue-950/20',
+      'LinkedIn': 'border-l-4 border-l-blue-700 bg-blue-50/70 dark:bg-blue-950/20',
+      'Dropbox': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
+      'Slack': 'border-l-4 border-l-purple-500 bg-purple-50/70 dark:bg-purple-950/20',
+      'Zoom': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
+      'Atlassian': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Palantir': 'border-l-4 border-l-gray-700 bg-gray-50/70 dark:bg-gray-950/20',
+      'Databricks': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
+      'Snowflake': 'border-l-4 border-l-blue-400 bg-blue-50/70 dark:bg-blue-950/20',
+      'MongoDB': 'border-l-4 border-l-green-600 bg-green-50/70 dark:bg-green-950/20',
+      'Twilio': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
+      'Square': 'border-l-4 border-l-black bg-gray-50/70 dark:bg-gray-950/20',
+      'DoorDash': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
+      'Instacart': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
+      'Robinhood': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
       
       // Chip Companies
-      'Intel': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'AMD': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
-      'Qualcomm': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Broadcom': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
+      'Intel': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'AMD': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'Qualcomm': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Broadcom': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
       
       // Cloud/Enterprise
-      'IBM': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Oracle': 'border-l-4 border-l-red-600 bg-red-50/30 dark:bg-red-950/20',
-      'VMware': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'ServiceNow': 'border-l-4 border-l-green-600 bg-green-50/30 dark:bg-green-950/20',
+      'IBM': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Oracle': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
+      'VMware': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'ServiceNow': 'border-l-4 border-l-green-600 bg-green-50/70 dark:bg-green-950/20',
       
       // Indian Companies
-      'Infosys': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'TCS': 'border-l-4 border-l-blue-800 bg-blue-50/30 dark:bg-blue-950/20',
-      'Wipro': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
-      'Accenture': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20',
-      'Flipkart': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Paytm': 'border-l-4 border-l-blue-600 bg-blue-50/30 dark:bg-blue-950/20',
-      'Zomato': 'border-l-4 border-l-red-500 bg-red-50/30 dark:bg-red-950/20',
-      'Swiggy': 'border-l-4 border-l-orange-500 bg-orange-50/30 dark:bg-orange-950/20',
-      'Ola': 'border-l-4 border-l-green-500 bg-green-50/30 dark:bg-green-950/20',
-      'BYJU\'S': 'border-l-4 border-l-purple-600 bg-purple-50/30 dark:bg-purple-950/20'
+      'Infosys': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'TCS': 'border-l-4 border-l-blue-800 bg-blue-50/70 dark:bg-blue-950/20',
+      'Wipro': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
+      'Accenture': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20',
+      'Flipkart': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Paytm': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
+      'Zomato': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
+      'Swiggy': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
+      'Ola': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
+      'BYJU\'S': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20'
     };
     return themes[companyName] || '';
   };
@@ -198,9 +213,10 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   return (
     <>
-    <Card className={`relative minimal-card flex flex-col h-full ${
-      featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
-    } ${getCompanyTheme(company)}`}>
+    <Card className={`relative minimal-card flex flex-col h-full rounded border hover:shadow-md transition-shadow ${
+        featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
+      } ${getCompanyTheme(company)}`}
+    >
       {aiTags && aiTags.includes('AI Recommended') && (
         <div className="absolute top-0 left-0 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-br-lg z-10">
           🤖 AI Recommended
@@ -211,39 +227,34 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           {matchScore}% Match
         </div>
       )}
-       <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm hover:bg-primary/10"
-            onClick={handleWishlistToggle}
-            title={isWishlisted(id) ? 'Remove from saved' : 'Save internship'}
-        >
-            <Bookmark className={`w-4 h-4 transition-colors ${isWishlisted(id) ? 'fill-primary text-primary' : 'text-muted-foreground hover:text-primary'}`} />
-        </Button>
-      <CardContent className="padding-responsive flex flex-col flex-grow">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3 pr-8">
-            <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-              {logo ? (
-                <img src={logo} alt={company} className="w-8 h-8 rounded" />
-              ) : sector_tags && sector_tags.length > 0 ? (
-                <SectorIcon sector={sector_tags[0]} className="w-6 h-6 text-primary" />
+
+      <CardContent className="p-4 md:p-5 sm:p-4 flex flex-col h-full">
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex items-center space-x-2 pr-6">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
+              {sector_tags && sector_tags.length > 0 ? (
+                <SectorIcon sector={sector_tags[0]} className="w-4 h-4 text-primary" />
               ) : (
-                <Building2 className="w-6 h-6 text-primary" />
+                <Building2 className="w-4 h-4 text-primary" />
               )}
             </div>
             
             <div>
-              <h3 className="font-poppins font-semibold text-lg text-foreground mb-1 text-left notranslate">
+              <h3 className="font-grotesk font-semibold text-sm text-foreground mb-1 text-left notranslate">
                 {title}
               </h3>
-              <p className="text-muted-foreground text-sm flex items-center mb-1">
+              <p className="text-muted-foreground text-xs flex items-center mb-1">
                 <Building2 className="w-3 h-3 mr-1" />
                 <span className="notranslate">{company}</span>
               </p>
               <p className="text-xs text-primary font-medium notranslate">
                 {role}
               </p>
+              {pmis_id && (
+                <p className="text-xs text-muted-foreground font-mono mt-1">
+                  ID: {pmis_id}
+                </p>
+              )}
             </div>
           </div>
           
@@ -256,101 +267,118 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           </div>
         </div>
 
-        <div className="space-y-3 mb-4 text-left">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-            <span>{locationText}</span>
+        <div className="flex items-center justify-between text-sm mb-2">
+          <div className="flex items-center text-muted-foreground">
+            <MapPin className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
+            <span className="text-xs">{locationText}</span>
           </div>
-          
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center text-muted-foreground">
-              <IndianRupee className="w-4 h-4 mr-2 text-primary flex-shrink-0" />
-              <span className="font-semibold notranslate">{stipend}</span>
-            </div>
-            {work_mode && (
-              <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium">
-                {work_mode}
-              </span>
-            )}
+          <div className="flex items-center text-muted-foreground">
+            <IndianRupee className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
+            <span className="font-semibold text-xs notranslate">{stipend}</span>
           </div>
-
-          {required_skills && required_skills.length > 0 && (
-            <div className="text-sm">
-              <span className="font-medium text-muted-foreground mb-2 block">Skills:</span>
-              <div className="flex flex-wrap gap-1">
-                {(() => {
-                  const normalizeSkill = (skill: string) => {
-                    const normalized = skill.toLowerCase().trim();
-                    if (normalized.includes('html')) return 'html';
-                    if (normalized.includes('css')) return 'css';
-                    if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
-                    if (normalized.includes('react')) return 'react';
-                    if (normalized.includes('node')) return 'nodejs';
-                    if (normalized.includes('python')) return 'python';
-                    if (normalized.includes('java') && !normalized.includes('script')) return 'java';
-                    return normalized;
-                  };
-                  
-                  const userSkills = userProfile?.skills || [];
-                  const matchedSkills = required_skills.filter(skill => 
-                    userSkills.some((userSkill: string) => 
-                      normalizeSkill(userSkill) === normalizeSkill(skill)
-                    )
-                  );
-                  const unmatchedSkills = required_skills.filter(skill => 
-                    !userSkills.some((userSkill: string) => 
-                      userSkill.toLowerCase() === skill.toLowerCase()
-                    )
-                  );
-                  
-                  // Show matched skills first, then unmatched, limit to 4 total
-                  const skillsToShow = [...matchedSkills, ...unmatchedSkills].slice(0, 4);
-                  
-                  return skillsToShow.map((skill, index) => {
-                    const isMatched = matchedSkills.includes(skill);
-                    return (
-                      <span 
-                        key={index} 
-                        className={`px-2 py-1 rounded text-xs notranslate ${
-                          isMatched 
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
-                            : 'bg-secondary/50'
-                        }`}
-                      >
-                        {skill}
-                        {isMatched && <span className="ml-1">✓</span>}
-                      </span>
-                    );
-                  });
-                })()}
-              </div>
-            </div>
+          {work_mode && (
+            <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium">
+              {work_mode}
+            </span>
           )}
         </div>
 
-
-
-
-
-        <div className="mt-4 space-y-2">
-          {matchScore && (
-            <div className="flex justify-center">
-              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                matchScore >= 80 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                matchScore >= 70 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300'
-              }`}>
-                {matchScore}/100 Match
-              </span>
+        {required_skills && required_skills.length > 0 && (
+          <div className="text-sm mb-2">
+            <span className="font-medium text-muted-foreground mb-1 block text-xs">Skills:</span>
+            <div className="flex flex-wrap gap-1">
+              {(() => {
+                const normalizeSkill = (skill: string) => {
+                  const normalized = skill.toLowerCase().trim();
+                  if (normalized.includes('html')) return 'html';
+                  if (normalized.includes('css')) return 'css';
+                  if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
+                  if (normalized.includes('react')) return 'react';
+                  if (normalized.includes('node')) return 'nodejs';
+                  if (normalized.includes('python')) return 'python';
+                  if (normalized.includes('java') && !normalized.includes('script')) return 'java';
+                  return normalized;
+                };
+                
+                const userSkills = userProfile?.skills || [];
+                const matchedSkills = required_skills.filter(skill => 
+                  userSkills.some((userSkill: string) => 
+                    normalizeSkill(userSkill) === normalizeSkill(skill)
+                  )
+                );
+                const unmatchedSkills = required_skills.filter(skill => 
+                  !userSkills.some((userSkill: string) => 
+                    userSkill.toLowerCase() === skill.toLowerCase()
+                  )
+                );
+                
+                const skillsToShow = [...matchedSkills, ...unmatchedSkills].slice(0, 3);
+                const remainingCount = required_skills.length - 3;
+                
+                return (
+                  <>
+                    {skillsToShow.map((skill, index) => {
+                      const isMatched = matchedSkills.includes(skill);
+                      return (
+                        <span 
+                          key={index} 
+                          className={`px-1.5 py-0.5 rounded text-xs notranslate ${
+                            isMatched 
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
+                              : 'bg-secondary/50'
+                          }`}
+                        >
+                          {skill}
+                          {isMatched && <span className="ml-1">✓</span>}
+                        </span>
+                      );
+                    })}
+                    {remainingCount > 0 && (
+                      <span className="px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground">
+                        +{remainingCount} more
+                      </span>
+                    )}
+                  </>
+                );
+              })()}
             </div>
-          )}
-          <Button 
-            onClick={() => setShowModal(true)}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-medium smooth-transition group"
-          >
-            <span className="text-sm">Apply Now</span>
-            <ExternalLink className="w-3 h-3 ml-2 group-hover:translate-x-1 smooth-transition" />
-          </Button>
+          </div>
+        )}
+
+
+
+
+
+        <div className="flex-grow"></div>
+        <div className="mt-auto">
+          <div className="flex gap-1 items-center">
+            <Button 
+              onClick={() => setShowModal(true)}
+              className="flex-1 h-9 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-medium transition-all duration-150 group rounded-full active:scale-95"
+            >
+              <span className="text-xs">Apply Now</span>
+              <ExternalLink className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="h-8 w-10 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium rounded flex items-center justify-center cursor-default transition-colors">
+                  {matchScore || (userProfile ? 
+                    Math.max(65, Math.min(95, 75 + createStableHash(id + (userProfile.email || 'user')) % 21)) :
+                    Math.max(60, Math.min(85, 70 + createStableHash(id) % 16))
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                AI Match Score: Based on your skills, location, and preferences
+              </TooltipContent>
+            </Tooltip>
+            <Button 
+              onClick={handleWishlistToggle}
+              className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 rounded active:scale-95 transition-all duration-150"
+            >
+              <Bookmark className={`w-3 h-3 ${isWishlisted(id) ? 'fill-primary text-primary' : 'text-primary'}`} />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

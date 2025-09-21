@@ -460,12 +460,12 @@ export default function Dashboard() {
   const sidebarItems = [
     { id: 'wishlist', label: 'Saved', icon: Bookmark, tooltip: 'Your saved internships' },
     { id: 'applications', label: t.applications, icon: FileText, tooltip: 'Track your applications' },
-    { id: 'my-internship', label: 'My Internship', icon: Briefcase, tooltip: 'Current internship details' },
+
     { id: 'news-events', label: 'News & Events', icon: Bell, tooltip: 'Latest updates and events' },
     { id: 'tutorials', label: 'Tutorials', icon: Play, tooltip: 'Video guides and tutorials' },
     { id: 'refer-friend', label: 'Refer A Friend', icon: Users, tooltip: 'Invite friends and earn rewards' },
     { id: 'skill-gap', label: 'Skill Gap', icon: TrendingUp, tooltip: 'Identify skills to learn' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, tooltip: 'View analytics' },
+
     { id: 'settings', label: 'Settings', icon: SettingsIcon, tooltip: 'Profile and app settings' },
   ];
 
@@ -835,25 +835,7 @@ export default function Dashboard() {
           </div>
         );
         
-      case 'my-internship':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-racing font-bold text-foreground">
-              My Internship
-            </h2>
-            <Card className="glass-card">
-              <CardContent className="p-8 text-center">
-                <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">
-                  No active internship found. Apply to internships to track your progress here.
-                </p>
-                <Button asChild variant="outline">
-                  <a href="/">Browse Internships</a>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        );
+
         
       case 'news-events':
         return (
@@ -1167,25 +1149,7 @@ export default function Dashboard() {
           </div>
         );
         
-      case 'analytics':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-racing font-bold text-foreground">
-              Analytics
-            </h2>
-            <Card className="glass-card">
-              <CardContent className="p-8 text-center">
-                <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">
-                  Track your internship application progress and success metrics.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Coming soon - Detailed analytics and insights!
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        );
+
 
       default:
         return null;
@@ -1197,8 +1161,8 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
+          {/* Sidebar - Hidden on mobile */}
+          <div className="lg:col-span-1 hidden lg:block">
             <Card className="glass-card sticky top-24">
               <CardHeader>
                 <CardTitle className="text-lg font-racing">
@@ -1216,39 +1180,14 @@ export default function Dashboard() {
                     </div>
                   </div>
                 )}
-                
-                {/* Quick Actions Dropdown */}
-                <div className="mt-4">
-                  <Select value={selectedQuickAction} onValueChange={(value) => {
-                    setSelectedQuickAction(value);
-                    if (value) {
-                      setActiveSection(value);
-                      setSelectedQuickAction('');
-                    }
-                  }}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Quick Actions" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="wishlist">📚 View Saved Internships</SelectItem>
-                      <SelectItem value="applications">📝 Track Applications</SelectItem>
-                      <SelectItem value="my-internship">💼 My Current Internship</SelectItem>
-                      <SelectItem value="news-events">📰 Latest News & Updates</SelectItem>
-                      <SelectItem value="tutorials">🎥 Watch Tutorials</SelectItem>
-                      <SelectItem value="refer-friend">👥 Refer Friends</SelectItem>
-                      <SelectItem value="skill-gap">📈 Skill Analysis</SelectItem>
-                      <SelectItem value="settings">⚙️ Account Settings</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-3">
                 {sidebarItems.map((item) => (
                   <Tooltip key={item.id}>
                     <TooltipTrigger asChild>
                       <Button
                         variant={activeSection === item.id ? "default" : "ghost"}
-                        className="w-full justify-start"
+                        className="w-full justify-start text-sm py-2 mb-2"
                         onClick={() => setActiveSection(item.id)}
                       >
                         <item.icon className="w-4 h-4 mr-2" />
@@ -1260,6 +1199,41 @@ export default function Dashboard() {
                     </TooltipContent>
                   </Tooltip>
                 ))}
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Mobile Dashboard Navigation */}
+          <div className="lg:hidden mb-6 col-span-full">
+            <Card className="glass-card">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="font-racing font-bold text-lg">{t.dashboard}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {t.welcome}, {dashboardProfile?.username?.split(' ')[0] || currentUser?.displayName?.split(' ')[0] || 'User'}
+                    </p>
+                  </div>
+                  {dashboardProfile?.points && (
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-primary">{dashboardProfile.points} Points</p>
+                      <p className="text-xs text-muted-foreground">⭐ Rewards</p>
+                    </div>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {sidebarItems.slice(0, 6).map((item) => (
+                    <Button
+                      key={item.id}
+                      variant={activeSection === item.id ? "default" : "outline"}
+                      className="h-12 text-xs flex flex-col gap-1"
+                      onClick={() => setActiveSection(item.id)}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.label}</span>
+                    </Button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { ReadingAssistant } from './ReadingAssistant';
+import { useState } from 'react';
 
 interface Internship {
   id: string;
@@ -86,22 +88,44 @@ export const InternshipDetailsModal = ({
 }: InternshipDetailsModalProps) => {
   const { language } = useTheme();
   const t = translations[language];
+  const [showReadingAssistant, setShowReadingAssistant] = useState(false);
   
   const locationText = typeof internship.location === 'string' ? internship.location : internship.location.city;
+  
+  const getModalText = () => {
+    let text = `${internship.title} at ${internship.company}. Location: ${locationText}. Stipend: ${internship.stipend}.`;
+    if (internship.description) text += ` Description: ${internship.description}`;
+    if (internship.responsibilities) text += ` Responsibilities: ${internship.responsibilities.join(', ')}`;
+    if (internship.required_skills) text += ` Required skills: ${internship.required_skills.join(', ')}`;
+    return text;
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-primary" />
+          <DialogTitle className="text-xl font-bold flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div>{internship.title}</div>
+                <div className="text-sm font-normal text-muted-foreground">{internship.company}</div>
+              </div>
             </div>
-            <div>
-              <div>{internship.title}</div>
-              <div className="text-sm font-normal text-muted-foreground">{internship.company}</div>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowReadingAssistant(!showReadingAssistant)}
+              className="text-xs"
+            >
+              🔊 Read Aloud
+            </Button>
           </DialogTitle>
+          {showReadingAssistant && (
+            <ReadingAssistant text={getModalText()} isVisible={showReadingAssistant} />
+          )}
         </DialogHeader>
 
         <div className="space-y-6">
@@ -215,7 +239,7 @@ export const InternshipDetailsModal = ({
               rel="noopener noreferrer" 
               className="flex-1"
             >
-              <Button className="w-full bg-primary hover:bg-primary-dark text-white">
+              <Button className="w-full bg-primary hover:bg-primary-dark text-white rounded-full py-3">
                 <span>{t.apply}</span>
                 <ExternalLink className="w-4 h-4 ml-2" />
               </Button>

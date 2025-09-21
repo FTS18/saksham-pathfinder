@@ -6,6 +6,7 @@ import { InternshipFilters } from '@/components/InternshipFilters';
 import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { InternshipCard } from '@/components/InternshipCard';
 import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
+import MagicBento from '@/components/MagicBento';
 
 
 // Lazy load heavy components
@@ -104,25 +105,60 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
               location_score = 1;
               location_reason = 'Same city match';
           } else if (userCity) {
-              const cityProximity: { [key: string]: string[] } = {
-                  'delhi': ['gurgaon', 'noida', 'faridabad', 'ghaziabad', 'new delhi'],
-                  'mumbai': ['pune', 'navi mumbai', 'thane'],
-                  'bangalore': ['bengaluru', 'mysore'],
-                  'bengaluru': ['bangalore', 'mysore'],
-                  'hyderabad': ['secunderabad'],
-                  'chennai': ['coimbatore'],
-                  'pune': ['mumbai', 'navi mumbai'],
-                  'gurgaon': ['delhi', 'noida', 'faridabad'],
-                  'noida': ['delhi', 'gurgaon', 'ghaziabad']
+              const cityProximity: { [key: string]: { nearby: string[], regional: string[] } } = {
+                  'delhi': { 
+                      nearby: ['gurgaon', 'noida', 'faridabad', 'ghaziabad', 'new delhi'],
+                      regional: ['chandigarh', 'jaipur', 'agra', 'lucknow']
+                  },
+                  'mumbai': { 
+                      nearby: ['pune', 'navi mumbai', 'thane', 'nashik'],
+                      regional: ['ahmedabad', 'surat', 'nagpur', 'aurangabad']
+                  },
+                  'bangalore': { 
+                      nearby: ['bengaluru', 'mysore', 'mangalore'],
+                      regional: ['chennai', 'hyderabad', 'coimbatore', 'kochi']
+                  },
+                  'bengaluru': { 
+                      nearby: ['bangalore', 'mysore', 'mangalore'],
+                      regional: ['chennai', 'hyderabad', 'coimbatore', 'kochi']
+                  },
+                  'hyderabad': { 
+                      nearby: ['secunderabad', 'warangal'],
+                      regional: ['bangalore', 'chennai', 'vijayawada', 'visakhapatnam']
+                  },
+                  'chennai': { 
+                      nearby: ['coimbatore', 'madurai', 'salem'],
+                      regional: ['bangalore', 'hyderabad', 'kochi', 'trichy']
+                  },
+                  'pune': { 
+                      nearby: ['mumbai', 'navi mumbai', 'nashik'],
+                      regional: ['ahmedabad', 'surat', 'nagpur']
+                  },
+                  'kolkata': {
+                      nearby: ['howrah', 'durgapur'],
+                      regional: ['bhubaneswar', 'guwahati', 'patna']
+                  },
+                  'ahmedabad': {
+                      nearby: ['surat', 'vadodara', 'rajkot'],
+                      regional: ['mumbai', 'pune', 'indore', 'jaipur']
+                  }
               };
               
-              const nearbyCities = cityProximity[userCity] || [];
-              if (nearbyCities.includes(internshipCity)) {
-                  location_score = 0.8;
-                  location_reason = 'Nearby city';
+              const proximity = cityProximity[userCity];
+              if (proximity) {
+                  if (proximity.nearby.includes(internshipCity)) {
+                      location_score = 0.85;
+                      location_reason = 'Nearby city';
+                  } else if (proximity.regional.includes(internshipCity)) {
+                      location_score = 0.65;
+                      location_reason = 'Same region';
+                  } else {
+                      location_score = 0.4;
+                      location_reason = 'Different region';
+                  }
               } else {
-                  location_score = 0.3;
-                  location_reason = 'Different region';
+                  location_score = 0.5;
+                  location_reason = 'Location match';
               }
           }
       }
@@ -469,77 +505,161 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="border-2 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+              className="border-2 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <Calendar className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-foreground">Age</h3>
                 <p className="text-muted-foreground">21-24 Years</p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicBento>
             
-            <Card className="border-2 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+              className="border-2 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <Briefcase className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-foreground">Job Status</h3>
                 <p className="text-muted-foreground">Not Employed Full Time</p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicBento>
             
-            <Card className="border-2 hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+              className="border-2 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <GraduationCap className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-foreground">Education</h3>
                 <p className="text-muted-foreground">Not Enrolled Full Time</p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicBento>
             
-            <Card className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+              className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-foreground">Family Income</h3>
                 <p className="text-muted-foreground">No one earning more than ₹8 Lakhs PA</p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicBento>
             
-            <Card className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500 flex items-center justify-center">
+            <MagicBento 
+              textAutoHide={true}
+              enableStars={true}
+              enableSpotlight={true}
+              enableBorderGlow={true}
+              enableTilt={true}
+              enableMagnetism={true}
+              clickEffect={true}
+              spotlightRadius={300}
+              particleCount={12}
+              glowColor="132, 0, 255"
+              className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2"
+            >
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                   <Building className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2 text-foreground">Government Job</h3>
                 <p className="text-muted-foreground">No Member has a Govt. Job</p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicBento>
           </div>
           
           {/* Core Benefits */}
           <div className="mt-16 mb-12">
             <h3 className="text-2xl font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="p-4 border border-border rounded-lg">
+              <MagicBento 
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                spotlightRadius={200}
+                glowColor="34, 197, 94"
+                className="p-4 border border-border rounded-lg"
+              >
                 <h4 className="font-semibold text-foreground mb-2">12 months real-life experience</h4>
                 <p className="text-muted-foreground text-sm">in India's top companies</p>
-              </div>
-              <div className="p-4 border border-border rounded-lg">
+              </MagicBento>
+              <MagicBento 
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                spotlightRadius={200}
+                glowColor="59, 130, 246"
+                className="p-4 border border-border rounded-lg"
+              >
                 <h4 className="font-semibold text-foreground mb-2">Monthly assistance</h4>
                 <p className="text-muted-foreground text-sm">₹4500 by Government of India and ₹500 by Industry</p>
-              </div>
-              <div className="p-4 border border-border rounded-lg">
+              </MagicBento>
+              <MagicBento 
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                spotlightRadius={200}
+                glowColor="168, 85, 247"
+                className="p-4 border border-border rounded-lg"
+              >
                 <h4 className="font-semibold text-foreground mb-2">One-time Grant</h4>
                 <p className="text-muted-foreground text-sm">₹6000 for incidentals</p>
-              </div>
-              <div className="p-4 border border-border rounded-lg">
+              </MagicBento>
+              <MagicBento 
+                enableSpotlight={true}
+                enableBorderGlow={true}
+                spotlightRadius={200}
+                glowColor="245, 158, 11"
+                className="p-4 border border-border rounded-lg"
+              >
                 <h4 className="font-semibold text-foreground mb-2">Select from Various Sectors</h4>
                 <p className="text-muted-foreground text-sm">and from top Companies of India</p>
-              </div>
+              </MagicBento>
             </div>
           </div>
           

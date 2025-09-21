@@ -12,6 +12,7 @@ import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { Confetti } from '@/components/Confetti';
+import { SearchableSelect } from '@/components/SearchableSelect';
 
 const OnboardingSteps = () => {
   const { currentUser } = useAuth();
@@ -66,19 +67,30 @@ const OnboardingSteps = () => {
     loadExistingProfile();
   }, [currentUser]);
 
-  const sectorsList = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'E-commerce', 'Manufacturing', 'Media', 'Gaming', 'Consulting'];
+  const sectorsList = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'E-commerce', 'Manufacturing', 'Media', 'Gaming', 'Consulting', 'Banking', 'Automotive', 'Construction', 'Hospitality', 'Travel', 'NGO', 'Research', 'Sales', 'Operations', 'Electronics', 'Infrastructure'];
   
   const skillsBySection: Record<string, string[]> = {
-    'Technology': ['JavaScript', 'Python', 'React', 'Node.js', 'Java', 'C++', 'HTML', 'CSS', 'SQL', 'AWS'],
-    'Healthcare': ['Medical Research', 'Clinical Trials', 'Healthcare IT', 'Biotechnology', 'Medical Writing'],
-    'Finance': ['Financial Analysis', 'Investment Banking', 'Risk Management', 'Accounting', 'Trading'],
-    'Education': ['Curriculum Development', 'Educational Technology', 'Teaching', 'E-learning'],
-    'Marketing': ['Digital Marketing', 'Content Marketing', 'Social Media Marketing', 'SEO', 'Analytics'],
-    'E-commerce': ['Digital Marketing', 'Customer Service', 'Supply Chain', 'Data Analysis'],
-    'Manufacturing': ['Quality Control', 'Process Improvement', 'Supply Chain', 'Project Management'],
-    'Media': ['Content Creation', 'Video Editing', 'Graphic Design', 'Social Media'],
-    'Gaming': ['Unity', 'Unreal Engine', 'C#', 'Game Design', '3D Modeling'],
-    'Consulting': ['Problem Solving', 'Data Analysis', 'Presentation Skills', 'Strategic Planning']
+    'Technology': ['JavaScript', 'Python', 'React', 'Node.js', 'Java', 'C++', 'HTML', 'CSS', 'SQL', 'AWS', 'MongoDB', 'Express.js', 'TypeScript', 'Angular', 'Vue.js', 'Docker', 'Kubernetes'],
+    'Healthcare': ['Medical Research', 'Clinical Trials', 'Healthcare IT', 'Biotechnology', 'Medical Writing', 'Patient Care', 'Laboratory Skills'],
+    'Finance': ['Financial Analysis', 'Investment Banking', 'Risk Management', 'Accounting', 'Trading', 'Financial Modeling', 'Credit Analysis', 'Corporate Finance'],
+    'Education': ['Curriculum Development', 'Educational Technology', 'Teaching', 'E-learning', 'Training'],
+    'Marketing': ['Digital Marketing', 'Content Marketing', 'Social Media Marketing', 'SEO', 'Analytics', 'Brand Management', 'Campaign Management'],
+    'E-commerce': ['Digital Marketing', 'Customer Service', 'Supply Chain', 'Data Analysis', 'Inventory Management'],
+    'Manufacturing': ['Quality Control', 'Process Improvement', 'Supply Chain', 'Project Management', 'Lean Manufacturing', 'Robotics'],
+    'Media': ['Content Creation', 'Video Editing', 'Graphic Design', 'Social Media', 'Video Production', 'Photography'],
+    'Gaming': ['Unity', 'Unreal Engine', 'C#', 'Game Design', '3D Modeling', 'Animation'],
+    'Consulting': ['Problem Solving', 'Data Analysis', 'Presentation Skills', 'Strategic Planning', 'Business Intelligence'],
+    'Banking': ['Financial Planning', 'Client Relations', 'Investment', 'Communication', 'Banking Operations'],
+    'Automotive': ['Mechanical Design', 'AutoCAD', 'Thermodynamics', 'Quality Control', 'Manufacturing'],
+    'Construction': ['Safety Regulations', 'Risk Assessment', 'First Aid', 'Communication', 'Project Management'],
+    'Hospitality': ['Culinary Arts', 'Food Preparation', 'Hygiene', 'Teamwork', 'Customer Service'],
+    'Travel': ['Customer Service', 'Communication', 'Planning', 'Coordination'],
+    'NGO': ['Fundraising', 'Communication', 'Content Writing', 'Social Work'],
+    'Research': ['Research Methods', 'Lab Techniques', 'Data Analysis', 'Scientific Writing'],
+    'Sales': ['Retail Operations', 'Customer Service', 'Sales', 'Communication'],
+    'Operations': ['Operations Management', 'Process Optimization', 'Supply Chain', 'Logistics'],
+    'Electronics': ['Embedded C', 'Microcontrollers', 'PCB Design', 'Circuit Design'],
+    'Infrastructure': ['Project Management', 'Construction', 'Safety', 'Quality Assurance']
   };
 
   const cities = ['Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Lucknow'];
@@ -235,10 +247,12 @@ const OnboardingSteps = () => {
       // Update onboarding status in AuthContext
       window.dispatchEvent(new CustomEvent('onboardingCompleted'));
       
+      // Force navigation after a short delay
       setTimeout(() => {
         setShowConfetti(false);
-        navigate('/dashboard');
-      }, 3000);
+        // Force reload to ensure auth context updates
+        window.location.href = '/dashboard';
+      }, 2000);
       
     } catch (error) {
       console.error('Error saving profile:', error);
@@ -410,30 +424,13 @@ const OnboardingSteps = () => {
               <p className="text-muted-foreground">Select sectors you're interested in</p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {sectorsList.map(sector => (
-                <Button
-                  key={sector}
-                  variant={formData.sectors.includes(sector) ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => toggleSector(sector)}
-                  className="justify-start"
-                >
-                  {sector}
-                </Button>
-              ))}
-            </div>
-
-            {formData.sectors.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.sectors.map(sector => (
-                  <Badge key={sector} variant="outline" className="flex items-center gap-1">
-                    {sector}
-                    <X className="w-3 h-3 cursor-pointer" onClick={() => toggleSector(sector)} />
-                  </Badge>
-                ))}
-              </div>
-            )}
+            <SearchableSelect
+              options={sectorsList}
+              selected={formData.sectors}
+              onSelectionChange={(sectors) => setFormData(prev => ({ ...prev, sectors }))}
+              placeholder="Search and select sectors..."
+              maxHeight="250px"
+            />
           </div>
         );
 
@@ -448,33 +445,18 @@ const OnboardingSteps = () => {
               </p>
             </div>
             
-            {formData.sectors.length > 0 && (
-              <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {getAvailableSkills().map(skill => (
-                    <Button
-                      key={skill}
-                      variant={formData.skills.includes(skill) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleSkill(skill)}
-                      className="justify-start text-xs"
-                    >
-                      {skill}
-                    </Button>
-                  ))}
-                </div>
-
-                {formData.skills.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {formData.skills.map(skill => (
-                      <Badge key={skill} variant="secondary" className="flex items-center gap-1">
-                        {skill}
-                        <X className="w-3 h-3 cursor-pointer" onClick={() => toggleSkill(skill)} />
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </>
+            {formData.sectors.length > 0 ? (
+              <SearchableSelect
+                options={getAvailableSkills()}
+                selected={formData.skills}
+                onSelectionChange={(skills) => setFormData(prev => ({ ...prev, skills }))}
+                placeholder="Search and select skills..."
+                maxHeight="250px"
+              />
+            ) : (
+              <div className="text-center text-muted-foreground py-8">
+                <p>Please select sectors first to see relevant skills</p>
+              </div>
             )}
           </div>
         );
@@ -526,7 +508,7 @@ const OnboardingSteps = () => {
             </div>
             <div className="pt-4">
               <Button 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => window.location.href = '/dashboard'}
                 size="lg"
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold px-8 py-3"
               >

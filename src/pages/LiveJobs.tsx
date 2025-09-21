@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { ExternalLink, MapPin, Building, Search, Filter, RefreshCw, Clock } from 'lucide-react';
+import { ExternalLink, MapPin, Building, Search, Filter, RefreshCw, Clock, Zap } from 'lucide-react';
+import { useDataUpdater } from '@/hooks/useDataUpdater';
 
 interface LiveInternship {
   id: string;
@@ -21,6 +22,9 @@ export default function LiveJobs() {
   const [internships, setInternships] = useState<LiveInternship[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Auto-update hook
+  const { isUpdating, lastUpdate, updateCount, updateNow } = useDataUpdater();
 
   const [filteredInternships, setFilteredInternships] = useState<LiveInternship[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,6 +105,20 @@ export default function LiveJobs() {
             <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-4 py-2 rounded-full font-medium">
               {filteredInternships.length} Live Openings
             </span>
+            {lastUpdate && (
+              <span className="text-xs text-muted-foreground">
+                Updated: {lastUpdate.toLocaleTimeString()}
+              </span>
+            )}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={updateNow}
+              disabled={isUpdating}
+            >
+              <Zap className={`w-4 h-4 mr-2 ${isUpdating ? 'animate-pulse' : ''}`} />
+              AI Update
+            </Button>
             <Button 
               variant="outline" 
               size="sm" 
