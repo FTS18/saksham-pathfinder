@@ -252,8 +252,8 @@ const OnboardingSteps = () => {
       // Force navigation after a short delay
       setTimeout(() => {
         setShowConfetti(false);
-        // Force reload to ensure auth context updates
-        window.location.href = '/dashboard';
+        // Navigate to home page
+        navigate('/');
       }, 2000);
       
     } catch (error) {
@@ -511,7 +511,7 @@ const OnboardingSteps = () => {
             </div>
             <div className="pt-4">
               <Button 
-                onClick={() => window.location.href = '/dashboard'}
+                onClick={() => navigate('/')}
                 size="lg"
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold px-8 py-3"
               >

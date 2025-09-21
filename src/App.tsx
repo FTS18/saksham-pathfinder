@@ -10,6 +10,7 @@ import { useTimeBasedPoints } from "./hooks/useTimeBasedPoints";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ComparisonProvider } from "./contexts/ComparisonContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { OnboardingRedirect } from "@/components/OnboardingRedirect";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -77,7 +78,6 @@ const AppContent = () => {
                       <Route path="/live-jobs" element={<LiveJobs />} />
                       
                       {/* Protected Routes */}
-                      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                       <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                       <Route path="/onboarding" element={<ProtectedRoute><OnboardingSteps /></ProtectedRoute>} />
@@ -110,13 +110,15 @@ const App = () => {
       <ThemeProvider>
         <AuthProvider>
           <WishlistProvider>
-            <TooltipProvider>
+            <ComparisonProvider>
+              <TooltipProvider>
               <Toaster />
               <Sonner />
               <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <AppContent />
               </BrowserRouter>
-            </TooltipProvider>
+              </TooltipProvider>
+            </ComparisonProvider>
           </WishlistProvider>
         </AuthProvider>
       </ThemeProvider>

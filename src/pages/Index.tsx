@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
-import { Loader2, Filter } from 'lucide-react';
+import { Loader2, Filter, RefreshCw } from 'lucide-react';
 import { Hero } from '@/components/Hero';
 import { ProfileForm, ProfileData } from '@/components/ProfileForm';
 import { InternshipFilters } from '@/components/InternshipFilters';
@@ -9,7 +9,12 @@ import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
 import MagicBento from '@/components/MagicBento';
 import { LazyComponent } from '@/components/LazyComponent';
 import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
+import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
+import { VirtualList } from '@/components/VirtualList';
+import { useKeyboardNavigation } from '@/hooks/useKeyboardNavigation';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { Slider } from '@/components/ui/slider';
+import { ComparisonButton } from '@/components/ComparisonButton';
 
 
 // Lazy load heavy components
@@ -295,12 +300,16 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [minAiScore, setMinAiScore] = useState([60]);
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0);
+  const [useVirtualScrolling, setUseVirtualScrolling] = useState(false);
   const profileFormRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   // Detect mobile device
   const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   const itemsPerPage = isMobile ? 12 : 21;
+  
+
 
   // Initial page load
   useEffect(() => {
@@ -469,19 +478,18 @@ const Index = () => {
   };
   
   // Get filtered items - use hook's filtered results or filtered recommendations
-  const getFilteredItems = () => {
-    if (profileData) {
+  const displayItems = useMemo(() => {
+    if (profileData && filterRecommendations) {
       const filtered = filterRecommendations(recommendations);
       return filtered; // Show all recommendations without threshold
     }
-    return filteredInternships.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
-  };
-  
-  const displayItems = getFilteredItems();
-  const totalPages = Math.ceil(displayItems.length / itemsPerPage);
+    return (filteredInternships || []).map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
+  }, [profileData, filterRecommendations, recommendations, filteredInternships]);
+
+  const totalPages = Math.ceil((displayItems?.length || 0) / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = showAllRecommendations ? displayItems : displayItems.slice(startIndex, endIndex);
+  const currentItems = showAllRecommendations ? (displayItems || []) : (displayItems || []).slice(startIndex, endIndex);
   
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -501,25 +509,7 @@ const Index = () => {
   };
 
   if (isPageLoading) {
-    return (
-      <div className="min-h-screen hero-gradient">
-        <div className="pt-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="min-h-screen flex items-center justify-center">
-              <div className="text-center space-y-6 max-w-4xl w-full">
-                <div className="h-16 bg-muted/20 rounded-lg animate-pulse" />
-                <div className="h-6 bg-muted/20 rounded animate-pulse" />
-                <div className="h-6 bg-muted/20 rounded w-2/3 mx-auto animate-pulse" />
-                <div className="flex justify-center space-x-4">
-                  <div className="h-12 w-32 bg-muted/20 rounded animate-pulse" />
-                  <div className="h-12 w-32 bg-muted/20 rounded animate-pulse" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <PageLoadingSpinner />;
   }
   
   return (
@@ -744,7 +734,7 @@ const Index = () => {
                     </h2>
                     <div className="flex items-center justify-between mb-6">
                         <p className="text-muted-foreground">
-                            Found {displayItems.length} matching internships
+                            Found {displayItems?.length || 0} matching internships
                         </p>
 
                     </div>
@@ -906,7 +896,7 @@ const Index = () => {
                         🔍 Browse All Internships
                     </h2>
                     <p className="text-muted-foreground mb-6">
-                        Found {displayItems.length} internships
+                        Found {displayItems?.length || 0} internships
                     </p>
                     
                     {/* Filters */}
@@ -1034,6 +1024,7 @@ const Index = () => {
           <Testimonials />
         </Suspense>
       </LazyComponent>
+      <ComparisonButton userProfile={profileData} />
     </div>
   );
 };

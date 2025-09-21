@@ -1,12 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Bookmark, ThumbsUp, ThumbsDown, Volume2 } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { SectorIcon } from './SectorIcons';
 import { useAudioSupport } from '@/hooks/useAudioSupport';
 import { InternshipDetailsModal } from './InternshipDetailsModal';
+import { useComparison } from '@/contexts/ComparisonContext';
 import { useState } from 'react';
 
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -84,6 +85,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
   const { isSupported: audioSupported, speak, isSpeaking } = useAudioSupport();
+  const { addToComparison, removeFromComparison, isInComparison, selectedInternships, maxComparisons } = useComparison();
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -96,6 +98,16 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         removeFromWishlist(id);
     } else {
         addToWishlist(id);
+    }
+  }
+
+  const handleCompareToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isInComparison(id)) {
+      removeFromComparison(id);
+    } else {
+      addToComparison(internship);
     }
   }
 
@@ -384,6 +396,19 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                 AI Match Score: Based on your skills, location, and preferences
               </TooltipContent>
             </Tooltip>
+            <Button 
+              onClick={handleCompareToggle}
+              disabled={!isInComparison(id) && selectedInternships.length >= maxComparisons}
+              className={`h-8 w-8 p-0 rounded active:scale-95 transition-all duration-150 ${
+                isInComparison(id) 
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                  : 'bg-primary/10 hover:bg-primary/20'
+              }`}
+            >
+              <GitCompare className={`w-3 h-3 ${
+                isInComparison(id) ? 'text-white' : 'text-primary'
+              }`} />
+            </Button>
             <Button 
               onClick={handleWishlistToggle}
               className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 rounded active:scale-95 transition-all duration-150"
