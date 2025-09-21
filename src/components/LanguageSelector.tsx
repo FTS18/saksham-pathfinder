@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { initGoogleTranslate } from '@/lib/googleTranslate';
+import { initGoogleTranslate, translatePage } from '@/lib/googleTranslate';
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -25,16 +25,11 @@ export const LanguageSelector = () => {
   useEffect(() => {
     initGoogleTranslate();
     
-    // Restore language selection on page load
     const savedLanguage = localStorage.getItem('selectedLanguage');
     if (savedLanguage && savedLanguage !== 'en') {
-      setTimeout(() => {
-        const googleTranslateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        if (googleTranslateElement) {
-          googleTranslateElement.value = savedLanguage;
-          googleTranslateElement.dispatchEvent(new Event('change'));
-        }
-      }, 2000); // Wait longer for Google Translate to fully load
+      [1000, 2000, 3000].forEach(delay => {
+        setTimeout(() => translatePage(savedLanguage), delay);
+      });
     }
   }, []);
 
@@ -42,24 +37,16 @@ export const LanguageSelector = () => {
     setLanguage(newLanguage as any);
     localStorage.setItem('selectedLanguage', newLanguage);
     
-    // Trigger Google Translate immediately
-    const triggerTranslation = () => {
-      const googleTranslateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      if (googleTranslateElement) {
-        const translateValue = newLanguage === 'en' ? '' : newLanguage;
-        googleTranslateElement.value = translateValue;
-        googleTranslateElement.dispatchEvent(new Event('change'));
-        
-        // Add body class for font switching
-        document.body.className = document.body.className.replace(/\b(en|hi|pa|ur|bn|ta|te|ml|kn|gu|mr)\b/g, '');
-        document.body.classList.add(newLanguage);
-      }
-    };
+    document.body.className = document.body.className.replace(/\b(en|hi|pa|ur|bn|ta|te|ml|kn|gu|mr)\b/g, '');
+    document.body.classList.add(newLanguage);
     
-    // Try multiple times to ensure translation works
-    triggerTranslation();
-    setTimeout(triggerTranslation, 500);
-    setTimeout(triggerTranslation, 1500);
+    if (newLanguage === 'en') {
+      window.location.reload();
+    } else {
+      [0, 200, 500, 1000].forEach(delay => {
+        setTimeout(() => translatePage(newLanguage), delay);
+      });
+    }
   };
 
   const currentLang = languages.find(lang => lang.code === language);

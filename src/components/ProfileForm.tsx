@@ -392,7 +392,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
           
           <Button 
             type="submit"
-            className="w-full bg-primary hover:bg-primary-dark text-white py-2.5 sm:py-3 text-base sm:text-lg font-semibold rounded-lg shadow-clean hover-lift"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-2.5 sm:py-3 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200"
             size="lg"
           >
             Get AI Recommendations

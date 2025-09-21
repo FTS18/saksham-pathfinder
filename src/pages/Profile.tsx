@@ -16,7 +16,8 @@ import { useToast } from '@/hooks/use-toast';
 import { CitySelector } from '@/components/CitySelector';
 import { PhoneInput } from '@/components/PhoneInput';
 import { CurrencyInput } from '@/components/CurrencyInput';
-
+import { ShareProfileBanner } from '@/components/ShareProfileBanner';
+import AccountSettings from '@/components/AccountSettings';
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
 import { extractAllSkills, extractAllSectors } from '@/lib/dataExtractor';
@@ -29,6 +30,7 @@ interface UserProfile {
   phone: string;
   photoURL: string;
   studentId: string;
+  uniqueUserId: string;
   skills: string[];
   sectors: string[];
   education: {
@@ -104,6 +106,7 @@ const Profile = () => {
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [availableSkills, setAvailableSkills] = useState<string[]>([]);
   const [availableSectors, setAvailableSectors] = useState<string[]>([]);
+  const [showShareBanner, setShowShareBanner] = useState(false);
 
 
 
@@ -139,6 +142,7 @@ const Profile = () => {
       phone: '',
       photoURL: currentUser.photoURL || '',
       studentId: '',
+      uniqueUserId: '',
       skills: [],
       sectors: [],
       education: [],
@@ -431,19 +435,7 @@ const Profile = () => {
             {profile.username && (
               <Button
                 variant="outline"
-                onClick={() => {
-                  const profileUrl = `${window.location.origin}/u/${profile.username}`;
-                  if (navigator.share) {
-                    navigator.share({
-                      title: `${profile.username}'s Profile`,
-                      text: 'Check out my profile on Saksham AI',
-                      url: profileUrl
-                    });
-                  } else {
-                    navigator.clipboard.writeText(profileUrl);
-                    toast({ title: 'Link Copied', description: 'Profile link copied to clipboard' });
-                  }
-                }}
+                onClick={() => setShowShareBanner(true)}
               >
                 Share Profile
               </Button>
@@ -497,6 +489,18 @@ const Profile = () => {
                 {usernameAvailable === false && <p className="text-xs text-red-600 mt-1">✗ Already taken</p>}
                 <p className="text-xs text-muted-foreground mt-1">
                   Your profile will be at: {window.location.origin}/u/{profile.username || 'username'}
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="uniqueUserId">Unique User ID</Label>
+                <Input
+                  id="uniqueUserId"
+                  value={profile.uniqueUserId}
+                  disabled
+                  className="bg-muted"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Your unique ID for transactions and tracking
                 </p>
               </div>
               <div>
@@ -835,86 +839,16 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Password Management */}
+        {/* Account Settings */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Lock className="w-5 h-5" />
-              Password Settings
+              Account Settings
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {profile.linkedAccounts.google ? (
-              <div className="space-y-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    You're signed in with Google. Set a password to also login with email.
-                  </p>
-                </div>
-                <div>
-                  <Label htmlFor="newPassword">Set Password</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                    placeholder="Enter new password"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    placeholder="Confirm new password"
-                  />
-                </div>
-                <Button 
-                  onClick={changePassword} 
-                  disabled={changingPassword || !passwordData.newPassword || passwordData.newPassword !== passwordData.confirmPassword}
-                >
-                  {changingPassword ? 'Setting...' : 'Set Password'}
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="currentPassword">Current Password</Label>
-                  <Input
-                    id="currentPassword"
-                    type="password"
-                    value={passwordData.currentPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="newPassword">New Password</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                  />
-                </div>
-                <Button 
-                  onClick={changePassword} 
-                  disabled={changingPassword || !passwordData.currentPassword || !passwordData.newPassword}
-                >
-                  {changingPassword ? 'Changing...' : 'Change Password'}
-                </Button>
-              </div>
-            )}
+          <CardContent>
+            <AccountSettings />
           </CardContent>
         </Card>
 
@@ -961,34 +895,23 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Delete Account */}
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <Trash2 className="w-5 h-5" />
-              Danger Zone
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-medium text-destructive">Delete Account</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Permanently delete your account and all associated data. This action cannot be undone.
-                </p>
-              </div>
-              <Button 
-                variant="destructive" 
-                onClick={deleteAccount}
-                disabled={deleting}
-                className="w-full sm:w-auto"
-              >
-                {deleting ? 'Deleting Account...' : 'Delete My Account'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
       </div>
+      
+      {showShareBanner && (
+        <ShareProfileBanner
+          profile={{
+            username: profile.username,
+            displayName: profile.displayUsername || currentUser?.displayName || profile.username,
+            photoURL: profile.photoURL,
+            uniqueUserId: profile.uniqueUserId,
+            bio: profile.bio,
+            skills: profile.skills,
+            location: typeof profile.location === 'string' ? profile.location : profile.location?.city
+          }}
+          onClose={() => setShowShareBanner(false)}
+        />
+      )}
     </div>
   );
 };

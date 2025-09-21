@@ -11,16 +11,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { useToast } from '../hooks/use-toast';
+import { ShareProfileBanner } from '@/components/ShareProfileBanner';
 
-const themes = [
-  { id: 'light', lightName: 'Light Mode', darkName: 'Light Mode', lightColor: 'bg-white', darkColor: 'bg-white' },
-  { id: 'dark', lightName: 'Dark Mode', darkName: 'Dark Mode', lightColor: 'bg-gray-900', darkColor: 'bg-gray-900' },
-  { id: 'blue', lightName: 'Sky Blue', darkName: 'Indigo', lightColor: 'bg-sky-400', darkColor: 'bg-indigo-600' },
-  { id: 'green', lightName: 'Light Green', darkName: 'Dark Green', lightColor: 'bg-green-400', darkColor: 'bg-green-700' },
-  { id: 'red', lightName: 'Rose', darkName: 'Crimson', lightColor: 'bg-rose-400', darkColor: 'bg-red-700' },
-  { id: 'orange', lightName: 'Orange', darkName: 'Burnt Orange', lightColor: 'bg-orange-400', darkColor: 'bg-orange-700' },
-  { id: 'yellow', lightName: 'Yellow', darkName: 'Amber', lightColor: 'bg-yellow-400', darkColor: 'bg-amber-600' },
-  { id: 'monochrome', lightName: 'Pure White', darkName: 'Pure Black', lightColor: 'bg-white', darkColor: 'bg-black' }
+const colorThemes = [
+  { id: 'green', name: 'Green', color: 'bg-green-500' },
+  { id: 'blue', name: 'Blue', color: 'bg-blue-500' },
+  { id: 'red', name: 'Red', color: 'bg-red-500' },
+  { id: 'gold', name: 'Gold', color: 'bg-yellow-500' },
+  { id: 'duochrome', name: 'White Black Grey', color: 'bg-gray-900' }
 ];
 
 const languages = [
@@ -36,12 +34,13 @@ interface SettingsProps {
 }
 
 export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) => {
-  const { theme, setTheme, language, setLanguage, getThemeName } = useTheme();
+  const { theme, colorTheme, setTheme, setColorTheme, language, setLanguage, getColorThemeName } = useTheme();
   const { currentUser } = useAuth();
   const { toast } = useToast();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState(dashboardProfile || {});
   const [savingProfile, setSavingProfile] = useState(false);
+  const [showShareBanner, setShowShareBanner] = useState(false);
 
   // Generate random 5-character referral code
   const generateReferralCode = () => {
@@ -190,6 +189,10 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                   <p className="text-foreground">{dashboardProfile?.username || 'Not set'}</p>
                 </div>
                 <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Unique User ID</Label>
+                  <p className="text-foreground font-mono">{dashboardProfile?.uniqueUserId || 'Loading...'}</p>
+                </div>
+                <div>
                   <Label className="text-sm font-medium text-muted-foreground">Student ID</Label>
                   <p className="text-foreground">{dashboardProfile?.studentId || 'Not set'}</p>
                 </div>
@@ -223,28 +226,55 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
             Theme
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {themes.map((themeOption) => (
+        <CardContent className="space-y-6">
+          {/* Light/Dark Mode */}
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Mode</Label>
+            <div className="flex gap-3">
               <button
-                key={themeOption.id}
-                onClick={() => setTheme(themeOption.id)}
-                className={`p-4 rounded-lg border-2 transition-all ${
-                  theme === themeOption.id 
+                onClick={() => setTheme('light')}
+                className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                  theme === 'light' 
                     ? 'border-primary ring-2 ring-primary/20' 
                     : 'border-border hover:border-primary/50'
                 } bg-card`}
               >
-                <div className="flex gap-2 mb-3">
-                  <div className={`flex-1 h-8 rounded ${themeOption.lightColor}`}></div>
-                  <div className={`flex-1 h-8 rounded ${themeOption.darkColor}`}></div>
-                </div>
-                <div className="text-center space-y-1">
-                  <p className="text-xs font-medium text-foreground">{themeOption.lightName}</p>
-                  <p className="text-xs text-muted-foreground">{themeOption.darkName}</p>
-                </div>
+                <div className="bg-white h-8 rounded mb-2"></div>
+                <p className="text-sm font-medium">Light Mode</p>
               </button>
-            ))}
+              <button
+                onClick={() => setTheme('dark')}
+                className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                  theme === 'dark' 
+                    ? 'border-primary ring-2 ring-primary/20' 
+                    : 'border-border hover:border-primary/50'
+                } bg-card`}
+              >
+                <div className="bg-gray-900 h-8 rounded mb-2"></div>
+                <p className="text-sm font-medium">Dark Mode</p>
+              </button>
+            </div>
+          </div>
+          
+          {/* Color Themes */}
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Colors</Label>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {colorThemes.map((colorThemeOption) => (
+                <button
+                  key={colorThemeOption.id}
+                  onClick={() => setColorTheme(colorThemeOption.id)}
+                  className={`p-3 rounded-lg border-2 transition-all ${
+                    colorTheme === colorThemeOption.id 
+                      ? 'border-primary ring-2 ring-primary/20' 
+                      : 'border-border hover:border-primary/50'
+                  } bg-card`}
+                >
+                  <div className={`h-8 rounded mb-2 ${colorThemeOption.color}`}></div>
+                  <p className="text-xs font-medium text-center">{colorThemeOption.name}</p>
+                </button>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -330,6 +360,21 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
           </div>
         </CardContent>
       </Card>
+      
+      {showShareBanner && dashboardProfile?.username && (
+        <ShareProfileBanner
+          profile={{
+            username: dashboardProfile.username,
+            displayName: dashboardProfile.displayUsername || currentUser?.displayName || dashboardProfile.username,
+            photoURL: dashboardProfile.photoURL,
+            uniqueUserId: dashboardProfile.uniqueUserId,
+            bio: dashboardProfile.bio,
+            skills: dashboardProfile.skills,
+            location: typeof dashboardProfile.location === 'string' ? dashboardProfile.location : dashboardProfile.location?.city
+          }}
+          onClose={() => setShowShareBanner(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,30 +1,30 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'blue' | 'green' | 'red' | 'orange' | 'yellow' | 'monochrome';
+type Theme = 'light' | 'dark';
+type ColorTheme = 'green' | 'blue' | 'red' | 'gold' | 'duochrome';
 
-const themeNames: Record<Theme, { light: string; dark: string }> = {
-  light: { light: 'Light Mode', dark: 'Light Mode' },
-  dark: { light: 'Dark Mode', dark: 'Dark Mode' },
-  blue: { light: 'Sky Blue', dark: 'Indigo' },
-  green: { light: 'Light Green', dark: 'Dark Green' },
-  red: { light: 'Rose', dark: 'Crimson' },
-  orange: { light: 'Orange', dark: 'Burnt Orange' },
-  yellow: { light: 'Yellow', dark: 'Amber' },
-  monochrome: { light: 'Pure White', dark: 'Pure Black' }
+const colorThemeNames: Record<ColorTheme, string> = {
+  green: 'Green',
+  blue: 'Blue', 
+  red: 'Red',
+  gold: 'Gold',
+  duochrome: 'White Black Grey'
 };
-type Language = 'en' | 'hi' | 'bn' | 'ta';
+type Language = 'en' | 'hi' | 'pa' | 'ur' | 'bn' | 'ta' | 'te' | 'ml' | 'kn' | 'gu' | 'mr';
 
 interface ThemeContextType {
   theme: Theme;
+  colorTheme: ColorTheme;
   language: Language;
   fontSize: number;
   isTransitioning: boolean;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
+  setColorTheme: (colorTheme: ColorTheme) => void;
   setLanguage: (lang: Language) => void;
   increaseFontSize: () => void;
   decreaseFontSize: () => void;
-  getThemeName: (theme: Theme, mode?: 'light' | 'dark') => string;
+  getColorThemeName: (colorTheme: ColorTheme) => string;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -42,23 +42,19 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>('dark'); // Default to dark
+  const [theme, setTheme] = useState<Theme>('dark');
+  const [colorTheme, setColorTheme] = useState<ColorTheme>('blue');
   const [language, setLanguage] = useState<Language>('en');
   const [fontSize, setFontSize] = useState(16);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
+    const savedColorTheme = localStorage.getItem('colorTheme') as ColorTheme;
     const savedLanguage = localStorage.getItem('language') as Language;
     
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      // Default to dark theme for first-time users
-      setTheme('dark');
-      localStorage.setItem('theme', 'dark');
-    }
-    
+    if (savedTheme) setTheme(savedTheme);
+    if (savedColorTheme) setColorTheme(savedColorTheme);
     if (savedLanguage) setLanguage(savedLanguage);
 
     const savedFontSize = localStorage.getItem('fontSize');
@@ -67,15 +63,22 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark', 'blue', 'green', 'red', 'orange', 'yellow', 'monochrome');
+    root.classList.remove('light', 'dark');
     root.classList.add(theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
 
   useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('green', 'blue', 'red', 'gold', 'duochrome');
+    root.classList.add(colorTheme);
+    localStorage.setItem('colorTheme', colorTheme);
+  }, [colorTheme]);
+
+  useEffect(() => {
     localStorage.setItem('language', language);
     document.documentElement.lang = language;
-    document.body.className = document.body.className.replace(/\b(en|hi|bn|ta)\b/g, '');
+    document.body.className = document.body.className.replace(/\b(en|hi|pa|ur|bn|ta|te|ml|kn|gu|mr)\b/g, '');
     document.body.classList.add(language);
   }, [language]);
 
@@ -95,12 +98,12 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const increaseFontSize = () => setFontSize(fz => Math.min(fz + 2, 24));
   const decreaseFontSize = () => setFontSize(fz => Math.max(fz - 2, 12));
   
-  const getThemeName = (theme: Theme, mode: 'light' | 'dark' = 'light') => {
-    return themeNames[theme][mode];
+  const getColorThemeName = (colorTheme: ColorTheme) => {
+    return colorThemeNames[colorTheme];
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, language, fontSize, isTransitioning, toggleTheme, setTheme, setLanguage, increaseFontSize, decreaseFontSize, getThemeName }}>
+    <ThemeContext.Provider value={{ theme, colorTheme, language, fontSize, isTransitioning, toggleTheme, setTheme, setColorTheme, setLanguage, increaseFontSize, decreaseFontSize, getColorThemeName }}>
       {children}
       {isTransitioning && (
         <div className="fixed inset-0 z-[9999] pointer-events-none">

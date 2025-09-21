@@ -1,124 +1,81 @@
 import { Link } from 'react-router-dom';
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Footer = () => {
-  const quickLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/about', label: 'About' },
-  ];
-
-  const supportLinks = [
-    { href: '/support', label: 'Support' },
-    { href: '/privacy', label: 'Privacy Policy' },
-    { href: '/terms', label: 'Terms of Service' },
-  ];
-
-  const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:team@sakshamai.com', label: 'Email' },
-  ];
-
+  const { user } = useAuth();
+  
   return (
-    <footer className="bg-background/50 backdrop-blur-sm border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-background border-t border-border">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:divide-x md:divide-border">
           
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
-              </div>
-              <span className="font-poppins font-bold text-xl text-foreground">
-                Saksham AI
-              </span>
+          {/* Brand & Links */}
+          <div className="md:pr-8">
+            <div className="text-center md:text-left">
+              <h3 className="font-poppins font-bold text-xl mb-1">Saksham AI</h3>
+              <p className="text-muted-foreground text-sm mb-4 font-medium">AI-driven career guidance</p>
             </div>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              Empowering students with AI-driven career guidance
-            </p>
+            <div className="flex flex-wrap gap-4 md:flex-col md:gap-2 text-sm">
+              <Link to="/" className="text-muted-foreground hover:text-primary font-medium">Home</Link>
+              <Link to="/wishlist" className="text-muted-foreground hover:text-primary font-medium">Dashboard</Link>
+              <Link to="/about" className="text-muted-foreground hover:text-primary font-medium">About</Link>
+              <Link to="/support" className="text-muted-foreground hover:text-primary font-medium">Support</Link>
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Contact */}
+          <div className="md:px-8">
+            <h4 className="font-bold text-lg mb-3">Connect</h4>
+            <div className="space-y-2 text-sm">
+              <a href="mailto:pminternship@mca.gov.in" className="flex items-center gap-2 text-muted-foreground hover:text-primary font-medium">
+                <Mail className="w-4 h-4" />
+                pminternship@mca.gov.in
+              </a>
+              <a href="tel:18001160900" className="flex items-center gap-2 text-muted-foreground hover:text-primary font-medium">
+                <Phone className="w-4 h-4" />
+                1800 11 6090 (Toll Free)
+              </a>
+            </div>
           </div>
 
-          {/* Support Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Support</h3>
-            <ul className="space-y-2">
-              {supportLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Contact Form */}
+          <div className="md:pl-8">
+            <h4 className="font-bold text-lg mb-3">Get in Touch</h4>
+            <form action="mailto:dubeyananay@gmail.com" method="post" encType="text/plain" className="space-y-2">
+              <input
+                type="email"
+                name="email"
+                placeholder="Your email"
+                value={user?.email || ''}
+                readOnly={!!user?.email}
+                required
+                className={`w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 ${user?.email ? 'cursor-not-allowed opacity-75' : ''}`}
+              />
+              <textarea
+                name="message"
+                placeholder="Your message"
+                required
+                rows={2}
+                className="w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none"
+              />
+              <button
+                type="submit"
+                className="w-full px-3 py-2 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium"
+              >
+                Send
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* Social Links */}
-        <div className="mt-8 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="mb-4 md:mb-0">
-              <h4 className="font-medium text-foreground mb-2">Connect With Us</h4>
-              <div className="flex space-x-4">
-                {socialLinks.map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                    aria-label={label}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* PM Internship Contact Info */}
-        <div className="mt-8 pt-8 border-t border-border">
-          <div className="text-center space-y-4">
-            <div className="bg-primary/10 rounded-lg p-4 max-w-2xl mx-auto">
-              <h4 className="font-semibold text-foreground mb-2">PM Internship Scheme - Official Information</h4>
-              <div className="text-sm text-muted-foreground space-y-1">
-                <p><strong>Official Portal:</strong> <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">pminternship.mca.gov.in</a></p>
-                <p><strong>Contact:</strong> Email: <a href="mailto:pminternship@mca.gov.in" className="text-primary hover:underline">pminternship@mca.gov.in</a> | Call: <a href="tel:18001160900" className="text-primary hover:underline">1800 11 6090</a></p>
-                <p><strong>Application Fee:</strong> Free for all candidates</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Team Credits */}
-        <div className="mt-8 pt-8 border-t border-border">
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              © 2025 Saksham AI. All rights reserved.
-            </p>
+        {/* Bottom */}
+        <div className="mt-6 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <p className="font-medium">© {new Date().getFullYear()} Saksham AI. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link to="/privacy" className="hover:text-primary font-medium">Privacy</Link>
+            <Link to="/terms" className="hover:text-primary font-medium">Terms</Link>
+            <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer" className="hover:text-primary font-medium">Official Portal</a>
           </div>
         </div>
       </div>

@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { User, MapPin, Mail, Phone, ExternalLink, Github, Linkedin, Globe } from 'lucide-react';
+import { User, MapPin, Mail, Phone, ExternalLink, Github, Linkedin, Globe, Share2 } from 'lucide-react';
+import { ShareProfileBanner } from '../components/ShareProfileBanner';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -12,6 +13,7 @@ const PublicProfile = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [showShareBanner, setShowShareBanner] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -96,9 +98,19 @@ const PublicProfile = () => {
               
               {/* Basic Info */}
               <div className="text-center md:text-left flex-1">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  {profile.username || 'Anonymous User'}
-                </h1>
+                <div className="flex items-center gap-4 mb-2">
+                  <h1 className="text-3xl font-bold text-foreground">
+                    {profile.username || 'Anonymous User'}
+                  </h1>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowShareBanner(true)}
+                  >
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                </div>
                 <p className="text-xl text-primary mb-2">{profile.studentId || 'Student'}</p>
                 {profile.bio && (
                   <p className="text-muted-foreground max-w-2xl">{profile.bio}</p>
@@ -253,6 +265,21 @@ const PublicProfile = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+        
+        {showShareBanner && (
+          <ShareProfileBanner
+            profile={{
+              username: profile.username,
+              displayName: profile.displayName || profile.username,
+              photoURL: profile.photoURL,
+              uniqueUserId: profile.uniqueUserId,
+              bio: profile.bio,
+              skills: profile.skills,
+              location: profile.location
+            }}
+            onClose={() => setShowShareBanner(false)}
+          />
         )}
       </div>
     </div>
