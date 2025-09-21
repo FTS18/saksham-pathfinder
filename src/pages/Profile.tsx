@@ -12,16 +12,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { User, GraduationCap, Briefcase, Link as LinkIcon, Plus, X, Lock, Upload, MapPin, DollarSign, Trash2 } from 'lucide-react';
+import { User, GraduationCap, Briefcase, Link as LinkIcon, Plus, X, Lock, Upload, MapPin, DollarSign, Trash2, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { StateSelector } from '@/components/StateSelector';
 import { CitySelector } from '@/components/CitySelector';
 import { PhoneInput } from '@/components/PhoneInput';
 import { CurrencyInput } from '@/components/CurrencyInput';
+import { EducationSelector } from '@/components/EducationSelector';
 import { ShareProfileBanner } from '@/components/ShareProfileBanner';
 
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
-import { extractAllSkills, extractAllSectors } from '@/lib/dataExtractor';
+import sectorsSkillsData from '@/data/sectors-skills.json';
 
 
 interface UserProfile {
@@ -32,6 +34,7 @@ interface UserProfile {
   photoURL: string;
   studentId: string;
   uniqueUserId: string;
+  dateOfBirth: string;
   skills: string[];
   sectors: string[];
   education: {
@@ -45,8 +48,14 @@ interface UserProfile {
     duration: string;
   }[];
   bio: string;
-  location: string;
-  desiredLocation: string;
+  location: {
+    state: string;
+    city: string;
+  };
+  desiredLocation: {
+    state: string;
+    city: string;
+  };
   minStipend: number;
   socialLinks: {
     portfolio: string;
@@ -120,15 +129,10 @@ const Profile = () => {
   }, [currentUser]);
 
   useEffect(() => {
-    const loadData = async () => {
-      const [skills, sectors] = await Promise.all([
-        extractAllSkills(),
-        extractAllSectors()
-      ]);
-      setAvailableSkills(skills);
-      setAvailableSectors(sectors);
-    };
-    loadData();
+    const sectors = Object.keys(sectorsSkillsData);
+    const skills = Object.values(sectorsSkillsData).flat();
+    setAvailableSectors(sectors);
+    setAvailableSkills(skills);
   }, []);
 
   useEffect(() => {
@@ -146,13 +150,14 @@ const Profile = () => {
       photoURL: currentUser.photoURL || '',
       studentId: '',
       uniqueUserId: '',
+      dateOfBirth: '',
       skills: [],
       sectors: [],
       education: [],
       experience: [],
       bio: '',
-      location: '',
-      desiredLocation: '',
+      location: { state: '', city: '' },
+      desiredLocation: { state: '', city: '' },
       minStipend: 0,
       socialLinks: {
         portfolio: '',
@@ -175,17 +180,41 @@ const Profile = () => {
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        const firestoreData = docSnap.data() as UserProfile;
-        setProfile({
+        const firestoreData = docSnap.data() as any;
+        
+        // Migrate old data structure to new format
+        const profileData: UserProfile = {
           ...initialProfile,
           ...firestoreData,
+          // Handle location migration
+          location: typeof firestoreData.location === 'string' 
+            ? { state: '', city: firestoreData.location }
+            : firestoreData.location || { state: '', city: '' },
+          desiredLocation: typeof firestoreData.desiredLocation === 'string'
+            ? { state: '', city: firestoreData.desiredLocation }
+            : firestoreData.desiredLocation || { state: '', city: '' },
+          // Ensure all required fields exist
+          dateOfBirth: firestoreData.dateOfBirth || '',
+          sectors: firestoreData.sectors || [],
+          skills: firestoreData.skills || [],
           linkedAccounts: { google: !!currentUser.providerData.find(p => p.providerId === 'google.com') }
-        });
+        };
+        
+        // Generate username if not exists
+        if (!profileData.username) {
+          const uniqueUsername = await generateUniqueUsername();
+          profileData.username = uniqueUsername;
+          // Save the updated profile with username
+          await setDoc(docRef, profileData, { merge: true });
+        }
+        
+        setProfile(profileData);
       } else {
         // Generate username for new users
         const uniqueUsername = await generateUniqueUsername();
-        await reserveUsername(uniqueUsername, currentUser.uid);
-        setProfile(prev => ({ ...prev, username: uniqueUsername }));
+        const newProfile = { ...initialProfile, username: uniqueUsername };
+        await setDoc(docRef, newProfile, { merge: true });
+        setProfile(newProfile);
       }
     } catch (error) {
       console.error('Firestore not available:', error);
@@ -284,24 +313,14 @@ const Profile = () => {
       const newSectors = prev.sectors.filter(s => s !== sector);
       
       // Remove skills that are only associated with the removed sector
-      const sectorSkills = availableSkills.filter(skill => 
-        skill.toLowerCase().includes(sector.toLowerCase()) ||
-        sector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(skill) ||
-        sector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(skill) ||
-        sector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(skill)
-      );
+      const sectorSkills = sectorsSkillsData[sector as keyof typeof sectorsSkillsData] || [];
       
       // Keep skills that exist in other selected sectors
       const skillsToKeep = prev.skills.filter(skill => {
         if (!sectorSkills.includes(skill)) return true;
         // Check if skill exists in any remaining sector
         return newSectors.some(remainingSector => {
-          const remainingSectorSkills = availableSkills.filter(s => 
-            s.toLowerCase().includes(remainingSector.toLowerCase()) ||
-            remainingSector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(s) ||
-            remainingSector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(s) ||
-            remainingSector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(s)
-          );
+          const remainingSectorSkills = sectorsSkillsData[remainingSector as keyof typeof sectorsSkillsData] || [];
           return remainingSectorSkills.includes(skill);
         });
       });
@@ -492,10 +511,11 @@ const Profile = () => {
               {profile.username && (
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={() => setShowShareBanner(true)}
-                  className="rounded-full"
+                  className="w-8 h-8 p-0"
                 >
-                  Share Profile
+                  <Share2 className="w-4 h-4" />
                 </Button>
               )}
               <Button onClick={saveProfile} disabled={saving} className="rounded-full">
@@ -606,20 +626,62 @@ const Profile = () => {
               </div>
 
               <div>
+                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  value={profile.dateOfBirth}
+                  onChange={(e) => setProfile(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                  className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Only age will be publicly visible, not your exact birthday
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Current Location</Label>
+                <StateSelector
+                  value={profile.location.state}
+                  onChange={(state) => setProfile(prev => ({ 
+                    ...prev, 
+                    location: { ...prev.location, state, city: '' } 
+                  }))}
+                  placeholder="Select state"
+                />
                 <CitySelector
-                  value={profile.location}
-                  onChange={(location) => setProfile(prev => ({ ...prev, location }))}
-                  label="Current Location"
-                  placeholder="Current city"
+                  value={profile.location.city}
+                  onChange={(city) => setProfile(prev => ({ 
+                    ...prev, 
+                    location: { ...prev.location, city } 
+                  }))}
+                  state={profile.location.state}
+                  placeholder="Select city"
+                  showLocationButton={true}
                 />
               </div>
-              <div>
-                <CitySelector
-                  value={profile.desiredLocation}
-                  onChange={(desiredLocation) => setProfile(prev => ({ ...prev, desiredLocation }))}
-                  label="Preferred Location *"
-                  placeholder="Preferred city"
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Preferred Location *</Label>
+                <StateSelector
+                  value={profile.desiredLocation.state}
+                  onChange={(state) => setProfile(prev => ({ 
+                    ...prev, 
+                    desiredLocation: { ...prev.desiredLocation, state, city: '' } 
+                  }))}
+                  placeholder="Select state"
                   required
+                />
+                <CitySelector
+                  value={profile.desiredLocation.city}
+                  onChange={(city) => setProfile(prev => ({ 
+                    ...prev, 
+                    desiredLocation: { ...prev.desiredLocation, city } 
+                  }))}
+                  state={profile.desiredLocation.state}
+                  placeholder="Select city"
+                  showLocationButton={false}
                 />
               </div>
               <div>
@@ -715,12 +777,7 @@ const Profile = () => {
                 {/* Skills by Sector */}
                 <div className="max-h-60 overflow-y-auto border rounded-md p-3">
                   {profile.sectors.map(sector => {
-                    const sectorSkills = availableSkills.filter(skill => 
-                      skill.toLowerCase().includes(sector.toLowerCase()) ||
-                      sector.toLowerCase().includes('technology') && ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'Python', 'Java'].includes(skill) ||
-                      sector.toLowerCase().includes('design') && ['Figma', 'Photoshop', 'UI/UX', 'Sketch'].includes(skill) ||
-                      sector.toLowerCase().includes('marketing') && ['SEO', 'Social Media', 'Content Writing', 'Analytics'].includes(skill)
-                    );
+                    const sectorSkills = sectorsSkillsData[sector as keyof typeof sectorsSkillsData] || [];
                     
                     return (
                       <div key={sector} className="mb-4 last:mb-0">
@@ -756,28 +813,24 @@ const Profile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-              <Input
-                value={newEducation.degree}
-                onChange={(e) => setNewEducation(prev => ({ ...prev, degree: e.target.value }))}
-                placeholder="Degree"
-                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+            <div className="space-y-4">
+              <EducationSelector
+                degree={newEducation.degree}
+                year={newEducation.year}
+                onDegreeChange={(degree) => setNewEducation(prev => ({ ...prev, degree }))}
+                onYearChange={(year) => setNewEducation(prev => ({ ...prev, year }))}
               />
-              <Input
-                value={newEducation.institution}
-                onChange={(e) => setNewEducation(prev => ({ ...prev, institution: e.target.value }))}
-                placeholder="Institution"
-                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
-              />
-              <Input
-                value={newEducation.year}
-                onChange={(e) => setNewEducation(prev => ({ ...prev, year: e.target.value }))}
-                placeholder="Year"
-                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
-              />
-              <Button onClick={addEducation} size="sm">
-                <Plus className="w-4 h-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  value={newEducation.institution}
+                  onChange={(e) => setNewEducation(prev => ({ ...prev, institution: e.target.value }))}
+                  placeholder="Institution name"
+                  className="flex-1 border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                />
+                <Button onClick={addEducation} size="sm">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               {profile.education.map((edu, index) => (
@@ -872,35 +925,35 @@ const Profile = () => {
                 value={profile.socialLinks.linkedin}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, linkedin: value } }))}
                 label="LinkedIn"
-                placeholder="johndoe"
+                placeholder="Enter username"
                 platform="linkedin"
               />
               <SocialLinksInput
                 value={profile.socialLinks.github}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, github: value } }))}
                 label="GitHub"
-                placeholder="johndoe"
+                placeholder="Enter username"
                 platform="github"
               />
               <SocialLinksInput
                 value={profile.socialLinks.twitter}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, twitter: value } }))}
                 label="Twitter/X"
-                placeholder="johndoe"
+                placeholder="Enter username"
                 platform="twitter"
               />
               <SocialLinksInput
                 value={profile.socialLinks.codechef}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, codechef: value } }))}
                 label="CodeChef"
-                placeholder="johndoe"
+                placeholder="Enter username"
                 platform="codechef"
               />
               <SocialLinksInput
                 value={profile.socialLinks.leetcode}
                 onChange={(value) => setProfile(prev => ({ ...prev, socialLinks: { ...prev.socialLinks, leetcode: value } }))}
                 label="LeetCode"
-                placeholder="johndoe"
+                placeholder="Enter username"
                 platform="leetcode"
               />
             </div>
@@ -1302,7 +1355,18 @@ const Profile = () => {
             uniqueUserId: profile.uniqueUserId,
             bio: profile.bio,
             skills: profile.skills,
-            location: typeof profile.location === 'string' ? profile.location : profile.location?.city
+            sectors: profile.sectors,
+            location: typeof profile.location === 'object' ? `${profile.location.city}${profile.location.state ? ', ' + profile.location.state : ''}` : profile.location,
+            age: (() => {
+              if (!profile.dateOfBirth) return null;
+              try {
+                const birthYear = new Date(profile.dateOfBirth).getFullYear();
+                const age = new Date().getFullYear() - birthYear;
+                return isNaN(age) || age < 0 || age > 100 ? null : age;
+              } catch {
+                return null;
+              }
+            })()
           }}
           onClose={() => setShowShareBanner(false)}
         />

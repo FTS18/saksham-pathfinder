@@ -34,12 +34,50 @@
       .goog-te-combo { display: none !important; }
       body { top: 0 !important; }
       
+      /* Modal scroll prevention */
+      .modal-open { overflow: hidden !important; }
+      
+      /* Custom scrollbars for desktop */
+      @media (min-width: 768px) {
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        
+        /* Firefox scrollbars */
+        * { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+        .dark * { scrollbar-color: #4b5563 transparent; }
+      }
+      
+      /* Hide horizontal scrollbars on mobile */
+      @media (max-width: 767px) {
+        ::-webkit-scrollbar:horizontal { display: none; }
+        body { overflow-x: hidden; }
+      }
+      
+      /* Smooth scrolling */
+      html { scroll-behavior: smooth; }
+      
+      /* Focus styles */
+      :focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+      
+      /* Selection styles */
+      ::selection { background: hsl(var(--primary) / 0.2); }
+      
       .skeleton { background: linear-gradient(90deg, #d1d5db 25%, #9ca3af 50%, #d1d5db 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
       @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
       .dark .skeleton { background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%); background-size: 200% 100%; }
       
       #initial-skeleton { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; z-index: 9999; }
       .dark #initial-skeleton { background: #0a0a0a; }
+      
+      /* Animations */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+      .animate-slide-up { animation: slideUp 0.3s ease-out; }
     </style>
   </head>
 

@@ -1,79 +1,44 @@
-import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { db } from './firebase';
 
-// Generate random username
-export const generateUsername = (): string => {
-  const adjectives = ['Cool', 'Smart', 'Quick', 'Bright', 'Swift', 'Bold', 'Sharp', 'Fast', 'Wise', 'Strong'];
-  const nouns = ['Coder', 'Dev', 'Tech', 'Pro', 'Ace', 'Star', 'Hero', 'Ninja', 'Guru', 'Master'];
-  const numbers = Math.floor(Math.random() * 9999) + 1000;
-  
-  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  
-  return `${adjective}${noun}${numbers}`;
-};
-
-// Check if username is available
 export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+  if (!username || username.length < 3) return false;
+  
   try {
-    const q = query(collection(db, 'usernames'), where('username', '==', username.toLowerCase()));
+    const q = query(collection(db, 'profiles'), where('username', '==', username));
     const querySnapshot = await getDocs(q);
     return querySnapshot.empty;
   } catch (error) {
-    console.error('Error checking username:', error);
+    console.error('Error checking username availability:', error);
     return false;
   }
 };
 
-// Reserve username for user
-export const reserveUsername = async (username: string, userId: string): Promise<boolean> => {
+export const reserveUsername = async (username: string, userId: string): Promise<void> => {
   try {
-    const isAvailable = await checkUsernameAvailability(username);
-    if (!isAvailable) return false;
-    
-    await setDoc(doc(db, 'usernames', username.toLowerCase()), {
-      username: username.toLowerCase(),
-      userId,
-      createdAt: new Date().toISOString()
-    });
-    
-    return true;
+    const docRef = doc(db, 'profiles', userId);
+    await setDoc(docRef, { username }, { merge: true });
   } catch (error) {
     console.error('Error reserving username:', error);
-    return false;
+    throw error;
   }
 };
 
-// Generate unique username
 export const generateUniqueUsername = async (): Promise<string> => {
-  let attempts = 0;
-  while (attempts < 10) {
-    const username = generateUsername();
-    const isAvailable = await checkUsernameAvailability(username);
-    if (isAvailable) {
+  const adjectives = ['cool', 'smart', 'bright', 'quick', 'sharp', 'clever', 'swift', 'bold'];
+  const nouns = ['coder', 'dev', 'tech', 'pro', 'ace', 'star', 'ninja', 'guru'];
+  
+  for (let i = 0; i < 10; i++) {
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    const num = Math.floor(Math.random() * 999) + 1;
+    const username = `${adj}${noun}${num}`;
+    
+    if (await checkUsernameAvailability(username)) {
       return username;
     }
-    attempts++;
   }
   
-  // Fallback with timestamp
-  return `User${Date.now()}`;
-};
-
-// Get user ID by username
-export const getUserIdByUsername = async (username: string): Promise<string | null> => {
-  try {
-    const q = query(collection(db, 'usernames'), where('username', '==', username.toLowerCase()));
-    const querySnapshot = await getDocs(q);
-    
-    if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0];
-      return doc.data().userId;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Error getting user by username:', error);
-    return null;
-  }
+  // Fallback
+  return `user${Date.now()}`;
 };

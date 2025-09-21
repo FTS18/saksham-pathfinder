@@ -7,6 +7,7 @@ import { MessageCircle, Send, X, Bot, User, Minimize2, Sparkles, HelpCircle, Sid
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useChatbot } from '@/hooks/useChatbot';
 import { quickActions } from '@/lib/gemini';
+import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
 
 export const Chatbot = () => {
@@ -15,9 +16,32 @@ export const Chatbot = () => {
   const [input, setInput] = useState('');
   const [showQuickActions, setShowQuickActions] = useState(true);
   const { messages, isLoading, sendMessage, generateInterviewQuestions } = useChatbot();
+  const { colorTheme } = useTheme();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  
+  const getThemeGradient = () => {
+    switch (colorTheme) {
+      case 'blue': return 'from-blue-500 to-blue-600';
+      case 'grey': return 'from-gray-500 to-gray-600';
+      case 'red': return 'from-red-500 to-red-600';
+      case 'yellow': return 'from-yellow-500 to-yellow-600';
+      case 'green': return 'from-green-500 to-green-600';
+      default: return 'from-blue-500 to-purple-600';
+    }
+  };
+  
+  const getThemeHoverGradient = () => {
+    switch (colorTheme) {
+      case 'blue': return 'hover:from-blue-600 hover:to-blue-700';
+      case 'grey': return 'hover:from-gray-600 hover:to-gray-700';
+      case 'red': return 'hover:from-red-600 hover:to-red-700';
+      case 'yellow': return 'hover:from-yellow-600 hover:to-yellow-700';
+      case 'green': return 'hover:from-green-600 hover:to-green-700';
+      default: return 'hover:from-blue-600 hover:to-purple-700';
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -77,7 +101,7 @@ export const Chatbot = () => {
           <TooltipTrigger asChild>
             <Button
               onClick={toggleChatbot}
-              className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              className={`fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()}`}
               size="icon"
             >
               <MessageCircle className="h-6 w-6" />
@@ -101,9 +125,9 @@ export const Chatbot = () => {
     <TooltipProvider>
       {isSidebar && !isMobile && <div className="fixed inset-0 bg-black/20 z-30" onClick={() => setIsOpen(false)} />}
       <div className={getChatContainerClass()}>
-        <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
+        <div className={`flex items-center justify-between p-4 border-b bg-gradient-to-r ${colorTheme === 'blue' ? 'from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900' : colorTheme === 'grey' ? 'from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900' : colorTheme === 'red' ? 'from-red-50 to-red-100 dark:from-red-950 dark:to-red-900' : colorTheme === 'yellow' ? 'from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900' : colorTheme === 'green' ? 'from-green-50 to-green-100 dark:from-green-950 dark:to-green-900' : 'from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950'}`}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center`}>
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -158,7 +182,7 @@ export const Chatbot = () => {
                 )}
               >
                 {message.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                  <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center flex-shrink-0`}>
                     <Bot className="h-4 w-4 text-white" />
                   </div>
                 )}
@@ -166,7 +190,7 @@ export const Chatbot = () => {
                   className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
                     message.role === 'user'
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                      ? `bg-gradient-to-r ${getThemeGradient()} text-white`
                       : 'bg-muted border'
                   )}
                 >
@@ -232,7 +256,7 @@ export const Chatbot = () => {
             
             {isLoading && (
               <div className="flex gap-3 justify-start">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center flex-shrink-0`}>
                   <Bot className="h-4 w-4 text-white" />
                 </div>
                 <div className="bg-muted border rounded-2xl px-4 py-3">
@@ -262,7 +286,7 @@ export const Chatbot = () => {
               onClick={handleSendMessage}
               disabled={!input.trim() || isLoading}
               size="icon"
-              className="rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+              className={`rounded-full bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()}`}
             >
               <Send className="h-4 w-4" />
             </Button>

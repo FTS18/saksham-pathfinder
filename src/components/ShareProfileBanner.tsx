@@ -1,27 +1,77 @@
-import { useState, useRef } from 'react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { X, Download, Share2, Copy } from 'lucide-react';
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { X, Copy, Share2, ExternalLink, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface ShareProfileBannerProps {
   profile: {
     username: string;
-    displayName?: string;
-    photoURL?: string;
-    uniqueUserId?: string;
-    bio?: string;
-    skills?: string[];
-    location?: string;
+    displayName: string;
+    photoURL: string;
+    uniqueUserId: string;
+    bio: string;
+    skills: string[];
+    sectors: string[];
+    location: string;
+    age: number | null;
   };
   onClose: () => void;
 }
 
 export const ShareProfileBanner = ({ profile, onClose }: ShareProfileBannerProps) => {
   const { toast } = useToast();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-
+  const [copied, setCopied] = useState(false);
+  
+  useScrollLock(true);
+  
+  const profileUrl = `${window.location.origin}/u/${profile.username}`;
+  
+  const copyToClipboard = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(profileUrl);
+      } else {
+        // Fallback for older browsers or non-HTTPS
+        const textArea = document.createElement('textarea');
+        textArea.value = profileUrl;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      setCopied(true);
+      toast({ title: 'Copied!', description: 'Profile URL copied to clipboard' });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to copy URL', variant: 'destructive' });
+    }
+  };
+  
+  const shareProfile = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${profile.displayName}'s Profile - Saksham AI`,
+          text: `Check out ${profile.displayName}'s profile on Saksham AI`,
+          url: profileUrl
+        });
+      } catch (error) {
+        console.log('Share cancelled');
+      }
+    } else {
+      copyToClipboard();
+    }
+  };
+  
   const getInitials = (name: string) => {
     if (!name) return 'U';
     const words = name.trim().split(' ');
@@ -29,205 +79,110 @@ export const ShareProfileBanner = ({ profile, onClose }: ShareProfileBannerProps
     return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
   };
 
-  const generateBanner = () => {
-    if (!canvasRef.current) return;
-    
-    setIsGenerating(true);
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    canvas.width = 1200;
-    canvas.height = 630;
-
-    // Background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#3b82f6');
-    gradient.addColorStop(1, '#8b5cf6');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Pattern
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    for (let i = 0; i < canvas.width; i += 60) {
-      for (let j = 0; j < canvas.height; j += 60) {
-        ctx.fillRect(i, j, 30, 30);
-      }
-    }
-
-    const centerX = 200;
-    const centerY = canvas.height / 2;
-    const radius = 80;
-
-    // Profile circle
-    ctx.fillStyle = 'white';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    ctx.fill();
-
-    // Initials
-    ctx.fillStyle = '#3b82f6';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(getInitials(profile.displayName || profile.username), centerX, centerY);
-
-    // Name
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.fillText(profile.displayName || profile.username || 'User', 320, 180);
-
-    // Username
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.font = '32px Arial';
-    ctx.fillText(`@${profile.username || 'username'}`, 320, 240);
-
-    // User ID
-    if (profile.uniqueUserId) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.font = '24px Arial';
-      ctx.fillText(`ID: ${profile.uniqueUserId}`, 320, 290);
-    }
-
-    // Bio
-    if (profile.bio) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      ctx.font = '28px Arial';
-      ctx.fillText(profile.bio.substring(0, 50) + '...', 320, 340);
-    }
-
-    // Skills
-    if (profile.skills && profile.skills.length > 0) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.font = '20px Arial';
-      ctx.fillText(profile.skills.slice(0, 3).join(' • '), 320, 380);
-    }
-
-    // URL
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.font = '24px Arial';
-    ctx.fillText(`saksham-pathfinder.com/u/${profile.username}`, 320, 550);
-
-    // Brand
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    ctx.font = 'bold 32px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText('Saksham Pathfinder', canvas.width - 50, 80);
-
-    setIsGenerating(false);
-  };
-
-  const downloadBanner = () => {
-    if (!canvasRef.current) return;
-    
-    const link = document.createElement('a');
-    link.download = `${profile.username}-profile-banner.png`;
-    link.href = canvasRef.current.toDataURL();
-    link.click();
-    
-    toast({ title: 'Downloaded!', description: 'Profile banner saved to your device' });
-  };
-
-  const shareBanner = async () => {
-    if (!canvasRef.current) return;
-
-    try {
-      const canvas = canvasRef.current;
-      const profileUrl = `${window.location.origin}/u/${profile.username}`;
-      const shareData = {
-        title: `${profile.displayName || profile.username}'s Profile - Saksham Pathfinder`,
-        text: `Check out ${profile.displayName || profile.username}'s profile on Saksham Pathfinder!`,
-        url: profileUrl
-      };
-
-      if (navigator.share) {
-        // Try sharing with image first
-        canvas.toBlob(async (blob) => {
-          if (blob) {
-            const file = new File([blob], `${profile.username}-profile.png`, { type: 'image/png' });
-            try {
-              if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ ...shareData, files: [file] });
-              } else {
-                await navigator.share(shareData);
-              }
-            } catch (shareError) {
-              // Fallback to URL only
-              await navigator.share(shareData);
-            }
-          } else {
-            await navigator.share(shareData);
-          }
-        });
-      } else {
-        // Fallback: copy URL
-        await navigator.clipboard.writeText(profileUrl);
-        toast({ title: 'Link Copied!', description: 'Profile link copied to clipboard' });
-      }
-    } catch (error) {
-      console.error('Share failed:', error);
-      // Final fallback
-      try {
-        await navigator.clipboard.writeText(`${window.location.origin}/u/${profile.username}`);
-        toast({ title: 'Link Copied!', description: 'Profile link copied to clipboard' });
-      } catch (clipboardError) {
-        toast({ title: 'Share Failed', description: 'Could not share or copy link', variant: 'destructive' });
-      }
-    }
-  };
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="max-w-4xl w-full max-h-[90vh] overflow-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Share Your Profile</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Share Your Profile</h3>
+            <Button variant="ghost" size="sm" onClick={onClose} className="w-8 h-8 p-0">
+              <X className="w-4 h-4" />
             </Button>
           </div>
-
-          <div className="space-y-6">
-            <div className="text-center">
-              <canvas
-                ref={canvasRef}
-                className="max-w-full h-auto border rounded-lg shadow-lg"
-                style={{ maxHeight: '400px' }}
+          
+          {/* Profile Preview */}
+          <div className="bg-muted/50 rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-3 mb-3">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={profile.photoURL} />
+                <AvatarFallback>{getInitials(profile.displayName)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="font-medium">{profile.displayName}</div>
+                <div className="text-sm text-muted-foreground">@{profile.username}</div>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              {profile.location && (
+                <p className="text-xs text-muted-foreground">📍 {profile.location}</p>
+              )}
+              {profile.age && (
+                <p className="text-xs text-muted-foreground">🎂 {profile.age} years old</p>
+              )}
+              {profile.bio && (
+                <p className="text-sm text-muted-foreground">{profile.bio}</p>
+              )}
+            </div>
+            
+            {profile.sectors.length > 0 && (
+              <div className="mb-2">
+                <p className="text-xs font-medium mb-1">Interests:</p>
+                <div className="flex flex-wrap gap-1">
+                  {profile.sectors.slice(0, 2).map((sector, index) => (
+                    <Badge key={index} variant="default" className="text-xs">
+                      {sector}
+                    </Badge>
+                  ))}
+                  {profile.sectors.length > 2 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{profile.sectors.length - 2} more
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {profile.skills.length > 0 && (
+              <div>
+                <p className="text-xs font-medium mb-1">Skills:</p>
+                <div className="flex flex-wrap gap-1">
+                  {profile.skills.slice(0, 3).map((skill, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {skill}
+                    </Badge>
+                  ))}
+                  {profile.skills.length > 3 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{profile.skills.length - 3} more
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* URL Input */}
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <Input
+                value={profileUrl}
+                readOnly
+                className="flex-1 text-sm"
               />
-            </div>
-
-            <div className="flex gap-4 justify-center">
-              <Button onClick={generateBanner} disabled={isGenerating} className="bg-primary">
-                {isGenerating ? 'Generating...' : 'Generate Banner'}
-              </Button>
-              <Button onClick={downloadBanner} variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Download
-              </Button>
-              <Button onClick={shareBanner} variant="outline">
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
-              <Button 
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/u/${profile.username}`);
-                  toast({ title: 'Copied!', description: 'Profile link copied to clipboard' });
-                }}
+              <Button
                 variant="outline"
+                size="sm"
+                onClick={copyToClipboard}
+                className="px-3"
               >
-                <Copy className="h-4 w-4 mr-2" />
-                Copy Link
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </Button>
             </div>
-
-            <div className="text-center text-sm text-muted-foreground">
-              <p>Share your professional profile with friends and recruiters!</p>
-              <p className="mt-1">Profile URL: <span className="font-mono">{window.location.origin}/u/{profile.username}</span></p>
+            
+            <div className="flex gap-2">
+              <Button onClick={shareProfile} className="flex-1">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share Profile
+              </Button>
+              <Button variant="outline" asChild>
+                <a href={profileUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </Button>
             </div>
           </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );

@@ -107,7 +107,7 @@ export const Navbar = () => {
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center justify-center flex-1 space-x-6 lg:space-x-8">
+            <div className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 space-x-6 lg:space-x-8">
               {navLinks.map((link) => (
                 link.hasDropdown ? (
                   <div key={link.href} className="relative group">
@@ -155,8 +155,40 @@ export const Navbar = () => {
             <div className="flex items-center space-x-1 sm:space-x-2">
                <div className="h-4 w-px bg-border mx-2 hidden md:block" />
                <NotificationSystem />
-               <div className="hidden sm:block">
-                 <GoogleTranslate />
+               <div className="hidden sm:flex items-center gap-1">
+                 <Button
+                   variant="ghost"
+                   size="sm"
+                   onClick={() => {
+                     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+                     if (combo) {
+                       combo.value = 'en';
+                       combo.dispatchEvent(new Event('change'));
+                       localStorage.setItem('selectedLanguage', 'en');
+                     }
+                   }}
+                   className="h-8 px-2 text-xs"
+                 >
+                   ENG
+                 </Button>
+                 <Button
+                   variant="ghost"
+                   size="sm"
+                   onClick={() => {
+                     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+                     if (combo) {
+                       combo.value = 'hi';
+                       combo.dispatchEvent(new Event('change'));
+                       localStorage.setItem('selectedLanguage', 'hi');
+                     }
+                   }}
+                   className="h-8 px-2 text-xs"
+                 >
+                   हिंदी
+                 </Button>
+                 <div className="hidden">
+                   <GoogleTranslate />
+                 </div>
                </div>
               <Tooltip>
                 <TooltipTrigger asChild>
