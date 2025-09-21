@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import { ExternalLink, MapPin, Building, Search, Filter, RefreshCw, Clock, Zap } from 'lucide-react';
 import { useDataUpdater } from '@/hooks/useDataUpdater';
+import { sanitizeText, sanitizeUrl } from '@/lib/sanitize';
 
 interface LiveInternship {
   id: string;
@@ -186,23 +187,23 @@ export default function LiveJobs() {
             <Card key={internship.id} className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-3 line-clamp-2 text-foreground">
-                  {internship.title}
+                  {sanitizeText(internship.title)}
                 </h3>
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center text-muted-foreground">
                     <Building className="w-4 h-4 mr-2 flex-shrink-0" />
-                    <span className="text-sm truncate">{internship.company}</span>
+                    <span className="text-sm truncate">{sanitizeText(internship.company)}</span>
                   </div>
                   
                   <div className="flex items-center text-muted-foreground">
                     <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
-                    <span className="text-sm truncate">{internship.location}</span>
+                    <span className="text-sm truncate">{sanitizeText(internship.location)}</span>
                   </div>
                   
                   {internship.salary && internship.salary !== 'Not disclosed' && (
                     <div className="text-green-600 dark:text-green-400 font-medium text-sm">
-                      {internship.salary}
+                      {sanitizeText(internship.salary || '')}
                     </div>
                   )}
 
@@ -216,7 +217,7 @@ export default function LiveJobs() {
 
                 <div className="mb-4">
                   <p className="text-muted-foreground text-sm line-clamp-3">
-                    {internship.description.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                    {sanitizeText(internship.description).substring(0, 150)}...
                   </p>
                 </div>
 
@@ -226,7 +227,7 @@ export default function LiveJobs() {
                   size="sm"
                 >
                   <a 
-                    href={internship.url} 
+                    href={sanitizeUrl(internship.url)} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center justify-center"
