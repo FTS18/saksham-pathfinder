@@ -1,0 +1,6107 @@
+[
+  {
+    "id": 1,
+    "pmis_id": "PMIS-2025-IT-001",
+    "title": "Software Developer Intern",
+    "role": "Software Developer",
+    "company": "Infosys",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Java",
+      "Python",
+      "SQL",
+      "Data Structures"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the development of software solutions and applications.",
+    "responsibilities": [
+      "Write and test clean, efficient code.",
+      "Participate in code reviews and team meetings.",
+      "Assist in debugging and troubleshooting software."
+    ],
+    "perks": [
+      "Mentorship from senior developers",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.infosys.com/careers.html",
+    "posted_date": "2025-09-12",
+    "application_deadline": "2025-11-14"
+  },
+  {
+    "id": 2,
+    "pmis_id": "PMIS-2025-FIN-002",
+    "title": "Financial Analyst Intern",
+    "role": "Financial Analyst",
+    "company": "HDFC Bank",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Modeling",
+      "Data Analysis",
+      "MS Excel",
+      "Accounting"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in financial analysis, reporting, and market research.",
+    "responsibilities": [
+      "Prepare financial reports and presentations.",
+      "Conduct market research and industry analysis.",
+      "Support the team in due diligence processes."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Industry networking",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.hdfcbank.com/aboutus/careers",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-11-09"
+  },
+  {
+    "id": 3,
+    "pmis_id": "PMIS-2025-AUTO-003",
+    "title": "Automotive Engineering Intern",
+    "role": "Mechanical Engineer",
+    "company": "Maruti Suzuki India",
+    "location": "Gurugram",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Mechanical Design",
+      "AutoCAD",
+      "Thermodynamics",
+      "Quality Control"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Work with the engineering team on vehicle design, testing, and production.",
+    "responsibilities": [
+      "Assist in the design and testing of vehicle components.",
+      "Support the team in the assembly line.",
+      "Ensure quality standards are maintained."
+    ],
+    "perks": [
+      "Hands-on experience in auto manufacturing",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.marutisuzuki.com/corporate/careers",
+    "posted_date": "2025-09-14",
+    "application_deadline": "2025-11-05"
+  },
+  {
+    "id": 4,
+    "pmis_id": "PMIS-2025-FMCG-004",
+    "title": "Marketing Intern",
+    "role": "Marketing Assistant",
+    "company": "Hindustan Unilever Limited (HUL)",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Digital Marketing",
+      "Market Research",
+      "Social Media",
+      "Communication"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Support the brand management team in developing and executing marketing campaigns.",
+    "responsibilities": [
+      "Assist in market research and consumer surveys.",
+      "Manage social media accounts and content calendars.",
+      "Contribute to marketing strategy discussions."
+    ],
+    "perks": [
+      "Experience with top brands",
+      "Professional networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.unilever.com/careers/",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-10-13"
+  },
+  {
+    "id": 5,
+    "pmis_id": "PMIS-2025-CONS-005",
+    "title": "Civil Engineering Intern",
+    "role": "Site Engineer",
+    "company": "Larsen & Toubro",
+    "location": "Chennai",
+    "stipend": "₹15,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Civil Engineering",
+      "Project Management",
+      "AutoCAD",
+      "Construction"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist in the planning and execution of large-scale construction projects.",
+    "responsibilities": [
+      "Support site engineers in daily operations.",
+      "Monitor construction progress and quality.",
+      "Ensure all safety regulations are followed."
+    ],
+    "perks": [
+      "Hands-on construction experience",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-27"
+  },
+  {
+    "id": 6,
+    "pmis_id": "PMIS-2025-HEALTH-006",
+    "title": "Hospital Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Apollo Hospitals",
+    "location": "Hyderabad",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Healthcare Administration",
+      "Communication",
+      "Data Entry",
+      "Patient Relations"
+    ],
+    "sector_tags": [
+      "Healthcare",
+      "Hospitality"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist in the daily administrative and operational tasks of a hospital.",
+    "responsibilities": [
+      "Support front desk and patient registration.",
+      "Help with patient data entry and record management.",
+      "Assist in improving hospital operational efficiency."
+    ],
+    "perks": [
+      "Exposure to healthcare management",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.apollohospitals.com/careers",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-11-06"
+  },
+  {
+    "id": 7,
+    "pmis_id": "PMIS-2025-TEL-007",
+    "title": "Network Engineering Intern",
+    "role": "Network Engineer",
+    "company": "Reliance Jio",
+    "location": "Hyderabad",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Networking",
+      "Troubleshooting",
+      "IoT",
+      "5G"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "IT"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the maintenance and optimization of a large-scale telecom network.",
+    "responsibilities": [
+      "Assist in monitoring network performance.",
+      "Support the team in deploying new network technologies.",
+      "Help with troubleshooting network issues."
+    ],
+    "perks": [
+      "Work with cutting-edge technology",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://careers.jio.com/jobs/",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-10-25"
+  },
+  {
+    "id": 8,
+    "pmis_id": "PMIS-2025-FIN-008",
+    "title": "Audit Intern",
+    "role": "Auditor",
+    "company": "PwC",
+    "location": "Delhi",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Auditing",
+      "Accounting",
+      "Risk Assessment",
+      "Financial Analysis"
+    ],
+    "sector_tags": [
+      "Consulting",
+      "Finance"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Support the audit team in financial data verification and risk assessment.",
+    "responsibilities": [
+      "Assist in preparing audit reports and documentation.",
+      "Conduct financial data verification.",
+      "Participate in client meetings."
+    ],
+    "perks": [
+      "Experience in a global firm",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.pwc.in/careers.html",
+    "posted_date": "2025-09-03",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 9,
+    "pmis_id": "PMIS-2025-ENG-009",
+    "title": "Electrical Engineering Intern",
+    "role": "Electrical Engineer",
+    "company": "Bharat Heavy Electricals Limited (BHEL)",
+    "location": "Haridwar",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Electrical Systems",
+      "Power Electronics",
+      "CAD",
+      "Maintenance"
+    ],
+    "sector_tags": [
+      "Engineering",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Assist in the design, testing, and maintenance of heavy electrical equipment.",
+    "responsibilities": [
+      "Support senior engineers on various projects.",
+      "Conduct routine checks and maintenance of equipment.",
+      "Document test results and procedures."
+    ],
+    "perks": [
+      "Experience in a Public Sector Undertaking (PSU)",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://careers.bhel.in/",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-11-18"
+  },
+  {
+    "id": 10,
+    "pmis_id": "PMIS-2025-IT-010",
+    "title": "Data Analyst Intern",
+    "role": "Data Analyst",
+    "company": "Wipro",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "SQL",
+      "Python",
+      "Data Analysis",
+      "Tableau"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Work with the data team to analyze large datasets and generate business insights.",
+    "responsibilities": [
+      "Collect and clean data from various sources.",
+      "Create dashboards and reports.",
+      "Support data-driven business decisions."
+    ],
+    "perks": [
+      "Hands-on experience with big data",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 12,
+    "apply_link": "https://careers.wipro.com/internship",
+    "posted_date": "2025-09-11",
+    "application_deadline": "2025-11-19"
+  },
+  {
+    "id": 11,
+    "pmis_id": "PMIS-2025-HOSP-011",
+    "title": "Culinary Intern",
+    "role": "Kitchen Assistant",
+    "company": "ITC Hotels",
+    "location": "Goa",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Culinary Arts",
+      "Food Preparation",
+      "Hygiene",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A hands-on role in a luxury hotel kitchen, learning from professional chefs.",
+    "responsibilities": [
+      "Assist in preparing food and managing kitchen inventory.",
+      "Support chefs during busy meal services.",
+      "Ensure all kitchen hygiene standards are maintained."
+    ],
+    "perks": [
+      "Learn from master chefs",
+      "Food and lodging benefits",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.itchotels.com/careers.html",
+    "posted_date": "2025-09-03",
+    "application_deadline": "2025-10-16"
+  },
+  {
+    "id": 12,
+    "pmis_id": "PMIS-2025-CONS-012",
+    "title": "Structural Engineering Intern",
+    "role": "Structural Engineer",
+    "company": "DLF Limited",
+    "location": "Delhi",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Structural Analysis",
+      "AutoCAD",
+      "Design",
+      "Project Management"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Real Estate"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in the structural design and analysis of real estate and commercial projects.",
+    "responsibilities": [
+      "Support the team in creating structural models.",
+      "Conduct stress and load analysis.",
+      "Review engineering plans and blueprints."
+    ],
+    "perks": [
+      "Experience in real estate development",
+      "Mentorship",
+      "Skill development"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.dlf.in/careers",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-11-12"
+  },
+  {
+    "id": 13,
+    "pmis_id": "PMIS-2025-ECOM-013",
+    "title": "E-commerce Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Flipkart",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Supply Chain",
+      "Logistics",
+      "Inventory Management",
+      "Data Analysis"
+    ],
+    "sector_tags": [
+      "E-commerce",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Support the operations team in managing logistics, inventory, and order fulfillment.",
+    "responsibilities": [
+      "Assist in daily e-commerce operations.",
+      "Monitor inventory levels and product listings.",
+      "Help optimize the supply chain for efficiency."
+    ],
+    "perks": [
+      "Work in a dynamic e-commerce environment",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.flipkart.com/careers",
+    "posted_date": "2025-09-07",
+    "application_deadline": "2025-10-18"
+  },
+  {
+    "id": 14,
+    "pmis_id": "PMIS-2025-FIN-014",
+    "title": "Corporate Banking Intern",
+    "role": "Banking Analyst",
+    "company": "ICICI Bank",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Analysis",
+      "Credit Analysis",
+      "Corporate Finance",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist corporate bankers in client management and financial analysis for large corporations.",
+    "responsibilities": [
+      "Prepare financial reports and credit memos.",
+      "Support the team in client meetings.",
+      "Conduct industry research."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-11-13"
+  },
+  {
+    "id": 15,
+    "pmis_id": "PMIS-2025-ENERGY-015",
+    "title": "Petroleum Engineering Intern",
+    "role": "Petroleum Engineer",
+    "company": "Oil and Natural Gas Corporation (ONGC)",
+    "location": "Dehradun",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Petroleum Engineering",
+      "Geology",
+      "Drilling Operations",
+      "Reservoir Engineering"
+    ],
+    "sector_tags": [
+      "Energy",
+      "Oil & Gas"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A hands-on role in the exploration and production of oil and gas.",
+    "responsibilities": [
+      "Assist in field operations and data collection.",
+      "Support the team in reservoir analysis.",
+      "Ensure compliance with safety protocols."
+    ],
+    "perks": [
+      "Experience in the energy sector",
+      "Government sector exposure",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.ongcindia.com/wps/wcm/connect/en/career/",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-10-14"
+  },
+  {
+    "id": 16,
+    "pmis_id": "PMIS-2025-TECH-016",
+    "title": "UI/UX Designer Intern",
+    "role": "UI/UX Designer",
+    "company": "Zomato",
+    "location": "Gurugram",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma",
+      "Adobe XD",
+      "Prototyping"
+    ],
+    "sector_tags": [
+      "Tech",
+      "Food & Beverages"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Contribute to the design of user-friendly interfaces for a popular food delivery app.",
+    "responsibilities": [
+      "Create wireframes and mockups.",
+      "Participate in user research and usability testing.",
+      "Assist in the development of design systems."
+    ],
+    "perks": [
+      "Work on a widely used app",
+      "Creative role",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.zomato.com/careers",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-11-03"
+  },
+  {
+    "id": 17,
+    "pmis_id": "PMIS-2025-FIN-017",
+    "title": "Investment Banking Intern",
+    "role": "Investment Banking Analyst",
+    "company": "Kotak Mahindra Bank",
+    "location": "Mumbai",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Modeling",
+      "Valuation",
+      "Mergers & Acquisitions",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in financial modeling, valuation, and M&A deals.",
+    "responsibilities": [
+      "Build financial models for various transactions.",
+      "Conduct due diligence and market research.",
+      "Prepare client presentations and pitch books."
+    ],
+    "perks": [
+      "Exposure to high-stakes finance",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.kotak.com/en/about-us/careers.html",
+    "posted_date": "2025-08-26",
+    "application_deadline": "2025-11-10"
+  },
+  {
+    "id": 18,
+    "pmis_id": "PMIS-2025-AUTO-018",
+    "title": "Supply Chain Intern",
+    "role": "Supply Chain Coordinator",
+    "company": "Mahindra & Mahindra",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Logistics",
+      "Inventory Management",
+      "Supply Chain",
+      "Operations"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Support the logistics team in managing the flow of raw materials and finished goods.",
+    "responsibilities": [
+      "Monitor inventory levels and coordinate with suppliers.",
+      "Assist in optimizing logistics routes.",
+      "Ensure timely delivery of parts and vehicles."
+    ],
+    "perks": [
+      "Hands-on supply chain experience",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.mahindra.com/careers",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-10-06"
+  },
+  {
+    "id": 19,
+    "pmis_id": "PMIS-2025-RETAIL-019",
+    "title": "Retail Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Reliance Retail",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Store Operations",
+      "Customer Service",
+      "Inventory Management",
+      "Sales"
+    ],
+    "sector_tags": [
+      "Retail",
+      "FMCG"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist the store management team in daily retail operations.",
+    "responsibilities": [
+      "Support in-store operations and customer service.",
+      "Help with stock management and merchandising.",
+      "Assist in improving store performance and sales."
+    ],
+    "perks": [
+      "Experience in India's largest retail chain",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.relianceretail.com/careers.html",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-26"
+  },
+  {
+    "id": 20,
+    "pmis_id": "PMIS-2025-CONS-020",
+    "title": "Architectural Intern",
+    "role": "Architectural Assistant",
+    "company": "Godrej Properties",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "AutoCAD",
+      "Revit",
+      "SketchUp",
+      "Design"
+    ],
+    "sector_tags": [
+      "Real Estate",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A creative role to assist in the design and planning of residential and commercial properties.",
+    "responsibilities": [
+      "Create architectural drawings and 3D models.",
+      "Participate in design meetings and site visits.",
+      "Assist in preparing project proposals."
+    ],
+    "perks": [
+      "Hands-on design experience",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.godrejproperties.com/careers/",
+    "posted_date": "2025-09-07",
+    "application_deadline": "2025-10-22"
+  },
+  {
+    "id": 21,
+    "pmis_id": "PMIS-2025-FIN-021",
+    "title": "Wealth Management Intern",
+    "role": "Financial Planner",
+    "company": "Edelweiss Financial Services",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Planning",
+      "Investment",
+      "Client Relations",
+      "Market Research"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in providing financial and investment advisory services to high-net-worth clients.",
+    "responsibilities": [
+      "Analyze client portfolios and financial goals.",
+      "Conduct research on various investment products.",
+      "Support senior wealth managers in client meetings."
+    ],
+    "perks": [
+      "Exposure to wealth management",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.edelweissfin.com/careers",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-10-27"
+  },
+  {
+    "id": 22,
+    "pmis_id": "PMIS-2025-ECOM-022",
+    "title": "Digital Marketing Intern",
+    "role": "Digital Marketer",
+    "company": "Amazon India",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "SEO",
+      "Social Media Marketing",
+      "Content Creation",
+      "Google Analytics"
+    ],
+    "sector_tags": [
+      "E-commerce",
+      "Marketing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Support the digital marketing team in creating and executing online campaigns.",
+    "responsibilities": [
+      "Assist in managing social media channels.",
+      "Contribute to content creation and ad campaigns.",
+      "Analyze marketing data and generate performance reports."
+    ],
+    "perks": [
+      "Work in a global tech company",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.amazon.jobs/en/locations/ind",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-11-02"
+  },
+  {
+    "id": 23,
+    "pmis_id": "PMIS-2025-ENERGY-023",
+    "title": "Solar Energy Intern",
+    "role": "Solar Engineer",
+    "company": "Adani Green Energy",
+    "location": "Ahmedabad",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Solar Technology",
+      "Renewable Energy",
+      "Project Management",
+      "Electrical Engineering"
+    ],
+    "sector_tags": [
+      "Energy",
+      "Renewable Energy"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A hands-on role in the development and maintenance of solar power projects.",
+    "responsibilities": [
+      "Assist in site surveys and feasibility studies.",
+      "Support the team in solar panel installation.",
+      "Help with troubleshooting and maintenance of solar systems."
+    ],
+    "perks": [
+      "Experience in the renewable energy sector",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.adanigreenenergy.com/careers",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-10-24"
+  },
+  {
+    "id": 24,
+    "pmis_id": "PMIS-2025-IT-024",
+    "title": "DevOps Intern",
+    "role": "DevOps Engineer",
+    "company": "Tata Consultancy Services (TCS)",
+    "location": "Pune",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "DevOps",
+      "CI/CD",
+      "Docker",
+      "Kubernetes"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the automation of software development and deployment processes.",
+    "responsibilities": [
+      "Assist in building and managing CI/CD pipelines.",
+      "Support the team in cloud infrastructure management.",
+      "Help with monitoring and troubleshooting application performance."
+    ],
+    "perks": [
+      "Work with cutting-edge tech",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.tcs.com/careers/india",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-10-30"
+  },
+  {
+    "id": 25,
+    "pmis_id": "PMIS-2025-HEALTH-025",
+    "title": "Clinical Research Intern",
+    "role": "Research Assistant",
+    "company": "Serum Institute of India",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Research",
+      "Data Analysis",
+      "Lab Procedures",
+      "Medical Terminology"
+    ],
+    "sector_tags": [
+      "Healthcare",
+      "Pharma"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A scientific role assisting in clinical trials and medical research for vaccine development.",
+    "responsibilities": [
+      "Support researchers in lab experiments and data collection.",
+      "Maintain accurate lab records and documentation.",
+      "Participate in research meetings."
+    ],
+    "perks": [
+      "Contribute to public health",
+      "Mentorship from top scientists",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.seruminstitute.com/careers.php",
+    "posted_date": "2025-09-20",
+    "application_deadline": "2025-10-14"
+  },
+  {
+    "id": 26,
+    "pmis_id": "PMIS-2025-FMCG-026",
+    "title": "Supply Chain Intern",
+    "role": "Logistics Assistant",
+    "company": "Nestlé",
+    "location": "Gurugram",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Supply Chain",
+      "Logistics",
+      "Inventory Management",
+      "Operations"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Support the supply chain team in managing the flow of products from manufacturing to retail.",
+    "responsibilities": [
+      "Assist in tracking product shipments and deliveries.",
+      "Help with inventory management and stock reconciliation.",
+      "Contribute to supply chain optimization projects."
+    ],
+    "perks": [
+      "Experience in a global company",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.nestle.in/jobs",
+    "posted_date": "2025-09-14",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 27,
+    "pmis_id": "PMIS-2025-IT-027",
+    "title": "Cybersecurity Intern",
+    "role": "Security Analyst",
+    "company": "Wipro",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cybersecurity",
+      "Network Security",
+      "Ethical Hacking",
+      "Threat Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in monitoring and protecting company networks and systems.",
+    "responsibilities": [
+      "Monitor security systems and analyze potential threats.",
+      "Support the team in vulnerability assessments.",
+      "Help with the implementation of security protocols."
+    ],
+    "perks": [
+      "Work on critical security projects",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://careers.wipro.com/internship",
+    "posted_date": "2025-08-25",
+    "application_deadline": "2025-10-20"
+  },
+  {
+    "id": 28,
+    "pmis_id": "PMIS-2025-CONS-028",
+    "title": "Urban Planning Intern",
+    "role": "Urban Planner",
+    "company": "DLF Limited",
+    "location": "Gurugram",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Urban Planning",
+      "GIS",
+      "Policy Analysis",
+      "Sustainability"
+    ],
+    "sector_tags": [
+      "Real Estate",
+      "Infrastructure"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the planning and development of new urban spaces and real estate projects.",
+    "responsibilities": [
+      "Conduct research on urban development trends.",
+      "Assist in preparing site plans and proposals.",
+      "Support the team in policy analysis."
+    ],
+    "perks": [
+      "Experience in urban development",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.dlf.in/careers",
+    "posted_date": "2025-08-22",
+    "application_deadline": "2025-11-13"
+  },
+  {
+    "id": 29,
+    "pmis_id": "PMIS-2025-FIN-029",
+    "title": "Credit Analyst Intern",
+    "role": "Credit Analyst",
+    "company": "Axis Bank",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Credit Analysis",
+      "Financial Analysis",
+      "Risk Assessment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in the analysis of credit applications and risk assessment for loan products.",
+    "responsibilities": [
+      "Conduct financial statement analysis.",
+      "Support the team in preparing credit reports.",
+      "Help with data collection and due diligence."
+    ],
+    "perks": [
+      "Learn about risk management",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.axisbank.com/careers",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-13"
+  },
+  {
+    "id": 30,
+    "pmis_id": "PMIS-2025-EDU-030",
+    "title": "Educational Content Intern",
+    "role": "Content Creator",
+    "company": "BYJU'S",
+    "location": "Bengaluru",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Content Creation",
+      "Writing",
+      "Instructional Design",
+      "Subject Matter Expertise"
+    ],
+    "sector_tags": [
+      "Education",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Contribute to the development of engaging and effective educational content for students.",
+    "responsibilities": [
+      "Assist in writing scripts for video lessons.",
+      "Review and edit lesson plans and study materials.",
+      "Participate in curriculum development meetings."
+    ],
+    "perks": [
+      "Impact education",
+      "Creative role",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://byjus.com/careers/",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-10-18"
+  },
+  {
+    "id": 31,
+    "pmis_id": "PMIS-2025-TEL-031",
+    "title": "Telecom Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Vodafone Idea",
+    "location": "Pune",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Network Operations",
+      "Troubleshooting",
+      "Customer Service",
+      "Telecommunications"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "IT"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in the operations and maintenance of a telecom network.",
+    "responsibilities": [
+      "Assist in monitoring network performance and outages.",
+      "Support field technicians in installations.",
+      "Help with customer-facing technical issues."
+    ],
+    "perks": [
+      "Practical telecom experience",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.vodafoneidea.com/careers",
+    "posted_date": "2025-08-30",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 32,
+    "pmis_id": "PMIS-2025-FIN-032",
+    "title": "Equity Research Intern",
+    "role": "Equity Analyst",
+    "company": "Angel Broking",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Equity Research",
+      "Financial Analysis",
+      "Market Research",
+      "Valuation"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Stock Market"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in researching and analyzing public companies for investment recommendations.",
+    "responsibilities": [
+      "Conduct in-depth research on companies and industries.",
+      "Support senior analysts in preparing research reports.",
+      "Help with data collection and financial modeling."
+    ],
+    "perks": [
+      "Exposure to stock market research",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.angelone.in/career",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-10-28"
+  },
+  {
+    "id": 33,
+    "pmis_id": "PMIS-2025-MANU-033",
+    "title": "Production Intern",
+    "role": "Production Assistant",
+    "company": "Tata Steel",
+    "location": "Jamshedpur",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Production Planning",
+      "Quality Control",
+      "Manufacturing",
+      "Safety Procedures"
+    ],
+    "sector_tags": [
+      "Manufacturing",
+      "Industrial"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in a steel manufacturing plant, focused on production and quality control.",
+    "responsibilities": [
+      "Support production supervisors in daily operations.",
+      "Monitor the assembly line for efficiency.",
+      "Ensure all production activities adhere to safety standards."
+    ],
+    "perks": [
+      "Experience in a large industrial plant",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tatasteel.com/careers/",
+    "posted_date": "2025-08-24",
+    "application_deadline": "2025-11-08"
+  },
+  {
+    "id": 34,
+    "pmis_id": "PMIS-2025-MEDIA-034",
+    "title": "Journalism Intern",
+    "role": "Journalist",
+    "company": "The Times of India",
+    "location": "Delhi",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Writing",
+      "Research",
+      "Reporting",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Media",
+      "Publishing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A dynamic role to assist in news gathering, reporting, and writing for a leading newspaper.",
+    "responsibilities": [
+      "Assist journalists in researching news stories.",
+      "Conduct interviews and attend press conferences.",
+      "Contribute to writing articles and features."
+    ],
+    "perks": [
+      "Experience in a premier newsroom",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://timesinternet.in/careers/",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-29"
+  },
+  {
+    "id": 35,
+    "pmis_id": "PMIS-2025-FIN-035",
+    "title": "Insurance Intern",
+    "role": "Insurance Assistant",
+    "company": "Life Insurance Corporation of India (LIC)",
+    "location": "Kolkata",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Insurance",
+      "Sales",
+      "Customer Service",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Insurance"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist insurance agents in selling policies and providing customer service.",
+    "responsibilities": [
+      "Support agents in client meetings and follow-ups.",
+      "Help with policy documentation and servicing.",
+      "Handle customer queries and claims."
+    ],
+    "perks": [
+      "Learn about the insurance sector",
+      "Government sector exposure",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.licindia.in/careers",
+    "posted_date": "2025-09-18",
+    "application_deadline": "2025-10-28"
+  },
+  {
+    "id": 36,
+    "pmis_id": "PMIS-2025-AGRI-036",
+    "title": "Agribusiness Intern",
+    "role": "Farm Assistant",
+    "company": "ITC Limited",
+    "location": "Bhubaneswar",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Agribusiness",
+      "Crop Science",
+      "Farm Operations",
+      "Research"
+    ],
+    "sector_tags": [
+      "Agriculture",
+      "FMCG"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A hands-on role in agricultural projects, focusing on rural development and crop management.",
+    "responsibilities": [
+      "Assist in field operations and data collection.",
+      "Support the team in farmer engagement programs.",
+      "Conduct research on agricultural best practices."
+    ],
+    "perks": [
+      "Contribute to rural development",
+      "Practical agribusiness experience",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.itcportal.com/careers/index.html",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-11-08"
+  },
+  {
+    "id": 37,
+    "pmis_id": "PMIS-2025-AUTO-037",
+    "title": "Manufacturing Intern",
+    "role": "Production Assistant",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Manufacturing",
+      "Quality Control",
+      "Lean Manufacturing",
+      "Robotics"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Work with the production team on the assembly line and process improvement projects.",
+    "responsibilities": [
+      "Support production supervisors in daily operations.",
+      "Perform quality checks on automotive parts.",
+      "Contribute to process optimization initiatives."
+    ],
+    "perks": [
+      "Hands-on experience in auto manufacturing",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-08"
+  },
+  {
+    "id": 38,
+    "pmis_id": "PMIS-2025-IT-038",
+    "title": "Cloud Computing Intern",
+    "role": "Cloud Engineer",
+    "company": "Amazon Web Services (AWS)",
+    "location": "Hyderabad",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cloud Computing",
+      "AWS",
+      "Azure",
+      "Networking"
+    ],
+    "sector_tags": [
+      "IT",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in deploying and managing cloud infrastructure and services.",
+    "responsibilities": [
+      "Support the team in setting up cloud environments.",
+      "Help with troubleshooting cloud-related issues.",
+      "Learn about various cloud services and their applications."
+    ],
+    "perks": [
+      "Work on cutting-edge cloud tech",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.amazon.jobs/en/locations/ind",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-10-13"
+  },
+  {
+    "id": 39,
+    "pmis_id": "PMIS-2025-FIN-039",
+    "title": "Retail Banking Intern",
+    "role": "Banking Assistant",
+    "company": "State Bank of India (SBI)",
+    "location": "Kolkata",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Customer Service",
+      "Banking",
+      "Sales",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A customer-centric role to assist in daily banking operations and customer service.",
+    "responsibilities": [
+      "Support the team in handling customer transactions.",
+      "Help with account opening and service requests.",
+      "Assist in promoting banking products to customers."
+    ],
+    "perks": [
+      "Experience in a public sector bank",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://sbi.co.in/web/careers",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-10-23"
+  },
+  {
+    "id": 40,
+    "pmis_id": "PMIS-2025-MANU-040",
+    "title": "Industrial Automation Intern",
+    "role": "Automation Engineer",
+    "company": "Siemens",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Automation",
+      "PLC",
+      "Robotics",
+      "Control Systems"
+    ],
+    "sector_tags": [
+      "Manufacturing",
+      "Engineering"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role focused on designing and implementing industrial automation solutions.",
+    "responsibilities": [
+      "Assist in programming PLCs and robots.",
+      "Support the team in troubleshooting automated systems.",
+      "Contribute to process optimization projects."
+    ],
+    "perks": [
+      "Work with advanced industrial tech",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.siemens.com/in/en/company/jobs.html",
+    "posted_date": "2025-09-13",
+    "application_deadline": "2025-11-17"
+  },
+  {
+    "id": 41,
+    "pmis_id": "PMIS-2025-HOSP-041",
+    "title": "Guest Relations Intern",
+    "role": "Guest Relations Officer",
+    "company": "Oberoi Hotels",
+    "location": "Jaipur",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Customer Service",
+      "Communication",
+      "Problem-Solving",
+      "Front Office"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A customer-centric role to ensure a high level of guest satisfaction.",
+    "responsibilities": [
+      "Assist in managing guest inquiries and requests.",
+      "Support the front office team during busy periods.",
+      "Help with guest feedback and complaint resolution."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Professional networking",
+      "Food and lodging benefits"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.oberoihotels.com/careers/",
+    "posted_date": "2025-09-18",
+    "application_deadline": "2025-10-26"
+  },
+  {
+    "id": 42,
+    "pmis_id": "PMIS-2025-TEL-042",
+    "title": "Mobile Network Intern",
+    "role": "Network Engineer",
+    "company": "Bharti Airtel",
+    "location": "New Delhi",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Mobile Networks",
+      "5G",
+      "Network Operations",
+      "Troubleshooting"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "IT"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in the deployment and maintenance of mobile networks, including 5G.",
+    "responsibilities": [
+      "Support the team in site surveys and installations.",
+      "Help with troubleshooting network outages.",
+      "Contribute to network optimization projects."
+    ],
+    "perks": [
+      "Work with advanced telecom technology",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.airtel.in/careers/",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 43,
+    "pmis_id": "PMIS-2025-FIN-043",
+    "title": "Taxation Intern",
+    "role": "Tax Consultant",
+    "company": "Deloitte",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Taxation",
+      "Accounting",
+      "Compliance",
+      "Financial Analysis"
+    ],
+    "sector_tags": [
+      "Consulting",
+      "Finance"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist the tax team in preparing tax returns, reports, and providing advisory services.",
+    "responsibilities": [
+      "Support the team in corporate and individual tax filings.",
+      "Help with tax compliance and documentation.",
+      "Conduct research on tax laws and regulations."
+    ],
+    "perks": [
+      "Experience in a global consulting firm",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www2.deloitte.com/in/en/pages/careers/articles/internship.html",
+    "posted_date": "2025-08-31",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 44,
+    "pmis_id": "PMIS-2025-RETAIL-044",
+    "title": "Digital Merchandising Intern",
+    "role": "Merchandiser",
+    "company": "Myntra",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "E-commerce",
+      "Merchandising",
+      "Data Analysis",
+      "Marketing"
+    ],
+    "sector_tags": [
+      "E-commerce",
+      "Fashion"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A data-driven role to assist in optimizing product visibility and sales on the platform.",
+    "responsibilities": [
+      "Analyze sales data and customer behavior.",
+      "Support the team in product listings and promotions.",
+      "Help in creating online product displays."
+    ],
+    "perks": [
+      "Work in a dynamic e-commerce environment",
+      "Creative and analytical role",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://careers.myntra.com/",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-11-11"
+  },
+  {
+    "id": 45,
+    "pmis_id": "PMIS-2025-HEALTH-045",
+    "title": "Biomedical Engineering Intern",
+    "role": "Biomedical Engineer",
+    "company": "GE Healthcare",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Biomedical Engineering",
+      "Medical Devices",
+      "Troubleshooting",
+      "Maintenance"
+    ],
+    "sector_tags": [
+      "Healthcare",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in the maintenance and repair of medical equipment.",
+    "responsibilities": [
+      "Support technicians in troubleshooting medical devices.",
+      "Help with routine maintenance and calibration.",
+      "Ensure compliance with all safety and regulatory standards."
+    ],
+    "perks": [
+      "Work at the intersection of tech and medicine",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://jobs.gecareers.com/healthcare",
+    "posted_date": "2025-08-24",
+    "application_deadline": "2025-11-12"
+  },
+  {
+    "id": 46,
+    "pmis_id": "PMIS-2025-MANU-046",
+    "title": "Metallurgy Intern",
+    "role": "Metallurgist",
+    "company": "Jindal Steel & Power Ltd.",
+    "location": "Raigarh",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Metallurgy",
+      "Material Science",
+      "Quality Control",
+      "Lab Procedures"
+    ],
+    "sector_tags": [
+      "Manufacturing",
+      "Industrial"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A scientific role in a steel manufacturing plant, focused on material analysis and quality.",
+    "responsibilities": [
+      "Assist in lab testing and analysis of metal samples.",
+      "Support the team in researching new alloys.",
+      "Ensure the quality of steel products meets industry standards."
+    ],
+    "perks": [
+      "Practical lab experience",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.jindalsteelpower.com/careers",
+    "posted_date": "2025-08-31",
+    "application_deadline": "2025-10-28"
+  },
+  {
+    "id": 47,
+    "pmis_id": "PMIS-2025-FIN-047",
+    "title": "Stock Market Analyst Intern",
+    "role": "Market Analyst",
+    "company": "Motilal Oswal Financial Services",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Stock Analysis",
+      "Financial Research",
+      "Equity Research",
+      "Technical Analysis"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Stock Market"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A fast-paced role for those passionate about stock market research and analysis.",
+    "responsibilities": [
+      "Research and analyze public companies.",
+      "Support senior analysts in preparing research reports.",
+      "Help with data collection and market trend analysis."
+    ],
+    "perks": [
+      "Exposure to the stock market",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.motilaloswal.com/careers",
+    "posted_date": "2025-09-02",
+    "application_deadline": "2025-10-23"
+  },
+  {
+    "id": 48,
+    "pmis_id": "PMIS-2025-IT-048",
+    "title": "Android Developer Intern",
+    "role": "Mobile Developer",
+    "company": "Swiggy",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Android Development",
+      "Java",
+      "Kotlin",
+      "UI/UX"
+    ],
+    "sector_tags": [
+      "IT",
+      "Food & Beverages"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Contribute to the development and maintenance of a popular food delivery app.",
+    "responsibilities": [
+      "Assist in developing new features for the Android app.",
+      "Debug and troubleshoot application issues.",
+      "Participate in the mobile development lifecycle."
+    ],
+    "perks": [
+      "Work on a widely used app",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.swiggy.com/careers/",
+    "posted_date": "2025-09-17",
+    "application_deadline": "2025-10-21"
+  },
+  {
+    "id": 49,
+    "pmis_id": "PMIS-2025-CONS-049",
+    "title": "Project Management Intern",
+    "role": "Project Assistant",
+    "company": "AECOM",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Project Management",
+      "Planning",
+      "Logistics",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist project managers in the planning and execution of large-scale infrastructure projects.",
+    "responsibilities": [
+      "Support the team in project scheduling and budgeting.",
+      "Help in coordinating with various stakeholders.",
+      "Monitor project timelines and progress."
+    ],
+    "perks": [
+      "Experience in a global engineering firm",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://aecom.com/careers/",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-11-05"
+  },
+  {
+    "id": 50,
+    "pmis_id": "PMIS-2025-HOSP-050",
+    "title": "Event Planning Intern",
+    "role": "Event Coordinator",
+    "company": "Hyatt Hotels",
+    "location": "Goa",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Event Planning",
+      "Coordination",
+      "Customer Service",
+      "Vendor Management"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Events"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in planning and executing events in a luxury hotel setting.",
+    "responsibilities": [
+      "Assist in event setup and coordination.",
+      "Liaise with vendors and suppliers.",
+      "Provide on-site support during events."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Creative role",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://careers.hyatt.com/",
+    "posted_date": "2025-09-11",
+    "application_deadline": "2025-11-18"
+  },
+  {
+    "id": 51,
+    "pmis_id": "PMIS-2025-IT-051",
+    "title": "Machine Learning Intern",
+    "role": "ML Engineer",
+    "company": "Infosys",
+    "location": "Bengaluru",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Machine Learning",
+      "Python",
+      "TensorFlow",
+      "Data Science"
+    ],
+    "sector_tags": [
+      "IT",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in the development and deployment of machine learning models.",
+    "responsibilities": [
+      "Assist in data pre-processing and feature engineering.",
+      "Support the team in training and testing models.",
+      "Contribute to research on new ML algorithms."
+    ],
+    "perks": [
+      "Work on cutting-edge AI/ML projects",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.infosys.com/careers.html",
+    "posted_date": "2025-08-22",
+    "application_deadline": "2025-10-08"
+  },
+  {
+    "id": 52,
+    "pmis_id": "PMIS-2025-FIN-052",
+    "title": "Forex Trader Intern",
+    "role": "Forex Trader",
+    "company": "Standard Chartered Bank",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Forex Trading",
+      "Financial Analysis",
+      "Risk Management",
+      "Market Research"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A dynamic role to assist in foreign exchange trading and market analysis.",
+    "responsibilities": [
+      "Support the team in monitoring currency markets.",
+      "Help with the execution of trades and risk management.",
+      "Conduct research on market trends and economic indicators."
+    ],
+    "perks": [
+      "Exposure to global financial markets",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.sc.com/en/careers/",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-11-08"
+  },
+  {
+    "id": 53,
+    "pmis_id": "PMIS-2025-AUTO-053",
+    "title": "Robotics & Automation Intern",
+    "role": "Automation Engineer",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Robotics",
+      "Automation",
+      "Programming",
+      "Control Systems"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in the programming and maintenance of industrial robots.",
+    "responsibilities": [
+      "Support the team in automating manufacturing processes.",
+      "Assist in troubleshooting and repairing robots.",
+      "Contribute to process improvement initiatives."
+    ],
+    "perks": [
+      "Work with advanced robotics",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-10-23"
+  },
+  {
+    "id": 54,
+    "pmis_id": "PMIS-2025-CONS-054",
+    "title": "Quantity Surveyor Intern",
+    "role": "Quantity Surveyor",
+    "company": "Larsen & Toubro",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cost Estimation",
+      "Tendering",
+      "Budgeting",
+      "Project Management"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A finance-oriented role to assist in estimating project costs and budgets.",
+    "responsibilities": [
+      "Support the team in preparing tenders and bids.",
+      "Help with cost control and financial reporting.",
+      "Conduct site visits to verify progress."
+    ],
+    "perks": [
+      "Learn about construction finance",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-08-24",
+    "application_deadline": "2025-11-09"
+  },
+  {
+    "id": 55,
+    "pmis_id": "PMIS-2025-RETAIL-055",
+    "title": "Store Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Shoppers Stop",
+    "location": "Pune",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Retail Operations",
+      "Customer Service",
+      "Sales",
+      "Inventory Management"
+    ],
+    "sector_tags": [
+      "Retail",
+      "FMCG"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A hands-on role to assist in the daily operations of a retail store.",
+    "responsibilities": [
+      "Support the store manager in daily tasks.",
+      "Help with merchandising and product displays.",
+      "Ensure a high level of customer satisfaction."
+    ],
+    "perks": [
+      "Experience in retail management",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.shoppersstop.com/careers/",
+    "posted_date": "2025-08-31",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 56,
+    "pmis_id": "PMIS-2025-TEL-056",
+    "title": "Telecom Network Planning Intern",
+    "role": "Network Planner",
+    "company": "Bharti Airtel",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Network Planning",
+      "RF Engineering",
+      "Data Analysis",
+      "Telecommunications"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "IT"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A strategic and technical role to assist in planning and optimizing the telecom network.",
+    "responsibilities": [
+      "Support the team in site selection for new towers.",
+      "Conduct network performance analysis.",
+      "Help with the implementation of new network technologies."
+    ],
+    "perks": [
+      "Work on advanced network strategies",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.airtel.in/careers/",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-11-02"
+  },
+  {
+    "id": 57,
+    "pmis_id": "PMIS-2025-HOSP-057",
+    "title": "Front Office Intern",
+    "role": "Front Office Assistant",
+    "company": "Hyatt Hotels",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Front Office",
+      "Customer Service",
+      "Communication",
+      "Problem-Solving"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A customer-facing role to assist in the daily operations of a hotel's front desk.",
+    "responsibilities": [
+      "Assist guests with check-in and check-out.",
+      "Answer phone calls and manage reservations.",
+      "Provide information about hotel services and local attractions."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Professional networking",
+      "Food and lodging benefits"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://careers.hyatt.com/",
+    "posted_date": "2025-09-12",
+    "application_deadline": "2025-11-03"
+  },
+  {
+    "id": 58,
+    "pmis_id": "PMIS-2025-IT-058",
+    "title": "Web Development Intern",
+    "role": "Web Developer",
+    "company": "Cognizant",
+    "location": "Chennai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A practical role to assist in the development and maintenance of corporate websites and applications.",
+    "responsibilities": [
+      "Contribute to front-end and back-end development.",
+      "Write clean, scalable, and efficient code.",
+      "Help with troubleshooting website issues."
+    ],
+    "perks": [
+      "Hands-on development experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.cognizant.com/in/en/careers",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-23"
+  },
+  {
+    "id": 59,
+    "pmis_id": "PMIS-2025-FIN-059",
+    "title": "Risk Management Intern",
+    "role": "Risk Analyst",
+    "company": "HSBC",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Risk Analysis",
+      "Financial Modeling",
+      "Compliance",
+      "Auditing"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A specialized role to assist in identifying and mitigating financial risks.",
+    "responsibilities": [
+      "Support the team in assessing market and credit risk.",
+      "Help with the preparation of risk reports.",
+      "Ensure compliance with regulatory frameworks."
+    ],
+    "perks": [
+      "Exposure to global banking",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.hsbc.co.in/careers/",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-17"
+  },
+  {
+    "id": 60,
+    "pmis_id": "PMIS-2025-CONS-060",
+    "title": "Environmental Engineering Intern",
+    "role": "Environmental Engineer",
+    "company": "Larsen & Toubro",
+    "location": "Gurugram",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Environmental Science",
+      "Sustainability",
+      "Compliance",
+      "GIS"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A role focused on making construction more environmentally friendly and sustainable.",
+    "responsibilities": [
+      "Assist in environmental impact assessments.",
+      "Support the team in implementing sustainable practices.",
+      "Help ensure compliance with environmental regulations."
+    ],
+    "perks": [
+      "Contribute to sustainability",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-11-15"
+  },
+  {
+    "id": 61,
+    "pmis_id": "PMIS-2025-FMCG-061",
+    "title": "Brand Management Intern",
+    "role": "Brand Manager",
+    "company": "Titan Company",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Marketing",
+      "Branding",
+      "Consumer Insights",
+      "Market Analysis"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative and strategic role to assist in building and growing popular consumer brands.",
+    "responsibilities": [
+      "Assist in executing brand marketing campaigns.",
+      "Conduct consumer research and analyze market trends.",
+      "Contribute to new product development discussions."
+    ],
+    "perks": [
+      "Work on leading consumer brands",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.titancompany.in/careers",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-09"
+  },
+  {
+    "id": 62,
+    "pmis_id": "PMIS-2025-AUTO-062",
+    "title": "Automotive Electronics Intern",
+    "role": "Electrical Engineer",
+    "company": "Bosch",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Electronics",
+      "Embedded Systems",
+      "Circuit Design",
+      "CAN Bus"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in the design and testing of automotive electronic systems.",
+    "responsibilities": [
+      "Support the team in developing in-car technologies.",
+      "Assist in troubleshooting electronic components.",
+      "Contribute to new product development projects."
+    ],
+    "perks": [
+      "Work with cutting-edge auto tech",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.bosch.in/careers/",
+    "posted_date": "2025-08-26",
+    "application_deadline": "2025-11-03"
+  },
+  {
+    "id": 63,
+    "pmis_id": "PMIS-2025-HOSP-063",
+    "title": "Hotel Management Trainee",
+    "role": "Management Trainee",
+    "company": "Taj Hotels",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Hotel Management",
+      "Customer Service",
+      "Leadership",
+      "Operations"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A comprehensive training program covering various aspects of luxury hotel management.",
+    "responsibilities": [
+      "Rotate through different departments (F&B, Front Office, Housekeeping).",
+      "Assist in daily operations and team management.",
+      "Learn about revenue management and guest relations."
+    ],
+    "perks": [
+      "Fast-track career path",
+      "Mentorship",
+      "Food and lodging benefits"
+    ],
+    "type": "Trainee",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tajhotels.com/en-in/careers",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-11-11"
+  },
+  {
+    "id": 64,
+    "pmis_id": "PMIS-2025-IT-064",
+    "title": "Data Science Intern",
+    "role": "Data Scientist",
+    "company": "Paytm",
+    "location": "Noida",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Data Science",
+      "Python",
+      "Machine Learning",
+      "Statistical Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "Fintech"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "An analytical role to assist in building data models and providing insights for business growth.",
+    "responsibilities": [
+      "Collect and analyze large datasets.",
+      "Build and test machine learning models.",
+      "Contribute to data-driven business decisions."
+    ],
+    "perks": [
+      "Work in a leading fintech company",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://paytm.com/careers/",
+    "posted_date": "2025-09-11",
+    "application_deadline": "2025-10-24"
+  },
+  {
+    "id": 65,
+    "pmis_id": "PMIS-2025-CONS-065",
+    "title": "Urban Infrastructure Intern",
+    "role": "Infrastructure Planner",
+    "company": "Delhi Metro Rail Corporation (DMRC)",
+    "location": "Delhi",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Civil Engineering",
+      "Urban Planning",
+      "Public Transport",
+      "Project Management"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Government"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist in the planning and execution of urban public transport projects.",
+    "responsibilities": [
+      "Support the team in project scheduling and budgeting.",
+      "Conduct site visits and feasibility studies.",
+      "Help with the preparation of engineering reports."
+    ],
+    "perks": [
+      "Contribute to public infrastructure",
+      "Government sector exposure",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.delhimetrorail.com/career",
+    "posted_date": "2025-09-17",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 66,
+    "pmis_id": "PMIS-2025-FIN-066",
+    "title": "Treasury Intern",
+    "role": "Treasury Analyst",
+    "company": "Tata Motors",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Treasury",
+      "Cash Management",
+      "Financial Reporting",
+      "Risk Management"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Automotive"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A finance role focused on the management of a large company's financial assets.",
+    "responsibilities": [
+      "Assist in managing the company's cash and liquidity.",
+      "Support the team in forecasting cash flow.",
+      "Help with bank reconciliations and payments."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-11-12"
+  },
+  {
+    "id": 67,
+    "pmis_id": "PMIS-2025-HOSP-067",
+    "title": "F&B Operations Intern",
+    "role": "F&B Assistant",
+    "company": "Le Méridien",
+    "location": "Delhi",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Food Service",
+      "Hygiene",
+      "Customer Service",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A hands-on role in a luxury hotel's Food & Beverage department, gaining experience in various outlets.",
+    "responsibilities": [
+      "Assist in setting up dining areas.",
+      "Support the service staff during meal times.",
+      "Ensure cleanliness and hygiene standards are maintained."
+    ],
+    "perks": [
+      "Learn from top chefs",
+      "Food and lodging benefits",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://marriott.com/careers",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-07"
+  },
+  {
+    "id": 68,
+    "pmis_id": "PMIS-2025-IT-068",
+    "title": "Full Stack Developer Intern",
+    "role": "Full Stack Developer",
+    "company": "Flipkart",
+    "location": "Bengaluru",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "JavaScript",
+      "Node.js",
+      "React",
+      "SQL"
+    ],
+    "sector_tags": [
+      "IT",
+      "E-commerce"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to both front-end and back-end development for a leading e-commerce platform.",
+    "responsibilities": [
+      "Write clean, scalable, and efficient code.",
+      "Participate in the full software development lifecycle.",
+      "Help with troubleshooting website and application issues."
+    ],
+    "perks": [
+      "Work on a popular e-commerce platform",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.flipkart.com/careers",
+    "posted_date": "2025-09-14",
+    "application_deadline": "2025-11-10"
+  },
+  {
+    "id": 69,
+    "pmis_id": "PMIS-2025-FIN-069",
+    "title": "Financial Planning Intern",
+    "role": "Financial Planner",
+    "company": "ICICI Bank",
+    "location": "Chennai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Planning",
+      "Client Relations",
+      "Investment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A role to learn about personal finance and wealth management from industry experts.",
+    "responsibilities": [
+      "Assist financial planners in creating wealth plans for clients.",
+      "Conduct research on mutual funds and insurance products.",
+      "Help with client meetings and documentation."
+    ],
+    "perks": [
+      "Exposure to personal finance",
+      "Industry networking",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-10-21"
+  },
+  {
+    "id": 70,
+    "pmis_id": "PMIS-2025-MANU-070",
+    "title": "Quality Engineer Intern",
+    "role": "Quality Engineer",
+    "company": "Tata Motors",
+    "location": "Jamshedpur",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Quality Control",
+      "Quality Assurance",
+      "Process Improvement",
+      "Statistical Analysis"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A critical role focused on maintaining high standards of quality in the automotive manufacturing process.",
+    "responsibilities": [
+      "Perform quality checks on raw materials and finished products.",
+      "Document and report any defects or inconsistencies.",
+      "Assist in implementing quality improvement measures."
+    ],
+    "perks": [
+      "Hands-on quality assurance experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-08-29",
+    "application_deadline": "2025-11-13"
+  },
+  {
+    "id": 71,
+    "pmis_id": "PMIS-2025-IT-071",
+    "title": "UX Research Intern",
+    "role": "UX Researcher",
+    "company": "Microsoft",
+    "location": "Hyderabad",
+    "stipend": "₹25,000",
+    "duration": "6 months",
+    "required_skills": [
+      "User Research",
+      "Usability Testing",
+      "Data Analysis",
+      "Communication"
+    ],
+    "sector_tags": [
+      "IT",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "description": "A research-focused role to assist in understanding user behavior and improving product design.",
+    "responsibilities": [
+      "Conduct user interviews and surveys.",
+      "Analyze user feedback and behavioral data.",
+      "Contribute to research findings and presentations."
+    ],
+    "perks": [
+      "Work in a global tech company",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://careers.microsoft.com/us/en/studentprograms",
+    "posted_date": "2025-09-20",
+    "application_deadline": "2025-10-22"
+  },
+  {
+    "id": 72,
+    "pmis_id": "PMIS-2025-CONS-072",
+    "title": "Site Safety Intern",
+    "role": "Safety Officer",
+    "company": "Larsen & Toubro",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Safety Regulations",
+      "Risk Assessment",
+      "First Aid",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A critical role to assist in ensuring the well-being of workers on a construction site.",
+    "responsibilities": [
+      "Conduct daily safety audits and inspections.",
+      "Assist in implementing safety training programs.",
+      "Document and report any safety incidents."
+    ],
+    "perks": [
+      "Contribute to a safe work environment",
+      "Practical experience",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 73,
+    "pmis_id": "PMIS-2025-FIN-073",
+    "title": "Retail Banking Intern",
+    "role": "Banking Assistant",
+    "company": "Axis Bank",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Customer Service",
+      "Sales",
+      "Banking",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A customer-centric role that provides a comprehensive view of retail banking.",
+    "responsibilities": [
+      "Assist customers with banking transactions and inquiries.",
+      "Support the team in selling banking products.",
+      "Help with daily branch operations and documentation."
+    ],
+    "perks": [
+      "Hands-on banking experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.axisbank.com/careers",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-10-25"
+  },
+  {
+    "id": 74,
+    "pmis_id": "PMIS-2025-TEL-074",
+    "title": "Cybersecurity Intern",
+    "role": "Security Analyst",
+    "company": "Tata Communications",
+    "location": "Pune",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cybersecurity",
+      "Network Security",
+      "Threat Analysis",
+      "Firewalls"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "IT"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in monitoring and protecting a global telecommunications network.",
+    "responsibilities": [
+      "Assist in vulnerability assessments and penetration testing.",
+      "Support the team in responding to security incidents.",
+      "Help with the implementation of security protocols."
+    ],
+    "perks": [
+      "Work on critical security projects",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.tatacommunications.com/careers/",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-10-14"
+  },
+  {
+    "id": 75,
+    "pmis_id": "PMIS-2025-HOSP-075",
+    "title": "Culinary Intern",
+    "role": "Kitchen Assistant",
+    "company": "Leela Hotels",
+    "location": "Bengaluru",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Culinary Arts",
+      "Food Preparation",
+      "Hygiene",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A hands-on role in a luxury hotel's kitchen, learning from professional chefs.",
+    "responsibilities": [
+      "Assist in preparing food and managing kitchen inventory.",
+      "Support chefs during busy meal services.",
+      "Ensure all kitchen hygiene standards are maintained."
+    ],
+    "perks": [
+      "Learn from top chefs",
+      "Food and lodging benefits",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.theleela.com/careers",
+    "posted_date": "2025-08-30",
+    "application_deadline": "2025-11-02"
+  },
+  {
+    "id": 76,
+    "pmis_id": "PMIS-2025-FMCG-076",
+    "title": "Quality Assurance Intern",
+    "role": "QA Analyst",
+    "company": "Britannia Industries",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Quality Assurance",
+      "Food Safety",
+      "Auditing",
+      "Lab Procedures"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A crucial role focused on ensuring the safety and quality of food products.",
+    "responsibilities": [
+      "Conduct quality checks on raw materials and finished goods.",
+      "Support the team in ensuring compliance with food safety standards.",
+      "Help with the documentation of quality control processes."
+    ],
+    "perks": [
+      "Hands-on experience in food manufacturing",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://britannia.co.in/careers",
+    "posted_date": "2025-08-30",
+    "application_deadline": "2025-11-05"
+  },
+  {
+    "id": 77,
+    "pmis_id": "PMIS-2025-IT-077",
+    "title": "Data Analyst Intern",
+    "role": "Data Analyst",
+    "company": "Tata Consultancy Services (TCS)",
+    "location": "Kolkata",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Data Analysis",
+      "SQL",
+      "Tableau",
+      "Business Intelligence"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "An analytical role to help the company make smarter, data-backed decisions.",
+    "responsibilities": [
+      "Assist in data collection and cleaning.",
+      "Analyze data to generate insights and reports.",
+      "Contribute to data-driven business decisions."
+    ],
+    "perks": [
+      "Hands-on experience with data analytics",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tcs.com/careers/india",
+    "posted_date": "2025-09-06",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 78,
+    "pmis_id": "PMIS-2025-FIN-078",
+    "title": "Corporate Finance Intern",
+    "role": "Finance Analyst",
+    "company": "Reliance Industries Limited",
+    "location": "Mumbai",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Analysis",
+      "Valuation",
+      "Corporate Finance",
+      "Financial Modeling"
+    ],
+    "sector_tags": [
+      "Energy",
+      "Finance"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A high-impact role with exposure to a variety of corporate finance functions.",
+    "responsibilities": [
+      "Support the corporate finance team in valuation models.",
+      "Assist in preparing financial reports for senior management.",
+      "Conduct market and industry research for potential investments."
+    ],
+    "perks": [
+      "Experience in a top conglomerate",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.ril.com/careers",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-10-10"
+  },
+  {
+    "id": 79,
+    "pmis_id": "PMIS-2025-RETAIL-079",
+    "title": "Digital Merchandising Intern",
+    "role": "Merchandiser",
+    "company": "Amazon India",
+    "location": "Hyderabad",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "E-commerce",
+      "Merchandising",
+      "Data Analysis",
+      "Marketing"
+    ],
+    "sector_tags": [
+      "E-commerce",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A data-driven role to assist in optimizing product visibility and sales on the platform.",
+    "responsibilities": [
+      "Analyze sales data and customer behavior.",
+      "Support the team in product listings and promotions.",
+      "Help in creating online product displays."
+    ],
+    "perks": [
+      "Work in a global tech company",
+      "Creative and analytical role",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.amazon.jobs/en/locations/ind",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-10-08"
+  },
+  {
+    "id": 80,
+    "pmis_id": "PMIS-2025-CON-080",
+    "title": "Construction Management Intern",
+    "role": "Project Assistant",
+    "company": "Tata Projects",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Construction",
+      "Project Management",
+      "Site Supervision",
+      "Planning"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A hands-on role to learn about the end-to-end management of construction projects.",
+    "responsibilities": [
+      "Support project managers in daily operations.",
+      "Monitor project timelines and budgets.",
+      "Assist in coordinating with vendors and subcontractors."
+    ],
+    "perks": [
+      "Practical construction experience",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.tataprojects.com/careers",
+    "posted_date": "2025-09-17",
+    "application_deadline": "2025-11-17"
+  },
+  {
+    "id": 81,
+    "pmis_id": "PMIS-2025-FIN-081",
+    "title": "Equity Research Intern",
+    "role": "Equity Analyst",
+    "company": "Morgan Stanley",
+    "location": "Mumbai",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Equity Research",
+      "Financial Modeling",
+      "Valuation",
+      "Market Analysis"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "description": "A prestigious role for those passionate about stock market research and company analysis.",
+    "responsibilities": [
+      "Conduct in-depth research on various industries.",
+      "Support senior analysts in preparing research reports.",
+      "Build financial models for company valuation."
+    ],
+    "perks": [
+      "Exposure to a global financial firm",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.morganstanley.com/careers/students",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-10-24"
+  },
+  {
+    "id": 82,
+    "pmis_id": "PMIS-2025-TEL-082",
+    "title": "IoT Intern",
+    "role": "IoT Engineer",
+    "company": "Reliance Jio",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "IoT",
+      "Embedded Systems",
+      "Networking",
+      "Programming"
+    ],
+    "sector_tags": [
+      "Telecommunications",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A future-focused role to work with the latest Internet of Things technology.",
+    "responsibilities": [
+      "Assist in the development and testing of IoT devices.",
+      "Support the team in integrating IoT solutions into the network.",
+      "Help with data analysis from connected devices."
+    ],
+    "perks": [
+      "Work with cutting-edge technology",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://careers.jio.com/jobs/",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 83,
+    "pmis_id": "PMIS-2025-HOSP-083",
+    "title": "Housekeeping Intern",
+    "role": "Housekeeping Assistant",
+    "company": "ITC Hotels",
+    "location": "Hyderabad",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Housekeeping",
+      "Hygiene",
+      "Operations",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A foundational role in the hospitality industry, learning about hotel cleanliness and standards.",
+    "responsibilities": [
+      "Assist the housekeeping team in daily cleaning and maintenance.",
+      "Ensure all rooms and public areas meet high standards of hygiene.",
+      "Support the team in managing inventory and supplies."
+    ],
+    "perks": [
+      "Practical experience in hotel operations",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.itchotels.com/careers.html",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-10-27"
+  },
+  {
+    "id": 84,
+    "pmis_id": "PMIS-2025-CONS-084",
+    "title": "Site Engineer Intern",
+    "role": "Site Engineer",
+    "company": "Tata Projects",
+    "location": "Chennai",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Civil Engineering",
+      "Site Supervision",
+      "Project Management",
+      "Construction"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A practical role to learn about site management and civil engineering in a real-world setting.",
+    "responsibilities": [
+      "Support senior site engineers in daily construction activities.",
+      "Monitor the progress of work on-site.",
+      "Ensure compliance with engineering plans and standards."
+    ],
+    "perks": [
+      "Hands-on construction experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tataprojects.com/careers",
+    "posted_date": "2025-08-30",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 85,
+    "pmis_id": "PMIS-2025-FMCG-085",
+    "title": "Marketing Intern",
+    "role": "Marketing Assistant",
+    "company": "P&G",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Digital Marketing",
+      "Branding",
+      "Consumer Insights",
+      "Market Analysis"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Marketing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative and strategic role to assist in building and growing world-renowned brands.",
+    "responsibilities": [
+      "Assist in executing brand marketing campaigns.",
+      "Conduct consumer research and market analysis.",
+      "Contribute to brand strategy discussions."
+    ],
+    "perks": [
+      "Experience in a global company",
+      "Professional networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://us.pg.com/careers/students-and-graduates/",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-10-19"
+  },
+  {
+    "id": 86,
+    "pmis_id": "PMIS-2025-IT-086",
+    "title": "Product Management Intern",
+    "role": "Product Manager",
+    "company": "Swiggy",
+    "location": "Bengaluru",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Product Management",
+      "Market Research",
+      "Strategy",
+      "Data Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "Food & Beverages"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A strategic role to assist in the development of new product features and user experiences.",
+    "responsibilities": [
+      "Conduct market research and competitive analysis.",
+      "Support the team in defining product roadmaps.",
+      "Help with user feedback and data analysis."
+    ],
+    "perks": [
+      "Work on a widely used app",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.swiggy.com/careers/",
+    "posted_date": "2025-08-29",
+    "application_deadline": "2025-10-17"
+  },
+  {
+    "id": 87,
+    "pmis_id": "PMIS-2025-FIN-087",
+    "title": "Compliance Intern",
+    "role": "Compliance Analyst",
+    "company": "Kotak Mahindra Bank",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Compliance",
+      "Regulatory Frameworks",
+      "Auditing",
+      "Risk Analysis"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "An important role focused on ensuring the bank adheres to all legal and regulatory standards.",
+    "responsibilities": [
+      "Assist in monitoring compliance with banking regulations.",
+      "Help conduct internal audits and reviews.",
+      "Support the team in preparing compliance reports."
+    ],
+    "perks": [
+      "Exposure to financial regulations",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.kotak.com/en/about-us/careers.html",
+    "posted_date": "2025-09-09",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 88,
+    "pmis_id": "PMIS-2025-ENG-088",
+    "title": "Mechanical Engineering Intern",
+    "role": "Mechanical Engineer",
+    "company": "Thermax",
+    "location": "Pune",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Mechanical Design",
+      "Thermodynamics",
+      "CAD",
+      "Project Management"
+    ],
+    "sector_tags": [
+      "Engineering",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Assist in the design and development of engineering solutions for energy and environment.",
+    "responsibilities": [
+      "Support senior engineers on various projects.",
+      "Conduct simulations and analysis of mechanical systems.",
+      "Participate in lab and field tests."
+    ],
+    "perks": [
+      "Experience in a top engineering firm",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.thermaxglobal.com/careers/",
+    "posted_date": "2025-08-30",
+    "application_deadline": "2025-10-31"
+  },
+  {
+    "id": 89,
+    "pmis_id": "PMIS-2025-HOSP-089",
+    "title": "Front Office Intern",
+    "role": "Front Office Assistant",
+    "company": "The Lalit",
+    "location": "Jaipur",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Front Office",
+      "Customer Service",
+      "Communication",
+      "Problem-Solving"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A customer-facing role to assist in the daily operations of a hotel's front desk.",
+    "responsibilities": [
+      "Assist guests with check-in and check-out.",
+      "Answer phone calls and manage reservations.",
+      "Provide information about hotel services and local attractions."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Professional networking",
+      "Food and lodging benefits"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.thelalit.com/the-lalit-careers/",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-11-14"
+  },
+  {
+    "id": 90,
+    "pmis_id": "PMIS-2025-RETAIL-090",
+    "title": "E-commerce Operations Intern",
+    "role": "Operations Assistant",
+    "company": "Nykaa",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "E-commerce",
+      "Logistics",
+      "Inventory Management",
+      "Marketing"
+    ],
+    "sector_tags": [
+      "E-commerce",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A dynamic role to support the e-commerce team in managing logistics, inventory, and order fulfillment.",
+    "responsibilities": [
+      "Assist in daily e-commerce operations.",
+      "Monitor inventory levels and product listings.",
+      "Help optimize the supply chain for efficiency."
+    ],
+    "perks": [
+      "Work in a leading beauty e-commerce company",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.nykaa.com/careers",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-22"
+  },
+  {
+    "id": 91,
+    "pmis_id": "PMIS-2025-IT-091",
+    "title": "Business Analyst Intern",
+    "role": "Business Analyst",
+    "company": "Infosys",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Business Analysis",
+      "Requirements Gathering",
+      "Data Analysis",
+      "Communication"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A strategic role to assist in understanding business needs and proposing solutions.",
+    "responsibilities": [
+      "Support business analysts in gathering and documenting requirements.",
+      "Help with process mapping and analysis.",
+      "Assist in preparing reports and presentations for clients."
+    ],
+    "perks": [
+      "Experience in a top consulting firm",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.infosys.com/careers.html",
+    "posted_date": "2025-09-20",
+    "application_deadline": "2025-10-16"
+  },
+  {
+    "id": 92,
+    "pmis_id": "PMIS-2025-FIN-092",
+    "title": "Loan Officer Intern",
+    "role": "Loan Officer",
+    "company": "ICICI Bank",
+    "location": "Jaipur",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Sales",
+      "Customer Service",
+      "Credit Analysis",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A customer-facing role to assist loan officers in processing and managing loan applications.",
+    "responsibilities": [
+      "Support the team in client meetings and documentation.",
+      "Help with preliminary credit analysis.",
+      "Assist in promoting loan products to customers."
+    ],
+    "perks": [
+      "Hands-on banking experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-01"
+  },
+  {
+    "id": 93,
+    "pmis_id": "PMIS-2025-CONS-093",
+    "title": "Road & Highway Engineering Intern",
+    "role": "Civil Engineer",
+    "company": "Larsen & Toubro",
+    "location": "Lucknow",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Civil Engineering",
+      "Highway Design",
+      "Project Management",
+      "Surveying"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A specialized role in civil engineering, contributing to major road infrastructure projects.",
+    "responsibilities": [
+      "Assist in the design and construction of roads and highways.",
+      "Support the team in site surveys and inspections.",
+      "Help with the preparation of engineering plans and reports."
+    ],
+    "perks": [
+      "Hands-on infrastructure experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-07",
+    "application_deadline": "2025-11-17"
+  },
+  {
+    "id": 94,
+    "pmis_id": "PMIS-2025-AUTO-094",
+    "title": "Automotive Design Intern",
+    "role": "Product Designer",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Industrial Design",
+      "CAD",
+      "3D Modeling",
+      "Sketching"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative role to contribute to the design of the next generation of vehicles.",
+    "responsibilities": [
+      "Assist in creating concept sketches and 3D models.",
+      "Support the design team in prototyping.",
+      "Contribute to design discussions and presentations."
+    ],
+    "perks": [
+      "Creative role in a major auto company",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-10-08"
+  },
+  {
+    "id": 95,
+    "pmis_id": "PMIS-2025-HOSP-095",
+    "title": "Hotel Management Intern",
+    "role": "Management Assistant",
+    "company": "Marriott Hotels",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Hotel Management",
+      "Customer Service",
+      "Operations",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A comprehensive role to learn about the various aspects of hotel management.",
+    "responsibilities": [
+      "Rotate through different departments (F&B, Front Office, Housekeeping).",
+      "Assist in daily operations and guest relations.",
+      "Support the management team in various tasks."
+    ],
+    "perks": [
+      "Experience in a global hotel chain",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://marriott.com/careers",
+    "posted_date": "2025-09-15",
+    "application_deadline": "2025-10-18"
+  },
+  {
+    "id": 96,
+    "pmis_id": "PMIS-2025-FIN-096",
+    "title": "Wealth Management Intern",
+    "role": "Financial Planner",
+    "company": "IIFL Wealth",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Planning",
+      "Investment",
+      "Client Relations",
+      "Market Research"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in providing financial and investment advisory services to high-net-worth clients.",
+    "responsibilities": [
+      "Analyze client portfolios and financial goals.",
+      "Conduct research on various investment products.",
+      "Support senior wealth managers in client meetings."
+    ],
+    "perks": [
+      "Exposure to wealth management",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://iiflw.com/careers/",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 97,
+    "pmis_id": "PMIS-2025-EDU-097",
+    "title": "Educational Content Intern",
+    "role": "Content Creator",
+    "company": "Unacademy",
+    "location": "Bengaluru",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Content Creation",
+      "Writing",
+      "Instructional Design",
+      "Subject Matter Expertise"
+    ],
+    "sector_tags": [
+      "Education",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Contribute to the development of engaging and effective educational content for students.",
+    "responsibilities": [
+      "Assist in writing scripts for video lessons.",
+      "Review and edit lesson plans and study materials.",
+      "Participate in curriculum development meetings."
+    ],
+    "perks": [
+      "Impact education",
+      "Creative role",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://unacademy.com/careers/",
+    "posted_date": "2025-08-22",
+    "application_deadline": "2025-11-12"
+  },
+  {
+    "id": 98,
+    "pmis_id": "PMIS-2025-CONS-098",
+    "title": "Urban Planning Intern",
+    "role": "Urban Planner",
+    "company": "Mumbai Metropolitan Region Development Authority (MMRDA)",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Urban Planning",
+      "GIS",
+      "Policy Analysis",
+      "Sustainability"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Government"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the planning and development of urban spaces in the Mumbai Metropolitan Region.",
+    "responsibilities": [
+      "Conduct research on urban development trends.",
+      "Assist in preparing site plans and proposals.",
+      "Support the team in policy analysis."
+    ],
+    "perks": [
+      "Experience in a government agency",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://mmrda.maharashtra.gov.in/career",
+    "posted_date": "2025-09-18",
+    "application_deadline": "2025-10-23"
+  },
+  {
+    "id": 99,
+    "pmis_id": "PMIS-2025-FMCG-099",
+    "title": "Sales & Distribution Intern",
+    "role": "Sales Assistant",
+    "company": "Hindustan Unilever Limited (HUL)",
+    "location": "Lucknow",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Sales",
+      "Logistics",
+      "Distribution",
+      "Communication"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in the sales and distribution network of a leading FMCG company.",
+    "responsibilities": [
+      "Assist in managing the supply chain and distribution network.",
+      "Conduct market visits to gather sales data.",
+      "Support the sales team in achieving targets."
+    ],
+    "perks": [
+      "Experience with top brands",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.unilever.com/careers/",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-11-04"
+  },
+  {
+    "id": 100,
+    "pmis_id": "PMIS-2025-IT-100",
+    "title": "Cloud Security Intern",
+    "role": "Security Analyst",
+    "company": "Infosys",
+    "location": "Pune",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cloud Security",
+      "AWS",
+      "Azure",
+      "Cybersecurity"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role focused on protecting data and applications in the cloud.",
+    "responsibilities": [
+      "Assist in monitoring and securing cloud environments.",
+      "Support the team in vulnerability assessments.",
+      "Help with the implementation of security best practices."
+    ],
+    "perks": [
+      "Work on critical security projects",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.infosys.com/careers.html",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-10-30"
+  },
+  {
+    "id": 101,
+    "pmis_id": "PMIS-2025-CONS-101",
+    "title": "Surveying Intern",
+    "role": "Surveyor",
+    "company": "Larsen & Toubro",
+    "location": "Kochi",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Surveying",
+      "GIS",
+      "Data Collection",
+      "AutoCAD"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A technical role for those interested in the surveying and mapping side of construction.",
+    "responsibilities": [
+      "Assist land surveyors in site measurements and data collection.",
+      "Help with the preparation of topographical maps.",
+      "Ensure accuracy of survey data for construction projects."
+    ],
+    "perks": [
+      "Hands-on surveying experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-20",
+    "application_deadline": "2025-10-27"
+  },
+  {
+    "id": 102,
+    "pmis_id": "PMIS-2025-FIN-102",
+    "title": "Auditing Intern",
+    "role": "Auditor",
+    "company": "KPMG",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Auditing",
+      "Accounting",
+      "Financial Analysis",
+      "Compliance"
+    ],
+    "sector_tags": [
+      "Consulting",
+      "Finance"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A foundational role to start a career in accounting and auditing with a global firm.",
+    "responsibilities": [
+      "Support the audit team in financial data verification.",
+      "Assist in preparing audit reports and documentation.",
+      "Learn about different auditing procedures and standards."
+    ],
+    "perks": [
+      "Experience in a global firm",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://kpmg.com/in/en/home/careers.html",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-11-06"
+  },
+  {
+    "id": 103,
+    "pmis_id": "PMIS-2025-AUTO-103",
+    "title": "Powertrain Engineering Intern",
+    "role": "Mechanical Engineer",
+    "company": "Mahindra & Mahindra",
+    "location": "Chennai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Powertrain",
+      "Engine Design",
+      "Simulation",
+      "Mechanical Design"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Engineering"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A highly technical role in automotive engineering, focused on the heart of the vehicle.",
+    "responsibilities": [
+      "Assist in the design and testing of engine and transmission components.",
+      "Support the team in conducting performance simulations.",
+      "Help with data analysis from test runs."
+    ],
+    "perks": [
+      "Work on critical automotive projects",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.mahindra.com/careers",
+    "posted_date": "2025-08-26",
+    "application_deadline": "2025-10-11"
+  },
+  {
+    "id": 104,
+    "pmis_id": "PMIS-2025-RETAIL-104",
+    "title": "Merchandising Intern",
+    "role": "Merchandiser",
+    "company": "Lifestyle International",
+    "location": "Bengaluru",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Merchandising",
+      "Visual Merchandising",
+      "Inventory Management",
+      "Sales"
+    ],
+    "sector_tags": [
+      "Retail",
+      "Fashion"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A creative and analytical role in the fashion and retail industry.",
+    "responsibilities": [
+      "Assist in planning and executing visual displays in stores.",
+      "Support the team in managing product inventory and stock levels.",
+      "Help in analyzing sales data to optimize product placement."
+    ],
+    "perks": [
+      "Creative and strategic role",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.lifestylestores.com/in/en/careers",
+    "posted_date": "2025-09-06",
+    "application_deadline": "2025-10-26"
+  },
+  {
+    "id": 105,
+    "pmis_id": "PMIS-2025-IT-105",
+    "title": "Technical Support Intern",
+    "role": "IT Support",
+    "company": "Wipro",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Troubleshooting",
+      "Hardware",
+      "Software",
+      "Communication"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A practical role to provide first-level technical support to employees.",
+    "responsibilities": [
+      "Troubleshoot hardware and software issues.",
+      "Assist in setting up new IT equipment.",
+      "Provide support via phone, email, and in-person."
+    ],
+    "perks": [
+      "Learn about corporate IT infrastructure",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://careers.wipro.com/internship",
+    "posted_date": "2025-08-24",
+    "application_deadline": "2025-11-18"
+  },
+  {
+    "id": 106,
+    "pmis_id": "PMIS-2025-FIN-106",
+    "title": "Corporate Banking Intern",
+    "role": "Banking Analyst",
+    "company": "ICICI Bank",
+    "location": "Delhi",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Analysis",
+      "Credit Analysis",
+      "Corporate Finance",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist corporate bankers in client management and financial analysis for large corporations.",
+    "responsibilities": [
+      "Prepare financial reports and credit memos.",
+      "Support the team in client meetings.",
+      "Conduct industry research."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-08-29",
+    "application_deadline": "2025-11-07"
+  },
+  {
+    "id": 107,
+    "pmis_id": "PMIS-2025-ENERGY-107",
+    "title": "Power Plant Operations Intern",
+    "role": "Plant Operator",
+    "company": "NTPC Limited",
+    "location": "Singrauli",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Plant Operations",
+      "Electrical Engineering",
+      "Safety Procedures",
+      "Troubleshooting"
+    ],
+    "sector_tags": [
+      "Energy",
+      "Government"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in a power generation plant, focused on operational excellence.",
+    "responsibilities": [
+      "Assist plant operators in daily operations.",
+      "Monitor power generation and distribution systems.",
+      "Ensure compliance with all safety and environmental regulations."
+    ],
+    "perks": [
+      "Experience in a public sector utility",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.ntpc.co.in/en/careers",
+    "posted_date": "2025-08-25",
+    "application_deadline": "2025-11-03"
+  },
+  {
+    "id": 108,
+    "pmis_id": "PMIS-2025-CONS-108",
+    "title": "Project Management Intern",
+    "role": "Project Assistant",
+    "company": "Godrej Properties",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Project Management",
+      "Planning",
+      "Budgeting",
+      "Construction"
+    ],
+    "sector_tags": [
+      "Real Estate",
+      "Infrastructure"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A role to learn about the end-to-end project management process in the real estate sector.",
+    "responsibilities": [
+      "Support project managers in planning and execution.",
+      "Monitor project timelines and budgets.",
+      "Assist in coordinating with contractors and vendors."
+    ],
+    "perks": [
+      "Hands-on project experience",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.godrejproperties.com/careers/",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-10-08"
+  },
+  {
+    "id": 109,
+    "pmis_id": "PMIS-2025-AUTO-109",
+    "title": "Automotive Logistics Intern",
+    "role": "Logistics Assistant",
+    "company": "Mahindra & Mahindra",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Logistics",
+      "Supply Chain",
+      "Operations",
+      "Inventory Management"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A crucial role in the automotive supply chain, ensuring a smooth flow of products.",
+    "responsibilities": [
+      "Assist in managing the logistics of parts and finished vehicles.",
+      "Support the team in optimizing delivery routes.",
+      "Help with inventory management and tracking."
+    ],
+    "perks": [
+      "Hands-on logistics experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.mahindra.com/careers",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-10-18"
+  },
+  {
+    "id": 110,
+    "pmis_id": "PMIS-2025-HOSP-110",
+    "title": "Hotel Management Trainee",
+    "role": "Management Trainee",
+    "company": "Leela Hotels",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Hotel Management",
+      "Customer Service",
+      "Leadership",
+      "Operations"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A comprehensive training program covering various aspects of luxury hotel management.",
+    "responsibilities": [
+      "Rotate through different departments (F&B, Front Office, Housekeeping).",
+      "Assist in daily operations and team management.",
+      "Learn about revenue management and guest relations."
+    ],
+    "perks": [
+      "Fast-track career path",
+      "Mentorship",
+      "Food and lodging benefits"
+    ],
+    "type": "Trainee",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.theleela.com/careers",
+    "posted_date": "2025-08-24",
+    "application_deadline": "2025-11-11"
+  },
+  {
+    "id": 111,
+    "pmis_id": "PMIS-2025-IT-111",
+    "title": "Data Analyst Intern",
+    "role": "Data Analyst",
+    "company": "Cognizant",
+    "location": "Hyderabad",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Data Analysis",
+      "SQL",
+      "Tableau",
+      "Business Intelligence"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "An analytical role to assist in data collection, cleaning, and reporting for client projects.",
+    "responsibilities": [
+      "Assist in collecting and cleaning data from various sources.",
+      "Create dashboards and reports for business insights.",
+      "Support the team in data-driven decision making."
+    ],
+    "perks": [
+      "Hands-on experience with data analytics",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.cognizant.com/in/en/careers",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-11-10"
+  },
+  {
+    "id": 112,
+    "pmis_id": "PMIS-2025-FIN-112",
+    "title": "Financial Planning Intern",
+    "role": "Financial Planner",
+    "company": "ICICI Bank",
+    "location": "Pune",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Planning",
+      "Client Relations",
+      "Investment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A role to learn about personal finance and wealth management from industry experts.",
+    "responsibilities": [
+      "Assist financial planners in creating wealth plans for clients.",
+      "Conduct research on mutual funds and insurance products.",
+      "Help with client meetings and documentation."
+    ],
+    "perks": [
+      "Exposure to personal finance",
+      "Industry networking",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-16"
+  },
+  {
+    "id": 113,
+    "pmis_id": "PMIS-2025-CONS-113",
+    "title": "Architectural Drafting Intern",
+    "role": "Drafter",
+    "company": "Larsen & Toubro",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "AutoCAD",
+      "Drafting",
+      "Revit",
+      "Blueprint Reading"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A technical role for those interested in the drafting and design side of architecture.",
+    "responsibilities": [
+      "Create and revise architectural drawings and blueprints.",
+      "Assist senior drafters in developing design plans.",
+      "Ensure all drawings comply with industry standards."
+    ],
+    "perks": [
+      "Hands-on drafting experience",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-17",
+    "application_deadline": "2025-11-07"
+  },
+  {
+    "id": 114,
+    "pmis_id": "PMIS-2025-AUTO-114",
+    "title": "Quality Engineer Intern",
+    "role": "Quality Engineer",
+    "company": "Bosch",
+    "location": "Bengaluru",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Quality Engineering",
+      "Process Improvement",
+      "Statistical Analysis",
+      "Lean Manufacturing"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role focused on ensuring the highest quality standards in manufacturing.",
+    "responsibilities": [
+      "Assist in monitoring and improving product quality.",
+      "Support the team in conducting quality audits.",
+      "Help with the analysis of production data to identify defects."
+    ],
+    "perks": [
+      "Work on critical quality assurance projects",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.bosch.in/careers/",
+    "posted_date": "2025-09-13",
+    "application_deadline": "2025-11-09"
+  },
+  {
+    "id": 115,
+    "pmis_id": "PMIS-2025-FIN-115",
+    "title": "Investment Research Intern",
+    "role": "Research Analyst",
+    "company": "Morgan Stanley",
+    "location": "Mumbai",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Investment Research",
+      "Financial Analysis",
+      "Valuation",
+      "Market Analysis"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "description": "A prestigious role in a global financial services firm, focused on investment research.",
+    "responsibilities": [
+      "Conduct research on various industries and companies.",
+      "Support senior analysts in preparing investment reports.",
+      "Help with data collection and financial modeling."
+    ],
+    "perks": [
+      "Exposure to a global financial firm",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.morganstanley.com/careers/students",
+    "posted_date": "2025-09-15",
+    "application_deadline": "2025-10-06"
+  },
+  {
+    "id": 116,
+    "pmis_id": "PMIS-2025-IT-116",
+    "title": "Data Science Intern",
+    "role": "Data Scientist",
+    "company": "Amazon",
+    "location": "Bengaluru",
+    "stipend": "₹25,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Data Science",
+      "Python",
+      "Machine Learning",
+      "Statistical Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "E-commerce"
+    ],
+    "preferred_education_levels": [
+      "Postgraduate"
+    ],
+    "description": "An analytical role to assist in building data models and providing insights for business growth.",
+    "responsibilities": [
+      "Collect and analyze large datasets.",
+      "Build and test machine learning models.",
+      "Contribute to data-driven business decisions."
+    ],
+    "perks": [
+      "Work in a global tech company",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.amazon.jobs/en/locations/ind",
+    "posted_date": "2025-08-31",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 117,
+    "pmis_id": "PMIS-2025-HOSP-117",
+    "title": "Food & Beverage Intern",
+    "role": "F&B Assistant",
+    "company": "Hyatt Hotels",
+    "location": "Mumbai",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Food Service",
+      "Hygiene",
+      "Customer Service",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A hands-on role in a luxury hotel's Food & Beverage department, gaining experience in various outlets.",
+    "responsibilities": [
+      "Assist in setting up dining areas.",
+      "Support the service staff during meal times.",
+      "Ensure cleanliness and hygiene standards are maintained."
+    ],
+    "perks": [
+      "Learn from top chefs",
+      "Food and lodging benefits",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://careers.hyatt.com/",
+    "posted_date": "2025-08-26",
+    "application_deadline": "2025-11-01"
+  },
+  {
+    "id": 118,
+    "pmis_id": "PMIS-2025-FMCG-118",
+    "title": "Product Development Intern",
+    "role": "Product Developer",
+    "company": "ITC Limited",
+    "location": "Kolkata",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Product Development",
+      "Market Research",
+      "Consumer Insights",
+      "R&D"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative and technical role to assist in the development of new consumer products.",
+    "responsibilities": [
+      "Assist in lab experiments for new product formulations.",
+      "Support the team in conducting consumer research.",
+      "Contribute to product design and branding discussions."
+    ],
+    "perks": [
+      "Hands-on experience in product innovation",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.itcportal.com/careers/index.html",
+    "posted_date": "2025-09-03",
+    "application_deadline": "2025-11-16"
+  },
+  {
+    "id": 119,
+    "pmis_id": "PMIS-2025-CONS-119",
+    "title": "Urban Planning Intern",
+    "role": "Urban Planner",
+    "company": "Kolkata Metropolitan Development Authority (KMDA)",
+    "location": "Kolkata",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Urban Planning",
+      "GIS",
+      "Policy Analysis",
+      "Sustainability"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Government"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Contribute to the planning and development of urban spaces in the Kolkata Metropolitan Area.",
+    "responsibilities": [
+      "Conduct research on urban development trends.",
+      "Assist in preparing site plans and proposals.",
+      "Support the team in policy analysis."
+    ],
+    "perks": [
+      "Experience in a government agency",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.kmda.wb.gov.in/careers",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-10-27"
+  },
+  {
+    "id": 120,
+    "pmis_id": "PMIS-2025-IT-120",
+    "title": "Android Developer Intern",
+    "role": "Mobile Developer",
+    "company": "Myntra",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Android Development",
+      "Java",
+      "Kotlin",
+      "UI/UX"
+    ],
+    "sector_tags": [
+      "IT",
+      "E-commerce"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Contribute to the development and maintenance of a popular fashion e-commerce app.",
+    "responsibilities": [
+      "Assist in developing new features for the Android app.",
+      "Debug and troubleshoot application issues.",
+      "Participate in the mobile development lifecycle."
+    ],
+    "perks": [
+      "Work on a widely used app",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://careers.myntra.com/",
+    "posted_date": "2025-09-06",
+    "application_deadline": "2025-11-09"
+  },
+  {
+    "id": 121,
+    "pmis_id": "PMIS-2025-FIN-121",
+    "title": "Corporate Banking Intern",
+    "role": "Banking Analyst",
+    "company": "Axis Bank",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Analysis",
+      "Credit Analysis",
+      "Corporate Finance",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist corporate bankers in client management and financial analysis for large corporations.",
+    "responsibilities": [
+      "Prepare financial reports and credit memos.",
+      "Support the team in client meetings.",
+      "Conduct industry research."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.axisbank.com/careers",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-10-19"
+  },
+  {
+    "id": 122,
+    "pmis_id": "PMIS-2025-MANU-122",
+    "title": "Production Engineering Intern",
+    "role": "Production Engineer",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Production Engineering",
+      "Process Improvement",
+      "Quality Control",
+      "Lean Manufacturing"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A hands-on role in a manufacturing plant, focused on improving production processes.",
+    "responsibilities": [
+      "Support production supervisors in daily operations.",
+      "Analyze manufacturing processes for efficiency improvements.",
+      "Help with the implementation of new production techniques."
+    ],
+    "perks": [
+      "Hands-on manufacturing experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-08-31",
+    "application_deadline": "2025-10-15"
+  },
+  {
+    "id": 123,
+    "pmis_id": "PMIS-2025-IT-123",
+    "title": "Software Tester Intern",
+    "role": "Software Tester",
+    "company": "Infosys",
+    "location": "Hyderabad",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Manual Testing",
+      "Automation Testing",
+      "Jira",
+      "SQL"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A quality-focused role to assist in testing software applications and reporting bugs.",
+    "responsibilities": [
+      "Execute test cases and report bugs.",
+      "Assist in creating test plans and strategies.",
+      "Participate in the software development lifecycle."
+    ],
+    "perks": [
+      "Learn about quality assurance",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.infosys.com/careers.html",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-11-14"
+  },
+  {
+    "id": 124,
+    "pmis_id": "PMIS-2025-FIN-124",
+    "title": "Mortgage Intern",
+    "role": "Loan Officer",
+    "company": "HDFC Bank",
+    "location": "Chennai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Mortgage Lending",
+      "Credit Analysis",
+      "Customer Service",
+      "Sales"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A specialized role in banking, focused on home loan products and services.",
+    "responsibilities": [
+      "Assist loan officers in processing mortgage applications.",
+      "Help customers with their mortgage-related inquiries.",
+      "Support the team in preparing loan documentation."
+    ],
+    "perks": [
+      "Experience in a top private bank",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.hdfcbank.com/aboutus/careers",
+    "posted_date": "2025-09-17",
+    "application_deadline": "2025-10-09"
+  },
+  {
+    "id": 125,
+    "pmis_id": "PMIS-2025-HOSP-125",
+    "title": "Guest Relations Intern",
+    "role": "Guest Relations Officer",
+    "company": "Hyatt Hotels",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Customer Service",
+      "Communication",
+      "Problem-Solving",
+      "Front Office"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A customer-centric role to ensure a high level of guest satisfaction.",
+    "responsibilities": [
+      "Assist in managing guest inquiries and requests.",
+      "Support the front office team during busy periods.",
+      "Help with guest feedback and complaint resolution."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Professional networking",
+      "Food and lodging benefits"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://careers.hyatt.com/",
+    "posted_date": "2025-08-28",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 126,
+    "pmis_id": "PMIS-2025-FMCG-126",
+    "title": "Supply Chain Intern",
+    "role": "Logistics Assistant",
+    "company": "Britannia Industries",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Supply Chain",
+      "Logistics",
+      "Inventory Management",
+      "Operations"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "A hands-on role in the supply chain of a leading food manufacturing company.",
+    "responsibilities": [
+      "Assist in managing the flow of raw materials and finished goods.",
+      "Support the team in optimizing logistics routes.",
+      "Help with inventory management and tracking."
+    ],
+    "perks": [
+      "Experience in food manufacturing",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://britannia.co.in/careers",
+    "posted_date": "2025-09-11",
+    "application_deadline": "2025-10-19"
+  },
+  {
+    "id": 127,
+    "pmis_id": "PMIS-2025-CONS-127",
+    "title": "Structural Engineering Intern",
+    "role": "Structural Engineer",
+    "company": "Larsen & Toubro",
+    "location": "Ahmedabad",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Structural Engineering",
+      "Finite Element Analysis",
+      "CAD",
+      "Design"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A challenging technical role focused on the structural integrity of buildings and infrastructure.",
+    "responsibilities": [
+      "Assist in the design and analysis of building structures.",
+      "Support the team in creating structural models and simulations.",
+      "Help with the preparation of engineering reports."
+    ],
+    "perks": [
+      "Hands-on engineering experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-16",
+    "application_deadline": "2025-10-29"
+  },
+  {
+    "id": 128,
+    "pmis_id": "PMIS-2025-IT-128",
+    "title": "Cloud Operations Intern",
+    "role": "Cloud Engineer",
+    "company": "Amazon Web Services (AWS)",
+    "location": "Hyderabad",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cloud Computing",
+      "AWS",
+      "Networking",
+      "Troubleshooting"
+    ],
+    "sector_tags": [
+      "IT",
+      "Technology"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in monitoring and maintaining cloud infrastructure.",
+    "responsibilities": [
+      "Support the team in daily cloud operations.",
+      "Help with troubleshooting cloud-related issues.",
+      "Learn about various AWS services and their applications."
+    ],
+    "perks": [
+      "Work on cutting-edge cloud tech",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.amazon.jobs/en/locations/ind",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-17"
+  },
+  {
+    "id": 129,
+    "pmis_id": "PMIS-2025-FIN-129",
+    "title": "Credit Analyst Intern",
+    "role": "Credit Analyst",
+    "company": "Standard Chartered Bank",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Credit Analysis",
+      "Financial Analysis",
+      "Risk Assessment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A specialized role in banking, focused on managing and mitigating credit risk.",
+    "responsibilities": [
+      "Assist credit analysts in assessing the creditworthiness of clients.",
+      "Support the team in preparing credit reports and financial models.",
+      "Help with data collection and due diligence."
+    ],
+    "perks": [
+      "Exposure to global banking",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.sc.com/en/careers/",
+    "posted_date": "2025-09-12",
+    "application_deadline": "2025-10-30"
+  },
+  {
+    "id": 130,
+    "pmis_id": "PMIS-2025-MANU-130",
+    "title": "Industrial Designer Intern",
+    "role": "Industrial Designer",
+    "company": "Asian Paints",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Industrial Design",
+      "CAD",
+      "Product Design",
+      "Creative"
+    ],
+    "sector_tags": [
+      "Manufacturing",
+      "Design"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative role in the manufacturing sector, focused on product design and visual branding.",
+    "responsibilities": [
+      "Assist in the design of new product packaging and aesthetics.",
+      "Contribute to color research and trend analysis.",
+      "Create digital mockups and prototypes."
+    ],
+    "perks": [
+      "Creative role in a leading brand",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.asianpaints.com/more/careers.html",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-10-20"
+  },
+  {
+    "id": 131,
+    "pmis_id": "PMIS-2025-HOSP-131",
+    "title": "Tourism Intern",
+    "role": "Tourism Assistant",
+    "company": "Cox & Kings",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Tourism",
+      "Tour Planning",
+      "Customer Service",
+      "Logistics"
+    ],
+    "sector_tags": [
+      "Travel",
+      "Hospitality"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A role that offers a glimpse into the tourism industry and tour management.",
+    "responsibilities": [
+      "Assist in planning and organizing tour packages for clients.",
+      "Support the team in managing bookings and reservations.",
+      "Help with customer inquiries and feedback."
+    ],
+    "perks": [
+      "Experience in the travel industry",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.coxandkings.com/careers/",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-18"
+  },
+  {
+    "id": 132,
+    "pmis_id": "PMIS-2025-IT-132",
+    "title": "UI/UX Design Intern",
+    "role": "UI/UX Designer",
+    "company": "Accenture",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "UI/UX Design",
+      "Figma",
+      "Adobe XD",
+      "Prototyping"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A creative role to assist in designing user-friendly and aesthetically pleasing digital interfaces.",
+    "responsibilities": [
+      "Assist in creating wireframes and mockups for new applications.",
+      "Participate in user research and usability testing.",
+      "Contribute to the design system and visual branding."
+    ],
+    "perks": [
+      "Creative and strategic role",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.accenture.com/in-en/careers",
+    "posted_date": "2025-08-29",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 133,
+    "pmis_id": "PMIS-2025-FIN-133",
+    "title": "Compliance Intern",
+    "role": "Compliance Analyst",
+    "company": "HSBC",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Compliance",
+      "Regulatory Frameworks",
+      "Auditing",
+      "Risk Analysis"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "An important role focused on ensuring the bank adheres to all legal and regulatory standards.",
+    "responsibilities": [
+      "Assist in monitoring compliance with banking regulations.",
+      "Help conduct internal audits and reviews.",
+      "Support the team in preparing compliance reports."
+    ],
+    "perks": [
+      "Exposure to global banking",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.hsbc.co.in/careers/",
+    "posted_date": "2025-08-29",
+    "application_deadline": "2025-11-10"
+  },
+  {
+    "id": 134,
+    "pmis_id": "PMIS-2025-CONS-134",
+    "title": "Urban Infrastructure Intern",
+    "role": "Infrastructure Planner",
+    "company": "Bangalore Metro Rail Corporation Limited (BMRCL)",
+    "location": "Bengaluru",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Civil Engineering",
+      "Urban Planning",
+      "Public Transport",
+      "Project Management"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Government"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate"
+    ],
+    "description": "Assist in the planning and execution of urban public transport projects.",
+    "responsibilities": [
+      "Support the team in project scheduling and budgeting.",
+      "Conduct site visits and feasibility studies.",
+      "Help with the preparation of engineering reports."
+    ],
+    "perks": [
+      "Contribute to public infrastructure",
+      "Government sector exposure",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://english.bmrc.co.in/careers/",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-10-14"
+  },
+  {
+    "id": 135,
+    "pmis_id": "PMIS-2025-IT-135",
+    "title": "Business Analyst Intern",
+    "role": "Business Analyst",
+    "company": "Tata Consultancy Services (TCS)",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Business Analysis",
+      "Requirements Gathering",
+      "Data Analysis",
+      "Communication"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A strategic role to assist in understanding business needs and proposing solutions.",
+    "responsibilities": [
+      "Support business analysts in gathering and documenting requirements.",
+      "Help with process mapping and analysis.",
+      "Assist in preparing reports and presentations for clients."
+    ],
+    "perks": [
+      "Experience in a top consulting firm",
+      "Professional development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tcs.com/careers/india",
+    "posted_date": "2025-09-03",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 136,
+    "pmis_id": "PMIS-2025-FMCG-136",
+    "title": "Marketing Intern",
+    "role": "Marketing Assistant",
+    "company": "Nestlé",
+    "location": "Gurugram",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Digital Marketing",
+      "Market Research",
+      "Social Media",
+      "Communication"
+    ],
+    "sector_tags": [
+      "FMCG",
+      "Retail"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Support the brand management team in developing and executing marketing campaigns.",
+    "responsibilities": [
+      "Assist in market research and consumer surveys.",
+      "Manage social media accounts and content calendars.",
+      "Contribute to marketing strategy discussions."
+    ],
+    "perks": [
+      "Experience with top brands",
+      "Professional networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.nestle.in/jobs",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-11-06"
+  },
+  {
+    "id": 137,
+    "pmis_id": "PMIS-2025-AUTO-137",
+    "title": "Automotive Engineering Intern",
+    "role": "Mechanical Engineer",
+    "company": "Mahindra & Mahindra",
+    "location": "Pune",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Mechanical Design",
+      "AutoCAD",
+      "Thermodynamics",
+      "Quality Control"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Work with the engineering team on vehicle design, testing, and production.",
+    "responsibilities": [
+      "Assist in the design and testing of vehicle components.",
+      "Support the team in the assembly line.",
+      "Ensure quality standards are maintained."
+    ],
+    "perks": [
+      "Hands-on experience in auto manufacturing",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.mahindra.com/careers",
+    "posted_date": "2025-09-15",
+    "application_deadline": "2025-11-09"
+  },
+  {
+    "id": 138,
+    "pmis_id": "PMIS-2025-FIN-138",
+    "title": "Credit Analyst Intern",
+    "role": "Credit Analyst",
+    "company": "HDFC Bank",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Credit Analysis",
+      "Financial Analysis",
+      "Risk Assessment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in the analysis of credit applications and risk assessment for loan products.",
+    "responsibilities": [
+      "Conduct financial statement analysis.",
+      "Support the team in preparing credit reports.",
+      "Help with data collection and due diligence."
+    ],
+    "perks": [
+      "Learn about risk management",
+      "Professional development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.hdfcbank.com/aboutus/careers",
+    "posted_date": "2025-09-11",
+    "application_deadline": "2025-11-18"
+  },
+  {
+    "id": 139,
+    "pmis_id": "PMIS-2025-IT-139",
+    "title": "Product Management Intern",
+    "role": "Product Manager",
+    "company": "Flipkart",
+    "location": "Bengaluru",
+    "stipend": "₹22,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Product Management",
+      "Market Research",
+      "Strategy",
+      "Data Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "E-commerce"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A strategic role to assist in the development of new product features and user experiences.",
+    "responsibilities": [
+      "Conduct market research and competitive analysis.",
+      "Support the team in defining product roadmaps.",
+      "Help with user feedback and data analysis."
+    ],
+    "perks": [
+      "Work on a popular e-commerce platform",
+      "Skill development",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.flipkart.com/careers",
+    "posted_date": "2025-09-01",
+    "application_deadline": "2025-10-17"
+  },
+  {
+    "id": 140,
+    "pmis_id": "PMIS-2025-CONS-140",
+    "title": "Structural Engineering Intern",
+    "role": "Structural Engineer",
+    "company": "Larsen & Toubro",
+    "location": "Kochi",
+    "stipend": "₹12,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Structural Engineering",
+      "Finite Element Analysis",
+      "CAD",
+      "Design"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A challenging technical role focused on the structural integrity of buildings and infrastructure.",
+    "responsibilities": [
+      "Assist in the design and analysis of building structures.",
+      "Support the team in creating structural models and simulations.",
+      "Help with the preparation of engineering reports."
+    ],
+    "perks": [
+      "Hands-on engineering experience",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 5,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-13",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 141,
+    "pmis_id": "PMIS-2025-HOSP-141",
+    "title": "Guest Relations Intern",
+    "role": "Guest Relations Officer",
+    "company": "ITC Hotels",
+    "location": "Mumbai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Customer Service",
+      "Communication",
+      "Problem-Solving",
+      "Front Office"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A customer-centric role to ensure a high level of guest satisfaction.",
+    "responsibilities": [
+      "Assist in managing guest inquiries and requests.",
+      "Support the front office team during busy periods.",
+      "Help with guest feedback and complaint resolution."
+    ],
+    "perks": [
+      "Experience in luxury hospitality",
+      "Professional networking",
+      "Food and lodging benefits"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.itchotels.com/careers.html",
+    "posted_date": "2025-09-15",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 142,
+    "pmis_id": "PMIS-2025-IT-142",
+    "title": "Cybersecurity Intern",
+    "role": "Security Analyst",
+    "company": "Wipro",
+    "location": "Bengaluru",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Cybersecurity",
+      "Network Security",
+      "Ethical Hacking",
+      "Threat Analysis"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A technical role to assist in monitoring and protecting company networks and systems.",
+    "responsibilities": [
+      "Monitor security systems and analyze potential threats.",
+      "Support the team in vulnerability assessments.",
+      "Help with the implementation of security protocols."
+    ],
+    "perks": [
+      "Work on critical security projects",
+      "Skill development",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://careers.wipro.com/internship",
+    "posted_date": "2025-09-08",
+    "application_deadline": "2025-10-26"
+  },
+  {
+    "id": 143,
+    "pmis_id": "PMIS-2025-FIN-143",
+    "title": "Financial Planning Intern",
+    "role": "Financial Planner",
+    "company": "ICICI Bank",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Planning",
+      "Client Relations",
+      "Investment",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "A role to learn about personal finance and wealth management from industry experts.",
+    "responsibilities": [
+      "Assist financial planners in creating wealth plans for clients.",
+      "Conduct research on mutual funds and insurance products.",
+      "Help with client meetings and documentation."
+    ],
+    "perks": [
+      "Exposure to personal finance",
+      "Industry networking",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.icicibank.com/careers",
+    "posted_date": "2025-09-14",
+    "application_deadline": "2025-10-13"
+  },
+  {
+    "id": 144,
+    "pmis_id": "PMIS-2025-AUTO-144",
+    "title": "Automotive Engineering Intern",
+    "role": "Mechanical Engineer",
+    "company": "Maruti Suzuki India",
+    "location": "Gurugram",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Mechanical Design",
+      "AutoCAD",
+      "Thermodynamics",
+      "Quality Control"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Work with the engineering team on vehicle design, testing, and production.",
+    "responsibilities": [
+      "Assist in the design and testing of vehicle components.",
+      "Support the team in the assembly line.",
+      "Ensure quality standards are maintained."
+    ],
+    "perks": [
+      "Hands-on experience in auto manufacturing",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.marutisuzuki.com/corporate/careers",
+    "posted_date": "2025-09-05",
+    "application_deadline": "2025-10-10"
+  },
+  {
+    "id": 145,
+    "pmis_id": "PMIS-2025-IT-145",
+    "title": "Data Analyst Intern",
+    "role": "Data Analyst",
+    "company": "Tata Consultancy Services (TCS)",
+    "location": "Mumbai",
+    "stipend": "₹15,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Data Analysis",
+      "SQL",
+      "Tableau",
+      "Business Intelligence"
+    ],
+    "sector_tags": [
+      "IT",
+      "Consulting"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "An analytical role to help the company make smarter, data-backed decisions.",
+    "responsibilities": [
+      "Assist in data collection and cleaning.",
+      "Analyze data to generate insights and reports.",
+      "Contribute to data-driven business decisions."
+    ],
+    "perks": [
+      "Hands-on experience with data analytics",
+      "Mentorship",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://www.tcs.com/careers/india",
+    "posted_date": "2025-08-23",
+    "application_deadline": "2025-10-07"
+  },
+  {
+    "id": 146,
+    "pmis_id": "PMIS-2025-CONS-146",
+    "title": "Site Safety Intern",
+    "role": "Safety Officer",
+    "company": "Larsen & Toubro",
+    "location": "Chennai",
+    "stipend": "₹10,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Safety Regulations",
+      "Risk Assessment",
+      "First Aid",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Infrastructure",
+      "Construction"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "A critical role to assist in ensuring the well-being of workers on a construction site.",
+    "responsibilities": [
+      "Conduct daily safety audits and inspections.",
+      "Assist in implementing safety training programs.",
+      "Document and report any safety incidents."
+    ],
+    "perks": [
+      "Contribute to a safe work environment",
+      "Practical experience",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.larsentoubro.com/corporate/careers/",
+    "posted_date": "2025-09-07",
+    "application_deadline": "2025-10-10"
+  },
+  {
+    "id": 147,
+    "pmis_id": "PMIS-2025-FIN-147",
+    "title": "Corporate Banking Intern",
+    "role": "Banking Analyst",
+    "company": "Standard Chartered Bank",
+    "location": "Mumbai",
+    "stipend": "₹18,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Analysis",
+      "Credit Analysis",
+      "Corporate Finance",
+      "Communication"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist corporate bankers in client management and financial analysis for large corporations.",
+    "responsibilities": [
+      "Prepare financial reports and credit memos.",
+      "Support the team in client meetings.",
+      "Conduct industry research."
+    ],
+    "perks": [
+      "Exposure to global banking",
+      "Industry networking",
+      "Mentorship"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 7,
+    "apply_link": "https://www.sc.com/en/careers/",
+    "posted_date": "2025-08-27",
+    "application_deadline": "2025-10-25"
+  },
+  {
+    "id": 148,
+    "pmis_id": "PMIS-2025-HOSP-148",
+    "title": "Culinary Intern",
+    "role": "Kitchen Assistant",
+    "company": "Le Méridien",
+    "location": "Delhi",
+    "stipend": "₹8,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Culinary Arts",
+      "Food Preparation",
+      "Hygiene",
+      "Teamwork"
+    ],
+    "sector_tags": [
+      "Hospitality",
+      "Travel"
+    ],
+    "preferred_education_levels": [
+      "Diploma"
+    ],
+    "description": "A hands-on role in a luxury hotel's kitchen, learning from professional chefs.",
+    "responsibilities": [
+      "Assist in preparing food and managing kitchen inventory.",
+      "Support chefs during busy meal services.",
+      "Ensure cleanliness and hygiene standards are maintained."
+    ],
+    "perks": [
+      "Learn from top chefs",
+      "Food and lodging benefits",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 10,
+    "apply_link": "https://marriott.com/careers",
+    "posted_date": "2025-09-19",
+    "application_deadline": "2025-10-12"
+  },
+  {
+    "id": 149,
+    "pmis_id": "PMIS-2025-AUTO-149",
+    "title": "Manufacturing Intern",
+    "role": "Production Assistant",
+    "company": "Tata Motors",
+    "location": "Pune",
+    "stipend": "₹10,000",
+    "duration": "12 months",
+    "required_skills": [
+      "Manufacturing",
+      "Quality Control",
+      "Lean Manufacturing",
+      "Robotics"
+    ],
+    "sector_tags": [
+      "Automotive",
+      "Manufacturing"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Diploma"
+    ],
+    "description": "Work with the production team on the assembly line and process improvement projects.",
+    "responsibilities": [
+      "Support production supervisors in daily operations.",
+      "Perform quality checks on automotive parts.",
+      "Contribute to process optimization initiatives."
+    ],
+    "perks": [
+      "Hands-on experience in auto manufacturing",
+      "Career pathway",
+      "Stipend"
+    ],
+    "type": "Contract",
+    "work_mode": "Onsite",
+    "openings": 15,
+    "apply_link": "https://www.tatamotors.com/careers/",
+    "posted_date": "2025-09-04",
+    "application_deadline": "2025-11-03"
+  },
+  {
+    "id": 150,
+    "pmis_id": "PMIS-2025-FIN-150",
+    "title": "Financial Analyst Intern",
+    "role": "Financial Analyst",
+    "company": "Axis Bank",
+    "location": "Mumbai",
+    "stipend": "₹12,000",
+    "duration": "6 months",
+    "required_skills": [
+      "Financial Modeling",
+      "Data Analysis",
+      "MS Excel",
+      "Accounting"
+    ],
+    "sector_tags": [
+      "Finance",
+      "Banking"
+    ],
+    "preferred_education_levels": [
+      "Undergraduate",
+      "Postgraduate"
+    ],
+    "description": "Assist in financial analysis, reporting, and market research.",
+    "responsibilities": [
+      "Prepare financial reports and presentations.",
+      "Conduct market research and industry analysis.",
+      "Support the team in due diligence processes."
+    ],
+    "perks": [
+      "Exposure to corporate finance",
+      "Industry networking",
+      "Certificate"
+    ],
+    "type": "Internship",
+    "work_mode": "Onsite",
+    "openings": 8,
+    "apply_link": "https://www.axisbank.com/careers",
+    "posted_date": "2025-09-10",
+    "application_deadline": "2025-10-18"
+  }
+]

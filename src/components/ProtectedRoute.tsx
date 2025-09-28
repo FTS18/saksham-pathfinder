@@ -4,10 +4,11 @@ import { Loader2 } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requiredUserType?: 'student' | 'recruiter';
 }
 
-export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { currentUser, loading } = useAuth();
+export const ProtectedRoute = ({ children, requiredUserType }: ProtectedRouteProps) => {
+  const { currentUser, userType, loading } = useAuth();
 
   if (loading) {
     return (
@@ -22,6 +23,12 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Check user type if specified
+  if (requiredUserType && userType !== requiredUserType) {
+    const redirectPath = userType === 'recruiter' ? '/recruiter/dashboard' : '/dashboard';
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <>{children}</>;

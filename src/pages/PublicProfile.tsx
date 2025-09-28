@@ -42,16 +42,27 @@ const PublicProfile = () => {
     }
   }, [username]);
 
-  const loadPublicProfile = async (username: string) => {
+  const loadPublicProfile = async (identifier: string) => {
     setLoading(true);
     setNotFound(false);
     
     try {
-      // Query profiles collection by username
-      const q = query(collection(db, 'profiles'), where('username', '==', username));
-      const querySnapshot = await getDocs(q);
+      // First try by username
+      let q = query(collection(db, 'profiles'), where('username', '==', identifier));
+      let querySnapshot = await getDocs(q);
       
+      // If not found by username, try by user ID
       if (querySnapshot.empty) {
+        try {
+          const docRef = doc(db, 'profiles', identifier);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as PublicUserProfile);
+            return;
+          }
+        } catch (error) {
+          console.log('Not found by ID either');
+        }
         setNotFound(true);
         return;
       }

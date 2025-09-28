@@ -26,7 +26,7 @@ export const Navbar = () => {
   const [hasAnimated, setHasAnimated] = useState(false);
   const { theme, language, setLanguage, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
-  const { currentUser, logout } = useAuth();
+  const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
   const t = translations.en;
   
@@ -162,29 +162,16 @@ export const Navbar = () => {
                    onClick={() => {
                      const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
                      if (combo) {
-                       combo.value = 'en';
+                       const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+                       const newLang = currentLang === 'en' ? 'hi' : 'en';
+                       combo.value = newLang;
                        combo.dispatchEvent(new Event('change'));
-                       localStorage.setItem('selectedLanguage', 'en');
+                       localStorage.setItem('selectedLanguage', newLang);
                      }
                    }}
-                   className="h-8 px-2 text-xs"
+                   className="h-8 px-3 text-xs"
                  >
-                   ENG
-                 </Button>
-                 <Button
-                   variant="ghost"
-                   size="sm"
-                   onClick={() => {
-                     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-                     if (combo) {
-                       combo.value = 'hi';
-                       combo.dispatchEvent(new Event('change'));
-                       localStorage.setItem('selectedLanguage', 'hi');
-                     }
-                   }}
-                   className="h-8 px-2 text-xs"
-                 >
-                   हिंदी
+                   {localStorage.getItem('selectedLanguage') === 'hi' ? 'ENG' : 'हिंदी'}
                  </Button>
                  <div className="hidden">
                    <GoogleTranslate />
@@ -268,7 +255,7 @@ export const Navbar = () => {
               </div>
               
               {currentUser && (
-                <Link to="/profile" onClick={() => setIsOpen(false)} className="flex items-center justify-between pb-6 border-b border-border hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors">
+                <Link to={userType === 'recruiter' ? '/recruiter/dashboard' : '/profile'} onClick={() => setIsOpen(false)} className="flex items-center justify-between pb-6 border-b border-border hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                       {currentUser.photoURL ? (
@@ -279,6 +266,7 @@ export const Navbar = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">{currentUser.displayName || currentUser.email?.split('@')[0] || 'User'}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{userType || 'Student'}</p>
                     </div>
                   </div>
                   <Button
@@ -363,36 +351,23 @@ export const Navbar = () => {
               </div>
               
               <div className="space-y-4 pt-4 border-t border-border">
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => {
                       const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
                       if (combo) {
-                        combo.value = 'en';
+                        const currentLang = localStorage.getItem('selectedLanguage') || 'en';
+                        const newLang = currentLang === 'en' ? 'hi' : 'en';
+                        combo.value = newLang;
                         combo.dispatchEvent(new Event('change'));
-                        localStorage.setItem('selectedLanguage', 'en');
+                        localStorage.setItem('selectedLanguage', newLang);
                       }
                     }}
-                    className="flex-1 text-xs h-8"
+                    className="w-full text-xs h-8"
                   >
-                    ENG
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-                      if (combo) {
-                        combo.value = 'hi';
-                        combo.dispatchEvent(new Event('change'));
-                        localStorage.setItem('selectedLanguage', 'hi');
-                      }
-                    }}
-                    className="flex-1 text-xs h-8"
-                  >
-                    हिंदी
+                    {localStorage.getItem('selectedLanguage') === 'hi' ? 'Switch to English' : 'हिंदी में बदलें'}
                   </Button>
                 </div>
                 <div className="hidden">

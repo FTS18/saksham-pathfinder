@@ -41,7 +41,7 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
 
   return (
     <>
-    <section className="relative min-h-screen flex items-end justify-center overflow-hidden pb-20 bg-background">
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-background">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background" />
       
       <div className="absolute inset-0">
@@ -50,11 +50,9 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
         <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-primary/25 rounded-full animate-float blur-xl" style={{ animationDelay: '4s' }} />
       </div>
       
-
-
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-6xl mx-auto">
-          <div className="flex justify-center mb-8 mt-12 lg:mt-24">
+          <div className="flex justify-center mb-6">
             <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 shadow-lg hover:bg-green-500/20 transition-all duration-300 hover:scale-105">
               <Sparkles className="w-3 h-3 text-green-500 mr-2 animate-pulse" />
               <span className="text-xs font-medium text-green-500">
@@ -67,8 +65,8 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
             Find the Right <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Internship</span> for You with AI
           </h1>
 
-          <p className="text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
-            {t.subtext}
+          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
+            Empowering students to discover meaningful career opportunities with intelligent recommendations tailored to your skills and aspirations.
           </p>
 
           <div className="mb-8 sm:mb-8 px-4">
@@ -81,12 +79,8 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
               <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
             </Button>
           </div>
-
-
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
     </section>
 
 

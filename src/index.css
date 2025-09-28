@@ -22,6 +22,8 @@
 
 @layer base {
   :root {
+    --sidebar-width: 60px;
+    --chatbot-width: 0px;
     --background: 0 0% 98%;
     --foreground: 0 0% 3%;
     
@@ -110,6 +112,7 @@
 
 .blue {
   --primary: 217 91% 60%;
+  --accent: 217 91% 60%;
   --ring: 217 91% 60%;
   --sidebar-primary: 217 91% 60%;
   --sidebar-ring: 217 91% 60%;
@@ -117,6 +120,7 @@
 
 .grey {
   --primary: 0 0% 45%;
+  --accent: 0 0% 45%;
   --ring: 0 0% 45%;
   --sidebar-primary: 0 0% 45%;
   --sidebar-ring: 0 0% 45%;
@@ -124,6 +128,7 @@
 
 .red {
   --primary: 0 72% 51%;
+  --accent: 0 72% 51%;
   --ring: 0 72% 51%;
   --sidebar-primary: 0 72% 51%;
   --sidebar-ring: 0 72% 51%;
@@ -131,6 +136,7 @@
 
 .yellow {
   --primary: 45 93% 47%;
+  --accent: 45 93% 47%;
   --ring: 45 93% 47%;
   --sidebar-primary: 45 93% 47%;
   --sidebar-ring: 45 93% 47%;
@@ -138,6 +144,7 @@
 
 .green {
   --primary: 142 76% 36%;
+  --accent: 142 76% 36%;
   --ring: 142 76% 36%;
   --sidebar-primary: 142 76% 36%;
   --sidebar-ring: 142 76% 36%;
@@ -526,3 +533,48 @@ body {
 .skiptranslate {
   display: none !important;
 }
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Fixed size buttons for accessibility sidebar */
+.fixed-size-button {
+  width: 3rem !important;
+  height: 3rem !important;
+  min-width: 3rem !important;
+  min-height: 3rem !important;
+  max-width: 3rem !important;
+  max-height: 3rem !important;
+}
+
+/* Fixed size buttons for accessibility sidebar */
