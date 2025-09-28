@@ -64,7 +64,7 @@ export const ComparisonModal = ({ isOpen, onClose, userProfile }: ComparisonModa
     
     setLoading(true);
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       
       const internshipsWithScores = selectedInternships.map(internship => ({
         ...internship,

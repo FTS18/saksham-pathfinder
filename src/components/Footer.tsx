@@ -6,7 +6,7 @@ export const Footer = () => {
   const { currentUser } = useAuth();
   
   return (
-    <footer className="bg-background border-t border-border">
+    <footer className="bg-background border-t border-border md:ml-[var(--sidebar-width,60px)] md:mr-[60px] transition-all duration-300 mt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:divide-x md:divide-border">
           
@@ -47,7 +47,7 @@ export const Footer = () => {
                 type="email"
                 name="email"
                 placeholder="Your email"
-                value={currentUser?.email || ''}
+                defaultValue={currentUser?.email || ''}
                 readOnly={!!currentUser?.email}
                 required
                 className={`w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 ${currentUser?.email ? 'cursor-not-allowed opacity-75' : ''}`}

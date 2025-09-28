@@ -101,8 +101,9 @@ export const Chatbot = () => {
           <TooltipTrigger asChild>
             <Button
               onClick={toggleChatbot}
-              className={`fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()}`}
+              className={`fixed bottom-6 right-6 md:hidden h-14 w-14 rounded-full shadow-lg z-50 bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()}`}
               size="icon"
+              data-chatbot-trigger
             >
               <MessageCircle className="h-6 w-6" />
             </Button>

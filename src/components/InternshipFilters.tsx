@@ -7,6 +7,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Search, Filter, SortAsc, X, ChevronDown } from 'lucide-react';
+import { SearchSuggestions } from './SearchSuggestions';
+import { SmartFilterService } from '@/services/smartFilterService';
 
 interface FilterState {
   search: string;
@@ -15,6 +17,7 @@ interface FilterState {
   workMode: string;
   education: string;
   minStipend: string;
+  minAiScore?: string;
   sortBy: string;
   selectedSectors?: string[];
   selectedSkills?: string[];
@@ -64,10 +67,33 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
       workMode: 'all',
       education: 'all',
       minStipend: userProfile?.minStipend ? userProfile.minStipend.toString() : 'all',
+      minAiScore: 'all',
       sortBy: 'ai-recommended',
       selectedSectors: [],
       selectedSkills: []
     });
+  };
+
+  const applySmartFilters = (preset?: 'high-paying' | 'remote-friendly' | 'skill-focused' | 'location-flexible') => {
+    if (!userProfile) return;
+    
+    let smartFilters: FilterState;
+    
+    if (preset) {
+      // Apply preset filters
+      const presetFilters = SmartFilterService.getPresetFilters(preset);
+      smartFilters = { ...filters, ...presetFilters };
+    } else {
+      // Generate smart filters based on user profile
+      smartFilters = SmartFilterService.generateSmartFilters(userProfile, {
+        prioritizeHighStipend: true,
+        includeRemoteWork: true,
+        strictSkillMatching: false,
+        locationRadius: 'nearby'
+      });
+    }
+    
+    onFiltersChange(smartFilters);
   };
 
   const activeFiltersCount = [
@@ -76,8 +102,16 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
     ...(filters.selectedSkills || []),
     filters.workMode !== 'all' ? filters.workMode : null,
     filters.education !== 'all' ? filters.education : null,
-    filters.minStipend !== 'all' ? filters.minStipend : null
+    filters.minStipend !== 'all' ? filters.minStipend : null,
+    filters.minAiScore !== 'all' ? filters.minAiScore : null
   ].filter(Boolean).length;
+
+  // Check if smart filters are active
+  const hasSmartFilters = userProfile && (
+    (filters.selectedSectors && filters.selectedSectors.length > 0) ||
+    (filters.selectedSkills && filters.selectedSkills.length > 0) ||
+    (filters.minStipend !== 'all' && parseInt(filters.minStipend) >= 10000)
+  );
 
   // Get all available skills from internships data
   const [allSkills, setAllSkills] = useState<string[]>([]);
@@ -141,14 +175,14 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
     <Card className="mb-6">
       <CardContent className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Search */}
-          <div className="relative lg:col-span-2">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Search internships"
+          {/* Search with Suggestions */}
+          <div className="lg:col-span-2">
+            <SearchSuggestions
               value={filters.search}
-              onChange={(e) => updateFilter('search', e.target.value)}
-              className="pl-10 border-2 rounded-lg h-11 transition-colors focus:border-ring"
+              onChange={(value) => updateFilter('search', value)}
+              suggestions={[...sectors, ...allSkills, 'Remote', 'Hybrid', 'Full-time', 'Part-time']}
+              placeholder="Search internships, skills, companies..."
+              className="w-full"
             />
           </div>
 
@@ -160,7 +194,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               onChange={(e) => updateFilter('sortBy', e.target.value)}
               className="w-full h-11 pl-10 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
             >
-              <option value="ai-recommended">AI Recommended</option>
+              <option value="ai-recommended">AI Score (High to Low)</option>
               <option value="recent">Most Recent</option>
               <option value="stipend-high">Highest Stipend</option>
               <option value="stipend-low">Lowest Stipend</option>
@@ -170,8 +204,65 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
             <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
 
-          {/* Clear Filters */}
+          {/* Smart Filters & Clear */}
           <div className="flex gap-2">
+            {userProfile && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button 
+                    className={`flex items-center gap-2 transition-all ${
+                      hasSmartFilters 
+                        ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-lg' 
+                        : 'bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70'
+                    }`}
+                    size="sm"
+                  >
+                    <Filter className="w-4 h-4" />
+                    {hasSmartFilters ? 'Smart Active' : 'Smart Filter'}
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-2" align="start">
+                  <div className="space-y-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-left hover:bg-primary/10"
+                      onClick={() => applySmartFilters()}
+                    >
+                      <div className="flex flex-col items-start">
+                        <span>🎯 My Profile Match</span>
+                        <span className="text-xs text-muted-foreground">Based on your skills & interests</span>
+                      </div>
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-left"
+                      onClick={() => applySmartFilters('high-paying')}
+                    >
+                      💰 High-Paying (₹15k+)
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-left"
+                      onClick={() => applySmartFilters('remote-friendly')}
+                    >
+                      🏠 Remote Work
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start text-left"
+                      onClick={() => applySmartFilters('skill-focused')}
+                    >
+                      🛠️ Skill-Based
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
             <Button 
               variant="outline" 
               onClick={clearFilters}
@@ -185,7 +276,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 mt-3">
           {/* Multi-Select Sectors */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Popover>
@@ -351,6 +442,23 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
             <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
 
+          {/* AI Score Filter */}
+          <div className="relative">
+            <select
+              value={filters.minAiScore || 'all'}
+              onChange={(e) => updateFilter('minAiScore', e.target.value)}
+              className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+            >
+              <option value="all">Any AI Score</option>
+              <option value="90">90+ (Excellent)</option>
+              <option value="85">85+ (AI Recommended)</option>
+              <option value="80">80+ (Very Good)</option>
+              <option value="75">75+ (Good Match)</option>
+              <option value="70">70+ (Fair Match)</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          </div>
+
           {/* Filter Toggle for Mobile */}
           <Button 
             variant="outline" 
@@ -362,45 +470,63 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </Button>
         </div>
 
-        {/* Mobile Filters Expansion */}
-        {showMobileFilters && (
-          <div className="sm:hidden mt-4 p-4 border-t border-border">
-            <div className="space-y-3">
-              {/* Selected Filters Display */}
-              {(filters.selectedSectors?.length || 0) > 0 && (
-                <div>
-                  <p className="text-sm font-medium mb-2">Selected Sectors:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {filters.selectedSectors?.map(sector => (
-                      <Badge key={sector} variant="default" className="text-xs">
-                        {sector}
-                        <X 
-                          className="w-3 h-3 ml-1 cursor-pointer" 
-                          onClick={() => handleMultiSelectToggle('selectedSectors', sector)}
-                        />
-                      </Badge>
-                    ))}
-                  </div>
+        {/* Smart Filter Status & Mobile Filters */}
+        {(hasSmartFilters || showMobileFilters) && (
+          <div className="mt-4 p-4 border-t border-border">
+            {/* Smart Filter Status */}
+            {hasSmartFilters && (
+              <div className="mb-4 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                    🎯 Smart Filters Active
+                  </p>
                 </div>
-              )}
-              
-              {(filters.selectedSkills?.length || 0) > 0 && (
-                <div>
-                  <p className="text-sm font-medium mb-2">Selected Skills:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {filters.selectedSkills?.map(skill => (
-                      <Badge key={skill} variant="default" className="text-xs">
-                        {skill}
-                        <X 
-                          className="w-3 h-3 ml-1 cursor-pointer" 
-                          onClick={() => handleMultiSelectToggle('selectedSkills', skill)}
-                        />
-                      </Badge>
-                    ))}
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  Showing personalized matches based on your profile preferences
+                </p>
+              </div>
+            )}
+            
+            {/* Mobile Filters Expansion */}
+            {showMobileFilters && (
+              <div className="sm:hidden space-y-3">
+                {/* Selected Filters Display */}
+                {(filters.selectedSectors?.length || 0) > 0 && (
+                  <div>
+                    <p className="text-sm font-medium mb-2">Selected Sectors:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {filters.selectedSectors?.map(sector => (
+                        <Badge key={sector} variant="default" className="text-xs">
+                          {sector}
+                          <X 
+                            className="w-3 h-3 ml-1 cursor-pointer" 
+                            onClick={() => handleMultiSelectToggle('selectedSectors', sector)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+                
+                {(filters.selectedSkills?.length || 0) > 0 && (
+                  <div>
+                    <p className="text-sm font-medium mb-2">Selected Skills:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {filters.selectedSkills?.map(skill => (
+                        <Badge key={skill} variant="default" className="text-xs">
+                          {skill}
+                          <X 
+                            className="w-3 h-3 ml-1 cursor-pointer" 
+                            onClick={() => handleMultiSelectToggle('selectedSkills', skill)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </CardContent>

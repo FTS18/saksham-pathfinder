@@ -16,7 +16,7 @@ export interface ChatMessage {
 }
 
 export class GeminiService {
-  private model = genAI?.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  private model = genAI?.getGenerativeModel({ model: 'gemini-pro' });
 
   private getSystemPrompt(language?: string): string {
     const basePrompt = `You are Saksham AI, an intelligent career assistant for the Saksham Pathfinder platform. 

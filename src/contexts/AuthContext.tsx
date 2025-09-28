@@ -16,9 +16,11 @@ import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   currentUser: User | null;
+  userType: 'student' | 'recruiter' | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  register: (email: string, password: string, name: string, userType?: 'student' | 'recruiter') => Promise<void>;
+  loginWithGoogle: (userType?: 'student' | 'recruiter') => Promise<void>;
+  loginAsRecruiter: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
   needsOnboarding: boolean;
@@ -41,15 +43,44 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userType, setUserType] = useState<'student' | 'recruiter' | null>(null);
   const [loading, setLoading] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [needsEmailVerification, setNeedsEmailVerification] = useState(false);
 
   const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    
+    // Check if user exists in students collection
+    try {
+      const docRef = doc(db, 'profiles', result.user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        // Check if they're a recruiter trying to login as student
+        const recruiterRef = doc(db, 'recruiters', result.user.uid);
+        const recruiterSnap = await getDoc(recruiterRef);
+        
+        if (recruiterSnap.exists()) {
+          await signOut(auth);
+          throw new Error('Recruiter account detected. Please use the Recruiter login tab.');
+        }
+        
+        // New user, will be handled by onboarding
+        setUserType('student');
+      } else {
+        setUserType('student');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Recruiter account detected')) {
+        throw error;
+      }
+      // Continue with normal flow for other errors
+      setUserType('student');
+    }
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string, name: string, userType: 'student' | 'recruiter' = 'student') => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(user, { displayName: name });
     
@@ -59,11 +90,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Generate unique user ID and create initial profile
     const uniqueUserId = generateUniqueUserId();
     try {
-      const docRef = doc(db, 'profiles', user.uid);
+      const collection = userType === 'recruiter' ? 'recruiters' : 'profiles';
+      const docRef = doc(db, collection, user.uid);
       await setDoc(docRef, {
         uniqueUserId,
         email: user.email,
         displayName: name,
+        userType,
         createdAt: new Date().toISOString(),
         onboardingCompleted: false,
         emailVerified: false
@@ -72,15 +105,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error('Error creating initial profile:', error);
     }
     
+    setUserType(userType);
     setNeedsEmailVerification(true);
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (userType: 'student' | 'recruiter' = 'student') => {
     const result = await signInWithPopup(auth, googleProvider);
     
     // Check if user exists, if not create profile with unique ID
     try {
-      const docRef = doc(db, 'profiles', result.user.uid);
+      const collection = userType === 'recruiter' ? 'recruiters' : 'profiles';
+      const docRef = doc(db, collection, result.user.uid);
       const docSnap = await getDoc(docRef);
       
       if (!docSnap.exists()) {
@@ -91,27 +126,52 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           email: result.user.email,
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
+          userType,
           createdAt: new Date().toISOString(),
           onboardingCompleted: false,
           emailVerified: true // Google accounts are pre-verified
         }, { merge: true });
         
+        setUserType(userType);
         // Force onboarding for new Google users
         setNeedsOnboarding(true);
         return;
+      } else {
+        setUserType(docSnap.data()?.userType || 'student');
       }
     } catch (error) {
       console.error('Error creating Google user profile:', error);
     }
     
-    await checkOnboardingStatus(result.user);
+    await checkOnboardingStatus(result.user, userType);
+  };
+
+  const loginAsRecruiter = async (email: string, password: string) => {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    
+    // Check if user exists in recruiters collection
+    try {
+      const docRef = doc(db, 'recruiters', result.user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (!docSnap.exists()) {
+        // User is not a recruiter, show message and logout
+        await signOut(auth);
+        throw new Error('Account not found in recruiter database. Please register as a recruiter first or login as a student.');
+      }
+      
+      setUserType('recruiter');
+    } catch (error) {
+      await signOut(auth);
+      throw error;
+    }
   };
 
   const logout = async () => {
     await signOut(auth);
   };
 
-  const checkOnboardingStatus = async (user: User) => {
+  const checkOnboardingStatus = async (user: User, type?: 'student' | 'recruiter') => {
     try {
       // Check localStorage first for immediate response
       const localOnboarding = localStorage.getItem('onboardingCompleted');
@@ -120,16 +180,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      const docRef = doc(db, 'profiles', user.uid);
-      const docSnap = await getDoc(docRef);
-      const data = docSnap.data();
-      const completed = data?.onboardingCompleted || false;
+      // Try both collections to determine user type
+      let docRef = doc(db, 'profiles', user.uid);
+      let docSnap = await getDoc(docRef);
+      let currentUserType: 'student' | 'recruiter' = 'student';
       
-      setNeedsOnboarding(!completed);
+      if (!docSnap.exists()) {
+        docRef = doc(db, 'recruiters', user.uid);
+        docSnap = await getDoc(docRef);
+        currentUserType = 'recruiter';
+      }
       
-      // Update localStorage to match Firebase
-      if (completed) {
-        localStorage.setItem('onboardingCompleted', 'true');
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        currentUserType = data?.userType || currentUserType;
+        const completed = data?.onboardingCompleted || false;
+        
+        setUserType(currentUserType);
+        setNeedsOnboarding(!completed);
+        
+        // Update localStorage to match Firebase
+        if (completed) {
+          localStorage.setItem('onboardingCompleted', 'true');
+        }
+      } else {
+        setUserType(type || 'student');
+        setNeedsOnboarding(true);
       }
     } catch (error) {
       console.error('Error checking onboarding status:', error);
@@ -152,6 +228,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         setNeedsOnboarding(false);
         setNeedsEmailVerification(false);
+        setUserType(null);
       }
       setLoading(false);
     });
@@ -177,9 +254,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const value = {
     currentUser,
+    userType,
     login,
     register,
     loginWithGoogle,
+    loginAsRecruiter,
     logout,
     loading,
     needsOnboarding,

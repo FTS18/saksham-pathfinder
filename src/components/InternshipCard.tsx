@@ -58,9 +58,10 @@ interface InternshipCardProps {
   currentIndex?: number;
   totalCount?: number;
   matchScore?: number;
+  aiScore?: number;
 }
 
-export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore }: InternshipCardProps) => {
+export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore, aiScore }: InternshipCardProps) => {
   const {
     id,
     pmis_id,
@@ -242,15 +243,11 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
       } ${getCompanyTheme(company)}`}
     >
       {aiTags && aiTags.includes('AI Recommended') && (
-        <div className="absolute -top-2 left-2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full z-10 shadow-md">
-          🤖 AI Recommended
+        <div className="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg transform -rotate-3">
+          Recommended
         </div>
       )}
-      {matchScore && matchScore >= 65 && (
-        <div className="absolute top-0 right-12 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-bl-lg z-10">
-          {matchScore}% Match
-        </div>
-      )}
+
 
       <CardContent className="p-6 md:p-7 sm:p-6 flex flex-col h-full">
         <div className="flex items-start justify-between mb-2">
@@ -269,11 +266,21 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
               </h3>
               <p className="text-muted-foreground text-xs flex items-center mb-1">
                 <Building2 className="w-3 h-3 mr-1" />
-                <span className="notranslate">{company}</span>
+                <a 
+                  href={`/company/${encodeURIComponent(company.toLowerCase())}`}
+                  className="notranslate hover:text-primary hover:underline cursor-pointer transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {company}
+                </a>
               </p>
-              <p className="text-xs text-primary font-medium notranslate">
+              <a 
+                href={`/title/${encodeURIComponent(role.toLowerCase())}`}
+                className="text-xs text-primary font-medium notranslate hover:underline cursor-pointer transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {role}
-              </p>
+              </a>
               {pmis_id && (
                 <p className="text-xs text-muted-foreground font-mono mt-1">
                   ID: {pmis_id}
@@ -294,7 +301,13 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         <div className="flex items-center justify-between text-sm mb-2">
           <div className="flex items-center text-muted-foreground">
             <MapPin className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
-            <span className="text-xs">{locationText}</span>
+            <a 
+              href={`/city/${encodeURIComponent(locationText.toLowerCase())}`}
+              className="text-xs hover:text-primary hover:underline cursor-pointer transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {locationText}
+            </a>
           </div>
           <div className="flex items-center text-muted-foreground">
             <IndianRupee className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
@@ -309,7 +322,6 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
         {required_skills && required_skills.length > 0 && (
           <div className="text-sm mb-2">
-            <span className="font-medium text-muted-foreground mb-1 block text-xs">Skills:</span>
             <div className="flex flex-wrap gap-1">
               {(() => {
                 const normalizeSkill = (skill: string) => {
@@ -344,17 +356,19 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                     {skillsToShow.map((skill, index) => {
                       const isMatched = matchedSkills.includes(skill);
                       return (
-                        <span 
-                          key={index} 
-                          className={`px-1.5 py-0.5 rounded text-xs notranslate ${
+                        <a 
+                          key={index}
+                          href={`/skill/${encodeURIComponent(skill.toLowerCase())}`}
+                          className={`px-1.5 py-0.5 rounded text-xs notranslate hover:opacity-80 cursor-pointer transition-all ${
                             isMatched 
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
                               : 'bg-secondary/50'
                           }`}
+                          onClick={(e) => e.stopPropagation()}
                         >
                           {skill}
                           {isMatched && <span className="ml-1">✓</span>}
-                        </span>
+                        </a>
                       );
                     })}
                     {remainingCount > 0 && (
@@ -385,15 +399,33 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             </Button>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="h-8 w-10 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium rounded flex items-center justify-center cursor-default transition-colors">
-                  {matchScore || (userProfile ? 
-                    Math.max(65, Math.min(95, 75 + createStableHash(id + (userProfile.email || 'user')) % 21)) :
-                    Math.max(60, Math.min(85, 70 + createStableHash(id) % 16))
+                <div className={`h-8 w-10 text-xs font-bold rounded flex items-center justify-center cursor-default transition-all duration-200 ${
+                  (aiScore || matchScore || 0) >= 90 
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg' 
+                    : (aiScore || matchScore || 0) >= 80 
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
+                    : (aiScore || matchScore || 0) >= 70
+                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-md'
+                    : (aiScore || matchScore || 0) >= 60
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm'
+                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
+                }`}>
+                  {aiScore || matchScore || (userProfile ? 
+                    Math.max(45, Math.min(89, 65 + createStableHash(id + (userProfile.email || 'user')) % 25)) :
+                    Math.max(40, Math.min(85, 60 + createStableHash(id) % 26))
                   )}
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                AI Match Score: Based on your skills, location, and preferences
+                <div className="text-center">
+                  <div className="font-semibold">AI Match Score</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {(aiScore || matchScore || 0) >= 90 ? '🔥 Excellent Match' :
+                     (aiScore || matchScore || 0) >= 80 ? '⭐ Great Match' :
+                     (aiScore || matchScore || 0) >= 70 ? '👍 Good Match' :
+                     (aiScore || matchScore || 0) >= 60 ? '👌 Fair Match' : '📝 Basic Match'}
+                  </div>
+                </div>
               </TooltipContent>
             </Tooltip>
             <Button 

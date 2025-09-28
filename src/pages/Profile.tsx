@@ -20,6 +20,9 @@ import { PhoneInput } from '@/components/PhoneInput';
 import { CurrencyInput } from '@/components/CurrencyInput';
 import { EducationSelector } from '@/components/EducationSelector';
 import { ShareProfileBanner } from '@/components/ShareProfileBanner';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { DeleteAccountButton } from '@/components/DeleteAccountButton';
+import { ResumeUploader } from '@/components/ResumeUploader';
 
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
@@ -502,6 +505,7 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl pt-16 md:pt-20">
+      <Breadcrumbs />
       <div className="space-y-6">
         {/* Sticky Header */}
         <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b">
@@ -960,21 +964,38 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Resume Upload */}
+        {/* Resume Upload & Scanning */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload className="w-5 h-5" />
-              Resume
+              Resume & Profile Import
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label>Resume URL</Label>
+          <CardContent className="space-y-6">
+            <ResumeUploader 
+              onDataExtracted={(data) => {
+                setProfile(prev => ({
+                  ...prev,
+                  username: prev.username || data.name?.toLowerCase().replace(/[^a-z0-9]/g, '') || prev.username,
+                  email: prev.email || data.email || prev.email,
+                  phone: prev.phone || data.phone || prev.phone,
+                  skills: [...new Set([...prev.skills, ...data.skills])],
+                  socialLinks: {
+                    ...prev.socialLinks,
+                    linkedin: prev.socialLinks.linkedin || data.linkedin || prev.socialLinks.linkedin,
+                    github: prev.socialLinks.github || data.github || prev.socialLinks.github
+                  }
+                }));
+              }}
+            />
+            
+            <div className="border-t pt-4">
+              <Label>Manual Resume URL</Label>
               <Input
                 value={profile.resumeURL}
                 onChange={(e) => setProfile(prev => ({ ...prev, resumeURL: e.target.value }))}
-                placeholder="Enter URL"
+                placeholder="Or paste resume URL here"
                 className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
               />
               <p className="text-sm text-muted-foreground mt-1">
@@ -1200,33 +1221,12 @@ const Profile = () => {
           <CardContent>
             <div className="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-950/20">
               <div className="flex items-start gap-3">
-                <Trash2 className="w-5 h-5 text-red-500 mt-0.5" />
                 <div className="flex-1">
                   <h4 className="font-medium text-red-800 dark:text-red-200">Delete Account</h4>
-                  <p className="text-sm text-red-700 dark:text-red-300 mt-1">
-                    This will permanently delete your account, profile, and all associated data.
+                  <p className="text-sm text-red-700 dark:text-red-300 mt-1 mb-4">
+                    This will permanently delete your account, profile, and all associated data from our database.
                   </p>
-                  {currentUser?.providerData[0]?.providerId === 'password' && (
-                    <div className="mt-3 mb-3">
-                      <Label className="text-red-800 dark:text-red-200">Enter your password to confirm</Label>
-                      <Input
-                        type="password"
-                        value={passwordData.currentPassword}
-                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                        placeholder="Password"
-                        className="mt-1 border-2 rounded-lg h-11 transition-colors focus:border-ring"
-                      />
-                    </div>
-                  )}
-                  <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    className="mt-3 rounded-full"
-                    onClick={deleteAccount}
-                    disabled={deleting || (currentUser?.providerData[0]?.providerId === 'password' && !passwordData.currentPassword)}
-                  >
-                    {deleting ? 'Deleting...' : 'Delete My Account'}
-                  </Button>
+                  <DeleteAccountButton />
                 </div>
               </div>
             </div>

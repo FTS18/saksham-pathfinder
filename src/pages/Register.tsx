@@ -1,15 +1,17 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Mail, Lock, User, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Loader2, Users, Briefcase, Building } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 
 const Register = () => {
+  const [searchParams] = useSearchParams();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,9 +19,19 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userType, setUserType] = useState<'student' | 'recruiter'>('student');
+  const [company, setCompany] = useState('');
+  const [position, setPosition] = useState('');
   const { register, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const type = searchParams.get('type');
+    if (type === 'recruiter') {
+      setUserType('recruiter');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,12 +65,12 @@ const Register = () => {
 
     setLoading(true);
     try {
-      await register(email, password, name);
+      await register(email, password, name, userType);
       toast({
         title: "Success",
         description: "Account created successfully!"
       });
-      navigate('/dashboard');
+      navigate(userType === 'recruiter' ? '/recruiter/onboarding' : '/dashboard');
     } catch (error: any) {
       toast({
         title: "Registration Failed",
@@ -73,12 +85,12 @@ const Register = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      await loginWithGoogle();
+      await loginWithGoogle(userType);
       toast({
         title: "Success",
         description: "Signed up with Google successfully!"
       });
-      navigate('/dashboard');
+      navigate(userType === 'recruiter' ? '/recruiter/dashboard' : '/dashboard');
     } catch (error: any) {
       toast({
         title: "Google Sign-up Failed",
@@ -104,7 +116,33 @@ const Register = () => {
           <p className="text-muted-foreground">Join Team HexaCoders platform</p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <Tabs value={userType} onValueChange={(value) => setUserType(value as 'student' | 'recruiter')} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="student" className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                Student
+              </TabsTrigger>
+              <TabsTrigger value="recruiter" className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4" />
+                Recruiter
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="student" className="space-y-4 mt-6">
+              <RegisterForm />
+            </TabsContent>
+            <TabsContent value="recruiter" className="space-y-4 mt-6">
+              <RegisterForm />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  function RegisterForm() {
+    return (
+      <>
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -187,9 +225,44 @@ const Register = () => {
               </div>
             </div>
 
+            {userType === 'recruiter' && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company Name</Label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="company"
+                      type="text"
+                      placeholder="Enter your company name"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="position">Position</Label>
+                  <div className="relative">
+                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="position"
+                      type="text"
+                      placeholder="e.g., HR Manager, Talent Acquisition"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              Create Account
+              Create {userType === 'recruiter' ? 'Recruiter' : 'Student'} Account
             </Button>
           </form>
 
@@ -215,14 +288,13 @@ const Register = () => {
 
           <div className="text-center text-sm">
             <span className="text-muted-foreground">Already have an account? </span>
-            <Link to="/login" className="text-primary hover:underline">
+            <Link to={`/login?type=${userType}`} className="text-primary hover:underline">
               Sign in
             </Link>
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+        </>
+    );
+  }
 };
 
 export default Register;

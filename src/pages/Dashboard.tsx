@@ -9,6 +9,7 @@ import { User, Target, FileText, BarChart3, TrendingUp, Filter, Edit3, Save, X, 
 import { useWishlist } from '../contexts/WishlistContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { AdvancedFilters } from '../components/AdvancedFilters';
@@ -20,6 +21,8 @@ import { VirtualizedList } from '../components/VirtualizedList';
 import { debounce } from '../utils/debounce';
 import { useToast } from '../hooks/use-toast';
 import { Settings } from '../components/Settings';
+
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 const translations = {
   en: {
@@ -232,9 +235,17 @@ const recommendInternships = (profile: any, allInternships: any[]) => {
 export default function Dashboard() {
   const { language } = useTheme();
   const { wishlist, removeFromWishlist } = useWishlist();
-  const { currentUser } = useAuth();
+  const { currentUser, userType } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const t = translations[language];
+
+  // Redirect recruiters to their dashboard
+  useEffect(() => {
+    if (userType === 'recruiter') {
+      navigate('/recruiter/dashboard');
+    }
+  }, [userType, navigate]);
   const [activeSection, setActiveSection] = useState('wishlist');
   const [selectedQuickAction, setSelectedQuickAction] = useState('');
 
@@ -1157,95 +1168,12 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen hero-gradient pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          
-          {/* Sidebar - Hidden on mobile */}
-          <div className="lg:col-span-1 hidden lg:block">
-            <Card className="glass-card sticky top-24">
-              <CardHeader>
-                <CardTitle className="text-lg font-racing">
-                  {t.dashboard}
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {t.welcome}, {dashboardProfile?.username?.split(' ')[0] || currentUser?.displayName?.split(' ')[0] || 'User'}
-                </p>
-                {dashboardProfile?.points && (
-                  <div className="flex items-center gap-2 mt-2 p-2 bg-primary/10 rounded-lg">
-                    <span className="text-lg">⭐</span>
-                    <div>
-                      <p className="text-sm font-semibold text-primary">{dashboardProfile.points} Points</p>
-                      <p className="text-xs text-muted-foreground">Earned rewards</p>
-                    </div>
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {sidebarItems.map((item) => (
-                  <Tooltip key={item.id}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant={activeSection === item.id ? "default" : "ghost"}
-                        className="w-full justify-start text-sm py-2 mb-2"
-                        onClick={() => setActiveSection(item.id)}
-                      >
-                        <item.icon className="w-4 h-4 mr-2" />
-                        {item.label}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                      {item.tooltip}
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-          
-          {/* Mobile Dashboard Navigation */}
-          <div className="lg:hidden mb-6 col-span-full">
-            <Card className="glass-card">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h2 className="font-racing font-bold text-lg">{t.dashboard}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {t.welcome}, {dashboardProfile?.username?.split(' ')[0] || currentUser?.displayName?.split(' ')[0] || 'User'}
-                    </p>
-                  </div>
-                  {dashboardProfile?.points && (
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-primary">{dashboardProfile.points} Points</p>
-                      <p className="text-xs text-muted-foreground">⭐ Rewards</p>
-                    </div>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {sidebarItems.slice(0, 6).map((item) => (
-                    <Button
-                      key={item.id}
-                      variant={activeSection === item.id ? "default" : "outline"}
-                      className="h-12 text-xs flex flex-col gap-1"
-                      onClick={() => setActiveSection(item.id)}
-                    >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {renderContent()}
-          </div>
+    <div className="min-h-screen hero-gradient">
+      {/* Main Content */}
+      <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <Breadcrumbs />
+          {renderContent()}
         </div>
-      </div>
-
-
     </div>
   );
 }

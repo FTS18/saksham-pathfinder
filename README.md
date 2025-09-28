@@ -175,7 +175,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Team HexaCoders** - Development team
+- **Team HexaForces** - Development team
 - **Google Gemini AI** - AI processing capabilities
 - **Firebase** - Backend infrastructure
 - **Shadcn/ui** - Component library
@@ -183,6 +183,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ by Team HexaCoders**
+**Made with ❤️ by Team HexaForces**
 
 *Empowering students to find their perfect internship match through AI-driven recommendations.*

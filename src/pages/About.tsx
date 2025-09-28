@@ -1,6 +1,69 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Target, Lightbulb, Users, User, Brain, Briefcase, Heart, CheckCircle, Code, BarChart3, MessageSquare, Filter, Globe, Shield, Zap, Check, X } from 'lucide-react';
+import { Target, Lightbulb, Users, User, Brain, Briefcase, Heart, CheckCircle, Code, BarChart3, MessageSquare, Filter, Globe, Shield, Zap, Check, X, Play } from 'lucide-react';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+
+interface TOCItemProps {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+}
+
+const TOCItem = ({ href, icon: Icon, children }: TOCItemProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isRead, setIsRead] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsRead(true);
+        }
+      },
+      { threshold: 0.5, rootMargin: '-100px 0px -50% 0px' }
+    );
+
+    const element = document.querySelector(href);
+    if (element) observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [href]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      const offset = 120; // Account for navbar + breadcrumbs
+      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  return (
+    <a
+      href={href}
+      onClick={handleClick}
+      className={`flex items-center gap-2 text-sm py-2 px-2 rounded transition-all duration-200 ${
+        isVisible
+          ? 'text-primary bg-primary/10 border-l-2 border-primary'
+          : isRead
+          ? 'text-foreground hover:text-primary'
+          : 'text-muted-foreground hover:text-foreground'
+      }`}
+    >
+      <div className={`w-1 h-1 rounded-full ${
+        isRead ? 'bg-primary' : 'bg-muted-foreground'
+      }`} />
+      <Icon className="w-3 h-3 flex-shrink-0" />
+      <span className="truncate">{children}</span>
+    </a>
+  );
+};
 
 const teamMembers = [
   {
@@ -74,27 +137,35 @@ const techStack = [
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-background pt-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-racing font-bold text-foreground mb-4">
-            Saksham AI
-          </h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            AI-Based Internship Recommendation Engine for PM Internship Scheme
-          </p>
-          <div className="bg-primary/10 rounded-lg p-6 max-w-2xl mx-auto">
-            <p className="text-primary font-semibold mb-2">
-              Team HexaCoders • PEC Chandigarh • Problem Statement #25034
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Ministry of Corporate Affairs (MoCA) • Smart Education Theme
-            </p>
-          </div>
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <Breadcrumbs />
         </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-6 pt-8">
+        <div className="flex gap-8">
+          <div className="flex-1">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-racing font-bold text-foreground mb-4">
+                Saksham AI
+              </h1>
+              <p className="text-xl text-muted-foreground mb-6">
+                AI-Based Internship Recommendation Engine for PM Internship Scheme
+              </p>
+              <div className="bg-primary/10 rounded-lg p-6 max-w-2xl mx-auto">
+                <p className="text-primary font-semibold mb-2">
+                  Team HexaCoders • PEC Chandigarh • Problem Statement #25034
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Ministry of Corporate Affairs (MoCA) • Smart Education Theme
+                </p>
+              </div>
+            </div>
+
 
         {/* Problem Statement */}
-        <Card className="glass-card mb-12">
+        <Card id="problem-statement" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="w-5 h-5 text-primary" />
@@ -123,7 +194,7 @@ const About = () => {
         </Card>
 
         {/* Why This Project */}
-        <Card className="glass-card mb-12">
+        <Card id="why-project" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-primary" />
@@ -177,7 +248,7 @@ const About = () => {
         </Card>
 
         {/* Why Our AI is Special */}
-        <Card className="glass-card mb-12">
+        <Card id="ai-special" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="w-5 h-5 text-primary" />
@@ -218,7 +289,7 @@ const About = () => {
         </Card>
 
         {/* Team Section */}
-        <Card className="glass-card mb-12">
+        <Card id="team" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Users className="w-6 h-6 text-primary" />
@@ -274,7 +345,7 @@ const About = () => {
         </Card>
 
         {/* Tech Stack */}
-        <Card className="glass-card mb-12">
+        <Card id="tech-stack" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Code className="w-5 h-5 text-primary" />
@@ -307,7 +378,7 @@ const About = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div id="mission-vision" className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <Card className="glass-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -343,7 +414,7 @@ const About = () => {
 
 
         {/* Platform Features */}
-        <Card className="glass-card mb-12">
+        <Card id="platform-features" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Heart className="w-6 h-6 text-primary" />
@@ -387,7 +458,7 @@ const About = () => {
         </Card>
 
         {/* Platform Features from Features Page */}
-        <Card className="glass-card mb-12">
+        <Card id="current-features" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Brain className="w-6 h-6 text-primary" />
@@ -446,7 +517,7 @@ const About = () => {
         </Card>
 
         {/* Why Choose Us Comparison */}
-        <Card className="glass-card mb-12">
+        <Card id="why-choose" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Target className="w-6 h-6 text-primary" />
@@ -496,7 +567,7 @@ const About = () => {
         </Card>
 
         {/* Contact Section */}
-        <Card className="glass-card mb-12">
+        <Card id="contact" className="glass-card mb-12">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Users className="w-6 h-6 text-primary" />
@@ -553,7 +624,7 @@ const About = () => {
         </Card>
 
         {/* Research & References Section */}
-        <Card className="glass-card">
+        <Card id="research" className="glass-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Brain className="w-6 h-6 text-primary" />
@@ -700,8 +771,33 @@ const About = () => {
             </div>
           </CardContent>
         </Card>
-        
-
+          </div>
+          
+          {/* Table of Contents */}
+          <div className="w-64 flex-shrink-0">
+            <div className="sticky top-32">
+              <div className="bg-muted/30 rounded-lg p-4">
+                <h3 className="font-semibold mb-4 text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                  <Play className="w-4 h-4" />
+                  On This Page
+                </h3>
+                <nav className="space-y-1">
+                  <TOCItem href="#problem-statement" icon={Target}>Problem Statement</TOCItem>
+                  <TOCItem href="#why-project" icon={Lightbulb}>Why This Project</TOCItem>
+                  <TOCItem href="#ai-special" icon={Brain}>What Makes Our AI Special</TOCItem>
+                  <TOCItem href="#team" icon={Users}>Meet Team HexaCoders</TOCItem>
+                  <TOCItem href="#tech-stack" icon={Code}>Technology Stack</TOCItem>
+                  <TOCItem href="#mission-vision" icon={Target}>Mission & Vision</TOCItem>
+                  <TOCItem href="#platform-features" icon={Heart}>Platform Features</TOCItem>
+                  <TOCItem href="#current-features" icon={Brain}>Current Features</TOCItem>
+                  <TOCItem href="#why-choose" icon={Target}>Why Choose Us</TOCItem>
+                  <TOCItem href="#contact" icon={Users}>Get in Touch</TOCItem>
+                  <TOCItem href="#research" icon={Brain}>Research & References</TOCItem>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

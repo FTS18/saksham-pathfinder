@@ -6,6 +6,7 @@ import { Slider } from '../components/ui/slider';
 import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee, Filter } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { InternshipCard } from '../components/InternshipCard';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export default function Wishlist() {
   const { wishlist, removeFromWishlist } = useWishlist();
@@ -79,17 +80,22 @@ export default function Wishlist() {
   );
 
   return (
-    <div className="min-h-screen hero-gradient pt-16">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-racing font-bold text-foreground mb-2 flex items-center gap-2">
-            <Heart className="w-8 h-8 text-red-500" />
-            My Wishlist ({wishlist.length})
-          </h1>
-          <p className="text-muted-foreground">
-            Your saved internships and personalized recommendations
-          </p>
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <Breadcrumbs />
+          <div className="mt-4">
+            <h1 className="text-3xl font-racing font-bold text-foreground mb-2 flex items-center gap-2">
+              <Heart className="w-8 h-8 text-red-500" />
+              My Wishlist ({wishlist.length})
+            </h1>
+            <p className="text-muted-foreground">
+              Your saved internships and personalized recommendations
+            </p>
+          </div>
         </div>
+      </div>
+      <div className="max-w-3xl mx-auto px-4 pt-8">
 
         {wishlistedInternships.length > 0 ? (
           <>

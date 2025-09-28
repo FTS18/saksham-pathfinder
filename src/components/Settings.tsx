@@ -88,7 +88,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative z-10">
       <div className="flex items-center gap-2 mb-6">
         <SettingsIcon className="w-6 h-6 text-primary" />
         <h2 className="text-2xl font-racing font-bold">Settings</h2>

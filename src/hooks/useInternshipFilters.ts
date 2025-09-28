@@ -7,6 +7,7 @@ interface FilterState {
   workMode: string;
   education: string;
   minStipend: string;
+  minAiScore?: string;
   sortBy: string;
   selectedSectors?: string[];
   selectedSkills?: string[];
@@ -34,6 +35,7 @@ export const useInternshipFilters = (internships: Internship[]) => {
     workMode: 'all',
     education: 'all',
     minStipend: 'all',
+    minAiScore: 'all',
     sortBy: 'ai-recommended',
     selectedSectors: [],
     selectedSkills: []
@@ -48,7 +50,9 @@ export const useInternshipFilters = (internships: Internship[]) => {
       filtered = filtered.filter(internship =>
         internship.title.toLowerCase().includes(searchLower) ||
         internship.company.toLowerCase().includes(searchLower) ||
-        (internship.required_skills || []).some(skill => skill.toLowerCase().includes(searchLower))
+        (internship.required_skills || []).some(skill => skill.toLowerCase().includes(searchLower)) ||
+        (internship.sector_tags || []).some(sector => sector.toLowerCase().includes(searchLower)) ||
+        (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase().includes(searchLower)
       );
     }
 
@@ -101,6 +105,8 @@ export const useInternshipFilters = (internships: Internship[]) => {
       });
     }
 
+    // Note: AI Score filter not applicable for regular internships without scores
+
     // Sort
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
@@ -141,7 +147,9 @@ export const useInternshipFilters = (internships: Internship[]) => {
         const internship = item.internship;
         return internship.title.toLowerCase().includes(searchLower) ||
                internship.company.toLowerCase().includes(searchLower) ||
-               (internship.required_skills || []).some(skill => skill.toLowerCase().includes(searchLower));
+               (internship.required_skills || []).some(skill => skill.toLowerCase().includes(searchLower)) ||
+               (internship.sector_tags || []).some(sector => sector.toLowerCase().includes(searchLower)) ||
+               (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase().includes(searchLower);
       });
     }
 
@@ -194,11 +202,22 @@ export const useInternshipFilters = (internships: Internship[]) => {
       });
     }
 
+    // AI Score filter
+    if (filters.minAiScore && filters.minAiScore !== 'all') {
+      const minScore = parseInt(filters.minAiScore);
+      filtered = filtered.filter(item => item.score >= minScore);
+    }
+
     // Sort
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
         case 'ai-recommended':
-          return b.score - a.score; // AI score for recommendations
+          // Always sort by AI score first for recommendations
+          if (b.score !== a.score) return b.score - a.score;
+          // Secondary sort by stipend if scores are equal
+          const aStipendAI = parseInt(a.internship.stipend.replace(/[^\d]/g, ''));
+          const bStipendAI = parseInt(b.internship.stipend.replace(/[^\d]/g, ''));
+          return bStipendAI - aStipendAI;
         case 'recent':
           return new Date(b.internship.posted_date || '').getTime() - new Date(a.internship.posted_date || '').getTime();
         case 'stipend-high':
@@ -217,7 +236,8 @@ export const useInternshipFilters = (internships: Internship[]) => {
           if (!b.internship.application_deadline) return -1;
           return new Date(a.internship.application_deadline).getTime() - new Date(b.internship.application_deadline).getTime();
         default:
-          return b.score - a.score; // Default to AI score for recommendations
+          // Always prioritize AI score for recommendations
+          return b.score - a.score;
       }
     });
 
