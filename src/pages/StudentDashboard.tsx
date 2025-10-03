@@ -136,27 +136,7 @@ const StudentDashboard = () => {
                 Here's what's happening with your internship journey today.
               </p>
             </div>
-            {currentUser?.email === 'dubeyananay@gmail.com' && (
-              <Button 
-                variant="destructive" 
-                size="sm"
-                className="bg-red-600 hover:bg-red-700 text-white"
-                onClick={async () => {
-                  if (confirm('⚠️ This will delete ALL data from Firebase and localStorage. Are you sure?')) {
-                    try {
-                      const { completeReset } = await import('../utils/firebaseAdmin.js');
-                      await completeReset();
-                      alert('✅ Database cleared! Please refresh the page.');
-                      window.location.reload();
-                    } catch (error) {
-                      alert('❌ Error: ' + error.message);
-                    }
-                  }
-                }}
-              >
-                🗑️ Clear Database
-              </Button>
-            )}
+
           </div>
         </div>
 
