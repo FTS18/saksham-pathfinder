@@ -31,7 +31,9 @@ interface PublicUserProfile {
 }
 
 const PublicProfile = () => {
-  const { username } = useParams<{ username: string }>();
+  const params = useParams();
+  // Handle both /u/username and /profiles/username routes
+  const username = params.username || params['*']?.split('/')[0];
   const [profile, setProfile] = useState<PublicUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);

@@ -107,6 +107,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                 variant="outline"
                 size="sm"
                 onClick={() => window.location.href = '/profile'}
+                className="settings-button"
               >
                 Edit Profile
               </Button>
@@ -128,6 +129,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                       navigator.clipboard.writeText(profileUrl);
                     }
                   }}
+                  className="settings-button"
                 >
                   Share Profile
                 </Button>
@@ -145,6 +147,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     id="username"
                     value={editedProfile.username || ''}
                     onChange={(e) => setEditedProfile({...editedProfile, username: e.target.value})}
+                    className="settings-input"
                   />
                 </div>
                 <div>
@@ -153,6 +156,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     id="studentId"
                     value={editedProfile.studentId || ''}
                     onChange={(e) => setEditedProfile({...editedProfile, studentId: e.target.value})}
+                    className="settings-input"
                   />
                 </div>
                 <div>
@@ -161,6 +165,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     id="phone"
                     value={editedProfile.phone || ''}
                     onChange={(e) => setEditedProfile({...editedProfile, phone: e.target.value})}
+                    className="settings-input"
                   />
                 </div>
                 <div>
@@ -169,14 +174,15 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     id="email"
                     value={editedProfile.email || currentUser?.email || ''}
                     disabled
+                    className="settings-input"
                   />
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSaveProfile} disabled={savingProfile}>
+                <Button onClick={handleSaveProfile} disabled={savingProfile} className="settings-button">
                   {savingProfile ? 'Saving...' : 'Save Changes'}
                 </Button>
-                <Button variant="outline" onClick={() => setIsEditingProfile(false)}>
+                <Button variant="outline" onClick={() => setIsEditingProfile(false)} className="settings-button">
                   Cancel
                 </Button>
               </div>
@@ -330,6 +336,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     toast({ title: 'Copied!', description: 'Referral code copied to clipboard' });
                   }
                 }}
+                className="settings-button"
               >
                 <Copy className="w-4 h-4" />
               </Button>
@@ -350,6 +357,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                     toast({ title: 'Debug Error', description: 'Failed to check referral code', variant: 'destructive' });
                   }
                 }}
+                className="settings-button"
               >
                 Test
               </Button>

@@ -8,7 +8,13 @@ import { SectorIcon } from './SectorIcons';
 import { useAudioSupport } from '@/hooks/useAudioSupport';
 import { InternshipDetailsModal } from './InternshipDetailsModal';
 import { useComparison } from '@/contexts/ComparisonContext';
-import { useState } from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
+
+// Context for sharing internship data across modals
+const InternshipNavigationContext = createContext<{
+  allInternships: any[];
+  setAllInternships: (internships: any[]) => void;
+}>({ allInternships: [], setAllInternships: () => {} });
 
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
@@ -89,6 +95,26 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
   const { addToComparison, removeFromComparison, isInComparison, selectedInternships, maxComparisons } = useComparison();
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [modalInternships, setModalInternships] = useState<any[]>([]);
+  const [modalCurrentIndex, setModalCurrentIndex] = useState(0);
+  
+  // Listen for internship data response with proper cleanup
+  useEffect(() => {
+    const handleInternshipDataResponse = (e: CustomEvent) => {
+      const { internships, currentIndex } = e.detail;
+      setModalInternships(internships);
+      setModalCurrentIndex(currentIndex >= 0 ? currentIndex : 0);
+    };
+    
+    const controller = new AbortController();
+    window.addEventListener('internshipDataResponse', handleInternshipDataResponse as EventListener, {
+      signal: controller.signal
+    });
+    
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   const locationText = typeof location === 'string' ? location : location.city;
   
@@ -391,7 +417,14 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         <div className="mt-auto">
           <div className="flex gap-1 items-center">
             <Button 
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                // Get all internships from parent component via window event
+                const event = new CustomEvent('requestInternshipData', { 
+                  detail: { internshipId: id, currentIndex: currentIndex || 0 } 
+                });
+                window.dispatchEvent(event);
+                setShowModal(true);
+              }}
               className="flex-1 h-9 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-medium transition-all duration-150 group rounded-full active:scale-95"
             >
               <span className="text-xs">Apply Now</span>
@@ -445,7 +478,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
               onClick={handleWishlistToggle}
               className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 rounded active:scale-95 transition-all duration-150"
             >
-              <Bookmark className={`w-3 h-3 ${isWishlisted(id) ? 'fill-primary text-primary' : 'text-primary'}`} />
+              <Bookmark className={`w-3 h-3 ${isWishlisted(id) ? 'fill-current text-primary' : 'text-primary'}`} />
             </Button>
           </div>
         </div>
@@ -453,15 +486,19 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
     </Card>
     
     <InternshipDetailsModal
-      internship={internship}
+      internship={modalInternships.length > 0 ? modalInternships[modalCurrentIndex]?.internship || modalInternships[modalCurrentIndex] : internship}
       isOpen={showModal}
       onClose={() => setShowModal(false)}
-      matchExplanation={matchExplanation}
+      matchExplanation={modalInternships.length > 0 ? modalInternships[modalCurrentIndex]?.explanation : matchExplanation}
       userProfile={userProfile}
-      onNext={onNext}
-      onPrev={onPrev}
-      currentIndex={currentIndex}
-      totalCount={totalCount}
+      onNext={modalInternships.length > 0 && modalCurrentIndex < modalInternships.length - 1 ? () => {
+        setModalCurrentIndex(prev => prev + 1);
+      } : undefined}
+      onPrev={modalInternships.length > 0 && modalCurrentIndex > 0 ? () => {
+        setModalCurrentIndex(prev => prev - 1);
+      } : undefined}
+      currentIndex={modalCurrentIndex}
+      totalCount={modalInternships.length || totalCount}
     />
     </>
   );

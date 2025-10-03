@@ -94,7 +94,10 @@ export const Navbar = () => {
     { code: 'ur' as const, label: 'اردو', flag: '🇵🇰' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/' || location.pathname === '';
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
 
   return (
     <>
@@ -137,16 +140,13 @@ export const Navbar = () => {
                   <Link
                     key={link.href}
                     to={link.href}
-                    className={`relative px-2 py-2 text-sm font-medium transition-colors ${
+                    className={`relative px-3 py-2 text-sm font-medium transition-all duration-200 rounded-full ${
                       isActive(link.href)
-                        ? 'text-primary'
-                        : 'text-muted-foreground hover:text-foreground'
+                        ? 'text-white bg-green-500 shadow-md'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }`}
                   >
                     {link.label}
-                    {isActive(link.href) && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
-                    )}
                   </Link>
                 )
               ))}

@@ -7,7 +7,12 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  sendEmailVerification
+  sendEmailVerification,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  updatePassword,
+  deleteUser
 } from 'firebase/auth';
 import { auth, googleProvider, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -22,6 +27,9 @@ interface AuthContextType {
   loginWithGoogle: (userType?: 'student' | 'recruiter') => Promise<void>;
   loginAsRecruiter: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserPassword: (newPassword: string, currentPassword?: string) => Promise<void>;
+  deleteUserAccount: (currentPassword?: string) => Promise<void>;
+  reauthenticateUser: (currentPassword?: string) => Promise<void>;
   loading: boolean;
   needsOnboarding: boolean;
   needsEmailVerification: boolean;
@@ -171,6 +179,64 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await signOut(auth);
   };
 
+  const reauthenticateUser = async (currentPassword?: string) => {
+    if (!currentUser) throw new Error('No user logged in');
+    
+    // Check if user signed in with Google
+    const isGoogleUser = currentUser.providerData.some(provider => provider.providerId === 'google.com');
+    
+    if (isGoogleUser) {
+      // Reauthenticate with Google
+      const provider = new GoogleAuthProvider();
+      await reauthenticateWithCredential(currentUser, GoogleAuthProvider.credential());
+    } else {
+      // Reauthenticate with email/password
+      if (!currentPassword) {
+        throw new Error('Current password required for email/password users');
+      }
+      if (!currentUser.email) {
+        throw new Error('User email not found');
+      }
+      
+      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+    }
+  };
+
+  const updateUserPassword = async (newPassword: string, currentPassword?: string) => {
+    if (!currentUser) throw new Error('No user logged in');
+    
+    try {
+      // Try to update password directly first
+      await updatePassword(currentUser, newPassword);
+    } catch (error: any) {
+      if (error.code === 'auth/requires-recent-login') {
+        // Reauthenticate and try again
+        await reauthenticateUser(currentPassword);
+        await updatePassword(currentUser, newPassword);
+      } else {
+        throw error;
+      }
+    }
+  };
+
+  const deleteUserAccount = async (currentPassword?: string) => {
+    if (!currentUser) throw new Error('No user logged in');
+    
+    try {
+      // Try to delete account directly first
+      await deleteUser(currentUser);
+    } catch (error: any) {
+      if (error.code === 'auth/requires-recent-login') {
+        // Reauthenticate and try again
+        await reauthenticateUser(currentPassword);
+        await deleteUser(currentUser);
+      } else {
+        throw error;
+      }
+    }
+  };
+
   const checkOnboardingStatus = async (user: User, type?: 'student' | 'recruiter') => {
     try {
       // Check localStorage first for immediate response
@@ -260,6 +326,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loginWithGoogle,
     loginAsRecruiter,
     logout,
+    updateUserPassword,
+    deleteUserAccount,
+    reauthenticateUser,
     loading,
     needsOnboarding,
     needsEmailVerification

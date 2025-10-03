@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { LogIn, LogOut, User, Home, Briefcase, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { LogIn, LogOut, User, Home, Briefcase, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, Menu, ChevronLeft, ChevronRight, LayoutDashboard } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -8,25 +8,35 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip';
 import { NotificationSystem } from './NotificationSystem';
 import GoogleTranslate from './GoogleTranslate';
+import { GoogleTranslateErrorBoundary } from './GoogleTranslateErrorBoundary';
 
 export const CollapsibleSidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHamburgerArea, setIsHamburgerArea] = useState(false);
   
-  // Add global collapse handler
+  // Add global collapse handler and emit sidebar state
   useEffect(() => {
     const handleCollapse = () => setIsExpanded(false);
     window.addEventListener('collapseSidebar', handleCollapse);
     return () => window.removeEventListener('collapseSidebar', handleCollapse);
   }, []);
+  
+  // Emit sidebar state changes
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('sidebarToggle', { detail: { expanded: isExpanded } }));
+  }, [isExpanded]);
+
   const { theme, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.documentElement.style.setProperty('--sidebar-width', isExpanded ? '280px' : '60px');
   }, [isExpanded]);
+
+
 
   const handleLogout = async () => {
     try {
@@ -38,6 +48,7 @@ export const CollapsibleSidebar = () => {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
+    ...(currentUser ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
     { href: '/about', label: 'About', icon: Info },
     { href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart },
     { href: '/dashboard/news-events', label: 'News & Events', icon: Newspaper },
@@ -47,11 +58,15 @@ export const CollapsibleSidebar = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+  
+  const handleNavClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <TooltipProvider>
       <div 
-        className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-accent/10 dark:bg-accent/5 border-r border-border z-20 transition-all duration-300 flex flex-col hover-scale-sm ${
+        className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur-xl border-r border-border/50 z-30 transition-all duration-300 flex flex-col shadow-2xl ${
           isExpanded ? 'w-[280px]' : 'w-[60px]'
         }`}
         onClick={(e) => {
@@ -65,22 +80,18 @@ export const CollapsibleSidebar = () => {
         data-sidebar-toggle={isExpanded}
       >
         {/* Header */}
-        <div className="flex items-center justify-center p-3 border-b border-border cursor-pointer hover:bg-muted/30 transition-colors">
-          <div className="flex flex-col space-y-1">
-            <div className="w-4 h-0.5 bg-primary rounded"></div>
-            <div className="w-4 h-0.5 bg-primary rounded"></div>
-            <div className="w-4 h-0.5 bg-primary rounded"></div>
-          </div>
+        <div className="flex items-center justify-center p-3 border-b border-border cursor-pointer hover:bg-muted/30 transition-colors rounded-t-xl">
+          <Menu className="w-5 h-5 text-primary" />
         </div>
 
         {/* User Profile */}
         {currentUser && (
           <div className="p-4 border-b border-border">
-            <Link 
-              to={userType === 'recruiter' ? '/recruiter/dashboard' : '/profile'} 
-              className="flex items-center space-x-3 hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
+            <button 
+              onClick={() => handleNavClick(userType === 'recruiter' ? '/recruiter/dashboard' : '/profile')}
+              className="w-full flex items-center space-x-3 hover:bg-muted/50 rounded-2xl p-2 -m-2 transition-all duration-200 hover:scale-[1.02]"
             >
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 ring-2 ring-primary/20">
                 {currentUser.photoURL ? (
                   <img src={currentUser.photoURL} alt="Profile" className="w-10 h-10 rounded-full" />
                 ) : (
@@ -97,7 +108,7 @@ export const CollapsibleSidebar = () => {
                   </p>
                 </div>
               )}
-            </Link>
+            </button>
           </div>
         )}
 
@@ -107,13 +118,13 @@ export const CollapsibleSidebar = () => {
             {navLinks.map((link) => {
               const IconComponent = link.icon;
               const linkContent = (
-                <Link
+                <button
                   key={link.href}
-                  to={link.href}
-                  className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover-scale-sm btn-press ${
+                  onClick={() => handleNavClick(link.href)}
+                  className={`w-full flex items-center px-3 py-2.5 rounded-2xl transition-all duration-200 hover-scale-sm btn-press ${
                     isActive(link.href) 
-                      ? 'text-primary bg-primary/10 shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-sm'
+                      ? 'text-primary bg-primary/15 shadow-md ring-2 ring-primary/30' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30'
                   } ${isExpanded ? 'space-x-3' : 'justify-center'}`}
                 >
                   {!isExpanded ? (
@@ -124,7 +135,7 @@ export const CollapsibleSidebar = () => {
                       <span className="text-sm font-medium truncate">{link.label}</span>
                     </>
                   )}
-                </Link>
+                </button>
               );
               
               return !isExpanded ? (
@@ -148,9 +159,11 @@ export const CollapsibleSidebar = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="w-full justify-center"
+                className="w-full justify-center rounded-2xl hover:bg-primary/10 transition-all duration-200"
               >
-                {isExpanded ? '←' : '→'}
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10">
+                  {isExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </div>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right">{isExpanded ? 'Collapse' : 'Expand'}</TooltipContent>
@@ -161,21 +174,26 @@ export const CollapsibleSidebar = () => {
             <div className={`${isExpanded ? 'space-y-2' : 'flex flex-col space-y-2'}`}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" asChild className={isExpanded ? 'w-full justify-start' : 'w-8 h-8 p-0'}>
-                    <Link to="/login">
-                      <LogIn className="w-5 h-5" />
-                      {isExpanded && <span className="ml-2">Login</span>}
-                    </Link>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => handleNavClick('/login')}
+                    className={`rounded-2xl transition-all duration-200 hover:scale-105 ${isExpanded ? 'w-full justify-start' : 'w-8 h-8 p-0'}`}
+                  >
+                    <LogIn className="w-5 h-5" />
+                    {isExpanded && <span className="ml-2">Login</span>}
                   </Button>
                 </TooltipTrigger>
                 {!isExpanded && <TooltipContent side="right">Login</TooltipContent>}
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="sm" asChild className={isExpanded ? 'w-full' : 'w-8 h-8 p-0 text-xs'}>
-                    <Link to="/register">
-                      {isExpanded ? 'Sign Up' : 'S'}
-                    </Link>
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleNavClick('/register')}
+                    className={`rounded-2xl transition-all duration-200 hover:scale-105 ${isExpanded ? 'w-full' : 'w-8 h-8 p-0 text-xs'}`}
+                  >
+                    {isExpanded ? 'Sign Up' : 'S'}
                   </Button>
                 </TooltipTrigger>
                 {!isExpanded && <TooltipContent side="right">Sign Up</TooltipContent>}
@@ -188,7 +206,7 @@ export const CollapsibleSidebar = () => {
                   variant="ghost"
                   size="sm"
                   onClick={handleLogout}
-                  className={`text-destructive hover:bg-destructive/10 ${
+                  className={`text-destructive hover:bg-destructive/10 rounded-2xl transition-all duration-200 hover:scale-105 ${
                     isExpanded ? 'w-full justify-start' : 'w-8 h-8 p-0'
                   }`}
                 >
@@ -204,7 +222,9 @@ export const CollapsibleSidebar = () => {
 
       {/* Hidden Google Translate */}
       <div className="hidden">
-        <GoogleTranslate />
+        <GoogleTranslateErrorBoundary>
+          <GoogleTranslate />
+        </GoogleTranslateErrorBoundary>
       </div>
     </TooltipProvider>
   );

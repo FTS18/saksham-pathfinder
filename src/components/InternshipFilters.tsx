@@ -10,20 +10,14 @@ import { Search, Filter, SortAsc, X, ChevronDown } from 'lucide-react';
 import { SearchSuggestions } from './SearchSuggestions';
 import { SmartFilterService } from '@/services/smartFilterService';
 
-interface FilterState {
-  search: string;
-  sector: string;
-  location: string;
-  workMode: string;
-  education: string;
-  minStipend: string;
+import type { StrictFilterState, StrictComponentProps } from '@/types/strict';
+
+interface FilterState extends StrictFilterState {
   minAiScore?: string;
   sortBy: string;
-  selectedSectors?: string[];
-  selectedSkills?: string[];
 }
 
-interface InternshipFiltersProps {
+interface InternshipFiltersProps extends StrictComponentProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   sectors: string[];
@@ -174,18 +168,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Search with Suggestions */}
-          <div className="lg:col-span-2">
-            <SearchSuggestions
-              value={filters.search}
-              onChange={(value) => updateFilter('search', value)}
-              suggestions={[...sectors, ...allSkills, 'Remote', 'Hybrid', 'Full-time', 'Part-time']}
-              placeholder="Search internships, skills, companies..."
-              className="w-full"
-            />
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Sort */}
           <div className="relative">
             <SortAsc className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
@@ -193,6 +176,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               value={filters.sortBy}
               onChange={(e) => updateFilter('sortBy', e.target.value)}
               className="w-full h-11 pl-10 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              aria-label="Sort internships by"
             >
               <option value="ai-recommended">AI Score (High to Low)</option>
               <option value="recent">Most Recent</option>
@@ -400,6 +384,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               value={filters.workMode}
               onChange={(e) => updateFilter('workMode', e.target.value)}
               className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              aria-label="Filter by work mode"
             >
               <option value="all">All Modes</option>
               <option value="Remote">Remote</option>
@@ -415,6 +400,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               value={filters.education}
               onChange={(e) => updateFilter('education', e.target.value)}
               className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              aria-label="Filter by education level"
             >
               <option value="all">All Levels</option>
               <option value="Undergraduate">Undergraduate</option>
@@ -429,6 +415,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               value={filters.minStipend}
               onChange={(e) => updateFilter('minStipend', e.target.value)}
               className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              aria-label="Filter by minimum stipend"
             >
               <option value="all">Any Stipend</option>
               {userProfile?.minStipend && (
@@ -448,6 +435,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               value={filters.minAiScore || 'all'}
               onChange={(e) => updateFilter('minAiScore', e.target.value)}
               className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              aria-label="Filter by AI match score"
             >
               <option value="all">Any AI Score</option>
               <option value="90">90+ (Excellent)</option>

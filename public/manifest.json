@@ -1,32 +1,48 @@
 {
-  "name": "Saksham AI - Internship Platform",
+  "name": "Saksham AI - Intelligent Internship Platform",
   "short_name": "Saksham AI",
-  "description": "AI-powered internship recommendations for students",
+  "description": "AI-powered internship discovery and career guidance platform for students in India",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
-  "categories": ["education", "productivity", "business"],
+  "scope": "/",
   "lang": "en",
+  "categories": ["education", "productivity", "business"],
   "icons": [
     {
-      "src": "/favicon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png"
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
     },
-
     {
-      "src": "/favicon-192x192.png",
+      "src": "/logo192.png",
+      "type": "image/png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     },
     {
-      "src": "/favicon-512x512.png",
-      "sizes": "512x512",
+      "src": "/logo512.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your personalized dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Search Internships",
+      "short_name": "Search",
+      "description": "Find internship opportunities",
+      "url": "/search",
+      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
     }
   ]
 }
