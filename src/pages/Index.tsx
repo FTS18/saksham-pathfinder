@@ -8,16 +8,10 @@ import { InternshipCard } from '@/components/InternshipCard';
 import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
 import MagicBento from '@/components/MagicBento';
 import { LazyComponent } from '@/components/LazyComponent';
-import { LazyErrorBoundary } from '@/components/LazyErrorBoundary';
-import { AsyncLoadingState } from '@/components/AsyncLoadingState';
-import { useAsyncOperation } from '@/hooks/useAsyncOperation';
-import { fetchWithErrorHandling } from '@/services/apiErrorHandler';
 import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
 import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
 import { ComparisonButton } from '@/components/ComparisonButton';
-import { OptimizedLoader } from '@/components/OptimizedLoader';
 import { SEOHead } from '@/components/SEOHead';
-import { OptimizedImage } from '@/components/OptimizedImage';
 import { cache, CACHE_KEYS } from '@/lib/cache';
 import { sanitizeInternshipData } from '@/lib/sanitize';
 import { saveFilters, loadFilters } from '@/lib/filterPersistence';
@@ -415,33 +409,19 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Load internships with proper error handling
-  const {
-    data: internshipsData,
-    isLoading: internshipsLoading,
-    error: internshipsError,
-    execute: loadInternships
-  } = useAsyncOperation(async () => {
-    const data = await cache.fetchWithCache(
-      CACHE_KEYS.INTERNSHIPS,
-      async () => {
-        const response = await fetchWithErrorHandling('/internships.json');
-        return response.json();
-      },
-      10 * 60 * 1000 // 10 minutes cache
-    );
-    return sanitizeInternshipData(data);
-  });
-
+  // Load internships
   useEffect(() => {
+    const loadInternships = async () => {
+      try {
+        const response = await fetch('/internships.json');
+        const data = await response.json();
+        setAllInternships(sanitizeInternshipData(data));
+      } catch (error) {
+        console.error('Failed to load internships:', error);
+      }
+    };
     loadInternships();
-  }, [loadInternships]);
-
-  useEffect(() => {
-    if (internshipsData) {
-      setAllInternships(internshipsData);
-    }
-  }, [internshipsData]);
+  }, []);
 
   // Use the filtering hook with persistence
   const { filters, setFilters, filteredInternships, filterRecommendations, sectors, locations } = useInternshipFilters(allInternships);
@@ -959,11 +939,10 @@ const Index = () => {
         <div ref={profileFormRef} id="profile-form" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             {isLoading ? (
-              <OptimizedLoader 
-                size="lg" 
-                text="Processing your profile... Analyzing preferences and finding matches"
-                className="py-12"
-              />
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Processing your profile... Analyzing preferences and finding matches</p>
+              </div>
             ) : (
               <ProfileForm onProfileSubmit={handleProfileSubmit} />
             )}
@@ -1344,21 +1323,17 @@ const Index = () => {
         fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
         rootMargin="300px"
       >
-        <LazyErrorBoundary componentName="Stats">
-          <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-            <Stats />
-          </Suspense>
-        </LazyErrorBoundary>
+        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+          <Stats />
+        </Suspense>
       </LazyComponent>
       <LazyComponent 
         fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
         rootMargin="300px"
       >
-        <LazyErrorBoundary componentName="Testimonials">
-          <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-            <Testimonials />
-          </Suspense>
-        </LazyErrorBoundary>
+        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+          <Testimonials />
+        </Suspense>
       </LazyComponent>
       <ComparisonButton userProfile={profileData} />
       </div>

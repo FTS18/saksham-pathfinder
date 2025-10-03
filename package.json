@@ -7,15 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "build:analyze": "npm run build && node scripts/analyze-bundle.js",
+
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "test": "echo \"No tests specified\" && exit 0",
-    "test:ci": "npm run type-check && npm run lint && npm run build",
-    "deploy:netlify": "netlify deploy --prod --dir=dist",
-    "deploy:vercel": "vercel --prod"
+    "test:ci": "npm run type-check && npm run lint && npm run build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

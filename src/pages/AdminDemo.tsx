@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { createDemoRecruiterAndInternships } from '@/utils/createDemoData';
+
 import { Database, Users, Briefcase, Shield } from 'lucide-react';
 
 const AdminDemo = () => {
@@ -34,19 +34,12 @@ const AdminDemo = () => {
   const handleCreateDemoData = async () => {
     setLoading(true);
     try {
-      const result = await createDemoRecruiterAndInternships();
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: result.message
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: result.message,
-          variant: "destructive"
-        });
-      }
+      // Mock demo data creation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      toast({
+        title: "Demo Mode",
+        description: "Demo data creation is currently disabled in this version"
+      });
     } catch (error) {
       toast({
         title: "Error",
