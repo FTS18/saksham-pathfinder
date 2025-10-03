@@ -1,93 +1,191 @@
-/* Mobile-first responsive fixes */
+/* Android-optimized mobile responsive fixes */
 
-/* Fix horizontal scrolling on mobile */
-html, body {
-  overflow-x: hidden;
-  width: 100%;
+/* Android viewport scaling */
+html {
+  -webkit-text-size-adjust: 85%;
+  -moz-text-size-adjust: 85%;
+  text-size-adjust: 85%;
 }
 
-/* Ensure all containers respect viewport width */
+/* Prevent horizontal scrolling */
+html, body {
+  overflow-x: hidden;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+/* Box sizing for all elements */
 * {
   box-sizing: border-box;
 }
 
-/* Mobile navigation fixes */
-@media (max-width: 768px) {
-  /* Fix sidebar overlapping content */
-  .mobile-sidebar-open {
-    overflow: hidden;
-  }
-  
-  /* Ensure proper spacing on mobile */
-  .mobile-content {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    min-width: 0;
-  }
-  
-  /* Fix card layouts on small screens */
-  .internship-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  /* Fix filter dropdowns on mobile */
-  .mobile-filters {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  /* Fix modal sizing on mobile */
-  .mobile-modal {
+/* Mobile-first responsive design */
+@media screen and (max-width: 767px) {
+  /* Full width containers - remove side margins */
+  .container, .max-w-6xl, .max-w-4xl, .max-w-3xl {
     width: 100vw !important;
-    height: 100vh !important;
-    max-width: none !important;
-    max-height: none !important;
-    border-radius: 0 !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Main content areas */
+  main {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  /* Mobile content wrapper */
+  .mobile-content {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100vw !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Grid layouts - single column */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+  }
+  
+  /* Internship cards container */
+  .internship-cards-container {
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Individual cards */
+  .internship-card {
+    width: 100% !important;
     margin: 0 !important;
   }
+  
+  /* Section padding */
+  section {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Button groups - stack vertically */
+  .btn-group, .flex.gap-2, .flex.gap-4 {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+  
+  .btn-group > *, .flex.gap-2 > *, .flex.gap-4 > * {
+    width: 100% !important;
+    flex: none !important;
+  }
+  
+  /* Form elements - prevent zoom */
+  input, select, textarea, button {
+    font-size: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Modal - full screen on mobile */
+  .modal, [role="dialog"] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Modal content */
+  .modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Text sizing for Android */
+  h1 { font-size: 1.75rem !important; line-height: 1.2 !important; }
+  h2 { font-size: 1.5rem !important; line-height: 1.3 !important; }
+  h3 { font-size: 1.25rem !important; line-height: 1.4 !important; }
 }
 
-/* Small mobile devices (320px and up) */
-@media (max-width: 480px) {
-  /* Reduce padding on very small screens */
-  .container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+/* Extra small Android devices */
+@media screen and (max-width: 480px) {
+  html {
+    -webkit-text-size-adjust: 80%;
+    -moz-text-size-adjust: 80%;
+    text-size-adjust: 80%;
   }
   
-  /* Stack buttons vertically on small screens */
-  .button-group-mobile {
-    flex-direction: column;
-    width: 100%;
+  .container, .max-w-6xl, .max-w-4xl, .max-w-3xl {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   
-  .button-group-mobile > * {
-    width: 100%;
+  section {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   
-  /* Fix text sizing on small screens */
-  .hero-title-mobile {
-    font-size: 1.75rem;
-    line-height: 1.2;
+  .mobile-content {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   
-  .hero-subtitle-mobile {
-    font-size: 0.875rem;
+  /* Smaller text */
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+  
+  /* Compact buttons */
+  .btn, button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    width: 100% !important;
+  }
+  
+  .grid {
+    gap: 0.5rem !important;
   }
 }
 
-/* Landscape mobile fixes */
-@media (max-height: 500px) and (orientation: landscape) {
-  /* Reduce vertical spacing in landscape */
-  .landscape-compact {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+/* Touch-friendly elements */
+@media (hover: none) and (pointer: coarse) {
+  button, .btn, [role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1rem !important;
   }
   
-  /* Fix modal height in landscape */
-  .landscape-modal {
-    max-height: 90vh;
-    overflow-y: auto;
+  a, input, select, textarea {
+    min-height: 44px !important;
+  }
+}
+
+/* Landscape orientation */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+  .modal, [role="dialog"] {
+    height: 100vh !important;
+    overflow-y: auto !important;
   }
 }
