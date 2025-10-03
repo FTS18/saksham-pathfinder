@@ -6,7 +6,7 @@ import { Slider } from '../components/ui/slider';
 import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee, Filter } from 'lucide-react';
 import { useWishlist } from '../contexts/WishlistContext';
 import { InternshipCard } from '../components/InternshipCard';
-import { Breadcrumbs } from '../components/Breadcrumbs';
+import { PageHeader } from '../components/StickyBreadcrumbHeader';
 
 export default function Wishlist() {
   const { wishlist, removeFromWishlist } = useWishlist();
@@ -81,21 +81,11 @@ export default function Wishlist() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <Breadcrumbs />
-          <div className="mt-4">
-            <h1 className="text-3xl font-racing font-bold text-foreground mb-2 flex items-center gap-2">
-              <Heart className="w-8 h-8 text-red-500" />
-              My Wishlist ({wishlist.length})
-            </h1>
-            <p className="text-muted-foreground">
-              Your saved internships and personalized recommendations
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-4 pt-8">
+      <PageHeader
+        title={`My Wishlist (${wishlistedInternships.length})`}
+        subtitle="Your saved internships and personalized recommendations"
+      />
+      <div className="max-w-4xl mx-auto px-6 py-8">
 
         {wishlistedInternships.length > 0 ? (
           <>
@@ -139,7 +129,7 @@ export default function Wishlist() {
                   Based on your wishlist preferences, we found these similar opportunities
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {(showAllRecommendations ? recommendations : recommendations.slice(0, 3)).map((internship) => (
+                  {(showAllRecommendations ? recommendations : recommendations.slice(0, 6)).map((internship) => (
                     <InternshipCard 
                       key={internship.id}
                       internship={internship}
@@ -149,7 +139,7 @@ export default function Wishlist() {
                     />
                   ))}
                 </div>
-                {recommendations.length > 3 && (
+                {recommendations.length > 6 && (
                   <div className="flex justify-center mt-8">
                     <Button 
                       onClick={() => setShowAllRecommendations(!showAllRecommendations)}

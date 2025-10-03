@@ -123,54 +123,84 @@ export const AccessibilitySidebar = () => {
 
   return (
     <TooltipProvider>
-      <div className="fixed right-0 top-16 h-[calc(100vh-4rem)] bg-muted/20 dark:bg-muted/30 border-l border-border z-20 w-[60px] flex flex-col hover-scale-sm">
+      <div className="fixed right-0 top-16 h-[calc(100vh-4rem)] bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur-xl border-l border-border/50 z-20 w-[60px] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-center p-3 border-b border-border hover:bg-muted/30 transition-colors">
-          <div className="w-2 h-2 rounded-full bg-primary"></div>
+        <div className="flex items-center justify-center p-3 border-b border-border hover:bg-muted/30 transition-colors rounded-t-xl">
+          <Palette className="w-5 h-5 text-primary" />
         </div>
 
         {/* Controls */}
-        <div className="flex-1 p-3 space-y-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={toggleTheme} 
-                className="w-12 h-12 p-0 hover-scale-sm btn-press transition-all duration-200"
-              >
-                {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">{theme === 'light' ? 'Dark mode' : 'Light mode'}</TooltipContent>
-          </Tooltip>
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={toggleTheme} 
+                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
+                >
+                  {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">{theme === 'light' ? 'Dark mode' : 'Light mode'}</TooltipContent>
+            </Tooltip>
           
-          {/* Theme Color Selector */}
-          <div className="flex flex-col">
+            {/* Theme Color Selector */}
+            <div className="flex flex-col rounded-2xl overflow-hidden border border-border/50">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => cycleTheme('up')} 
+                    className="w-full h-6 p-0 rounded-none hover:bg-muted/50 hover-scale-sm btn-press"
+                  >
+                    <ChevronUp className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left">Next theme</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-full h-8 flex items-center justify-center bg-muted/20">
+                    <div 
+                      className="w-5 h-5 rounded-full ring-2 ring-background shadow-sm" 
+                      style={{ backgroundColor: colorThemes[currentThemeIndex]?.color }}
+                    />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="left">{colorThemes[currentThemeIndex]?.name} theme</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => cycleTheme('down')} 
+                    className="w-full h-6 p-0 rounded-none hover:bg-muted/50 hover-scale-sm btn-press"
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left">Previous theme</TooltipContent>
+              </Tooltip>
+            </div>
+          
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => cycleTheme('up')} 
-                  className="w-12 h-6 p-0 rounded-b-none hover-scale-sm btn-press"
+                  onClick={increaseFontSize} 
+                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
                 >
-                  <ChevronUp className="w-5 h-5" />
+                  <ZoomIn className="w-5 h-5"/>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">Next theme</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="w-12 h-6 flex items-center justify-center border-x border-border">
-                  <div 
-                    className="w-4 h-4 rounded-full" 
-                    style={{ backgroundColor: colorThemes[currentThemeIndex]?.color }}
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="left">{colorThemes[currentThemeIndex]?.name} theme</TooltipContent>
+              <TooltipContent side="left">Increase font size</TooltipContent>
             </Tooltip>
             
             <Tooltip>
@@ -178,79 +208,51 @@ export const AccessibilitySidebar = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={() => cycleTheme('down')} 
-                  className="w-12 h-6 p-0 rounded-t-none hover-scale-sm btn-press"
+                  onClick={decreaseFontSize} 
+                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
                 >
-                  <ChevronDown className="w-5 h-5" />
+                  <ZoomOut className="w-5 h-5"/>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">Previous theme</TooltipContent>
+              <TooltipContent side="left">Decrease font size</TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={toggleLanguage}
+                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
+                >
+                  <span className="text-lg font-bold">
+                    {currentLang === 'en' ? '🇮🇳' : '🇬🇧'}
+                  </span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">{currentLang === 'en' ? 'Switch to Hindi' : 'Switch to English'}</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={toggleAudio}
+                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
+                >
+                  {audioEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">Toggle read aloud</TooltipContent>
+            </Tooltip>
+
+
           </div>
-          
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={increaseFontSize} 
-                className="w-12 h-12 p-0 hover-scale-sm btn-press transition-all duration-200"
-              >
-                <ZoomIn className="w-5 h-5"/>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">Increase font size</TooltipContent>
-          </Tooltip>
-          
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={decreaseFontSize} 
-                className="w-12 h-12 p-0 hover-scale-sm btn-press transition-all duration-200"
-              >
-                <ZoomOut className="w-5 h-5"/>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">Decrease font size</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={toggleLanguage}
-                className="w-12 h-12 p-0 hover-scale-sm btn-press transition-all duration-200"
-              >
-                <span className="text-lg font-bold">
-                  {currentLang === 'en' ? '🇮🇳' : '🇬🇧'}
-                </span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">{currentLang === 'en' ? 'Switch to Hindi' : 'Switch to English'}</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={toggleAudio}
-                className="w-12 h-12 p-0 hover-scale-sm btn-press transition-all duration-200"
-              >
-                {audioEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left">Toggle read aloud</TooltipContent>
-          </Tooltip>
-
-
         </div>
         
-        {/* Chatbot Icon - Desktop Only */}
-        <div className="hidden md:block absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        {/* Bottom Controls */}
+        <div className="p-4 border-t border-border">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -261,11 +263,10 @@ export const AccessibilitySidebar = () => {
                   if (chatbotButton) {
                     chatbotButton.click();
                   } else {
-                    // Fallback: dispatch custom event
                     window.dispatchEvent(new CustomEvent('toggleChatbot'));
                   }
                 }}
-                className="w-12 h-12 p-0 hover-scale-sm btn-press rounded-full bg-primary/10 hover:bg-primary/20 transition-all duration-200"
+                className="w-full h-12 p-0 rounded-2xl bg-primary/10 hover:bg-primary/20 hover:shadow-md hover:ring-2 hover:ring-primary/30 transition-all duration-200 hover-scale-sm btn-press"
               >
                 <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -276,6 +277,7 @@ export const AccessibilitySidebar = () => {
           </Tooltip>
         </div>
       </div>
+      
       {/* Hidden Google Translate */}
       <div className="hidden">
         <GoogleTranslate />

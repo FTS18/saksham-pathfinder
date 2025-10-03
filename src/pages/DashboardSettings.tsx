@@ -30,8 +30,8 @@ export default function DashboardSettings() {
   };
 
   return (
-    <div className="min-h-screen hero-gradient pt-16">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background px-6 py-8">
+      <div className="max-w-3xl mx-auto">
         <Settings 
           dashboardProfile={dashboardProfile} 
           onProfileUpdate={(profile) => {

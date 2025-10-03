@@ -8,10 +8,16 @@ import { InternshipCard } from '@/components/InternshipCard';
 import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
 import MagicBento from '@/components/MagicBento';
 import { LazyComponent } from '@/components/LazyComponent';
+import { LazyErrorBoundary } from '@/components/LazyErrorBoundary';
+import { AsyncLoadingState } from '@/components/AsyncLoadingState';
+import { useAsyncOperation } from '@/hooks/useAsyncOperation';
+import { fetchWithErrorHandling } from '@/services/apiErrorHandler';
 import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
 import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
 import { ComparisonButton } from '@/components/ComparisonButton';
 import { OptimizedLoader } from '@/components/OptimizedLoader';
+import { SEOHead } from '@/components/SEOHead';
+import { OptimizedImage } from '@/components/OptimizedImage';
 import { cache, CACHE_KEYS } from '@/lib/cache';
 import { sanitizeInternshipData } from '@/lib/sanitize';
 import { saveFilters, loadFilters } from '@/lib/filterPersistence';
@@ -21,9 +27,9 @@ import type { Internship, ProfileData, FilterState } from '@/types';
 
 
 
-// Lazy load heavy components with error boundaries
-const Stats = lazy(() => import('@/components/Stats').then(module => ({ default: module.Stats })).catch(() => ({ default: () => <div>Failed to load stats</div> })));
-const Testimonials = lazy(() => import('@/components/Testimonials').then(module => ({ default: module.Testimonials })).catch(() => ({ default: () => <div>Failed to load testimonials</div> })));
+// Lazy load heavy components with proper error handling
+const Stats = lazy(() => import('@/components/Stats').then(module => ({ default: module.Stats })));
+const Testimonials = lazy(() => import('@/components/Testimonials').then(module => ({ default: module.Testimonials })));
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -376,6 +382,12 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
   }
 
 const Index = () => {
+  // SEO for homepage
+  const seoProps = {
+    title: 'Saksham AI - AI-Powered Internship Discovery Platform',
+    description: 'Find the perfect internship with AI-powered recommendations. Discover meaningful career opportunities tailored to your skills and aspirations in India.',
+    keywords: 'internship, AI, career, jobs, students, recommendations, machine learning, India, PM internship scheme'
+  };
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [allInternships, setAllInternships] = useState<any[]>([]);
@@ -403,33 +415,33 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Load internships with caching
+  // Load internships with proper error handling
+  const {
+    data: internshipsData,
+    isLoading: internshipsLoading,
+    error: internshipsError,
+    execute: loadInternships
+  } = useAsyncOperation(async () => {
+    const data = await cache.fetchWithCache(
+      CACHE_KEYS.INTERNSHIPS,
+      async () => {
+        const response = await fetchWithErrorHandling('/internships.json');
+        return response.json();
+      },
+      10 * 60 * 1000 // 10 minutes cache
+    );
+    return sanitizeInternshipData(data);
+  });
+
   useEffect(() => {
-    const loadInternships = async () => {
-      try {
-        const data = await cache.fetchWithCache(
-          CACHE_KEYS.INTERNSHIPS,
-          async () => {
-            const response = await fetch('/internships.json');
-            if (!response.ok) throw new Error('Failed to fetch');
-            return response.json();
-          },
-          10 * 60 * 1000 // 10 minutes cache
-        );
-        
-        const validatedData = sanitizeInternshipData(data);
-        setAllInternships(validatedData);
-      } catch (error) {
-        console.warn('Failed to load internships:', error);
-        const cachedData = cache.get(CACHE_KEYS.INTERNSHIPS);
-        if (cachedData) {
-          setAllInternships(sanitizeInternshipData(cachedData));
-        }
-      }
-    };
-    
     loadInternships();
-  }, []);
+  }, [loadInternships]);
+
+  useEffect(() => {
+    if (internshipsData) {
+      setAllInternships(internshipsData);
+    }
+  }, [internshipsData]);
 
   // Use the filtering hook with persistence
   const { filters, setFilters, filteredInternships, filterRecommendations, sectors, locations } = useInternshipFilters(allInternships);
@@ -492,6 +504,26 @@ const Index = () => {
       }
     }
   }, []); // Empty dependency array ensures this runs only once on mount
+  
+  // Listen for global search events with proper cleanup
+  useEffect(() => {
+    const handleGlobalSearch = (e: CustomEvent) => {
+      const query = e.detail.query;
+      console.log('Index - Global search event received:', query);
+      setFilters(prev => ({ ...prev, search: query }));
+    };
+    
+    const controller = new AbortController();
+    window.addEventListener('globalSearch', handleGlobalSearch as EventListener, {
+      signal: controller.signal
+    });
+    
+    return () => {
+      controller.abort();
+    };
+  }, [setFilters]);
+  
+
   
   const handleProfileSubmit = async (data: ProfileData) => {
     setIsLoading(true);
@@ -626,22 +658,76 @@ const Index = () => {
   
   // Get filtered items - use hook's filtered results or filtered recommendations
   const displayItems = useMemo(() => {
+    // If search is active, always search through ALL internships regardless of profile
+    if (filters.search && filters.search.trim()) {
+      const searchLower = filters.search.toLowerCase().trim();
+      const allItems = allInternships.filter(internship => {
+        // Ensure internship has required properties
+        if (!internship || typeof internship !== 'object') return false;
+        
+        const title = (internship.title || '').toLowerCase();
+        const company = (internship.company || '').toLowerCase();
+        const skills = (internship.required_skills || []).map(skill => (skill || '').toLowerCase());
+        const sectors = (internship.sector_tags || []).map(sector => (sector || '').toLowerCase());
+        const location = (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase();
+        
+        const matchesSearch = title.includes(searchLower) ||
+                            company.includes(searchLower) ||
+                            skills.some(skill => skill.includes(searchLower)) ||
+                            sectors.some(sector => sector.includes(searchLower)) ||
+                            location.includes(searchLower);
+        if (!matchesSearch) return false;
+        
+        // Apply sector filters
+        if (filters.selectedSectors && filters.selectedSectors.length > 0) {
+          const hasSectorMatch = (internship.sector_tags || []).some(tag => filters.selectedSectors!.includes(tag));
+          if (!hasSectorMatch) return false;
+        } else if (filters.sector && filters.sector !== 'all') {
+          const hasSectorMatch = (internship.sector_tags || []).includes(filters.sector);
+          if (!hasSectorMatch) return false;
+        }
+        
+        // Apply skill filters
+        if (filters.selectedSkills && filters.selectedSkills.length > 0) {
+          const hasSkillMatch = (internship.required_skills || []).some(skill => filters.selectedSkills!.includes(skill));
+          if (!hasSkillMatch) return false;
+        }
+        
+        // Apply other filters
+        if (filters.location && filters.location !== 'all') {
+          const internshipLocation = typeof internship.location === 'string' ? internship.location : internship.location?.city || '';
+          if (!internshipLocation.toLowerCase().includes(filters.location.toLowerCase())) return false;
+        }
+        
+        if (filters.workMode && filters.workMode !== 'all') {
+          if (internship.work_mode !== filters.workMode) return false;
+        }
+        
+        if (filters.education && filters.education !== 'all') {
+          const hasEducationMatch = (internship.preferred_education_levels || []).includes(filters.education);
+          if (!hasEducationMatch) return false;
+        }
+        
+        if (filters.minStipend && filters.minStipend !== 'all') {
+          const minAmount = parseInt(filters.minStipend);
+          const stipendAmount = parseInt(internship.stipend.replace(/[^\d]/g, ''));
+          if (stipendAmount < minAmount) return false;
+        }
+        
+        return true;
+      });
+      
+      return allItems.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
+    }
+    
+    // For profile users without search, use filtered recommendations
     if (profileData && filterRecommendations) {
       const filtered = filterRecommendations(recommendations);
       return filtered;
     }
-    // For non-profile users, show all internships (don't filter by sectors)
+    
+    // For non-profile users without search, show all internships
     const allItems = allInternships.filter(internship => {
-      // Apply search filter if present
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        const matchesSearch = internship.title.toLowerCase().includes(searchLower) ||
-                            internship.company.toLowerCase().includes(searchLower) ||
-                            (internship.required_skills || []).some(skill => skill.toLowerCase().includes(searchLower)) ||
-                            (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase().includes(searchLower);
-        if (!matchesSearch) return false;
-      }
-      
       // Apply other filters but NOT sector filters for main page
       if (filters.location && filters.location !== 'all') {
         const internshipLocation = typeof internship.location === 'string' ? internship.location : internship.location?.city || '';
@@ -659,6 +745,29 @@ const Index = () => {
     
     return allItems.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
   }, [profileData, filterRecommendations, recommendations, allInternships, filters]);
+
+  // Effect for internship data requests with proper cleanup
+  useEffect(() => {
+    const handleInternshipDataRequest = (e: CustomEvent) => {
+      const { internshipId, currentIndex } = e.detail;
+      const responseEvent = new CustomEvent('internshipDataResponse', {
+        detail: {
+          internships: displayItems,
+          currentIndex: displayItems.findIndex(item => item.internship.id === internshipId)
+        }
+      });
+      window.dispatchEvent(responseEvent);
+    };
+    
+    const controller = new AbortController();
+    window.addEventListener('requestInternshipData', handleInternshipDataRequest as EventListener, {
+      signal: controller.signal
+    });
+    
+    return () => {
+      controller.abort();
+    };
+  }, [displayItems]);
 
   const totalPages = Math.ceil((displayItems?.length || 0) / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -689,7 +798,9 @@ const Index = () => {
   }
   
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead {...seoProps} />
+      <div className="min-h-full bg-background">
 
       <Hero onGetStartedClick={handleGetStartedClick} />
       
@@ -715,17 +826,10 @@ const Index = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
               spotlightRadius={300}
               particleCount={12}
               glowColor="132, 0, 255"
-              className="border-2 hover:shadow-lg transition-all duration-300"
+              className="border-2"
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -737,17 +841,10 @@ const Index = () => {
             </MagicBento>
             
             <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
               spotlightRadius={300}
               particleCount={12}
               glowColor="132, 0, 255"
-              className="border-2 hover:shadow-lg transition-all duration-300"
+              className="border-2"
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -759,17 +856,10 @@ const Index = () => {
             </MagicBento>
             
             <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
               spotlightRadius={300}
               particleCount={12}
               glowColor="132, 0, 255"
-              className="border-2 hover:shadow-lg transition-all duration-300"
+              className="border-2"
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -781,17 +871,10 @@ const Index = () => {
             </MagicBento>
             
             <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
               spotlightRadius={300}
               particleCount={12}
               glowColor="132, 0, 255"
-              className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1"
+              className="border-2 md:col-span-2 lg:col-span-1"
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -803,17 +886,10 @@ const Index = () => {
             </MagicBento>
             
             <MagicBento 
-              textAutoHide={true}
-              enableStars={true}
-              enableSpotlight={true}
-              enableBorderGlow={true}
-              enableTilt={true}
-              enableMagnetism={true}
-              clickEffect={true}
               spotlightRadius={300}
               particleCount={12}
               glowColor="132, 0, 255"
-              className="border-2 hover:shadow-lg transition-all duration-300 md:col-span-2"
+              className="border-2 md:col-span-2"
             >
               <div className="p-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -830,8 +906,6 @@ const Index = () => {
             <h3 className="text-2xl font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <MagicBento 
-                enableSpotlight={true}
-                enableBorderGlow={true}
                 spotlightRadius={200}
                 glowColor="34, 197, 94"
                 className="p-4 border border-border rounded-lg"
@@ -840,8 +914,6 @@ const Index = () => {
                 <p className="text-muted-foreground text-sm">in India's top companies</p>
               </MagicBento>
               <MagicBento 
-                enableSpotlight={true}
-                enableBorderGlow={true}
                 spotlightRadius={200}
                 glowColor="59, 130, 246"
                 className="p-4 border border-border rounded-lg"
@@ -850,8 +922,6 @@ const Index = () => {
                 <p className="text-muted-foreground text-sm">₹4500 by Government of India and ₹500 by Industry</p>
               </MagicBento>
               <MagicBento 
-                enableSpotlight={true}
-                enableBorderGlow={true}
                 spotlightRadius={200}
                 glowColor="168, 85, 247"
                 className="p-4 border border-border rounded-lg"
@@ -860,8 +930,6 @@ const Index = () => {
                 <p className="text-muted-foreground text-sm">₹6000 for incidentals</p>
               </MagicBento>
               <MagicBento 
-                enableSpotlight={true}
-                enableBorderGlow={true}
                 spotlightRadius={200}
                 glowColor="245, 158, 11"
                 className="p-4 border border-border rounded-lg"
@@ -1276,20 +1344,25 @@ const Index = () => {
         fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
         rootMargin="300px"
       >
-        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-          <Stats />
-        </Suspense>
+        <LazyErrorBoundary componentName="Stats">
+          <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+            <Stats />
+          </Suspense>
+        </LazyErrorBoundary>
       </LazyComponent>
       <LazyComponent 
         fallback={<div className="h-32 bg-muted/10 animate-pulse" />}
         rootMargin="300px"
       >
-        <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
-          <Testimonials />
-        </Suspense>
+        <LazyErrorBoundary componentName="Testimonials">
+          <Suspense fallback={<div className="h-32 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+            <Testimonials />
+          </Suspense>
+        </LazyErrorBoundary>
       </LazyComponent>
       <ComparisonButton userProfile={profileData} />
-    </div>
+      </div>
+    </>
   );
 };
 

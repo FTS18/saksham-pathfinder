@@ -3,9 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Building, MapPin, DollarSign, Calendar, Users, Briefcase, ArrowLeft } from 'lucide-react';
+import { Building, MapPin, DollarSign, Calendar, Users, Briefcase, ArrowLeft, AlertCircle } from 'lucide-react';
 import { InternshipCard } from '@/components/InternshipCard';
 import { useAuth } from '@/contexts/AuthContext';
+import { FirestoreService } from '@/services/firestoreService';
 import type { ProfileData } from '@/types';
 
 interface CompanyInternship {
@@ -34,9 +35,13 @@ const CompanyPage = () => {
   const { currentUser } = useAuth();
   const [internships, setInternships] = useState<CompanyInternship[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [companyInfo, setCompanyInfo] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<ProfileData | null>(null);
   const [scoredInternships, setScoredInternships] = useState<any[]>([]);
+  
+  const decodedCompany = decodeURIComponent(company || '');
+  const displayCompany = decodedCompany.charAt(0).toUpperCase() + decodedCompany.slice(1);
 
   useEffect(() => {
     if (company) {
@@ -162,12 +167,24 @@ const CompanyPage = () => {
       
       const decodedCompany = decodeURIComponent(companyName).toLowerCase();
       
-      // Filter internships for this company (fuzzy matching)
-      const companyInternships = allInternships.filter((internship: CompanyInternship) => 
-        internship.company.toLowerCase().includes(decodedCompany) ||
-        decodedCompany.includes(internship.company.toLowerCase()) ||
-        internship.company.toLowerCase().replace(/[^a-z0-9]/g, '').includes(decodedCompany.replace(/[^a-z0-9]/g, ''))
-      );
+      // Normalize the search term - handle URL encoding and spaces properly
+      let normalizedCompany = decodedCompany.toLowerCase().trim();
+      normalizedCompany = normalizedCompany.replace(/%20/g, ' ').replace(/\+/g, ' ').replace(/\s+/g, ' ').trim();
+      
+      // Filter internships for this company - only match in company field
+      const companyInternships = allInternships.filter((internship: CompanyInternship) => {
+        const company = (internship.company || '').toLowerCase().trim();
+        
+        // Try multiple matching strategies
+        const exactMatch = company === normalizedCompany;
+        const containsMatch = company.includes(normalizedCompany) || 
+                             normalizedCompany.includes(company);
+        const wordMatch = normalizedCompany.split(' ').some(word => 
+          word.length > 2 && company.includes(word)
+        );
+        
+        return exactMatch || containsMatch || wordMatch;
+      });
 
       setInternships(companyInternships);
 
@@ -239,16 +256,34 @@ const CompanyPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-16">
+    <div className="min-h-screen bg-background pt-6">
       <div className="container mx-auto px-4 py-8">
-        <Button 
-          onClick={() => navigate('/')} 
-          variant="outline" 
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Search
-        </Button>
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            <div className="w-full">
+              <div className="mb-4">
+                <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-1 px-4">
+                  <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: { path: '/' } }))}
+                    className="hover:text-foreground transition-colors font-medium text-left"
+                  >
+                    Home
+                  </button>
+                  <span className="mx-1">/</span>
+                  <span className="text-foreground font-medium">{companyInfo?.name || decodeURIComponent(company || '')}</span>
+                </nav>
+              </div>
+              <Button 
+                onClick={() => navigate('/')} 
+                variant="outline" 
+                size="sm"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Search
+              </Button>
+            </div>
+          </div>
+        </div>
 
         {/* Company Header */}
         <Card className="mb-8">
@@ -274,7 +309,12 @@ const CompanyPage = () => {
                 </h4>
                 <div className="flex flex-wrap gap-1">
                   {companyInfo.sectors.map((sector: string, index: number) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                    <Badge 
+                      key={index} 
+                      variant="outline" 
+                      className="text-xs cursor-pointer hover:bg-primary/10 transition-colors"
+                      onClick={() => navigate(`/sector/${encodeURIComponent(sector.toLowerCase())}`)}
+                    >
                       {sector}
                     </Badge>
                   ))}
@@ -287,7 +327,12 @@ const CompanyPage = () => {
                 </h4>
                 <div className="flex flex-wrap gap-1">
                   {companyInfo.locations.map((location: string, index: number) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                    <Badge 
+                      key={index} 
+                      variant="outline" 
+                      className="text-xs cursor-pointer hover:bg-primary/10 transition-colors"
+                      onClick={() => navigate(`/city/${encodeURIComponent(location.toLowerCase())}`)}
+                    >
                       {location}
                     </Badge>
                   ))}
@@ -327,18 +372,14 @@ const CompanyPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {scoredInternships.map((item, index) => (
-              <InternshipCard
-                key={item.internship.id}
-                internship={item.internship}
-                matchExplanation={item.explanation}
-                aiTags={item.aiTags}
-                userProfile={userProfile}
-                aiScore={item.score}
-                onNext={() => {}}
-                onPrev={() => {}}
-                currentIndex={index + 1}
-                totalCount={scoredInternships.length}
-              />
+              <div key={item.internship.id || index} className="animate-in fade-in-50 duration-300" style={{ animationDelay: `${index * 50}ms` }}>
+                <InternshipCard
+                  internship={item.internship}
+                  matchExplanation={item.explanation}
+                  aiTags={item.aiTags}
+                  aiScore={item.score}
+                />
+              </div>
             ))}
           </div>
         </div>

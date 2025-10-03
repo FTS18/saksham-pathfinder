@@ -51,34 +51,32 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
       </div>
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 shadow-lg hover:bg-green-500/20 transition-all duration-300 hover:scale-105">
-              <Sparkles className="w-3 h-3 text-green-500 mr-2 animate-pulse" />
-              <span className="text-xs font-medium text-green-500">
-                Powered by AI Technology
-              </span>
-            </div>
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 shadow-lg hover:bg-primary/20 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+            <Sparkles className="w-3 h-3 text-primary mr-2 animate-pulse" />
+            <span className="text-xs font-medium text-primary">
+              Powered by AI Technology
+            </span>
           </div>
+        </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-6 leading-tight px-2">
-            Find the Right <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Internship</span> for You with AI
-          </h1>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-6 leading-tight hero-title-mobile">
+          Find the Right <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Internship</span> for You with AI
+        </h1>
 
-          <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-4">
-            Empowering students to discover meaningful career opportunities with intelligent recommendations tailored to your skills and aspirations.
-          </p>
+        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed hero-subtitle-mobile">
+          Empowering students to discover meaningful career opportunities with intelligent recommendations tailored to your skills and aspirations.
+        </p>
 
-          <div className="mb-8 sm:mb-8 px-4">
-            <Button 
-              size="lg" 
-              onClick={onGetStartedClick}
-              className="bg-foreground hover:bg-foreground/90 active:bg-foreground/80 text-background px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 group"
-            >
-              Get Started
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-            </Button>
-          </div>
+        <div className="mb-8 sm:mb-8">
+          <Button 
+            size="lg" 
+            onClick={onGetStartedClick}
+            className="bg-foreground hover:bg-foreground/90 active:bg-foreground/80 text-background px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 group"
+          >
+            Get Started
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+          </Button>
         </div>
       </div>
     </section>

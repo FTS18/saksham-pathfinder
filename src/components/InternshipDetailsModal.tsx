@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Heart } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
@@ -253,84 +253,152 @@ export const InternshipDetailsModal = ({
     }
   };
 
+  if (!isOpen) return null;
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div>{internship.title}</div>
-                <div className="text-sm font-normal text-muted-foreground">{internship.company}</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleWishlistToggle}
-                className="w-8 h-8 p-0"
-              >
-                <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-muted-foreground'}`} />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowReadingAssistant(!showReadingAssistant)}
-                className="text-xs"
-              >
-                🔊 Read Aloud
-              </Button>
-            </div>
-          </DialogTitle>
-          {showReadingAssistant && (
-            <ReadingAssistant text={getModalText()} isVisible={showReadingAssistant} />
-          )}
-        </DialogHeader>
+      <DialogContent className="!max-w-2xl !w-[95vw] md:!w-[768px] !max-h-[90vh] !h-[90vh] md:!h-auto flex flex-col p-0 md:rounded-lg rounded-none !fixed !top-[50%] !left-[50%] !translate-x-[-50%] !translate-y-[-50%] z-[100] bg-background border [&>button]:hidden mobile-modal landscape-modal">
+        {/* Left Navigation Arrow */}
+        {onPrev && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onPrev}
+            disabled={currentIndex === 0}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 shadow-xl hover:bg-white hover:scale-110 transition-all duration-200 flex items-center justify-center"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-700" />
+          </Button>
+        )}
+        
+        {/* Right Navigation Arrow */}
+        {onNext && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onNext}
+            disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-[60] w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 shadow-xl hover:bg-white hover:scale-110 transition-all duration-200 flex items-center justify-center"
+          >
+            <ChevronRight className="w-6 h-6 text-gray-700" />
+          </Button>
+        )}
 
-        <div className="space-y-6">
+        {/* Fixed Header */}
+        <div className="sticky top-0 bg-background border-b p-4 z-10 shrink-0">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold flex items-center justify-between">
+              <div className="flex items-start gap-3 flex-1">
+                <div className="text-left">
+                  <div className="text-lg font-bold">{internship.title}</div>
+                  <div className="text-sm font-normal text-muted-foreground">{internship.company}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {onPrev && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onPrev}
+                    className="w-8 h-8 p-0"
+                    disabled={currentIndex === 0}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                )}
+                {onNext && totalCount && currentIndex !== undefined && (
+                  <span className="text-xs text-muted-foreground px-2">
+                    {currentIndex + 1} / {totalCount}
+                  </span>
+                )}
+                {onNext && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onNext}
+                    className="w-8 h-8 p-0"
+                    disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleWishlistToggle}
+                  className={`w-8 h-8 p-0 transition-all duration-200 ${isWishlisted ? 'bg-primary/10' : ''}`}
+                >
+                  {isWishlisted ? (
+                    <Bookmark className="w-4 h-4 text-primary fill-current" />
+                  ) : (
+                    <Bookmark className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowReadingAssistant(!showReadingAssistant)}
+                  className="w-8 h-8 p-0"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="w-8 h-8 p-0"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </DialogTitle>
+            {showReadingAssistant && (
+              <ReadingAssistant text={getModalText()} isVisible={showReadingAssistant} />
+            )}
+          </DialogHeader>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-4 text-left min-h-0">
           {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="w-4 h-4 text-primary" />
-              <span>{locationText}</span>
+              <span className="text-muted-foreground">{locationText}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <IndianRupee className="w-4 h-4 text-primary" />
-              <span>{internship.stipend}</span>
+              <span className="text-muted-foreground">{internship.stipend}</span>
             </div>
             {internship.duration && (
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="w-4 h-4 text-primary" />
-                <span>{internship.duration}</span>
+                <span className="text-muted-foreground">{internship.duration}</span>
               </div>
             )}
             {internship.work_mode && (
               <div className="flex items-center gap-2 text-sm">
                 <Briefcase className="w-4 h-4 text-primary" />
-                <span>{internship.work_mode}</span>
+                <span className="text-muted-foreground">{internship.work_mode}</span>
               </div>
             )}
           </div>
 
           {/* Description */}
           {internship.description && (
-            <div>
-              <h3 className="font-semibold mb-2">{t.description}</h3>
-              <p className="text-sm text-muted-foreground">{internship.description}</p>
+            <div className="text-left">
+              <h3 className="font-semibold mb-2 text-left">{t.description}</h3>
+              <p className="text-sm text-muted-foreground text-left">{internship.description}</p>
             </div>
           )}
 
           {/* Responsibilities */}
           {internship.responsibilities && internship.responsibilities.length > 0 && (
-            <div>
-              <h3 className="font-semibold mb-2">{t.responsibilities}</h3>
+            <div className="text-left">
+              <h3 className="font-semibold mb-2 text-left">{t.responsibilities}</h3>
               <ul className="list-disc list-inside space-y-1">
                 {internship.responsibilities.map((responsibility, index) => (
-                  <li key={index} className="text-sm text-muted-foreground">{responsibility}</li>
+                  <li key={index} className="text-sm text-muted-foreground text-left">{responsibility}</li>
                 ))}
               </ul>
             </div>
@@ -338,11 +406,22 @@ export const InternshipDetailsModal = ({
 
           {/* Skills */}
           {internship.required_skills && internship.required_skills.length > 0 && (
-            <div>
-              <h3 className="font-semibold mb-2">{t.skills}</h3>
-              <div className="flex flex-wrap gap-2">
+            <div className="text-left">
+              <h3 className="font-semibold mb-2 text-left">{t.skills}</h3>
+              <div className="flex flex-wrap gap-2 justify-start">
                 {internship.required_skills.map((skill, index) => (
-                  <Badge key={index} variant="secondary">{skill}</Badge>
+                  <a 
+                    key={index}
+                    href={`/skill/${encodeURIComponent(skill.toLowerCase())}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Badge 
+                      variant="secondary" 
+                      className="cursor-pointer hover:bg-primary/10 transition-colors"
+                    >
+                      {skill}
+                    </Badge>
+                  </a>
                 ))}
               </div>
             </div>
@@ -350,9 +429,9 @@ export const InternshipDetailsModal = ({
 
           {/* Perks */}
           {internship.perks && internship.perks.length > 0 && (
-            <div>
-              <h3 className="font-semibold mb-2">{t.perks}</h3>
-              <div className="flex flex-wrap gap-2">
+            <div className="text-left">
+              <h3 className="font-semibold mb-2 text-left">{t.perks}</h3>
+              <div className="flex flex-wrap gap-2 justify-start">
                 {internship.perks.map((perk, index) => (
                   <Badge key={index} variant="outline" className="bg-green-50 text-green-700 border-green-200">
                     {perk}
@@ -394,38 +473,7 @@ export const InternshipDetailsModal = ({
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <Button 
-              onClick={generatePrepGuide}
-              disabled={loadingPrep}
-              variant="outline"
-              className="flex-1 rounded-full"
-            >
-              {loadingPrep ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  More
-                </>
-              )}
-            </Button>
-            <a 
-              href={internship.apply_link || '#'} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex-1"
-            >
-              <Button className="w-full bg-primary hover:bg-primary-dark text-white rounded-full py-3">
-                <span>{t.apply}</span>
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Button>
-            </a>
-          </div>
+
           
           {/* Interview Preparation Guide */}
           {prepGuide && (
@@ -501,6 +549,41 @@ export const InternshipDetailsModal = ({
               </CardContent>
             </Card>
           )}
+        </div>
+        
+        {/* Fixed Footer */}
+        <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-3 z-20 shrink-0">
+          <div className="flex gap-3 button-group-mobile">
+            <Button 
+              onClick={generatePrepGuide}
+              disabled={loadingPrep}
+              variant="outline"
+              className="flex-1 rounded-full h-12"
+            >
+              {loadingPrep ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  More
+                </>
+              )}
+            </Button>
+            <a 
+              href={internship.apply_link || '#'} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex-1"
+            >
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-full h-12">
+                <span>{t.apply}</span>
+                <ExternalLink className="w-4 h-4 ml-2" />
+              </Button>
+            </a>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

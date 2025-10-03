@@ -23,6 +23,7 @@ import { ShareProfileBanner } from '@/components/ShareProfileBanner';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { DeleteAccountButton } from '@/components/DeleteAccountButton';
 import { ResumeUploader } from '@/components/ResumeUploader';
+import { ProfileSkeleton } from '@/components/ProfileSkeleton';
 
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
@@ -121,7 +122,7 @@ const Profile = () => {
   const [availableSkills, setAvailableSkills] = useState<string[]>([]);
   const [availableSectors, setAvailableSectors] = useState<string[]>([]);
   const [showShareBanner, setShowShareBanner] = useState(false);
-  const [activeTab, setActiveTab] = useState<'personal' | 'account' | 'preferences'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'account' | 'preferences' | 'resume'>('personal');
 
 
 
@@ -500,79 +501,113 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="container mx-auto p-6">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="max-w-3xl mx-auto px-6 py-8">
+          <div className="mb-8">
+            <Breadcrumbs />
+          </div>
+          <ProfileSkeleton />
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl pt-16 md:pt-20">
-      <Breadcrumbs />
-      <div className="space-y-6">
-        {/* Sticky Header */}
-        <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b">
-          <div className="flex items-center justify-between py-4">
-            <h1 className="text-3xl font-bold">Settings</h1>
-            <div className="flex gap-2">
-              {profile.username && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowShareBanner(true)}
-                  className="w-8 h-8 p-0"
-                >
-                  <Share2 className="w-4 h-4" />
+    <div className="min-h-screen bg-background">
+      <div className="max-w-3xl mx-auto px-6 py-8">
+        <div className="mb-8">
+          <Breadcrumbs />
+        </div>
+        <div className="space-y-6">
+        {/* Fixed Header with Navigation */}
+        <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b">
+          <div className="max-w-3xl mx-auto px-6">
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-4">
+                {profile.username && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowShareBanner(true)}
+                    className="h-9 px-3"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
+                  </Button>
+                )}
+              </div>
+              
+              <h1 className="text-2xl font-bold text-center flex-1">
+                Profile Settings
+              </h1>
+              
+              <div className="flex items-center gap-2">
+                <Button onClick={saveProfile} disabled={saving} size="sm" className="h-9 px-4">
+                  {saving ? 'Saving...' : 'Save'}
                 </Button>
-              )}
-              <Button onClick={saveProfile} disabled={saving} className="rounded-full">
-                {saving ? 'Saving...' : 'Save Profile'}
-              </Button>
+              </div>
             </div>
-          </div>
-          
-          {/* Section Navigation */}
-          <div className="overflow-x-auto pb-2">
-            <div className="flex gap-4 min-w-max">
-              <button 
-                onClick={() => setActiveTab('personal')}
-                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                  activeTab === 'personal' 
-                    ? 'border-primary text-primary' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Personal Info
-              </button>
-              <button 
-                onClick={() => setActiveTab('account')}
-                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                  activeTab === 'account' 
-                    ? 'border-primary text-primary' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Account
-              </button>
-              <button 
-                onClick={() => setActiveTab('preferences')}
-                className={`px-4 py-2 border-b-2 font-medium transition-colors whitespace-nowrap ${
-                  activeTab === 'preferences' 
-                    ? 'border-primary text-primary' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Preferences
-              </button>
+            
+            {/* Section Navigation */}
+            <div className="flex justify-center pb-4">
+              <div className="flex gap-1 p-1 bg-muted rounded-lg">
+                <button 
+                  onClick={() => setActiveTab('personal')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    activeTab === 'personal' 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background'
+                  }`}
+                >
+                  Personal
+                </button>
+                <button 
+                  onClick={() => setActiveTab('account')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    activeTab === 'account' 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background'
+                  }`}
+                >
+                  Account
+                </button>
+                <button 
+                  onClick={() => setActiveTab('preferences')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    activeTab === 'preferences' 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background'
+                  }`}
+                >
+                  Preferences
+                </button>
+                <button 
+                  onClick={() => setActiveTab('resume')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    activeTab === 'resume' 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-background'
+                  }`}
+                >
+                  Resume
+                </button>
+              </div>
             </div>
           </div>
         </div>
+        
+        {/* Content with top padding for fixed header */}
+        <div className="pt-32 space-y-6">
 
         {/* Personal Info Tab Content */}
         {activeTab === 'personal' && (
           <>
         {/* Basic Info */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <User className="w-5 h-5 text-primary" />
               Basic Information
             </CardTitle>
           </CardHeader>
@@ -714,16 +749,16 @@ const Profile = () => {
         </Card>
 
         {/* Sectors - Now comes first */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Sectors</CardTitle>
+            <CardTitle className="text-center">Sectors</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Selected Sectors Tags */}
             {profile.sectors.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {profile.sectors.map((sector, index) => (
-                  <Badge key={index} variant="default" className="rounded-none cursor-pointer">
+                {profile.sectors.map((sector) => (
+                  <Badge key={sector} variant="default" className="rounded-none cursor-pointer">
                     {sector}
                     <X
                       className="w-3 h-3 ml-1 cursor-pointer hover:text-destructive"
@@ -752,9 +787,9 @@ const Profile = () => {
         </Card>
 
         {/* Skills - Now comes after sectors */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Skills</CardTitle>
+            <CardTitle className="text-center">Skills</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {profile.sectors.length === 0 ? (
@@ -766,8 +801,8 @@ const Profile = () => {
                 {/* Selected Skills Tags */}
                 {profile.skills.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {profile.skills.map((skill, index) => (
-                      <Badge key={index} variant="secondary" className="rounded-none cursor-pointer">
+                    {profile.skills.map((skill) => (
+                      <Badge key={skill} variant="secondary" className="rounded-none cursor-pointer">
                         {skill}
                         <X
                           className="w-3 h-3 ml-1 cursor-pointer hover:text-destructive"
@@ -809,10 +844,10 @@ const Profile = () => {
         </Card>
 
         {/* Education */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <GraduationCap className="w-5 h-5 text-primary" />
               Education
             </CardTitle>
           </CardHeader>
@@ -838,7 +873,7 @@ const Profile = () => {
             </div>
             <div className="space-y-2">
               {profile.education.map((edu, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={`${edu.institution}-${edu.degree}-${index}`} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <div className="font-medium">{edu.degree}</div>
                     <div className="text-sm text-muted-foreground">{edu.institution} • {edu.year}</div>
@@ -857,10 +892,10 @@ const Profile = () => {
         </Card>
 
         {/* Experience */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <Briefcase className="w-5 h-5 text-primary" />
               Experience
             </CardTitle>
           </CardHeader>
@@ -890,7 +925,7 @@ const Profile = () => {
             </div>
             <div className="space-y-2">
               {profile.experience.map((exp, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={`${exp.company}-${exp.title}-${index}`} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <div className="font-medium">{exp.title}</div>
                     <div className="text-sm text-muted-foreground">{exp.company} • {exp.duration}</div>
@@ -909,10 +944,10 @@ const Profile = () => {
         </Card>
 
         {/* Social Links */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LinkIcon className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <LinkIcon className="w-5 h-5 text-primary" />
               Social Links
             </CardTitle>
           </CardHeader>
@@ -964,46 +999,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Resume Upload & Scanning */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="w-5 h-5" />
-              Resume & Profile Import
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <ResumeUploader 
-              onDataExtracted={(data) => {
-                setProfile(prev => ({
-                  ...prev,
-                  username: prev.username || data.name?.toLowerCase().replace(/[^a-z0-9]/g, '') || prev.username,
-                  email: prev.email || data.email || prev.email,
-                  phone: prev.phone || data.phone || prev.phone,
-                  skills: [...new Set([...prev.skills, ...data.skills])],
-                  socialLinks: {
-                    ...prev.socialLinks,
-                    linkedin: prev.socialLinks.linkedin || data.linkedin || prev.socialLinks.linkedin,
-                    github: prev.socialLinks.github || data.github || prev.socialLinks.github
-                  }
-                }));
-              }}
-            />
-            
-            <div className="border-t pt-4">
-              <Label>Manual Resume URL</Label>
-              <Input
-                value={profile.resumeURL}
-                onChange={(e) => setProfile(prev => ({ ...prev, resumeURL: e.target.value }))}
-                placeholder="Or paste resume URL here"
-                className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                Upload your resume to Google Drive and paste the shareable link here
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+
 
 
 
@@ -1014,10 +1010,10 @@ const Profile = () => {
         {activeTab === 'account' && (
           <>
         {/* Basic Account Info */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <User className="w-5 h-5 text-primary" />
               Account Information
             </CardTitle>
           </CardHeader>
@@ -1048,9 +1044,9 @@ const Profile = () => {
         </Card>
 
         {/* Email Verification */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Email Verification</CardTitle>
+            <CardTitle className="text-center">Email Verification</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -1080,9 +1076,9 @@ const Profile = () => {
         </Card>
 
         {/* Password Management */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Password Management</CardTitle>
+            <CardTitle className="text-center">Password Management</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {currentUser?.providerData[0]?.providerId === 'password' ? (
@@ -1169,10 +1165,10 @@ const Profile = () => {
         </Card>
 
         {/* Linked Accounts */}
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LinkIcon className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-center justify-center">
+              <LinkIcon className="w-5 h-5 text-primary" />
               Linked Accounts
             </CardTitle>
           </CardHeader>
@@ -1214,9 +1210,9 @@ const Profile = () => {
         </Card>
 
         {/* Delete Account */}
-        <Card className="border-red-200 dark:border-red-800">
+        <Card className="glass-card border-red-200 dark:border-red-800">
           <CardHeader>
-            <CardTitle className="text-red-600 dark:text-red-400">Danger Zone</CardTitle>
+            <CardTitle className="text-red-600 dark:text-red-400 text-center">Danger Zone</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="p-4 border border-red-200 rounded-lg bg-red-50 dark:bg-red-950/20">
@@ -1235,13 +1231,59 @@ const Profile = () => {
           </>
         )}
 
+        {/* Resume Tab Content */}
+        {activeTab === 'resume' && (
+          <>
+            {/* Resume Upload & Scanning */}
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-center justify-center">
+                  <Upload className="w-5 h-5 text-primary" />
+                  Resume & Profile Import
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <ResumeUploader 
+                  onDataExtracted={(data) => {
+                    setProfile(prev => ({
+                      ...prev,
+                      username: prev.username || data.name?.toLowerCase().replace(/[^a-z0-9]/g, '') || prev.username,
+                      email: prev.email || data.email || prev.email,
+                      phone: prev.phone || data.phone || prev.phone,
+                      skills: [...new Set([...prev.skills, ...data.skills])],
+                      socialLinks: {
+                        ...prev.socialLinks,
+                        linkedin: prev.socialLinks.linkedin || data.linkedin || prev.socialLinks.linkedin,
+                        github: prev.socialLinks.github || data.github || prev.socialLinks.github
+                      }
+                    }));
+                  }}
+                />
+                
+                <div className="border-t pt-4">
+                  <Label>Manual Resume URL</Label>
+                  <Input
+                    value={profile.resumeURL}
+                    onChange={(e) => setProfile(prev => ({ ...prev, resumeURL: e.target.value }))}
+                    placeholder="Or paste resume URL here"
+                    className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Upload your resume to Google Drive and paste the shareable link here
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
+
         {/* Preferences Tab Content */}
         {activeTab === 'preferences' && (
           <>
             {/* Theme Settings */}
-            <Card>
+            <Card className="glass-card">
               <CardHeader>
-                <CardTitle>Theme & Appearance</CardTitle>
+                <CardTitle className="text-center">Theme & Appearance</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
@@ -1307,9 +1349,9 @@ const Profile = () => {
             </Card>
 
             {/* Language Settings */}
-            <Card>
+            <Card className="glass-card">
               <CardHeader>
-                <CardTitle>Language & Region</CardTitle>
+                <CardTitle className="text-center">Language & Region</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -1344,6 +1386,8 @@ const Profile = () => {
         )}
 
 
+        </div>
+        </div>
       </div>
       
       {showShareBanner && (

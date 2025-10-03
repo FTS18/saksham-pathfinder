@@ -1,0 +1,93 @@
+/* Mobile-first responsive fixes */
+
+/* Fix horizontal scrolling on mobile */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Ensure all containers respect viewport width */
+* {
+  box-sizing: border-box;
+}
+
+/* Mobile navigation fixes */
+@media (max-width: 768px) {
+  /* Fix sidebar overlapping content */
+  .mobile-sidebar-open {
+    overflow: hidden;
+  }
+  
+  /* Ensure proper spacing on mobile */
+  .mobile-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    min-width: 0;
+  }
+  
+  /* Fix card layouts on small screens */
+  .internship-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Fix filter dropdowns on mobile */
+  .mobile-filters {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  /* Fix modal sizing on mobile */
+  .mobile-modal {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Small mobile devices (320px and up) */
+@media (max-width: 480px) {
+  /* Reduce padding on very small screens */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Stack buttons vertically on small screens */
+  .button-group-mobile {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .button-group-mobile > * {
+    width: 100%;
+  }
+  
+  /* Fix text sizing on small screens */
+  .hero-title-mobile {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle-mobile {
+    font-size: 0.875rem;
+  }
+}
+
+/* Landscape mobile fixes */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .landscape-compact {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Fix modal height in landscape */
+  .landscape-modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}

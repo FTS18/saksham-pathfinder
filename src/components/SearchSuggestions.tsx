@@ -1,87 +1,150 @@
-import { useState, useEffect, useRef } from 'react';
-import { Search, Building, MapPin } from 'lucide-react';
-
-let internshipsData: any[] = [];
-
-// Load internships data
-const loadInternshipsData = async () => {
-  if (internshipsData.length === 0) {
-    try {
-      const response = await fetch('/internships.json');
-      if (response.ok) {
-        internshipsData = await response.json();
-      }
-    } catch (error) {
-      console.warn('Failed to load internships for suggestions:', error);
-    }
-  }
-};
-
-// Initialize data loading
-loadInternshipsData();
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { Search, Building, MapPin, Briefcase, Code, Target } from 'lucide-react';
+import { cache, CACHE_KEYS } from '@/lib/cache';
 
 interface SearchSuggestionsProps {
   query: string;
-  onSelect: (suggestion: string) => void;
+  onSelect: (suggestion: Suggestion) => void;
+  onSearch: (query: string) => void;
   isVisible: boolean;
-  onSearch?: (query: string) => void;
 }
 
 interface Suggestion {
-  type: string;
+  type: 'company' | 'location' | 'title' | 'skill' | 'sector';
   value: string;
   count?: number;
+  matchCount?: number;
 }
 
-export const SearchSuggestions = ({ query, onSelect, isVisible, onSearch }: SearchSuggestionsProps) => {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+interface InternshipData {
+  company: string;
+  location: string | { city: string };
+  title: string;
+  required_skills: string[];
+  sector_tags: string[];
+}
+
+export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: SearchSuggestionsProps) => {
+  const [internshipsData, setInternshipsData] = useState<InternshipData[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!query || !query.trim() || query.length < 2) {
-      setSuggestions([]);
-      setSelectedIndex(-1);
-      return;
+    const loadData = async () => {
+      try {
+        const data = await cache.fetchWithCache(
+          CACHE_KEYS.INTERNSHIPS,
+          async () => {
+            const response = await fetch('/internships.json');
+            if (!response.ok) throw new Error('Failed to fetch');
+            return response.json();
+          },
+          5 * 60 * 1000
+        );
+        setInternshipsData(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.warn('Failed to load internships for suggestions:', error);
+        // Try direct fetch as fallback
+        try {
+          const response = await fetch('/internships.json');
+          if (response.ok) {
+            const data = await response.json();
+            setInternshipsData(Array.isArray(data) ? data : []);
+          }
+        } catch (fallbackError) {
+          console.error('Fallback fetch also failed:', fallbackError);
+        }
+      }
+    };
+    loadData();
+  }, []);
+
+  const filteredSuggestions = useMemo(() => {
+    if (!query || query.trim().length < 2 || internshipsData.length === 0) {
+      return [];
     }
 
-    // Ensure data is loaded
-    if (internshipsData.length === 0) {
-      loadInternshipsData().then(() => {
-        // Retry after data is loaded
-        if (internshipsData.length > 0) {
-          generateSuggestions();
+    const queryLower = query.toLowerCase().trim();
+    const suggestions: Suggestion[] = [];
+    
+    const companies = new Map<string, number>();
+    const locations = new Map<string, number>();
+    const titles = new Map<string, number>();
+    const skills = new Map<string, number>();
+    const sectors = new Map<string, number>();
+
+    internshipsData.forEach(internship => {
+      if (internship.company?.toLowerCase().includes(queryLower)) {
+        companies.set(internship.company, (companies.get(internship.company) || 0) + 1);
+      }
+      
+      const location = typeof internship.location === 'string' 
+        ? internship.location 
+        : internship.location?.city || '';
+      if (location.toLowerCase().includes(queryLower)) {
+        locations.set(location, (locations.get(location) || 0) + 1);
+      }
+      
+      if (internship.title?.toLowerCase().includes(queryLower)) {
+        titles.set(internship.title, (titles.get(internship.title) || 0) + 1);
+      }
+      
+      (internship.required_skills || []).forEach(skill => {
+        if (skill.toLowerCase().includes(queryLower)) {
+          skills.set(skill, (skills.get(skill) || 0) + 1);
         }
       });
-      return;
-    }
+      
+      (internship.sector_tags || []).forEach(sector => {
+        if (sector.toLowerCase().includes(queryLower)) {
+          sectors.set(sector, (sectors.get(sector) || 0) + 1);
+        }
+      });
+    });
 
-    generateSuggestions();
-    setSelectedIndex(-1);
-  }, [query]);
+    const addSuggestions = (map: Map<string, number>, type: Suggestion['type'], limit: number) => {
+      Array.from(map.entries())
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, limit)
+        .forEach(([value, count]) => {
+          suggestions.push({ type, value, matchCount: count });
+        });
+    };
 
-  // Handle keyboard navigation
+    addSuggestions(companies, 'company', 3);
+    addSuggestions(titles, 'title', 2);
+    addSuggestions(locations, 'location', 2);
+    addSuggestions(skills, 'skill', 3);
+    addSuggestions(sectors, 'sector', 2);
+
+    return suggestions.slice(0, 8);
+  }, [query, internshipsData]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isVisible || suggestions.length === 0) return;
+      if (!isVisible || filteredSuggestions.length === 0) return;
       
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
           setSelectedIndex(prev => 
-            prev < suggestions.length - 1 ? prev + 1 : 0
+            prev < filteredSuggestions.length - 1 ? prev + 1 : 0
           );
           break;
         case 'ArrowUp':
           e.preventDefault();
           setSelectedIndex(prev => 
-            prev > 0 ? prev - 1 : suggestions.length - 1
+            prev > 0 ? prev - 1 : filteredSuggestions.length - 1
           );
           break;
         case 'Enter':
           e.preventDefault();
-          if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-            handleSuggestionClick(suggestions[selectedIndex]);
+          e.stopPropagation();
+          if (selectedIndex >= 0 && selectedIndex < filteredSuggestions.length) {
+            const suggestion = filteredSuggestions[selectedIndex];
+            onSelect(suggestion);
+          } else if (query.trim()) {
+            onSearch(query.trim());
           }
           break;
         case 'Escape':
@@ -92,106 +155,52 @@ export const SearchSuggestions = ({ query, onSelect, isVisible, onSearch }: Sear
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isVisible, suggestions, selectedIndex]);
+  }, [isVisible, filteredSuggestions, selectedIndex, query, onSelect, onSearch]);
 
-  const generateSuggestions = () => {
-    const companies = [...new Set(internshipsData.map(i => i.company))];
-    const locations = [...new Set(internshipsData.map(i => i.location))];
-    const titles = [...new Set(internshipsData.map(i => i.title))];
-    const skills = [...new Set(internshipsData.flatMap(i => i.required_skills || []))];
-    const sectors = [...new Set(internshipsData.flatMap(i => i.sector_tags || []))];
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [filteredSuggestions]);
 
-    // Group similar companies
-    const groupCompanies = (companies: string[]) => {
-      const groups: { [key: string]: string[] } = {};
-      companies.forEach(company => {
-        const baseCompany = company.toLowerCase()
-          .replace(/\s+(india|limited|ltd|inc|corp|pvt|private|technologies|tech|solutions|services|consulting|consultancy)\b/g, '')
-          .replace(/\s+/g, ' ')
-          .trim();
-        if (!groups[baseCompany]) groups[baseCompany] = [];
-        groups[baseCompany].push(company);
-      });
-      return groups;
-    };
-
-    const companyGroups = groupCompanies(companies);
-    const companyMatches = Object.entries(companyGroups)
-      .filter(([base, variants]) => base.includes(query.toLowerCase()) || variants.some(v => v.toLowerCase().includes(query.toLowerCase())))
-      .slice(0, 3)
-      .map(([base, variants]) => ({ 
-        type: 'company', 
-        value: variants[0], // Show main company name
-        count: variants.length > 1 ? variants.length : undefined
-      }));
-
-    const locationMatches = locations
-      .filter(l => l && l.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 2)
-      .map(l => ({ type: 'location', value: l }));
-
-    const titleMatches = titles
-      .filter(t => t && t.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 2)
-      .map(t => ({ type: 'title', value: t }));
-
-    let skillMatches = skills
-      .filter(s => s && s.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 2)
-      .map(s => ({ type: 'skill', value: s }));
-
-    // Filter out skills that are also titles
-    skillMatches = skillMatches.filter(sm => !titleMatches.some(tm => tm.value.toLowerCase() === sm.value.toLowerCase()));
-
-    const sectorMatches = sectors
-      .filter(s => s && s.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 2)
-      .map(s => ({ type: 'sector', value: s }));
-
-    setSuggestions([...companyMatches, ...locationMatches, ...titleMatches, ...skillMatches, ...sectorMatches]);
-  };
-
-  const handleSuggestionClick = (suggestion: Suggestion) => {
-    if (suggestion.type === 'skill') {
-      window.location.href = `/skill/${encodeURIComponent(suggestion.value)}`;
-    } else if (suggestion.type === 'sector') {
-      window.location.href = `/sector/${encodeURIComponent(suggestion.value)}`;
-    } else if (suggestion.type === 'company') {
-      window.location.href = `/company/${encodeURIComponent(suggestion.value.toLowerCase())}`;
-    } else if (suggestion.type === 'location') {
-      window.location.href = `/city/${encodeURIComponent(suggestion.value.toLowerCase())}`;
-    } else if (suggestion.type === 'title') {
-      window.location.href = `/title/${encodeURIComponent(suggestion.value)}`;
-    } else {
-      // For titles, just select the suggestion
-      onSelect(suggestion.value);
+  const getIcon = (type: string) => {
+    switch (type) {
+      case 'company': return <Building className="w-4 h-4 text-blue-500" />;
+      case 'location': return <MapPin className="w-4 h-4 text-green-500" />;
+      case 'title': return <Briefcase className="w-4 h-4 text-purple-500" />;
+      case 'skill': return <Code className="w-4 h-4 text-orange-500" />;
+      case 'sector': return <Target className="w-4 h-4 text-red-500" />;
+      default: return <Search className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
-  if (!isVisible || suggestions.length === 0) return null;
+  if (!isVisible || filteredSuggestions.length === 0) {
+    return null;
+  }
 
   return (
     <div 
       ref={suggestionsRef}
-      className="absolute top-full left-0 right-0 bg-background border border-border rounded-md shadow-lg z-50 mt-1"
+      className="absolute top-full left-0 right-0 bg-background border border-border rounded-md shadow-lg z-50 mt-1 max-h-80 overflow-y-auto"
     >
-      {suggestions.map((suggestion, index) => (
+      {filteredSuggestions.map((suggestion, index) => (
         <button
-          key={index}
-          onClick={() => handleSuggestionClick(suggestion)}
-          className={`w-full px-3 py-2 text-left flex items-center gap-2 text-sm transition-colors ${
-            index === selectedIndex ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+          key={`${suggestion.type}-${suggestion.value}`}
+          onClick={() => onSelect(suggestion)}
+          className={`w-full px-3 py-2 text-left flex items-center gap-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
+            index === selectedIndex ? 'bg-primary/10 text-primary' : 'hover:bg-muted/50'
           }`}
         >
-          {suggestion.type === 'company' && <Building className="w-4 h-4 text-muted-foreground" />}
-          {suggestion.type === 'location' && <MapPin className="w-4 h-4 text-muted-foreground" />}
-          {suggestion.type === 'title' && <Search className="w-4 h-4 text-muted-foreground" />}
-          {suggestion.type === 'skill' && <Search className="w-4 h-4 text-primary" />}
-          <span>{suggestion.value}</span>
-          {suggestion.count && suggestion.count > 1 && (
-            <span className="text-xs bg-primary/10 text-primary px-1 rounded">+{suggestion.count - 1}</span>
-          )}
-          <span className="text-xs text-muted-foreground ml-auto capitalize">{suggestion.type}</span>
+          {getIcon(suggestion.type)}
+          <div className="flex-1 min-w-0">
+            <div className="font-medium truncate">{suggestion.value}</div>
+            <div className="text-xs text-muted-foreground capitalize flex items-center gap-1">
+              {suggestion.type}
+              {suggestion.matchCount && suggestion.matchCount > 1 && (
+                <span className="bg-primary/20 text-primary px-1 rounded text-xs">
+                  {suggestion.matchCount} matches
+                </span>
+              )}
+            </div>
+          </div>
         </button>
       ))}
     </div>

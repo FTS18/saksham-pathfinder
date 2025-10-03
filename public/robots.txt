@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /admin-demo
-Disallow: /recruiter/
-Disallow: /dashboard/settings
-Disallow: /api/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /onboarding/
 
-Sitemap: https://sakshamai.com/sitemap.xml
+Sitemap: https://saksham-ai.netlify.app/sitemap.xml

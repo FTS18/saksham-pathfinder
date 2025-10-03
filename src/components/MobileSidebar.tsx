@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Briefcase, Info, Heart, Newspaper, BookOpen, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -7,6 +7,7 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import GoogleTranslate from './GoogleTranslate';
+import { GoogleTranslateErrorBoundary } from './GoogleTranslateErrorBoundary';
 
 export const MobileSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ export const MobileSidebar = () => {
   const { wishlist } = useWishlist();
   const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
@@ -40,6 +42,11 @@ export const MobileSidebar = () => {
     }
   };
 
+  const handleNavClick = (path: string) => {
+    setIsOpen(false);
+    navigate(path);
+  };
+
   const toggleLanguage = () => {
     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
     const currentLang = localStorage.getItem('selectedLanguage') || 'en';
@@ -58,8 +65,6 @@ export const MobileSidebar = () => {
 
   return (
     <>
-
-
       {/* Mobile Sidebar */}
       <div className={`md:hidden fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -70,10 +75,9 @@ export const MobileSidebar = () => {
             {/* User Profile */}
             {currentUser && (
               <div className="p-4 border-b border-border">
-                <Link 
-                  to={userType === 'recruiter' ? '/recruiter/dashboard' : '/profile'} 
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-3 hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
+                <button 
+                  onClick={() => handleNavClick(userType === 'recruiter' ? '/recruiter/dashboard' : '/profile')}
+                  className="w-full flex items-center space-x-3 hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     {currentUser.photoURL ? (
@@ -90,7 +94,7 @@ export const MobileSidebar = () => {
                       {userType || 'Student'}
                     </p>
                   </div>
-                </Link>
+                </button>
               </div>
             )}
 
@@ -100,17 +104,16 @@ export const MobileSidebar = () => {
                 {navLinks.map((link) => {
                   const IconComponent = link.icon;
                   return (
-                    <Link
+                    <button
                       key={link.href}
-                      to={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors ${
+                      onClick={() => handleNavClick(link.href)}
+                      className={`w-full flex items-center gap-3 px-3 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors ${
                         isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
                       }`}
                     >
                       <IconComponent className="w-5 h-5" />
                       {link.label}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
@@ -145,12 +148,8 @@ export const MobileSidebar = () => {
               {/* Auth */}
               {!currentUser ? (
                 <div className="space-y-2">
-                  <Button asChild className="w-full">
-                    <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
-                  </Button>
-                  <Button variant="outline" asChild className="w-full">
-                    <Link to="/register" onClick={() => setIsOpen(false)}>Sign Up</Link>
-                  </Button>
+                  <Button onClick={() => handleNavClick('/login')} className="w-full">Login</Button>
+                  <Button variant="outline" onClick={() => handleNavClick('/register')} className="w-full">Sign Up</Button>
                 </div>
               ) : (
                 <Button
@@ -168,7 +167,9 @@ export const MobileSidebar = () => {
 
       {/* Hidden Google Translate */}
       <div className="hidden">
-        <GoogleTranslate />
+        <GoogleTranslateErrorBoundary>
+          <GoogleTranslate />
+        </GoogleTranslateErrorBoundary>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface BreadcrumbItem {
   label: string;
@@ -10,6 +10,7 @@ interface BreadcrumbItem {
 
 export const Breadcrumbs = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([]);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export const Breadcrumbs = () => {
       }
 
       const crumbs: BreadcrumbItem[] = [];
-      let currentPath = '';
+      let buildPath = '';
 
       // Add home
       crumbs.push({
@@ -33,7 +34,7 @@ export const Breadcrumbs = () => {
 
       // Generate breadcrumbs dynamically
       pathnames.forEach((segment, index) => {
-        currentPath += `/${segment}`;
+        buildPath += `/${segment}`;
         const isLast = index === pathnames.length - 1;
         
         // Smart label generation
@@ -44,13 +45,35 @@ export const Breadcrumbs = () => {
           label = 'News & Events';
         } else if (segment === 'search-results' || segment === 'live-jobs') {
           label = 'Search Results';
+        } else if (segment === 'u') {
+          label = 'Profile';
+        } else if (index > 0) {
+          // For URL parameters (like skill names), decode and format them
+          const decoded = decodeURIComponent(segment);
+          if (pathnames[index - 1] === 'skill') {
+            label = `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} Skills`;
+          } else if (pathnames[index - 1] === 'sector') {
+            label = `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} Sector`;
+          } else if (pathnames[index - 1] === 'city') {
+            label = `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} Jobs`;
+          } else if (pathnames[index - 1] === 'company') {
+            label = `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} Internships`;
+          } else if (pathnames[index - 1] === 'title') {
+            label = `${decoded} Positions`;
+          } else if (segment.includes('-')) {
+            // Convert kebab-case to Title Case
+            label = segment.split('-').map(word => 
+              word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+          } else {
+            // Capitalize first letter
+            label = decoded.charAt(0).toUpperCase() + decoded.slice(1);
+          }
         } else if (segment.includes('-')) {
           // Convert kebab-case to Title Case
           label = segment.split('-').map(word => 
             word.charAt(0).toUpperCase() + word.slice(1)
           ).join(' ');
-        } else if (segment === 'u') {
-          label = 'Profile';
         } else {
           // Capitalize first letter
           label = segment.charAt(0).toUpperCase() + segment.slice(1);
@@ -58,7 +81,7 @@ export const Breadcrumbs = () => {
         
         crumbs.push({
           label,
-          path: currentPath,
+          path: buildPath,
           isLast
         });
       });
@@ -72,19 +95,19 @@ export const Breadcrumbs = () => {
   if (breadcrumbs.length === 0) return null;
 
   return (
-    <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-6 px-4 pt-2">
+    <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-1 px-4">
       {breadcrumbs.map((crumb, index) => (
         <div key={crumb.path} className="flex items-center">
           {index > 0 && <ChevronRight className="w-4 h-4 mx-1" />}
           {crumb.isLast ? (
             <span className="text-foreground font-medium">{crumb.label}</span>
           ) : (
-            <Link 
-              to={crumb.path} 
-              className="hover:text-foreground transition-colors font-medium"
+            <button 
+              onClick={() => navigate(crumb.path)}
+              className="hover:text-foreground transition-colors font-medium text-left"
             >
               {crumb.label}
-            </Link>
+            </button>
           )}
         </div>
       ))}

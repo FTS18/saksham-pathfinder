@@ -61,7 +61,8 @@ export class FirestoreService {
   
   static async getInternshipsByCity(city: string, pageSize = 50) {
     try {
-      const q = query(
+      // Try with orderBy first
+      let q = query(
         collection(db, 'internships'),
         where('location', '==', city),
         orderBy('posted_date', 'desc'),
@@ -74,25 +75,48 @@ export class FirestoreService {
         ...doc.data()
       }));
     } catch (error) {
-      console.error('Error fetching internships by city:', error);
-      throw error;
+      console.error('Error with ordered query, trying simple query:', error);
+      // Fallback to simple query without orderBy
+      try {
+        const q = query(
+          collection(db, 'internships'),
+          where('location', '==', city),
+          limit(pageSize)
+        );
+        
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      } catch (fallbackError) {
+        console.error('Error fetching internships by city:', fallbackError);
+        throw fallbackError;
+      }
     }
   }
   
   static async getInternshipsBySkill(skill: string, pageSize = 50) {
     try {
+      // Try simple query first to avoid index requirements
       const q = query(
         collection(db, 'internships'),
         where('required_skills', 'array-contains', skill),
-        orderBy('posted_date', 'desc'),
         limit(pageSize)
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      const results = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      
+      // Sort by posted_date in memory if available
+      return results.sort((a: any, b: any) => {
+        const dateA = a.posted_date?.toDate?.() || new Date(a.posted_date || 0);
+        const dateB = b.posted_date?.toDate?.() || new Date(b.posted_date || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
     } catch (error) {
       console.error('Error fetching internships by skill:', error);
       throw error;
@@ -114,7 +138,60 @@ export class FirestoreService {
         ...doc.data()
       }));
     } catch (error) {
-      console.error('Error fetching internships by company:', error);
+      console.error('Error with ordered query, trying simple query:', error);
+      try {
+        const q = query(
+          collection(db, 'internships'),
+          where('company', '==', company),
+          limit(pageSize)
+        );
+        
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      } catch (fallbackError) {
+        console.error('Error fetching internships by company:', fallbackError);
+        throw fallbackError;
+      }
+    }
+  }
+  
+  static async getInternshipsBySector(sector: string, pageSize = 50) {
+    try {
+      const q = query(
+        collection(db, 'internships'),
+        where('sector_tags', 'array-contains', sector),
+        limit(pageSize)
+      );
+      
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error fetching internships by sector:', error);
+      throw error;
+    }
+  }
+  
+  static async getInternshipsByTitle(title: string, pageSize = 50) {
+    try {
+      const q = query(
+        collection(db, 'internships'),
+        where('title', '==', title),
+        limit(pageSize)
+      );
+      
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error fetching internships by title:', error);
       throw error;
     }
   }

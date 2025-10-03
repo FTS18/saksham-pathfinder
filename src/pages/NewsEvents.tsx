@@ -1,26 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Bell, ExternalLink, Calendar, Users } from 'lucide-react';
-import { Breadcrumbs } from '../components/Breadcrumbs';
+import { PageHeader } from '../components/StickyBreadcrumbHeader';
 
 export default function NewsEvents() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <Breadcrumbs />
-          <div className="mt-4">
-            <h1 className="text-3xl font-racing font-bold text-foreground mb-2">
-              News & Events
-            </h1>
-            <p className="text-muted-foreground">
-              Stay updated with the latest internship opportunities and career events
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-4 pt-8">
-
+      <PageHeader
+        title="News & Events"
+        subtitle="Stay updated with the latest internship opportunities and career events"
+      />
+      <div className="max-w-3xl mx-auto px-6 py-8">
         <div className="space-y-6">
           {/* PM Internship Scheme News */}
           <Card className="glass-card">

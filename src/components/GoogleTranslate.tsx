@@ -12,18 +12,30 @@ declare global {
 const GoogleTranslate = () => {
   const [currentLang, setCurrentLang] = useState('en');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
 
   useEffect(() => {
-    // Load Google Translate script
+    if (isInitializing) return;
+    
     const loadGoogleTranslate = () => {
-      if (window.google?.translate) {
+      if (window.google?.translate && !isInitializing) {
         initializeTranslate();
         return;
       }
 
+      // Check if script already exists
+      if (document.querySelector('script[src*="translate.google.com"]')) {
+        return;
+      }
+
+      setIsInitializing(true);
       const script = document.createElement('script');
       script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
+      script.onerror = () => {
+        setIsInitializing(false);
+        console.log('Failed to load Google Translate');
+      };
       document.head.appendChild(script);
 
       window.googleTranslateElementInit = () => {
@@ -32,7 +44,12 @@ const GoogleTranslate = () => {
     };
 
     const initializeTranslate = () => {
+      if (isLoaded || !window.google?.translate) return;
+      
       try {
+        const element = document.getElementById('google_translate_element');
+        if (!element || element.children.length > 0) return;
+        
         new window.google.translate.TranslateElement({
           pageLanguage: 'en',
           includedLanguages: 'en,hi',
@@ -41,8 +58,10 @@ const GoogleTranslate = () => {
           multilanguagePage: true
         }, 'google_translate_element');
         setIsLoaded(true);
+        setIsInitializing(false);
       } catch (error) {
-        console.log('Google Translate not available');
+        console.log('Google Translate initialization failed:', error);
+        setIsInitializing(false);
       }
     };
 
@@ -51,7 +70,7 @@ const GoogleTranslate = () => {
     // Check saved language
     const savedLang = localStorage.getItem('selectedLanguage') || 'en';
     setCurrentLang(savedLang);
-  }, []);
+  }, [isInitializing, isLoaded]);
 
   const translatePage = (targetLang: string) => {
     if (!isLoaded) return;

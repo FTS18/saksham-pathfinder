@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { Breadcrumbs } from '../components/Breadcrumbs';
+import { PageHeader } from '../components/StickyBreadcrumbHeader';
 
 interface LeaderboardUser {
   id: string;
@@ -68,6 +68,8 @@ export default function Referrals() {
       }
     } catch (error) {
       console.error('Error loading profile:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,8 +99,6 @@ export default function Referrals() {
       setLeaderboard(users);
     } catch (error) {
       console.error('Error loading leaderboard:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -180,12 +180,8 @@ export default function Referrals() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pt-16">
-        <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
-          <div className="max-w-3xl mx-auto px-4 py-4">
-            <Breadcrumbs />
-          </div>
-        </div>
+      <div className="min-h-screen bg-background">
+        <PageHeader title="Referral Program" />
         <div className="max-w-3xl mx-auto px-4 pt-8">
           <div className="text-center">Loading...</div>
         </div>
@@ -195,20 +191,11 @@ export default function Referrals() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <Breadcrumbs />
-          <div className="mt-4 text-center">
-            <h1 className="text-3xl font-racing font-bold text-foreground mb-2">
-              Referral Program
-            </h1>
-            <p className="text-muted-foreground">
-              Invite friends and earn rewards together!
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-3xl mx-auto px-4 pt-8">
+      <PageHeader
+        title="Referral Program"
+        subtitle="Invite friends and earn rewards together!"
+      />
+      <div className="max-w-3xl mx-auto px-6 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Your Referral Stats */}
@@ -296,10 +283,9 @@ export default function Referrals() {
                       return (
                         <div
                           key={user.id}
-                          className={`flex items-center gap-4 p-4 rounded-lg border transition-colors ${
-                            isCurrentUser 
+                          className={`flex items-center gap-4 p-4 rounded-lg border transition-colors ${isCurrentUser 
                               ? 'bg-primary/10 border-primary/20' 
-                              : 'bg-muted/30 hover:bg-muted/50'
+                              : 'bg-muted/50' 
                           }`}
                         >
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${getRankBadge(rank)}`}>

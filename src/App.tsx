@@ -1,17 +1,16 @@
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { useNavigationLoading } from "./hooks/useNavigationLoading";
 import { useTimeTracking } from "./hooks/useTimeTracking";
 import { useTimeBasedPoints } from "./hooks/useTimeBasedPoints";
+import { useThemeColor } from "./hooks/useThemeColor";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { OnboardingRedirect } from "@/components/OnboardingRedirect";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
@@ -21,50 +20,79 @@ import { CollapsibleSidebar } from "@/components/CollapsibleSidebar";
 import { AccessibilitySidebar } from "@/components/AccessibilitySidebar";
 import { MobileSidebar } from "@/components/MobileSidebar";
 import { TopNavigation } from "@/components/TopNavigation";
-import { RouteLoader } from "@/components/RouteLoader";
 import { Footer } from "@/components/Footer";
 import { Chatbot } from "@/components/Chatbot";
 import { EmailVerification } from "@/components/EmailVerification";
 import { useAuth } from "@/contexts/AuthContext";
 import "./accessibility.css";
 import "./styles/animations.css";
-import { lazy, Suspense } from "react";
-import { OptimizedLoader } from "@/components/OptimizedLoader";
+import "./styles/glass-effects.css";
+import "./styles/mobile-responsive.css";
+import "./utils/consoleWarningFixes";
+import { useState, useEffect } from "react";
+import { SEOHead } from "@/components/SEOHead";
+import { registerSW, preloadImages, requestNotificationPermission } from "@/utils/pwa";
 
-// Lazy load all pages for code splitting
-const Index = lazy(() => import("./pages/Index"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const About = lazy(() => import("./pages/About"));
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Wishlist = lazy(() => import("./pages/Wishlist"));
-const Profile = lazy(() => import("./pages/Profile"));
-const PublicProfile = lazy(() => import("./pages/PublicProfile"));
-const OnboardingPreferences = lazy(() => import("./pages/OnboardingPreferences"));
-const OnboardingSteps = lazy(() => import("./pages/OnboardingSteps"));
 
-const Referrals = lazy(() => import("./pages/Referrals"));
-const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
-const NewsEvents = lazy(() => import("./pages/NewsEvents"));
-const Tutorials = lazy(() => import("./pages/Tutorials"));
-const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
-const RecruiterOnboarding = lazy(() => import("./pages/RecruiterOnboarding"));
-
-const AdminDemo = lazy(() => import("./pages/AdminDemo"));
-const CompanyPage = lazy(() => import("./pages/CompanyPage"));
-const SkillPage = lazy(() => import("./pages/SkillPage").then(module => ({ default: module.SkillPage })));
-const SectorPage = lazy(() => import("./pages/SectorPage").then(module => ({ default: module.SectorPage })));
-const CityPage = lazy(() => import("./pages/CityPage").then(module => ({ default: module.CityPage })));
-const TitlePage = lazy(() => import("./pages/TitlePage").then(module => ({ default: module.TitlePage })));
+// Import all pages directly for component-based routing
+import Index from "./pages/Index";
+import About from "./pages/About";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
+import Wishlist from "./pages/Wishlist";
+import Profile from "./pages/Profile";
+import PublicProfile from "./pages/PublicProfile";
+import OnboardingSteps from "./pages/OnboardingSteps";
+import Referrals from "./pages/Referrals";
+import DashboardSettings from "./pages/DashboardSettings";
+import NewsEvents from "./pages/NewsEvents";
+import Tutorials from "./pages/Tutorials";
+import RecruiterDashboard from "./pages/RecruiterDashboard";
+import AdminDemo from "./pages/AdminDemo";
+import CompanyPage from "./pages/CompanyPage";
+import { SkillPage } from "./pages/SkillPage";
+import { SectorPage } from "./pages/SectorPage";
+import { CityPage } from "./pages/CityPage";
+import { TitlePage } from "./pages/TitlePage";
+import { SearchPage } from "./pages/SearchPage";
+import StudentDashboard from "./pages/StudentDashboard";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const isNavigationLoading = useNavigationLoading();
   const { currentUser, needsEmailVerification } = useAuth();
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  
   useTimeTracking();
   useTimeBasedPoints();
+  useThemeColor();
+  
+  // Initialize PWA features
+  useEffect(() => {
+    registerSW();
+    preloadImages();
+    requestNotificationPermission();
+  }, []);
+  
+
+  
+  // Listen for sidebar state changes with proper cleanup
+  useEffect(() => {
+    const handleSidebarToggle = (e: CustomEvent) => {
+      setSidebarExpanded(e.detail.expanded);
+    };
+    
+    const controller = new AbortController();
+    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener, {
+      signal: controller.signal
+    });
+    
+    return () => {
+      controller.abort();
+    };
+  }, []);
   
   // Show email verification if needed
   if (currentUser && needsEmailVerification) {
@@ -76,77 +104,74 @@ const AppContent = () => {
     );
   }
   
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    return currentUser ? <>{children}</> : <Navigate to="/login" replace />;
+  };
+  
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-background">
+      <SEOHead />
+      <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
         <ScrollToTop />
         {isNavigationLoading && <LoadingSpinner />}
-        {/* Desktop Sidebars */}
-        <div className="hidden md:block">
-          <CollapsibleSidebar />
-          <AccessibilitySidebar />
-        </div>
-        
-        {/* Mobile Sidebar */}
-        <MobileSidebar />
         
         {/* Top Navigation */}
         <TopNavigation />
         
-        <RouteLoader />
-        <OnboardingRedirect>
+        <div className="flex flex-1">
+          {/* Desktop Sidebars */}
+          <div className="hidden md:block fixed left-0 top-16 bottom-16 z-30">
+            <CollapsibleSidebar />
+          </div>
+          <div className="hidden md:block fixed right-0 top-16 bottom-0 z-20">
+            <AccessibilitySidebar />
+          </div>
+          
+          {/* Mobile Sidebar */}
+          <MobileSidebar />
+          
+          {/* Main Content Area */}
           <main 
-            className="transition-all duration-300 md:ml-[var(--sidebar-width,60px)] md:mr-[60px] pt-16"
+            className={`flex-1 transition-all duration-300 pt-16 overflow-x-hidden mobile-content ${
+              sidebarExpanded 
+                ? 'md:ml-[280px] md:mr-[60px]' 
+                : 'md:ml-[60px] md:mr-[60px]'
+            }`}
             onClick={() => {
-              // Collapse sidebar when clicking on main content
               window.dispatchEvent(new CustomEvent('collapseSidebar'));
             }}
           >
-                    <Suspense fallback={<OptimizedLoader size="lg" />}>
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/u/:username" element={<PublicProfile />} />
-
-                        
-                        {/* Protected Routes */}
-                        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                        <Route path="/onboarding" element={<ProtectedRoute><OnboardingSteps /></ProtectedRoute>} />
-                        <Route path="/onboarding-old" element={<ProtectedRoute><OnboardingPreferences /></ProtectedRoute>} />
-                        <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
-                        <Route path="/dashboard/settings" element={<ProtectedRoute><DashboardSettings /></ProtectedRoute>} />
-                        <Route path="/dashboard/news-events" element={<ProtectedRoute><NewsEvents /></ProtectedRoute>} />
-                        <Route path="/dashboard/tutorials" element={<ProtectedRoute><Tutorials /></ProtectedRoute>} />
-                        
-                        {/* Recruiter Routes */}
-                        <Route path="/recruiter/dashboard" element={<ProtectedRoute requiredUserType="recruiter"><RecruiterDashboard /></ProtectedRoute>} />
-                        <Route path="/recruiter/onboarding" element={<ProtectedRoute requiredUserType="recruiter"><RecruiterOnboarding /></ProtectedRoute>} />
-                        
-
-                        
-                        {/* Company Page Route */}
-                        <Route path="/company/:company" element={<CompanyPage />} />
-                        
-                        {/* Skill, Sector, and City Routes */}
-                        <Route path="/skill/:skill" element={<SkillPage />} />
-                        <Route path="/sector/:sector" element={<SectorPage />} />
-                        <Route path="/city/:city" element={<CityPage />} />
-                        <Route path="/title/:title" element={<TitlePage />} />
-                        
-                        {/* Admin Demo Route */}
-                        <Route path="/admin-demo" element={<AdminDemo />} />
-                        
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={<ProtectedRoute><StudentDashboard /></ProtectedRoute>} />
+              <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/onboarding" element={<ProtectedRoute><OnboardingSteps /></ProtectedRoute>} />
+              <Route path="/referrals" element={<ProtectedRoute><Referrals /></ProtectedRoute>} />
+              <Route path="/dashboard/settings" element={<ProtectedRoute><DashboardSettings /></ProtectedRoute>} />
+              <Route path="/dashboard/news-events" element={<ProtectedRoute><NewsEvents /></ProtectedRoute>} />
+              <Route path="/dashboard/tutorials" element={<ProtectedRoute><Tutorials /></ProtectedRoute>} />
+              <Route path="/recruiter/dashboard" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
+              <Route path="/admin-demo" element={<AdminDemo />} />
+              <Route path="/profiles/:username" element={<PublicProfile />} />
+              <Route path="/u/*" element={<PublicProfile />} />
+              <Route path="/company/:company" element={<CompanyPage />} />
+              <Route path="/skill/:skill" element={<SkillPage />} />
+              <Route path="/sector/:sector" element={<SectorPage />} />
+              <Route path="/city/:city" element={<CityPage />} />
+              <Route path="/title/:title" element={<TitlePage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </main>
-        </OnboardingRedirect>
+        </div>
+        
+        {/* Footer */}
         <Footer />
         <InstallPrompt />
-
         <Chatbot />
       </div>
     </ErrorBoundary>
@@ -156,21 +181,21 @@ const AppContent = () => {
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <WishlistProvider>
-            <ComparisonProvider>
-              <TooltipProvider>
-              <Toaster />
-              <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <AppContent />
-              </BrowserRouter>
-              </TooltipProvider>
-            </ComparisonProvider>
-          </WishlistProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <WishlistProvider>
+              <ComparisonProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                    <AppContent />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </ComparisonProvider>
+            </WishlistProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
   );
 };
 

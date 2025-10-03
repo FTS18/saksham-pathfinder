@@ -1,81 +1,104 @@
 import { Link } from 'react-router-dom';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Shield, HelpCircle, BookOpen, Users, Briefcase, Star, FileText, Building2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect } from 'react';
 
 export const Footer = () => {
   const { currentUser } = useAuth();
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  
+  // Listen for sidebar state changes
+  useEffect(() => {
+    const handleSidebarToggle = (e: CustomEvent) => {
+      setSidebarExpanded(e.detail.expanded);
+    };
+    
+    window.addEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+    return () => window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
+  }, []);
+  
+  const handleNavigation = (path: string) => {
+    window.dispatchEvent(new CustomEvent('navigate', { detail: { path } }));
+  };
   
   return (
-    <footer className="bg-background border-t border-border md:ml-[var(--sidebar-width,60px)] md:mr-[60px] transition-all duration-300 mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:divide-x md:divide-border">
+    <footer className={`bg-background border-t border-border mt-auto transition-all duration-300 ${
+      sidebarExpanded 
+        ? 'md:ml-[280px] md:mr-[60px]' 
+        : 'md:ml-[60px] md:mr-[60px]'
+    }`}>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="space-y-4">
+            <h3 className="font-poppins font-bold text-lg text-foreground">HexaForces</h3>
+            <p className="text-sm text-muted-foreground">
+              Your gateway to amazing internship opportunities and career growth.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              This site is owned by Ministry of Corporate Affairs.
+            </p>
+          </div>
           
-          {/* Brand & Links */}
-          <div className="md:pr-8">
-            <div className="text-center md:text-left">
-              <h3 className="font-poppins font-bold text-xl mb-1">Saksham AI</h3>
-              <p className="text-muted-foreground text-sm mb-4 font-medium">AI-driven career guidance</p>
-            </div>
-            <div className="flex flex-wrap gap-4 md:flex-col md:gap-2 text-sm">
-              <Link to="/" className="text-muted-foreground hover:text-primary font-medium">Home</Link>
-              <Link to="/wishlist" className="text-muted-foreground hover:text-primary font-medium">Dashboard</Link>
-              <Link to="/about" className="text-muted-foreground hover:text-primary font-medium">About</Link>
-              <Link to="/support" className="text-muted-foreground hover:text-primary font-medium">Support</Link>
+          <div className="space-y-4">
+            <h4 className="font-semibold">Quick Links</h4>
+            <div className="flex flex-col space-y-2 text-sm">
+              <button onClick={() => handleNavigation('/')} className="text-muted-foreground hover:text-primary text-left transition-colors">Home</button>
+              <button onClick={() => handleNavigation('/about')} className="text-muted-foreground hover:text-primary text-left transition-colors">About</button>
+              <button onClick={() => handleNavigation('/wishlist')} className="text-muted-foreground hover:text-primary text-left transition-colors">Wishlist</button>
+              <button onClick={() => handleNavigation('/referrals')} className="text-muted-foreground hover:text-primary text-left transition-colors">Referrals</button>
+              <button onClick={() => handleNavigation('/profile')} className="text-muted-foreground hover:text-primary text-left transition-colors">Profile Settings</button>
+              <button onClick={() => handleNavigation('/dashboard/tutorials')} className="text-muted-foreground hover:text-primary text-left transition-colors">Tutorials</button>
+              <button onClick={() => handleNavigation('/dashboard/news-events')} className="text-muted-foreground hover:text-primary text-left transition-colors">News & Events</button>
             </div>
           </div>
-
-          {/* Contact */}
-          <div className="md:px-8">
-            <h4 className="font-bold text-lg mb-3">Connect</h4>
-            <div className="space-y-2 text-sm">
-              <a href="mailto:pminternship@mca.gov.in" className="flex items-center gap-2 text-muted-foreground hover:text-primary font-medium">
-                <Mail className="w-4 h-4" />
+          
+          <div className="space-y-4">
+            <h4 className="font-semibold">Contact Us</h4>
+            <div className="flex flex-col space-y-2 text-sm">
+              <a href="mailto:pminternship@mca.gov.in" className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
+                <Mail className="w-3 h-3" />
                 pminternship@mca.gov.in
               </a>
-              <a href="tel:18001160900" className="flex items-center gap-2 text-muted-foreground hover:text-primary font-medium">
-                <Phone className="w-4 h-4" />
-                1800 11 6090 (Toll Free)
+              <a href="tel:18001116090" className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
+                <Phone className="w-3 h-3" />
+                1800 11 6090
               </a>
+              <div className="text-muted-foreground flex items-start gap-2">
+                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                <span className="text-xs leading-relaxed">A Wing, 5th Floor, Shastri Bhawan, Dr Rajendra Prasad Rd, New Delhi-110001</span>
+              </div>
             </div>
           </div>
-
-          {/* Contact Form */}
-          <div className="md:pl-8">
-            <h4 className="font-bold text-lg mb-3">Get in Touch</h4>
-            <form action="mailto:dubeyananay@gmail.com" method="post" encType="text/plain" className="space-y-2">
-              <input
-                type="email"
-                name="email"
-                placeholder="Your email"
-                defaultValue={currentUser?.email || ''}
-                readOnly={!!currentUser?.email}
-                required
-                className={`w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 ${currentUser?.email ? 'cursor-not-allowed opacity-75' : ''}`}
-              />
-              <textarea
-                name="message"
-                placeholder="Your message"
-                required
-                rows={2}
-                className="w-full px-3 py-2 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none"
-              />
-              <button
-                type="submit"
-                className="w-full px-3 py-2 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-medium"
-              >
-                Send
-              </button>
-            </form>
+          
+          <div className="space-y-4">
+            <h4 className="font-semibold">Legal & Resources</h4>
+            <div className="flex flex-col space-y-2 text-sm">
+              <a href="https://pminternship.mca.gov.in/mca-api/files/cdn?path=PMIS-Data-Privacy-Protection-Policy.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                <FileText className="w-3 h-3" /> Privacy Policy
+              </a>
+              <a href="https://pminternship.mca.gov.in/assets/docs/Partner_Companies.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                <Building2 className="w-3 h-3" /> Partner Companies
+              </a>
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
+              <Link to="/accessibility" className="text-muted-foreground hover:text-primary transition-colors">Accessibility</Link>
+            </div>
           </div>
         </div>
-
-        {/* Bottom */}
-        <div className="mt-6 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p className="font-medium">© {new Date().getFullYear()} Saksham AI. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link to="/privacy" className="hover:text-primary font-medium">Privacy</Link>
-            <Link to="/terms" className="hover:text-primary font-medium">Terms</Link>
-            <a href="https://pminternship.mca.gov.in" target="_blank" rel="noopener noreferrer" className="hover:text-primary font-medium">Official Portal</a>
+        
+        <div className="border-t border-border mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">
+                © 2024 PM-INTERNSHIP, All Rights Reserved.
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Technical collaboration with Team HexaForces, PEC Chandigarh
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground text-center md:text-right">
+              <p>Made with ❤️ for students</p>
+              <p className="mt-1">v2.0.1</p>
+            </div>
           </div>
         </div>
       </div>
