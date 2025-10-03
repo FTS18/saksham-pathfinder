@@ -264,7 +264,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   return (
     <>
-    <Card className={`relative minimal-card flex flex-col h-full rounded border shadow-lg hover:shadow-xl transition-all duration-300 ${
+    <Card className={`relative minimal-card flex flex-col h-full rounded border shadow-lg hover:shadow-xl transition-all duration-300 internship-card ${
         featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
       } ${getCompanyTheme(company)}`}
     >

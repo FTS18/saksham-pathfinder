@@ -257,7 +257,7 @@ export const InternshipDetailsModal = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-2xl !w-[95vw] md:!w-[768px] !max-h-[90vh] !h-[90vh] md:!h-auto flex flex-col p-0 md:rounded-lg rounded-none !fixed !top-[50%] !left-[50%] !translate-x-[-50%] !translate-y-[-50%] z-[100] bg-background border [&>button]:hidden mobile-modal landscape-modal">
+      <DialogContent className="!max-w-none !w-full !h-full md:!max-w-2xl md:!w-[768px] md:!max-h-[90vh] md:!h-auto flex flex-col p-0 md:rounded-lg rounded-none !fixed !inset-0 md:!top-[50%] md:!left-[50%] md:!translate-x-[-50%] md:!translate-y-[-50%] z-[100] bg-background border [&>button]:hidden mobile-modal landscape-modal">
         {/* Left Navigation Arrow */}
         {onPrev && (
           <Button
