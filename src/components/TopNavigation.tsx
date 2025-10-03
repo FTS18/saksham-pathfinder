@@ -7,7 +7,7 @@ import { SearchSuggestions } from './SearchSuggestions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import { OptimizedImage } from './OptimizedImage';
+
 
 export const TopNavigation = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,7 +64,7 @@ export const TopNavigation = () => {
         <div className="max-w-6xl mx-auto flex items-center justify-between h-full">
           <div className="flex items-center gap-2">
             <a href="/" className="hover:opacity-80 transition-opacity">
-              <OptimizedImage 
+              <img 
                 src="/logo.webp" 
                 alt="Saksham AI" 
                 className="w-8 h-8 rounded-lg invert dark:invert-0"
