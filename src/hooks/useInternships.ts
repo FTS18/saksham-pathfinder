@@ -1,55 +1,140 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import InternshipMigrationService, { FirebaseInternship } from '@/services/internshipMigrationService';
 
-interface UseInternshipsOptions {
-  pageSize?: number;
-  initialLoad?: number;
-}
+// Hook for getting all internships
+export const useInternships = () => {
+  return useQuery({
+    queryKey: ['internships'],
+    queryFn: InternshipMigrationService.getAllInternships,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
 
-export const useInternships = ({ pageSize = 20, initialLoad = 10 }: UseInternshipsOptions = {}) => {
-  const [allInternships, setAllInternships] = useState<any[]>([]);
-  const [loadedCount, setLoadedCount] = useState(initialLoad);
-  const [loading, setLoading] = useState(false);
+// Hook for paginated internships
+export const useInternshipsPaginated = (limit: number = 20) => {
+  return useInfiniteQuery({
+    queryKey: ['internships-paginated', limit],
+    queryFn: ({ pageParam }) => 
+      InternshipMigrationService.getInternshipsPaginated(limit, pageParam),
+    getNextPageParam: (lastPage) => 
+      lastPage.hasMore ? lastPage.lastDoc : undefined,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+  });
+};
+
+// Hook for searching internships
+export const useSearchInternships = (filters: {
+  location?: string;
+  sector?: string;
+  skills?: string[];
+  company?: string;
+  workMode?: string;
+  stipendRange?: { min: number; max: number };
+  searchQuery?: string;
+}) => {
+  return useQuery({
+    queryKey: ['search-internships', filters],
+    queryFn: () => InternshipMigrationService.searchInternships(filters),
+    enabled: Object.keys(filters).some(key => filters[key as keyof typeof filters]),
+    staleTime: 2 * 60 * 1000, // 2 minutes for search results
+    cacheTime: 5 * 60 * 1000,
+  });
+};
+
+// Hook for getting a single internship
+export const useInternship = (id: string) => {
+  return useQuery({
+    queryKey: ['internship', id],
+    queryFn: () => InternshipMigrationService.getInternshipById(id),
+    enabled: !!id,
+    staleTime: 10 * 60 * 1000, // 10 minutes for individual internships
+    cacheTime: 15 * 60 * 1000,
+  });
+};
+
+// Hook for trending internships
+export const useTrendingInternships = (limit: number = 10) => {
+  return useQuery({
+    queryKey: ['trending-internships', limit],
+    queryFn: () => InternshipMigrationService.getTrendingInternships(limit),
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    cacheTime: 30 * 60 * 1000,
+  });
+};
+
+// Hook for featured internships
+export const useFeaturedInternships = () => {
+  return useQuery({
+    queryKey: ['featured-internships'],
+    queryFn: InternshipMigrationService.getFeaturedInternships,
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    cacheTime: 60 * 60 * 1000, // 1 hour
+  });
+};
+
+// Hook for local internship data (fallback)
+export const useLocalInternships = () => {
+  const [internships, setInternships] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load internships progressively
   useEffect(() => {
-    const loadInternships = async () => {
-      setLoading(true);
+    const loadLocalData = async () => {
       try {
         const response = await fetch('/internships.json');
+        if (!response.ok) {
+          throw new Error('Failed to load local internships');
+        }
         const data = await response.json();
-        setAllInternships(data);
+        setInternships(data);
       } catch (err) {
-        setError('Failed to load internships');
-        console.error('Failed to load internships:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
     };
 
-    loadInternships();
+    loadLocalData();
   }, []);
 
-  // Memoized visible internships
-  const visibleInternships = useMemo(() => 
-    allInternships.slice(0, loadedCount), 
-    [allInternships, loadedCount]
-  );
+  return { internships, loading, error };
+};
 
-  const loadMore = () => {
-    setLoadedCount(prev => Math.min(prev + pageSize, allInternships.length));
-  };
+// Hook that tries Firebase first, falls back to local data
+export const useInternshipsWithFallback = () => {
+  const firebaseQuery = useInternships();
+  const localQuery = useLocalInternships();
 
-  const hasMore = loadedCount < allInternships.length;
+  // If Firebase is loading, show loading
+  if (firebaseQuery.isLoading) {
+    return {
+      data: [],
+      isLoading: true,
+      error: null,
+      source: 'firebase'
+    };
+  }
 
+  // If Firebase has data, use it
+  if (firebaseQuery.data && firebaseQuery.data.length > 0) {
+    return {
+      data: firebaseQuery.data,
+      isLoading: false,
+      error: firebaseQuery.error,
+      source: 'firebase'
+    };
+  }
+
+  // If Firebase failed or has no data, use local data
   return {
-    allInternships,
-    visibleInternships,
-    loading,
-    error,
-    loadMore,
-    hasMore,
-    totalCount: allInternships.length,
-    loadedCount
+    data: localQuery.internships,
+    isLoading: localQuery.loading,
+    error: localQuery.error || firebaseQuery.error,
+    source: 'local'
   };
 };
+
+export default useInternships;

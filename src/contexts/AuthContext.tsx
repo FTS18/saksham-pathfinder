@@ -57,6 +57,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [needsEmailVerification, setNeedsEmailVerification] = useState(false);
 
   const login = async (email: string, password: string) => {
+    // Check for admin login
+    if (email === 'admin@gmail.com' && password === '123456') {
+      // Create a mock admin user
+      const adminUser = {
+        uid: 'admin-user',
+        email: 'admin@gmail.com',
+        displayName: 'Admin User',
+        emailVerified: true
+      } as User;
+      setCurrentUser(adminUser);
+      setUserType('recruiter');
+      return;
+    }
+    
     const result = await signInWithEmailAndPassword(auth, email, password);
     
     // Check if user exists in students collection
@@ -155,6 +169,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const loginAsRecruiter = async (email: string, password: string) => {
+    // Check for admin login
+    if (email === 'admin@gmail.com' && password === '123456') {
+      // Create a mock admin user
+      const adminUser = {
+        uid: 'admin-user',
+        email: 'admin@gmail.com',
+        displayName: 'Admin User',
+        emailVerified: true
+      } as User;
+      setCurrentUser(adminUser);
+      setUserType('recruiter');
+      return;
+    }
+    
     const result = await signInWithEmailAndPassword(auth, email, password);
     
     // Check if user exists in recruiters collection

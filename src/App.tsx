@@ -12,6 +12,8 @@ import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
 import { GamificationProvider } from "./contexts/GamificationContext";
+import { ApplicationProvider } from "./contexts/ApplicationContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
@@ -58,12 +60,20 @@ import { CityPage } from "./pages/CityPage";
 import { TitlePage } from "./pages/TitlePage";
 import { SearchPage } from "./pages/SearchPage";
 import StudentDashboard from "./pages/StudentDashboard";
+import Applications from "./pages/Applications";
+
+// Recruiter portal imports
+import { RecruiterLayout } from "./pages/recruiter/RecruiterLayout";
+import RecruiterDashboardNew from "./pages/recruiter/RecruiterDashboard";
+import PostJob from "./pages/recruiter/PostJob";
+import ManageInternships from "./pages/recruiter/ManageInternships";
+import Candidates from "./pages/recruiter/Candidates";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const isNavigationLoading = useNavigationLoading();
-  const { currentUser, needsEmailVerification } = useAuth();
+  const { currentUser, needsEmailVerification, userType } = useAuth();
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   
   useTimeTracking();
@@ -108,6 +118,33 @@ const AppContent = () => {
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return currentUser ? <>{children}</> : <Navigate to="/login" replace />;
   };
+  
+  const RecruiterRoute = ({ children }: { children: React.ReactNode }) => {
+    return currentUser && userType === 'recruiter' ? <>{children}</> : <Navigate to="/login" replace />;
+  };
+  
+  // If user is a recruiter, show recruiter portal
+  if (currentUser && userType === 'recruiter' && !needsEmailVerification) {
+    return (
+      <ErrorBoundary>
+        <SEOHead />
+        <Routes>
+          <Route path="/recruiter/*" element={<RecruiterRoute><RecruiterLayout /></RecruiterRoute>}>
+            <Route index element={<Navigate to="/recruiter/dashboard" replace />} />
+            <Route path="dashboard" element={<RecruiterDashboardNew />} />
+            <Route path="post-job" element={<PostJob />} />
+            <Route path="manage-internships" element={<ManageInternships />} />
+            <Route path="candidates" element={<Candidates />} />
+            <Route path="applications" element={<div className="p-6">Applications - Coming Soon</div>} />
+            <Route path="interviews" element={<div className="p-6">Interviews - Coming Soon</div>} />
+            <Route path="analytics" element={<div className="p-6">Analytics - Coming Soon</div>} />
+            <Route path="settings" element={<div className="p-6">Settings - Coming Soon</div>} />
+          </Route>
+          <Route path="*" element={<Navigate to="/recruiter/dashboard" replace />} />
+        </Routes>
+      </ErrorBoundary>
+    );
+  }
   
   return (
     <ErrorBoundary>
@@ -155,7 +192,7 @@ const AppContent = () => {
               <Route path="/dashboard/settings" element={<ProtectedRoute><DashboardSettings /></ProtectedRoute>} />
               <Route path="/dashboard/news-events" element={<ProtectedRoute><NewsEvents /></ProtectedRoute>} />
               <Route path="/dashboard/tutorials" element={<ProtectedRoute><Tutorials /></ProtectedRoute>} />
-              <Route path="/recruiter/dashboard" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
+              <Route path="/recruiter/dashboard" element={<Navigate to="/recruiter" replace />} />
               <Route path="/admin-demo" element={<AdminDemo />} />
               <Route path="/profiles/:username" element={<PublicProfile />} />
               <Route path="/u/*" element={<PublicProfile />} />
@@ -165,6 +202,7 @@ const AppContent = () => {
               <Route path="/city/:city" element={<CityPage />} />
               <Route path="/title/:title" element={<TitlePage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/applications" element={<ProtectedRoute><Applications /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
@@ -184,18 +222,22 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider>
-            <GamificationProvider>
-              <WishlistProvider>
-                <ComparisonProvider>
+            <NotificationProvider>
+              <ApplicationProvider>
+                <GamificationProvider>
+                  <WishlistProvider>
+                    <ComparisonProvider>
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                     <AppContent />
                   </BrowserRouter>
                 </TooltipProvider>
-                </ComparisonProvider>
-              </WishlistProvider>
-            </GamificationProvider>
+                    </ComparisonProvider>
+                  </WishlistProvider>
+                </GamificationProvider>
+              </ApplicationProvider>
+            </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

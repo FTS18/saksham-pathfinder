@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { InternshipMigration } from '@/components/admin/InternshipMigration';
 
 import { Database, Users, Briefcase, Shield } from 'lucide-react';
 
@@ -150,6 +151,9 @@ const AdminDemo = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Internship Migration Component */}
+          <InternshipMigration />
 
           <Card>
             <CardHeader>
