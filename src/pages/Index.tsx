@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
 import { Loader2, RefreshCw } from 'lucide-react';
+import { useSwipeGestures } from '@/hooks/useSwipeGestures';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { useAnalytics } from '@/hooks/useAnalytics';
+import { useGamification } from '@/contexts/GamificationContext';
 import { Hero } from '@/components/Hero';
 import { ProfileForm } from '@/components/ProfileForm';
 import { InternshipFilters } from '@/components/InternshipFilters';
@@ -12,6 +17,8 @@ import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
 import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
 import { ComparisonButton } from '@/components/ComparisonButton';
 import { SEOHead } from '@/components/SEOHead';
+import { SearchResultsCount } from '@/components/SearchResultsCount';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { cache, CACHE_KEYS } from '@/lib/cache';
 import { sanitizeInternshipData } from '@/lib/sanitize';
 import { saveFilters, loadFilters } from '@/lib/filterPersistence';
@@ -383,6 +390,11 @@ const Index = () => {
     keywords: 'internship, AI, career, jobs, students, recommendations, machine learning, India, PM internship scheme'
   };
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  
+  // Enhanced mobile features
+  const { searchHistory, addToHistory } = useSearchHistory();
+  const { trackPageView, trackSearch } = useAnalytics();
+  const { addPoints } = useGamification();
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [allInternships, setAllInternships] = useState<any[]>([]);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
@@ -393,9 +405,45 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [hasAppliedAIFilters, setHasAppliedAIFilters] = useState(false);
+  const { recentlyViewed, addToRecentlyViewed } = useRecentlyViewed();
 
   const profileFormRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  // Pull-to-refresh functionality
+  const { elementRef: pullToRefreshRef, isRefreshing, pullDistance } = usePullToRefresh({
+    onRefresh: async () => {
+      // Refresh internships data
+      const response = await fetch('/internships.json');
+      const data = await response.json();
+      setAllInternships(sanitizeInternshipData(data));
+      
+      // Re-run recommendations if profile exists
+      if (profileData) {
+        const recs = recommendInternships(profileData, data);
+        setRecommendations(recs);
+      }
+      
+      toast({
+        title: "Refreshed!",
+        description: "Latest internships loaded"
+      });
+    }
+  });
+  
+  // Swipe gestures for navigation
+  const swipeRef = useSwipeGestures({
+    onSwipeLeft: () => {
+      if (currentPage < totalPages) {
+        handlePageChange(currentPage + 1);
+      }
+    },
+    onSwipeRight: () => {
+      if (currentPage > 1) {
+        handlePageChange(currentPage - 1);
+      }
+    }
+  });
   
   const itemsPerPage = 21;
   
@@ -403,11 +451,12 @@ const Index = () => {
 
   // Initial page load
   useEffect(() => {
+    trackPageView('homepage');
     const timer = setTimeout(() => {
       setIsPageLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [trackPageView]);
   
   // Load internships
   useEffect(() => {
@@ -508,6 +557,9 @@ const Index = () => {
   const handleProfileSubmit = async (data: ProfileData) => {
     setIsLoading(true);
     setProfileData(data);
+    
+    // Award points for profile completion
+    await addPoints(50, 'Profile completion');
     
     // Load internships if not already loaded
     let internships = allInternships;
@@ -773,6 +825,10 @@ const Index = () => {
     }
   };
 
+  const handleInternshipView = (internship: any) => {
+    addToRecentlyViewed(internship);
+  };
+
   if (isPageLoading) {
     return <PageLoadingSpinner />;
   }
@@ -780,7 +836,27 @@ const Index = () => {
   return (
     <>
       <SEOHead {...seoProps} />
-      <div className="min-h-full bg-background">
+      <div 
+        ref={(el) => {
+          if (pullToRefreshRef.current !== el) pullToRefreshRef.current = el;
+          if (swipeRef.current !== el) swipeRef.current = el;
+        }}
+        className="min-h-full bg-background relative"
+      >
+        {/* Pull-to-refresh indicator */}
+        {pullDistance > 0 && (
+          <div 
+            className="fixed top-0 left-0 right-0 z-50 bg-primary/10 backdrop-blur-sm transition-all duration-200"
+            style={{ height: `${Math.min(pullDistance, 80)}px` }}
+          >
+            <div className="flex items-center justify-center h-full">
+              <RefreshCw className={`w-6 h-6 text-primary ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="ml-2 text-sm text-primary">
+                {isRefreshing ? 'Refreshing...' : pullDistance > 60 ? 'Release to refresh' : 'Pull to refresh'}
+              </span>
+            </div>
+          </div>
+        )}
 
       <Hero onGetStartedClick={handleGetStartedClick} />
       
@@ -951,8 +1027,8 @@ const Index = () => {
       )}
 
       {profileData && (
-        <section id="recommendations-section" className="bg-card py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-            <div className='max-w-6xl mx-auto'>
+        <section id="recommendations-section" className="bg-card py-12 sm:py-16 lg:py-20 px-2 sm:px-6 lg:px-8">
+            <div className='w-full max-w-6xl mx-auto px-4'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
                         🎯 AI Recommendations
@@ -962,6 +1038,21 @@ const Index = () => {
                             Found {displayItems?.length || 0} matching internships (sorted by AI score)
                         </p>
                     </div>
+                    {recentlyViewed.length > 0 && (
+                        <div className="mb-8">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                <span>👀</span> Recently Viewed
+                            </h3>
+                            <div className="flex gap-3 overflow-x-auto pb-2">
+                                {recentlyViewed.slice(0, 5).map((item) => (
+                                    <div key={item.id} className="flex-shrink-0 bg-muted/50 rounded-lg p-3 min-w-[200px]">
+                                        <p className="font-medium text-sm truncate">{item.title}</p>
+                                        <p className="text-xs text-muted-foreground truncate">{item.company}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <div className="bg-primary/10 rounded-lg p-4 mb-6">
                         <div className="flex items-center justify-between">
                             <p className="text-sm text-primary font-medium">
@@ -1160,8 +1251,8 @@ const Index = () => {
       )}
       
       {!profileData && allInternships.length > 0 && (
-        <section className="bg-card py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-            <div className='max-w-6xl mx-auto'>
+        <section className="bg-card py-12 sm:py-16 lg:py-20 px-2 sm:px-6 lg:px-8">
+            <div className='w-full max-w-6xl mx-auto px-4'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
                         {filters.search ? `🔍 Search Results for "${filters.search}"` : '🔍 Browse All Internships'}

@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
+import { GamificationProvider } from "./contexts/GamificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 
@@ -27,7 +28,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import "./accessibility.css";
 import "./styles/animations.css";
 import "./styles/glass-effects.css";
-import "./styles/mobile-responsive.css";
+
 import "./utils/consoleWarningFixes";
 import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
@@ -183,16 +184,18 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider>
-            <WishlistProvider>
-              <ComparisonProvider>
+            <GamificationProvider>
+              <WishlistProvider>
+                <ComparisonProvider>
                 <TooltipProvider>
                   <Toaster />
                   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                     <AppContent />
                   </BrowserRouter>
                 </TooltipProvider>
-              </ComparisonProvider>
-            </WishlistProvider>
+                </ComparisonProvider>
+              </WishlistProvider>
+            </GamificationProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

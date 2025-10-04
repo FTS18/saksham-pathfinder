@@ -1,232 +1,201 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { Search, X, Clock, Mic, MicOff } from 'lucide-react';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { SearchSuggestions } from './SearchSuggestions';
-
-interface SearchHistoryItem {
-  id: string;
-  query: string;
-  timestamp: number;
-}
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, Clock, X, TrendingUp, Mic, MicOff } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface EnhancedSearchProps {
+  value: string;
+  onChange: (value: string) => void;
   onSearch: (query: string) => void;
-  onSuggestionSelect: (suggestion: any) => void;
   placeholder?: string;
-  className?: string;
+  suggestions?: string[];
 }
 
-export const EnhancedSearch = ({ 
-  onSearch, 
-  onSuggestionSelect, 
+export const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
+  value,
+  onChange,
+  onSearch,
   placeholder = "Search companies, locations, skills...",
-  className = ""
-}: EnhancedSearchProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<SearchHistoryItem[]>([]);
+  suggestions = []
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isListening, setIsListening] = useState(false);
-  
-  const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
+  const { searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
+  const { trackSearch } = useAnalytics();
 
-  // Load search history from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('searchHistory');
-    if (saved) {
-      setSearchHistory(JSON.parse(saved));
-    }
-  }, []);
+  const trendingSearches = [
+    'React Developer',
+    'Data Science',
+    'UI/UX Design',
+    'Machine Learning',
+    'Full Stack',
+    'Digital Marketing'
+  ];
 
-  // Save search history to localStorage
-  const saveSearchHistory = useCallback((history: SearchHistoryItem[]) => {
-    localStorage.setItem('searchHistory', JSON.stringify(history));
-    setSearchHistory(history);
-  }, []);
+  const allSuggestions = [
+    ...searchHistory.slice(0, 3),
+    ...suggestions.slice(0, 3),
+    ...trendingSearches.slice(0, 2)
+  ].filter((item, index, arr) => arr.indexOf(item) === index);
 
-  // Add to search history
-  const addToHistory = useCallback((query: string) => {
-    if (!query.trim()) return;
-    
-    const newItem: SearchHistoryItem = {
-      id: Date.now().toString(),
-      query: query.trim(),
-      timestamp: Date.now()
-    };
-
-    setSearchHistory(prev => {
-      const filtered = prev.filter(item => item.query !== query.trim());
-      const updated = [newItem, ...filtered].slice(0, 10); // Keep only 10 items
-      saveSearchHistory(updated);
-      return updated;
-    });
-  }, [saveSearchHistory]);
-
-  // Remove from search history
-  const removeFromHistory = useCallback((id: string) => {
-    setSearchHistory(prev => {
-      const updated = prev.filter(item => item.id !== id);
-      saveSearchHistory(updated);
-      return updated;
-    });
-  }, [saveSearchHistory]);
-
-  // Clear all history
-  const clearHistory = useCallback(() => {
-    setSearchHistory([]);
-    localStorage.removeItem('searchHistory');
-  }, []);
-
-  // Debounced search
-  const debouncedSearch = useCallback((query: string) => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    debounceRef.current = setTimeout(() => {
-      setShowSuggestions(query.length > 0 || searchHistory.length > 0);
-    }, 300);
-  }, [searchHistory.length]);
-
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
+  const handleSearch = (query: string) => {
     if (query.trim()) {
       addToHistory(query);
-      onSearch(query.trim());
+      trackSearch(query, 0); // Will be updated with actual results count
+      onSearch(query);
+      setIsOpen(false);
     }
-    setShowSuggestions(false);
-    setSearchQuery('');
-  }, [addToHistory, onSearch]);
+  };
 
-  // Voice search setup
-  useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) return;
 
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setSearchQuery(transcript);
-        handleSearch(transcript);
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onerror = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current.onend = () => {
-        setIsListening(false);
-      };
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex(prev => 
+          prev < allSuggestions.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedIndex >= 0) {
+          const selectedQuery = allSuggestions[selectedIndex];
+          onChange(selectedQuery);
+          handleSearch(selectedQuery);
+        } else {
+          handleSearch(value);
+        }
+        break;
+      case 'Escape':
+        setIsOpen(false);
+        setSelectedIndex(-1);
+        break;
     }
-  }, [handleSearch]);
+  };
 
-  // Toggle voice search
-  const toggleVoiceSearch = useCallback(() => {
-    if (!recognitionRef.current) return;
+  const startVoiceRecognition = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert('Voice recognition not supported in this browser');
+      return;
+    }
 
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      recognitionRef.current.start();
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.lang = 'en-US';
+
+    recognitionRef.current.onstart = () => {
       setIsListening(true);
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      onChange(transcript);
+      handleSearch(transcript);
+    };
+
+    recognitionRef.current.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current.start();
+  };
+
+  const stopVoiceRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
     }
-  }, [isListening]);
+    setIsListening(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative w-full max-w-2xl mx-auto">
       <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <Input
+          ref={inputRef}
           type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            debouncedSearch(e.target.value);
-          }}
-          onFocus={() => setShowSuggestions(searchQuery.length > 0 || searchHistory.length > 0)}
-          onBlur={() => {
-            blurTimeoutRef.current = setTimeout(() => setShowSuggestions(false), 200);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleSearch(searchQuery);
-            }
-          }}
-          className="w-full pl-10 pr-20 py-2 text-sm bg-muted border-border text-foreground placeholder-muted-foreground"
+          className="pl-10 pr-10 rounded-none"
         />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-          {recognitionRef.current && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleVoiceSearch}
-              className={`p-1 h-6 w-6 ${isListening ? 'text-red-500' : 'text-muted-foreground'}`}
-            >
-              {isListening ? <MicOff className="w-3 h-3" /> : <Mic className="w-3 h-3" />}
-            </Button>
-          )}
-          {searchQuery && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setSearchQuery('');
-                setShowSuggestions(false);
-              }}
-              className="p-1 h-6 w-6 text-muted-foreground hover:text-foreground"
-            >
-              <X className="w-3 h-3" />
-            </Button>
-          )}
-        </div>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 rounded-none"
+            onClick={() => {
+              onChange('');
+              onSearch('');
+            }}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        )}
       </div>
 
-      {showSuggestions && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-          {/* Search History */}
-          {searchHistory.length > 0 && !searchQuery && (
-            <div className="p-2 border-b border-border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Recent Searches</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearHistory}
-                  className="text-xs h-6 px-2 text-muted-foreground hover:text-foreground"
-                >
-                  Clear All
-                </Button>
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-none shadow-lg z-50 max-h-80 overflow-y-auto">
+          {searchHistory.length > 0 && (
+            <div className="p-2 border-b">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                <Clock className="w-3 h-3" />
+                Recent Searches
               </div>
-              {searchHistory.map((item) => (
+              {searchHistory.slice(0, 3).map((query, index) => (
                 <div
-                  key={item.id}
-                  className="flex items-center justify-between group hover:bg-muted rounded px-2 py-1 cursor-pointer"
+                  key={`history-${index}`}
+                  className={`flex items-center justify-between p-2 rounded cursor-pointer hover:bg-muted ${
+                    selectedIndex === index ? 'bg-muted' : ''
+                  }`}
                   onClick={() => {
-                    setSearchQuery(item.query);
-                    handleSearch(item.query);
+                    onChange(query);
+                    handleSearch(query);
                   }}
                 >
-                  <div className="flex items-center gap-2 flex-1">
-                    <Clock className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-sm text-foreground">{item.query}</span>
-                  </div>
+                  <span className="text-sm">{query}</span>
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeFromHistory(item.id);
+                      removeFromHistory(query);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1 h-6 w-6 text-muted-foreground hover:text-foreground"
                   >
                     <X className="w-3 h-3" />
                   </Button>
@@ -235,13 +204,52 @@ export const EnhancedSearch = ({
             </div>
           )}
 
-          {/* Search Suggestions */}
-          <SearchSuggestions
-            query={searchQuery}
-            onSelect={onSuggestionSelect}
-            onSearch={handleSearch}
-            isVisible={true}
-          />
+          {suggestions.length > 0 && (
+            <div className="p-2 border-b">
+              <div className="text-xs text-muted-foreground mb-2">Suggestions</div>
+              {suggestions.slice(0, 3).map((suggestion, index) => {
+                const adjustedIndex = searchHistory.length + index;
+                return (
+                  <div
+                    key={`suggestion-${index}`}
+                    className={`p-2 rounded cursor-pointer hover:bg-muted text-sm ${
+                      selectedIndex === adjustedIndex ? 'bg-muted' : ''
+                    }`}
+                    onClick={() => {
+                      onChange(suggestion);
+                      handleSearch(suggestion);
+                    }}
+                  >
+                    {suggestion}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="p-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+              <TrendingUp className="w-3 h-3" />
+              Trending
+            </div>
+            {trendingSearches.slice(0, 2).map((trend, index) => {
+              const adjustedIndex = searchHistory.length + suggestions.length + index;
+              return (
+                <div
+                  key={`trend-${index}`}
+                  className={`p-2 rounded cursor-pointer hover:bg-muted text-sm ${
+                    selectedIndex === adjustedIndex ? 'bg-muted' : ''
+                  }`}
+                  onClick={() => {
+                    onChange(trend);
+                    handleSearch(trend);
+                  }}
+                >
+                  {trend}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

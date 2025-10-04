@@ -1,4 +1,7 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useSafeAuth } from '@/hooks/useSafeAuth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 type Theme = 'light' | 'dark';
 type ColorTheme = 'blue' | 'grey' | 'red' | 'yellow' | 'green';
@@ -42,6 +45,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+  const { user } = useSafeAuth();
   const [theme, setTheme] = useState<Theme>('dark');
   const [colorTheme, setColorTheme] = useState<ColorTheme>('blue');
   const [language, setLanguage] = useState<Language>('en');
@@ -49,34 +53,69 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    const savedColorTheme = localStorage.getItem('colorTheme') as ColorTheme;
-    const savedLanguage = localStorage.getItem('language') as Language;
-    
-    if (savedTheme) setTheme(savedTheme);
-    if (savedColorTheme) setColorTheme(savedColorTheme);
-    if (savedLanguage) setLanguage(savedLanguage);
+    if (user) {
+      loadUserPreferences();
+    } else {
+      const savedTheme = localStorage.getItem('theme') as Theme;
+      const savedColorTheme = localStorage.getItem('colorTheme') as ColorTheme;
+      const savedLanguage = localStorage.getItem('language') as Language;
+      
+      if (savedTheme) setTheme(savedTheme);
+      if (savedColorTheme) setColorTheme(savedColorTheme);
+      if (savedLanguage) setLanguage(savedLanguage);
 
-    const savedFontSize = localStorage.getItem('fontSize');
-    if (savedFontSize) setFontSize(Number(savedFontSize));
-  }, []);
+      const savedFontSize = localStorage.getItem('fontSize');
+      if (savedFontSize) setFontSize(Number(savedFontSize));
+    }
+  }, [user]);
+
+  const loadUserPreferences = async () => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        if (userData.theme) setTheme(userData.theme);
+        if (userData.colorTheme) setColorTheme(userData.colorTheme);
+        if (userData.language) setLanguage(userData.language);
+        if (userData.fontSize) setFontSize(userData.fontSize);
+      }
+    } catch (error) {
+      console.error('Error loading preferences:', error);
+    }
+  };
+
+  const savePreference = async (key: string, value: any) => {
+    if (user) {
+      try {
+        const docRef = doc(db, 'profiles', user.uid);
+        await updateDoc(docRef, { [key]: value });
+      } catch (error) {
+        console.error('Error saving preference:', error);
+        localStorage.setItem(key, String(value));
+      }
+    } else {
+      localStorage.setItem(key, String(value));
+    }
+  };
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem('theme', theme);
+    savePreference('theme', theme);
   }, [theme]);
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
     root.classList.add(colorTheme);
-    localStorage.setItem('colorTheme', colorTheme);
+    savePreference('colorTheme', colorTheme);
   }, [colorTheme]);
 
   useEffect(() => {
-    localStorage.setItem('language', language);
+    savePreference('language', language);
     document.documentElement.lang = language;
     document.body.className = document.body.className.replace(/\b(en|hi|pa|ur|bn|ta|te|ml|kn|gu|mr)\b/g, '');
     document.body.classList.add(language);
@@ -84,7 +123,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   useEffect(() => {
     document.documentElement.style.fontSize = `${fontSize}px`;
-    localStorage.setItem('fontSize', String(fontSize));
+    savePreference('fontSize', fontSize);
   }, [fontSize]);
 
   const toggleTheme = () => {

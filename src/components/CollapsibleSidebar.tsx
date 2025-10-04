@@ -50,7 +50,7 @@ export const CollapsibleSidebar = () => {
     { href: '/', label: 'Home', icon: Home },
     ...(currentUser ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
     { href: '/about', label: 'About', icon: Info },
-    { href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart },
+    { href: '/wishlist', label: 'Wishlist', icon: Heart, badge: wishlist.length > 0 ? wishlist.length : undefined },
     { href: '/dashboard/news-events', label: 'News & Events', icon: Newspaper },
     { href: '/dashboard/tutorials', label: 'Tutorials', icon: Play },
     { href: '/referrals', label: 'Refer', icon: Users },
@@ -128,10 +128,24 @@ export const CollapsibleSidebar = () => {
                   } ${isExpanded ? 'space-x-3' : 'justify-center'}`}
                 >
                   {!isExpanded ? (
-                    <IconComponent className="w-5 h-5 flex-shrink-0" />
+                    <div className="relative">
+                      <IconComponent className="w-5 h-5 flex-shrink-0" />
+                      {link.badge && (
+                        <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                          {link.badge}
+                        </span>
+                      )}
+                    </div>
                   ) : (
                     <>
-                      <IconComponent className="w-5 h-5 flex-shrink-0" />
+                      <div className="relative">
+                        <IconComponent className="w-5 h-5 flex-shrink-0" />
+                        {link.badge && (
+                          <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                            {link.badge}
+                          </span>
+                        )}
+                      </div>
                       <span className="text-sm font-medium truncate">{link.label}</span>
                     </>
                   )}

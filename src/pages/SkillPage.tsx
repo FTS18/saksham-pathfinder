@@ -36,7 +36,15 @@ export const SkillPage = () => {
     };
     
     loadInternships();
-  }, []);
+    
+    // Set search value to skill name when page loads
+    if (decodedSkill) {
+      const searchEvent = new CustomEvent('globalSearch', {
+        detail: { query: decodedSkill }
+      });
+      window.dispatchEvent(searchEvent);
+    }
+  }, [decodedSkill]);
 
   const internships = useMemo(() => {
     if (!decodedSkill || allInternships.length === 0) {

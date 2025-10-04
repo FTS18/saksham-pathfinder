@@ -35,7 +35,15 @@ export const TitlePage = () => {
     };
     
     loadInternships();
-  }, []);
+    
+    // Set search value to title when page loads
+    if (decodedTitle) {
+      const searchEvent = new CustomEvent('globalSearch', {
+        detail: { query: decodedTitle }
+      });
+      window.dispatchEvent(searchEvent);
+    }
+  }, [decodedTitle]);
 
   const internships = useMemo(() => {
     if (!decodedTitle || allInternships.length === 0) {
