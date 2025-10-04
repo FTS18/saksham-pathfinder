@@ -1,33 +1,30 @@
 /* Responsive viewport scaling */
 @media (max-width: 767px) {
   /* Android devices - 80% scale */
-  html {
-    zoom: 0.8;
-    -webkit-text-size-adjust: 80%;
-    -moz-text-size-adjust: 80%;
-    -ms-text-size-adjust: 80%;
-    text-size-adjust: 80%;
+  body {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%; /* Compensate for scale */
+    height: 125%;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Tablet devices - 85% scale */
-  html {
-    zoom: 0.85;
-    -webkit-text-size-adjust: 85%;
-    -moz-text-size-adjust: 85%;
-    -ms-text-size-adjust: 85%;
-    text-size-adjust: 85%;
+  body {
+    transform: scale(0.85);
+    transform-origin: top left;
+    width: 117.65%; /* 100/0.85 */
+    height: 117.65%;
   }
 }
 
 @media (min-width: 1024px) {
   /* Desktop devices - 90% scale */
-  html {
-    zoom: 0.9;
-    -webkit-text-size-adjust: 90%;
-    -moz-text-size-adjust: 90%;
-    -ms-text-size-adjust: 90%;
-    text-size-adjust: 90%;
+  body {
+    transform: scale(0.9);
+    transform-origin: top left;
+    width: 111.11%; /* 100/0.9 */
+    height: 111.11%;
   }
 }
