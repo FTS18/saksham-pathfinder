@@ -85,11 +85,11 @@ export default function Wishlist() {
         title={`My Wishlist (${wishlistedInternships.length})`}
         subtitle="Your saved internships and personalized recommendations"
       />
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-8">
 
         {wishlistedInternships.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 internship-cards-container">
               {wishlistedInternships.map((internship) => (
                 <InternshipCard 
                   key={internship.id}
@@ -128,7 +128,7 @@ export default function Wishlist() {
                 <p className="text-muted-foreground mb-6">
                   Based on your wishlist preferences, we found these similar opportunities
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 internship-cards-container">
                   {(showAllRecommendations ? recommendations : recommendations.slice(0, 6)).map((internship) => (
                     <InternshipCard 
                       key={internship.id}

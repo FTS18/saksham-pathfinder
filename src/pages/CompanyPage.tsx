@@ -46,8 +46,14 @@ const CompanyPage = () => {
   useEffect(() => {
     if (company) {
       loadCompanyData(company);
+      
+      // Set search value to company name when page loads
+      const searchEvent = new CustomEvent('globalSearch', {
+        detail: { query: decodedCompany }
+      });
+      window.dispatchEvent(searchEvent);
     }
-  }, [company]);
+  }, [company, decodedCompany]);
 
   useEffect(() => {
     // Load user profile from localStorage

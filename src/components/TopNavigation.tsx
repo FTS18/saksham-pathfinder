@@ -1,9 +1,11 @@
-import { useState, useRef, useCallback } from 'react';
-import { Search, Menu, Sun, Moon } from 'lucide-react';
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { Search, Menu, Sun, Moon, X } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { NotificationSystem } from './NotificationSystem';
 import { SearchSuggestions } from './SearchSuggestions';
+import { SearchHistoryDropdown } from './SearchHistoryDropdown';
+import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 export const TopNavigation = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const { searchHistory, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
   const { currentUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -49,14 +53,46 @@ export const TopNavigation = () => {
 
   const handleSearch = (query: string) => {
     if (query.trim()) {
+      addToHistory(query.trim());
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
     }
     setShowSuggestions(false);
+    setShowHistory(false);
+  };
+
+  const handleHistorySelect = (query: string) => {
+    setSearchQuery(query);
+    handleSearch(query);
   };
 
   const toggleMobileSidebar = () => {
     window.dispatchEvent(new CustomEvent('toggleMobileSidebar'));
   };
+
+  // Listen for global search events and keyboard shortcuts
+  useEffect(() => {
+    const handleGlobalSearch = (e: CustomEvent) => {
+      setSearchQuery(e.detail.query);
+    };
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[role="searchbox"]') as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+    };
+    
+    window.addEventListener('globalSearch', handleGlobalSearch as EventListener);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('globalSearch', handleGlobalSearch as EventListener);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-background/95 supports-[backdrop-filter]:bg-background/80 backdrop-blur-xl border-b border-border/50 z-50 h-16 shadow-2xl">
@@ -83,9 +119,18 @@ export const TopNavigation = () => {
                   setSearchQuery(e.target.value);
                   debouncedSearch(e.target.value);
                 }}
-                onFocus={() => setShowSuggestions(searchQuery.length > 0)}
+                onFocus={() => {
+                  if (searchQuery.length > 0) {
+                    setShowSuggestions(true);
+                  } else {
+                    setShowHistory(searchHistory.length > 0);
+                  }
+                }}
                 onBlur={() => {
-                  blurTimeoutRef.current = setTimeout(() => setShowSuggestions(false), 200);
+                  blurTimeoutRef.current = setTimeout(() => {
+                    setShowSuggestions(false);
+                    setShowHistory(false);
+                  }, 200);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -93,18 +138,39 @@ export const TopNavigation = () => {
                     handleSearch(searchQuery);
                   }
                 }}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-muted border-border text-foreground placeholder-muted-foreground"
+                className="w-full pl-10 pr-10 py-2 text-sm bg-muted border-border/30 text-foreground placeholder-muted-foreground rounded-md"
                 aria-label="Search internships"
                 role="searchbox"
                 aria-expanded={showSuggestions}
                 aria-autocomplete="list"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setShowSuggestions(false);
+                    setShowHistory(false);
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              )}
               <SearchSuggestions
                 query={searchQuery}
                 onSelect={handleSuggestionSelect}
                 onSearch={handleSearch}
                 isVisible={showSuggestions}
+              />
+              <SearchHistoryDropdown
+                history={searchHistory}
+                onSelect={handleHistorySelect}
+                onRemove={removeFromHistory}
+                onClear={clearHistory}
+                isVisible={showHistory}
               />
             </div>
           </div>
@@ -115,15 +181,7 @@ export const TopNavigation = () => {
                 <NotificationSystem />
               </div>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleTheme}
-              className="p-2 rounded-xl hover:bg-muted/50 transition-all duration-200"
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </Button>
+
             <Button
               variant="ghost"
               size="sm"

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, Building, MapPin, Briefcase, Code, Target } from 'lucide-react';
 import { cache, CACHE_KEYS } from '@/lib/cache';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SearchSuggestionsProps {
   query: string;
@@ -28,6 +29,7 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
   const [internshipsData, setInternshipsData] = useState<InternshipData[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const { colorTheme } = useTheme();
 
   useEffect(() => {
     const loadData = async () => {
@@ -163,12 +165,12 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'company': return <Building className="w-4 h-4 text-blue-500" />;
-      case 'location': return <MapPin className="w-4 h-4 text-green-500" />;
-      case 'title': return <Briefcase className="w-4 h-4 text-purple-500" />;
-      case 'skill': return <Code className="w-4 h-4 text-orange-500" />;
-      case 'sector': return <Target className="w-4 h-4 text-red-500" />;
-      default: return <Search className="w-4 h-4 text-muted-foreground" />;
+      case 'company': return <Building className="w-5 h-5 md:w-4 md:h-4 text-blue-500" />;
+      case 'location': return <MapPin className="w-5 h-5 md:w-4 md:h-4 text-green-500" />;
+      case 'title': return <Briefcase className="w-5 h-5 md:w-4 md:h-4 text-purple-500" />;
+      case 'skill': return <Code className="w-5 h-5 md:w-4 md:h-4 text-orange-500" />;
+      case 'sector': return <Target className="w-5 h-5 md:w-4 md:h-4 text-red-500" />;
+      default: return <Search className="w-5 h-5 md:w-4 md:h-4 text-muted-foreground" />;
     }
   };
 
@@ -179,14 +181,32 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
   return (
     <div 
       ref={suggestionsRef}
-      className="absolute top-full left-0 right-0 bg-background border border-border rounded-md shadow-lg z-50 mt-1 max-h-80 overflow-y-auto"
+      className="fixed md:absolute top-16 md:top-full left-0 right-0 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-none shadow-lg z-50 mt-0 md:mt-1 max-h-80 overflow-y-auto w-screen md:w-auto"
     >
-      {filteredSuggestions.map((suggestion, index) => (
+      {filteredSuggestions.map((suggestion, index) => {
+        const getTypeStyles = () => {
+          const themeHover = {
+            blue: 'hover:bg-blue-50 dark:hover:bg-blue-950/30',
+            green: 'hover:bg-green-50 dark:hover:bg-green-950/30',
+            red: 'hover:bg-red-50 dark:hover:bg-red-950/30',
+            yellow: 'hover:bg-yellow-50 dark:hover:bg-yellow-950/30',
+            grey: 'hover:bg-gray-50 dark:hover:bg-gray-900'
+          };
+          return `bg-white dark:bg-black ${themeHover[colorTheme] || themeHover.blue}`;
+        };
+        
+        return (
         <button
           key={`${suggestion.type}-${suggestion.value}`}
           onClick={() => onSelect(suggestion)}
-          className={`w-full px-3 py-2 text-left flex items-center gap-3 text-sm transition-colors border-b border-border/50 last:border-b-0 ${
-            index === selectedIndex ? 'bg-primary/10 text-primary' : 'hover:bg-muted/50'
+          className={`w-full px-4 py-4 md:py-2 text-left flex items-center gap-3 text-base md:text-sm transition-all duration-200 border-b border-border/30 last:border-b-0 min-h-[48px] md:min-h-auto ${
+            index === selectedIndex ? `${
+              colorTheme === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30' :
+              colorTheme === 'green' ? 'bg-green-100 dark:bg-green-900/30' :
+              colorTheme === 'red' ? 'bg-red-100 dark:bg-red-900/30' :
+              colorTheme === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30' :
+              colorTheme === 'grey' ? 'bg-gray-100 dark:bg-gray-800' : 'bg-blue-100 dark:bg-blue-900/30'
+            }` : getTypeStyles()
           }`}
         >
           {getIcon(suggestion.type)}
@@ -202,7 +222,8 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
             </div>
           </div>
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 };

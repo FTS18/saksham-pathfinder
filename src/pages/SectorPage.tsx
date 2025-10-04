@@ -54,6 +54,14 @@ export const SectorPage = () => {
     };
 
     loadInternships();
+    
+    // Set search value to sector name when page loads
+    if (decodedSector) {
+      const searchEvent = new CustomEvent('globalSearch', {
+        detail: { query: decodedSector }
+      });
+      window.dispatchEvent(searchEvent);
+    }
   }, [decodedSector]);
 
   if (loading) {

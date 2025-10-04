@@ -42,6 +42,12 @@ export const CityPage = () => {
     
     if (decodedCity) {
       loadInternships();
+      
+      // Set search value to city name when page loads
+      const searchEvent = new CustomEvent('globalSearch', {
+        detail: { query: decodedCity }
+      });
+      window.dispatchEvent(searchEvent);
     }
   }, [decodedCity]);
 

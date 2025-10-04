@@ -2,11 +2,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { ReadingAssistant } from './ReadingAssistant';
+import { SectorIcon } from './SectorIcons';
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -109,7 +110,7 @@ export const InternshipDetailsModal = ({
     if (isWishlisted) {
       wishlistContext.removeFromWishlist(internship.id);
     } else {
-      wishlistContext.addToWishlist(internship);
+      wishlistContext.addToWishlist(internship.id);
     }
   };
   
@@ -257,7 +258,7 @@ export const InternshipDetailsModal = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-none !w-full !h-full md:!max-w-2xl md:!w-[768px] md:!max-h-[90vh] md:!h-auto flex flex-col p-0 md:rounded-lg rounded-none !fixed !inset-0 md:!top-[50%] md:!left-[50%] md:!translate-x-[-50%] md:!translate-y-[-50%] z-[100] bg-background border [&>button]:hidden mobile-modal landscape-modal">
+      <DialogContent className="!fixed !inset-0 !w-full !h-full !max-w-none !translate-x-0 !translate-y-0 !left-0 !top-0 md:!fixed md:!left-[50%] md:!top-[50%] md:!translate-x-[-50%] md:!translate-y-[-50%] md:!max-w-4xl md:!w-[896px] md:!max-h-[85vh] md:!h-auto md:!inset-auto flex flex-col p-0 md:rounded-lg rounded-none z-[100] bg-background border [&>button]:hidden">
         {/* Left Navigation Arrow */}
         {onPrev && (
           <Button
@@ -285,77 +286,44 @@ export const InternshipDetailsModal = ({
         )}
 
         {/* Fixed Header */}
-        <div className="sticky top-0 bg-background border-b p-4 z-10 shrink-0">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold flex items-center justify-between">
-              <div className="flex items-start gap-3 flex-1">
-                <div className="text-left">
-                  <div className="text-lg font-bold">{internship.title}</div>
-                  <div className="text-sm font-normal text-muted-foreground">{internship.company}</div>
-                </div>
+        <div className="sticky top-0 bg-background border-b z-10 shrink-0">
+          {/* Single row: Sector icon + Title, Close button */}
+          <div className="flex items-center justify-between p-3">
+            {/* Left: Sector icon + Title and Company */}
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
+                {internship.sector_tags && internship.sector_tags.length > 0 ? (
+                  <SectorIcon sector={internship.sector_tags[0]} className="w-5 h-5 text-primary" />
+                ) : (
+                  <Building2 className="w-5 h-5 text-primary" />
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                {onPrev && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onPrev}
-                    className="w-8 h-8 p-0"
-                    disabled={currentIndex === 0}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-                )}
-                {onNext && totalCount && currentIndex !== undefined && (
-                  <span className="text-xs text-muted-foreground px-2">
-                    {currentIndex + 1} / {totalCount}
-                  </span>
-                )}
-                {onNext && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onNext}
-                    className="w-8 h-8 p-0"
-                    disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleWishlistToggle}
-                  className={`w-8 h-8 p-0 transition-all duration-200 ${isWishlisted ? 'bg-primary/10' : ''}`}
-                >
-                  {isWishlisted ? (
-                    <Bookmark className="w-4 h-4 text-primary fill-current" />
-                  ) : (
-                    <Bookmark className="w-4 h-4 text-muted-foreground" />
-                  )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowReadingAssistant(!showReadingAssistant)}
-                  className="w-8 h-8 p-0"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="w-8 h-8 p-0"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </DialogTitle>
-            {showReadingAssistant && (
+              <DialogHeader className="flex-1">
+                <DialogTitle className="text-left">
+                  <div className="text-lg font-bold text-foreground leading-tight">{internship.title}</div>
+                  <div className="text-sm text-muted-foreground mt-1">{internship.company}</div>
+                </DialogTitle>
+              </DialogHeader>
+            </div>
+            
+            {/* Right: Close button */}
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="w-10 h-10 p-0 text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+          
+          {showReadingAssistant && (
+            <div className="px-4 pb-2 border-t border-border/50">
               <ReadingAssistant text={getModalText()} isVisible={showReadingAssistant} />
-            )}
-          </DialogHeader>
+            </div>
+          )}
         </div>
 
         {/* Scrollable Content */}
@@ -553,37 +521,79 @@ export const InternshipDetailsModal = ({
         
         {/* Fixed Footer */}
         <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-3 z-20 shrink-0">
-          <div className="flex gap-3 button-group-mobile">
+          <div className="grid grid-cols-5 gap-2 mb-3">
+            {onPrev ? (
+              <Button
+                variant="outline"
+                onClick={onPrev}
+                className="h-10 rounded-none disabled:opacity-30 group relative"
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                {totalCount && currentIndex !== undefined && (
+                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    {currentIndex + 1} / {totalCount}
+                  </span>
+                )}
+              </Button>
+            ) : (
+              <div className="h-10" />
+            )}
             <Button 
               onClick={generatePrepGuide}
               disabled={loadingPrep}
               variant="outline"
-              className="flex-1 rounded-full h-12"
+              className="h-10 rounded-none"
             >
               {loadingPrep ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Loading...
-                </>
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <>
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  More
-                </>
+                <Sparkles className="w-4 h-4" />
               )}
             </Button>
-            <a 
-              href={internship.apply_link || '#'} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex-1"
+            <Button
+              variant="outline"
+              onClick={handleWishlistToggle}
+              className={`h-10 rounded-none transition-all duration-200 ${isWishlisted ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
             >
-              <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-full h-12">
-                <span>{t.apply}</span>
-                <ExternalLink className="w-4 h-4 ml-2" />
+              <Bookmark className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowReadingAssistant(!showReadingAssistant)}
+              className="h-10 rounded-none"
+            >
+              <Volume2 className="w-4 h-4" />
+            </Button>
+            {onNext ? (
+              <Button
+                variant="outline"
+                onClick={onNext}
+                className="h-10 rounded-none disabled:opacity-30 group relative"
+                disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
+              >
+                <ChevronRight className="w-4 h-4" />
+                {totalCount && currentIndex !== undefined && (
+                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    {currentIndex + 1} / {totalCount}
+                  </span>
+                )}
               </Button>
-            </a>
+            ) : (
+              <div className="h-10" />
+            )}
           </div>
+          <a 
+            href={internship.apply_link || '#'} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="block"
+          >
+            <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-none h-12">
+              <span>{t.apply}</span>
+              <ExternalLink className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
         </div>
       </DialogContent>
     </Dialog>

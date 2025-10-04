@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, ZoomIn, ZoomOut, Volume2, VolumeX, ChevronUp, ChevronDown, Palette } from 'lucide-react';
+import { ZoomIn, ZoomOut, Volume2, VolumeX, ChevronUp, ChevronDown, Palette } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip';
@@ -67,12 +67,6 @@ export const AccessibilitySidebar = () => {
       combo.dispatchEvent(new Event('change'));
       localStorage.setItem('selectedLanguage', newLang);
       setCurrentLang(newLang);
-    } else {
-      // Fallback: reload page with language parameter
-      const newLang = currentLang === 'en' ? 'hi' : 'en';
-      localStorage.setItem('selectedLanguage', newLang);
-      setCurrentLang(newLang);
-      window.location.reload();
     }
   };
 
@@ -132,19 +126,7 @@ export const AccessibilitySidebar = () => {
         {/* Controls */}
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={toggleTheme} 
-                  className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
-                >
-                  {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="left">{theme === 'light' ? 'Dark mode' : 'Light mode'}</TooltipContent>
-            </Tooltip>
+
           
             {/* Theme Color Selector */}
             <div className="flex flex-col rounded-2xl overflow-hidden border border-border/50">
@@ -225,12 +207,12 @@ export const AccessibilitySidebar = () => {
                   onClick={toggleLanguage}
                   className="w-full h-12 p-0 rounded-2xl hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 transition-all duration-200 hover-scale-sm btn-press"
                 >
-                  <span className="text-lg font-bold">
-                    {currentLang === 'en' ? '🇮🇳' : '🇬🇧'}
+                  <span className="text-sm font-bold">
+                    {currentLang === 'en' ? 'हि' : 'EN'}
                   </span>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">{currentLang === 'en' ? 'Switch to Hindi' : 'Switch to English'}</TooltipContent>
+              <TooltipContent side="left">{currentLang === 'en' ? 'हिंदी में बदलें' : 'Switch to English'}</TooltipContent>
             </Tooltip>
 
             <Tooltip>

@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useSafeAuth } from '@/hooks/useSafeAuth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface WishlistContextType {
   wishlist: string[];
@@ -18,19 +21,52 @@ export const useWishlist = () => {
 };
 
 export const WishlistProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useSafeAuth();
   const [wishlist, setWishlist] = useState<string[]>([]);
 
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('wishlist');
-    if (savedWishlist) {
-      setWishlist(JSON.parse(savedWishlist));
+    if (user) {
+      loadWishlist();
+    } else {
+      const savedWishlist = localStorage.getItem('wishlist');
+      if (savedWishlist) {
+        setWishlist(JSON.parse(savedWishlist));
+      }
     }
-  }, []);
+  }, [user]);
+
+  const loadWishlist = async () => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        setWishlist(userData.wishlist || []);
+      }
+    } catch (error) {
+      console.error('Error loading wishlist:', error);
+    }
+  };
+
+  const saveWishlist = async (newWishlist: string[]) => {
+    if (user) {
+      try {
+        const docRef = doc(db, 'profiles', user.uid);
+        await updateDoc(docRef, { wishlist: newWishlist });
+      } catch (error) {
+        console.error('Error saving wishlist:', error);
+        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+      }
+    } else {
+      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+    }
+  };
 
   const addToWishlist = (id: string) => {
     setWishlist(prev => {
       const newWishlist = [...prev, id];
-      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+      saveWishlist(newWishlist);
       return newWishlist;
     });
   };
@@ -38,7 +74,7 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   const removeFromWishlist = (id: string) => {
     setWishlist(prev => {
       const newWishlist = prev.filter(itemId => itemId !== id);
-      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+      saveWishlist(newWishlist);
       return newWishlist;
     });
   };

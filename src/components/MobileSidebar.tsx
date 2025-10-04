@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Briefcase, Info, Heart, Newspaper, BookOpen, Users } from 'lucide-react';
+import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, LayoutDashboard } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -19,12 +19,13 @@ export const MobileSidebar = () => {
 
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
-    { href: '/live-jobs', label: 'Live Jobs', icon: Briefcase },
+    ...(currentUser ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
     { href: '/about', label: 'About', icon: Info },
     { href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart },
     { href: '/dashboard/news-events', label: 'News & Events', icon: Newspaper },
-    { href: '/dashboard/tutorials', label: 'Tutorials', icon: BookOpen },
-    { href: '/referrals', label: 'Refer', icon: Users }
+    { href: '/dashboard/tutorials', label: 'Tutorials', icon: Play },
+    { href: '/referrals', label: 'Refer', icon: Users },
+    { href: '/profile', label: 'Settings', icon: SettingsIcon }
   ];
 
   useEffect(() => {
@@ -55,10 +56,8 @@ export const MobileSidebar = () => {
     if (combo) {
       combo.value = newLang;
       combo.dispatchEvent(new Event('change'));
+      localStorage.setItem('selectedLanguage', newLang);
     }
-    
-    localStorage.setItem('selectedLanguage', newLang);
-    window.location.reload();
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -121,7 +120,7 @@ export const MobileSidebar = () => {
 
             {/* Fixed Controls at Bottom */}
             <div className="p-4 border-t border-border bg-background">
-              {/* Theme & Accessibility */}
+              {/* Accessibility */}
               <div className="mb-4">
                 <h4 className="text-sm font-medium mb-2">Accessibility</h4>
                 <div className="flex gap-2">
@@ -134,15 +133,12 @@ export const MobileSidebar = () => {
                   <Button variant="outline" size="sm" onClick={decreaseFontSize}>
                     A-
                   </Button>
+                  <Button variant="outline" size="sm" onClick={toggleLanguage}>
+                    <span className="text-sm">
+                      {localStorage.getItem('selectedLanguage') === 'hi' ? 'EN' : 'हि'}
+                    </span>
+                  </Button>
                 </div>
-              </div>
-
-              {/* Language */}
-              <div className="mb-4">
-                <h4 className="text-sm font-medium mb-2">Language</h4>
-                <Button variant="outline" size="sm" onClick={toggleLanguage} className="w-full">
-                  {localStorage.getItem('selectedLanguage') === 'hi' ? 'Switch to English' : 'हिंदी में बदलें'}
-                </Button>
               </div>
 
               {/* Auth */}

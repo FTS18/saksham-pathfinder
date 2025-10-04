@@ -1,0 +1,40 @@
+/* Card grid - dynamic height on mobile, equal on desktop */
+.internship-cards-container {
+  display: grid;
+}
+
+/* Mobile: dynamic heights */
+@media (max-width: 768px) {
+  .internship-cards-container {
+    grid-auto-rows: auto;
+  }
+  
+  .internship-cards-container .internship-card {
+    height: auto !important;
+  }
+}
+
+/* Desktop: equal heights */
+@media (min-width: 769px) {
+  .internship-cards-container {
+    grid-auto-rows: 1fr;
+    align-items: stretch;
+  }
+  
+  .internship-cards-container .internship-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+  
+  .internship-card .card-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    flex: 1 !important;
+  }
+  
+  .internship-card .button-container {
+    margin-top: auto !important;
+  }
+}

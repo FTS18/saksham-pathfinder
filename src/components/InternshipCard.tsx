@@ -275,7 +275,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
       )}
 
 
-      <CardContent className="p-6 md:p-7 sm:p-6 flex flex-col h-full">
+      <CardContent className="p-6 md:p-7 sm:p-6 flex flex-col h-full card-content">
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center space-x-2 pr-6">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
@@ -413,8 +413,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
 
 
-        <div className="flex-grow"></div>
-        <div className="mt-auto">
+        <div className="mt-auto pt-4 button-container">
           <div className="flex gap-1 items-center">
             <Button 
               onClick={() => {
