@@ -7,6 +7,7 @@ import { SearchSuggestions } from './SearchSuggestions';
 import { SearchHistoryDropdown } from './SearchHistoryDropdown';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { useAuth } from '@/contexts/AuthContext';
+import { NotificationCenter } from './NotificationCenter';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -177,7 +178,8 @@ export const TopNavigation = () => {
           
           <div className="flex items-center gap-2">
             {currentUser && (
-              <div className="hidden sm:block text-foreground">
+              <div className="hidden sm:flex items-center gap-2 text-foreground">
+                <NotificationCenter />
                 <NotificationSystem />
               </div>
             )}

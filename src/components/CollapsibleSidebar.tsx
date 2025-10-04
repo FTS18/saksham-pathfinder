@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, User, Home, Briefcase, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, Menu, ChevronLeft, ChevronRight, LayoutDashboard } from 'lucide-react';
+import { LogIn, LogOut, User, Home, Briefcase, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, Menu, ChevronLeft, ChevronRight, LayoutDashboard, Database } from 'lucide-react';
+import { InternshipMigration } from './admin/InternshipMigration';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -56,6 +58,8 @@ export const CollapsibleSidebar = () => {
     { href: '/referrals', label: 'Refer', icon: Users },
     { href: '/profile', label: 'Settings', icon: SettingsIcon }
   ];
+
+  const isAdmin = !!currentUser; // Show for all authenticated users
 
   const isActive = (path: string) => location.pathname === path;
   
@@ -115,6 +119,34 @@ export const CollapsibleSidebar = () => {
         {/* Navigation Links */}
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-2">
+            {/* Admin Migration Button */}
+            {isAdmin && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button
+                    className={`w-full flex items-center px-3 py-2.5 rounded-2xl transition-all duration-200 hover-scale-sm btn-press text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md hover:ring-2 hover:ring-muted/30 ${
+                      isExpanded ? 'space-x-3' : 'justify-center'
+                    }`}
+                  >
+                    {!isExpanded ? (
+                      <Database className="w-5 h-5 flex-shrink-0" />
+                    ) : (
+                      <>
+                        <Database className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm font-medium truncate">Migrate Data</span>
+                      </>
+                    )}
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Internship Data Migration</DialogTitle>
+                  </DialogHeader>
+                  <InternshipMigration />
+                </DialogContent>
+              </Dialog>
+            )}
+            
             {navLinks.map((link) => {
               const IconComponent = link.icon;
               const linkContent = (

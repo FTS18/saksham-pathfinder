@@ -1,3 +1,5 @@
+// Import the new migration service
+import InternshipMigrationService, { FirebaseInternship } from './internshipMigrationService';
 import { db } from '@/lib/firebase';
 import { 
   collection, 
@@ -59,26 +61,17 @@ export const applyToInternship = async (applicationData: InternshipApplication) 
   }
 };
 
-export const getInternshipsForStudents = async () => {
-  try {
-    const q = query(
-      collection(db, 'internships'),
-      where('status', '==', 'active'),
-      orderBy('createdAt', 'desc')
-    );
-    
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-      updatedAt: doc.data().updatedAt?.toDate() || new Date()
-    }));
-  } catch (error) {
-    console.error('Error fetching internships:', error);
-    throw error;
-  }
-};
+// Re-export the migration service functions
+export const getAllInternships = InternshipMigrationService.getAllInternships;
+export const getInternshipsPaginated = InternshipMigrationService.getInternshipsPaginated;
+export const searchInternships = InternshipMigrationService.searchInternships;
+export const getInternshipById = InternshipMigrationService.getInternshipById;
+export const getTrendingInternships = InternshipMigrationService.getTrendingInternships;
+export const getFeaturedInternships = InternshipMigrationService.getFeaturedInternships;
+export const incrementViewCount = InternshipMigrationService.incrementViewCount;
+
+// Legacy function name for backward compatibility
+export const getInternshipsForStudents = InternshipMigrationService.getAllInternships;
 
 export const getUserApplications = async (userId: string) => {
   try {
@@ -114,84 +107,5 @@ export const getUserApplications = async (userId: string) => {
   }
 };
 
-export const getInternshipById = async (internshipId: string) => {
-  try {
-    const docRef = doc(db, 'internships', internshipId);
-    const docSnap = await getDoc(docRef);
-    
-    if (docSnap.exists()) {
-      return {
-        id: docSnap.id,
-        ...docSnap.data(),
-        createdAt: docSnap.data().createdAt?.toDate() || new Date(),
-        updatedAt: docSnap.data().updatedAt?.toDate() || new Date()
-      };
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Error fetching internship:', error);
-    throw error;
-  }
-};
-
-export const searchInternships = async (filters: {
-  location?: string;
-  sector?: string;
-  skills?: string[];
-  stipendRange?: { min: number; max: number };
-  duration?: string;
-}) => {
-  try {
-    let q = query(
-      collection(db, 'internships'),
-      where('status', '==', 'active')
-    );
-
-    // Apply filters
-    if (filters.location) {
-      q = query(q, where('location', '==', filters.location));
-    }
-    
-    if (filters.sector) {
-      q = query(q, where('sector', '==', filters.sector));
-    }
-
-    const querySnapshot = await getDocs(q);
-    let results = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-      updatedAt: doc.data().updatedAt?.toDate() || new Date()
-    }));
-
-    // Client-side filtering for complex queries
-    if (filters.skills && filters.skills.length > 0) {
-      results = results.filter(internship => 
-        filters.skills!.some(skill => 
-          internship.skills.some((s: string) => 
-            s.toLowerCase().includes(skill.toLowerCase())
-          )
-        )
-      );
-    }
-
-    if (filters.stipendRange) {
-      results = results.filter(internship => {
-        const stipend = parseInt(internship.stipend.replace(/[^\d]/g, ''));
-        return stipend >= filters.stipendRange!.min && stipend <= filters.stipendRange!.max;
-      });
-    }
-
-    if (filters.duration) {
-      results = results.filter(internship => 
-        internship.duration.toLowerCase().includes(filters.duration!.toLowerCase())
-      );
-    }
-
-    return results;
-  } catch (error) {
-    console.error('Error searching internships:', error);
-    throw error;
-  }
-};
+// Export types
+export type { FirebaseInternship };

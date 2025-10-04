@@ -4,6 +4,7 @@ import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Boo
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useApplication } from '@/contexts/ApplicationContext';
 import { SectorIcon } from './SectorIcons';
 import { useAudioSupport } from '@/hooks/useAudioSupport';
 import { InternshipDetailsModal } from './InternshipDetailsModal';
@@ -91,6 +92,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
   } = internship;
 
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
+  const { applyToInternship, hasApplied } = useApplication();
   const { isSupported: audioSupported, speak, isSpeaking } = useAudioSupport();
   const { addToComparison, removeFromComparison, isInComparison, selectedInternships, maxComparisons } = useComparison();
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
@@ -417,17 +419,16 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           <div className="flex gap-1 items-center">
             <Button 
               onClick={() => {
-                // Get all internships from parent component via window event
-                const event = new CustomEvent('requestInternshipData', { 
-                  detail: { internshipId: id, currentIndex: currentIndex || 0 } 
-                });
-                window.dispatchEvent(event);
+                // Request internship data for modal navigation
+                window.dispatchEvent(new CustomEvent('requestInternshipData', {
+                  detail: { internshipId: id }
+                }));
                 setShowModal(true);
               }}
               className="flex-1 h-9 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-medium transition-all duration-150 group rounded-full active:scale-95"
             >
-              <span className="text-xs">Apply Now</span>
-              <ExternalLink className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+              <span className="text-xs">View More</span>
+              <Info className="w-3 h-3 ml-1 group-hover:scale-110 transition-transform" />
             </Button>
             <Tooltip>
               <TooltipTrigger asChild>

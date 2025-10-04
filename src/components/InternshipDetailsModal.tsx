@@ -5,10 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useApplication } from '@/contexts/ApplicationContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { ReadingAssistant } from './ReadingAssistant';
 import { SectorIcon } from './SectorIcons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
@@ -95,12 +96,29 @@ export const InternshipDetailsModal = ({
 }: InternshipDetailsModalProps) => {
   const { language } = useTheme();
   const wishlistContext = useWishlist();
+  const { applyToInternship, hasApplied } = useApplication();
   const t = translations[language];
   const [showReadingAssistant, setShowReadingAssistant] = useState(false);
   const [prepGuide, setPrepGuide] = useState<string>('');
   const [loadingPrep, setLoadingPrep] = useState(false);
   
   const isWishlisted = wishlistContext?.isInWishlist ? wishlistContext.isInWishlist(internship.id) : false;
+  
+  // Make applyToInternship available globally for the button
+  useEffect(() => {
+    window.applyToInternship = applyToInternship;
+    return () => {
+      delete window.applyToInternship;
+    };
+  }, [applyToInternship]);
+  
+  // Make addNotification available globally
+  useEffect(() => {
+    const notificationContext = document.querySelector('[data-notification-context]');
+    if (notificationContext && notificationContext.addNotification) {
+      window.addNotification = notificationContext.addNotification;
+    }
+  }, []);
   
   useScrollLock(isOpen);
   
@@ -258,7 +276,7 @@ export const InternshipDetailsModal = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!fixed !inset-0 !w-full !h-full !max-w-none !translate-x-0 !translate-y-0 !left-0 !top-0 md:!fixed md:!left-[50%] md:!top-[50%] md:!translate-x-[-50%] md:!translate-y-[-50%] md:!max-w-4xl md:!w-[896px] md:!max-h-[85vh] md:!h-auto md:!inset-auto flex flex-col p-0 md:rounded-lg rounded-none z-[100] bg-background border [&>button]:hidden">
+      <DialogContent className="flex flex-col p-0 rounded-none md:rounded-lg z-50 bg-background border w-full h-full max-w-none max-h-none md:max-w-[500px] md:max-h-[85vh] [&>button]:hidden">
         {/* Left Navigation Arrow */}
         {onPrev && (
           <Button
@@ -327,7 +345,7 @@ export const InternshipDetailsModal = ({
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-4 text-left min-h-0">
+        <div className="flex-1 overflow-y-auto p-4 pb-32 space-y-4 text-left min-h-0">
           {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
@@ -521,12 +539,12 @@ export const InternshipDetailsModal = ({
         
         {/* Fixed Footer */}
         <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-3 z-20 shrink-0">
-          <div className="grid grid-cols-5 gap-2 mb-3">
-            {onPrev ? (
+          <div className="flex gap-2 mb-3">
+            {onPrev && (
               <Button
                 variant="outline"
                 onClick={onPrev}
-                className="h-10 rounded-none disabled:opacity-30 group relative"
+                className="flex-1 h-10 rounded-none disabled:opacity-30 group relative"
                 disabled={currentIndex === 0}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -536,14 +554,12 @@ export const InternshipDetailsModal = ({
                   </span>
                 )}
               </Button>
-            ) : (
-              <div className="h-10" />
             )}
             <Button 
               onClick={generatePrepGuide}
               disabled={loadingPrep}
               variant="outline"
-              className="h-10 rounded-none"
+              className="flex-1 h-10 rounded-none"
             >
               {loadingPrep ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -554,22 +570,22 @@ export const InternshipDetailsModal = ({
             <Button
               variant="outline"
               onClick={handleWishlistToggle}
-              className={`h-10 rounded-none transition-all duration-200 ${isWishlisted ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+              className={`flex-1 h-10 rounded-none transition-all duration-200 ${isWishlisted ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
             >
               <Bookmark className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
             </Button>
             <Button
               variant="outline"
               onClick={() => setShowReadingAssistant(!showReadingAssistant)}
-              className="h-10 rounded-none"
+              className="flex-1 h-10 rounded-none"
             >
               <Volume2 className="w-4 h-4" />
             </Button>
-            {onNext ? (
+            {onNext && (
               <Button
                 variant="outline"
                 onClick={onNext}
-                className="h-10 rounded-none disabled:opacity-30 group relative"
+                className="flex-1 h-10 rounded-none disabled:opacity-30 group relative"
                 disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
               >
                 <ChevronRight className="w-4 h-4" />
@@ -579,21 +595,41 @@ export const InternshipDetailsModal = ({
                   </span>
                 )}
               </Button>
-            ) : (
-              <div className="h-10" />
             )}
           </div>
-          <a 
-            href={internship.apply_link || '#'} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="block"
-          >
-            <Button className="w-full bg-primary hover:bg-primary/90 text-white rounded-none h-12">
+          {hasApplied(internship.id) ? (
+            <Button 
+              disabled
+              className="w-full bg-green-100 text-green-700 rounded-none h-12 cursor-not-allowed"
+            >
+              <span>Applied Successfully</span>
+            </Button>
+          ) : (
+            <Button 
+              onClick={() => {
+                // Apply to internship using context
+                applyToInternship(internship);
+                // Send notification
+                if (window.addNotification) {
+                  window.addNotification({
+                    id: Date.now().toString(),
+                    title: 'Application Submitted',
+                    message: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
+                    type: 'success',
+                    timestamp: new Date().toISOString()
+                  });
+                }
+                // Also open external link if available
+                if (internship.apply_link) {
+                  window.open(internship.apply_link, '_blank', 'noopener,noreferrer');
+                }
+              }}
+              className="w-full bg-primary hover:bg-primary/90 text-white rounded-none h-12 active:scale-95 transition-all duration-150"
+            >
               <span>{t.apply}</span>
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
-          </a>
+          )}
         </div>
       </DialogContent>
     </Dialog>

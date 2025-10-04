@@ -1,87 +1,102 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
-  LayoutDashboard, 
-  Plus, 
+  Building2, 
   Users, 
+  FileText, 
   BarChart3, 
-  Bell, 
-  Settings,
+  Settings, 
+  Plus,
+  Briefcase,
+  MessageSquare,
+  Calendar,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Link, useLocation } from 'react-router-dom';
 
-interface RecruiterSidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  notificationCount?: number;
-}
-
-export const RecruiterSidebar = ({ 
-  activeTab, 
-  onTabChange, 
-  notificationCount = 0 
-}: RecruiterSidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+export const RecruiterSidebar = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const { theme } = useTheme();
+  const location = useLocation();
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'post-internship', label: 'Post Internship', icon: Plus },
-    { id: 'applications', label: 'Applications', icon: Users },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'notifications', label: 'Notifications', icon: Bell, badge: notificationCount },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { icon: BarChart3, label: 'Dashboard', path: '/recruiter/dashboard', badge: null },
+    { icon: Plus, label: 'Post Job', path: '/recruiter/post-job', badge: null },
+    { icon: Briefcase, label: 'Manage Internships', path: '/recruiter/manage-internships', badge: null },
+    { icon: Users, label: 'Candidates', path: '/recruiter/candidates', badge: null },
+    { icon: FileText, label: 'Applications', path: '/recruiter/applications', badge: null },
+    { icon: Calendar, label: 'Interviews', path: '/recruiter/interviews', badge: null },
+    { icon: BarChart3, label: 'Analytics', path: '/recruiter/analytics', badge: null },
+    { icon: Settings, label: 'Settings', path: '/recruiter/settings', badge: null },
   ];
 
+  useEffect(() => {
+    const handleToggle = () => setIsExpanded(!isExpanded);
+    const handleCollapse = () => setIsExpanded(false);
+    
+    window.addEventListener('toggleRecruiterSidebar', handleToggle);
+    window.addEventListener('collapseRecruiterSidebar', handleCollapse);
+    
+    return () => {
+      window.removeEventListener('toggleRecruiterSidebar', handleToggle);
+      window.removeEventListener('collapseRecruiterSidebar', handleCollapse);
+    };
+  }, [isExpanded]);
+
   return (
-    <div className={cn(
-      "h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300",
-      isCollapsed ? "w-16" : "w-64"
-    )}>
+    <div className={`bg-background border-r border-border transition-all duration-300 h-full flex flex-col ${
+      isExpanded ? 'w-[280px]' : 'w-[60px]'
+    }`}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        {!isCollapsed && (
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Recruiter Hub
-          </h2>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-        </button>
+      <div className="p-4 border-b border-border">
+        <div className="flex items-center justify-between">
+          {isExpanded && (
+            <div className="flex items-center space-x-2">
+              <Building2 className="w-6 h-6 text-primary" />
+              <span className="font-bold text-lg">Recruiter</span>
+            </div>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2"
+          >
+            {isExpanded ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          </Button>
+        </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="p-4 space-y-2">
+      {/* Menu Items */}
+      <nav className="flex-1 p-2 space-y-1">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isActive = location.pathname === item.path;
           
           return (
-            <button
-              key={item.id}
-              onClick={() => onTabChange(item.id)}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors",
-                isActive 
-                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400" 
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              )}
-            >
-              <Icon size={20} />
-              {!isCollapsed && (
-                <>
-                  <span className="flex-1">{item.label}</span>
-                  {item.badge && item.badge > 0 && (
-                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </>
-              )}
-            </button>
+            <Link key={item.path} to={item.path}>
+              <Button
+                variant={isActive ? "secondary" : "ghost"}
+                className={`w-full justify-start h-12 ${
+                  isExpanded ? 'px-4' : 'px-3'
+                } ${isActive ? 'bg-primary/10 text-primary' : ''}`}
+              >
+                <Icon className="w-5 h-5 flex-shrink-0" />
+                {isExpanded && (
+                  <>
+                    <span className="ml-3 flex-1 text-left">{item.label}</span>
+                    {item.badge && (
+                      <Badge variant="secondary" className="ml-auto">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              </Button>
+            </Link>
           );
         })}
       </nav>
