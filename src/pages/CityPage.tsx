@@ -14,7 +14,7 @@ export const CityPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const decodedCity = decodeURIComponent(city || '');
+  const decodedCity = (city || '').replace(/-/g, ' ');
   const displayCity = decodedCity.charAt(0).toUpperCase() + decodedCity.slice(1);
   
   // Debug logging
@@ -91,11 +91,11 @@ export const CityPage = () => {
       <div className="max-w-6xl mx-auto px-4 py-4">
         <Button
           variant="ghost"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           className="mb-3 p-2 hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Back
+          Back to Home
         </Button>
         
         <div className="flex items-center gap-2 mb-2">

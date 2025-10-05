@@ -70,7 +70,8 @@ const Register = () => {
         title: "Success",
         description: "Account created successfully!"
       });
-      navigate(userType === 'recruiter' ? '/recruiter/onboarding' : '/dashboard');
+      // Don't navigate immediately, let AuthContext handle onboarding flow
+      // navigate(userType === 'recruiter' ? '/recruiter/onboarding' : '/dashboard');
     } catch (error: any) {
       toast({
         title: "Registration Failed",
@@ -90,7 +91,8 @@ const Register = () => {
         title: "Success",
         description: "Signed up with Google successfully!"
       });
-      navigate(userType === 'recruiter' ? '/recruiter/dashboard' : '/dashboard');
+      // Don't navigate immediately, let AuthContext handle onboarding flow
+      // navigate(userType === 'recruiter' ? '/recruiter/dashboard' : '/dashboard');
     } catch (error: any) {
       toast({
         title: "Google Sign-up Failed",
@@ -116,33 +118,31 @@ const Register = () => {
           <p className="text-muted-foreground">Join Team HexaCoders platform</p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Tabs value={userType} onValueChange={(value) => setUserType(value as 'student' | 'recruiter')} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="student" className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Student
-              </TabsTrigger>
-              <TabsTrigger value="recruiter" className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4" />
-                Recruiter
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="student" className="space-y-4 mt-6">
-              <RegisterForm />
-            </TabsContent>
-            <TabsContent value="recruiter" className="space-y-4 mt-6">
-              <RegisterForm />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  function RegisterForm() {
-    return (
-      <>
-        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid w-full grid-cols-2 gap-2 p-1 bg-muted rounded-lg mb-6">
+            <button 
+              onClick={() => setUserType('student')}
+              className={`px-4 py-2 rounded-md font-medium transition-all ${
+                userType === 'student' 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background'
+              }`}
+            >
+              <Users className="w-4 h-4 inline mr-2" />
+              Student
+            </button>
+            <button 
+              onClick={() => setUserType('recruiter')}
+              className={`px-4 py-2 rounded-md font-medium transition-all ${
+                userType === 'recruiter' 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-background'
+              }`}
+            >
+              <Briefcase className="w-4 h-4 inline mr-2" />
+              Recruiter
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
               <div className="relative">
@@ -292,9 +292,12 @@ const Register = () => {
               Sign in
             </Link>
           </div>
-        </>
-    );
-  }
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+
 };
 
 export default Register;

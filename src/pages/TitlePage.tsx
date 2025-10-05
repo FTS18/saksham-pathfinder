@@ -14,7 +14,7 @@ export const TitlePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const decodedTitle = decodeURIComponent(title || '');
+  const decodedTitle = (title || '').replace(/-/g, ' ');
   const displayTitle = decodedTitle.charAt(0).toUpperCase() + decodedTitle.slice(1);
   
   useEffect(() => {
@@ -84,11 +84,11 @@ export const TitlePage = () => {
       <div className="max-w-6xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           className="mb-4 p-2 hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Back
+          Back to Home
         </Button>
         
         <div className="flex items-center gap-3 mb-2">

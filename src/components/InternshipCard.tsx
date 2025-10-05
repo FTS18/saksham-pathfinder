@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, Info, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, ChevronRight, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare, Briefcase, CheckCircle } from 'lucide-react';
+import { ShareInternship } from './ShareInternship';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -159,79 +160,43 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
     speak(text, 'en');
   }
 
+  const getSectorColor = (sector: string) => {
+    const sectorColors: { [key: string]: string } = {
+      'Technology': '#3b82f6', // blue
+      'Healthcare': '#10b981', // green
+      'Finance': '#f59e0b', // yellow
+      'Education': '#8b5cf6', // purple
+      'Marketing': '#ef4444', // red
+      'E-commerce': '#06b6d4', // cyan
+      'Manufacturing': '#6b7280', // gray
+      'Media': '#ec4899', // pink
+      'Gaming': '#84cc16', // lime
+      'Consulting': '#f97316', // orange
+      'Banking': '#eab308', // yellow
+      'Automotive': '#64748b', // slate
+      'Construction': '#a3a3a3', // neutral
+      'Hospitality': '#f43f5e', // rose
+      'Travel': '#06b6d4', // cyan
+      'NGO': '#22c55e', // green
+      'Research': '#6366f1', // indigo
+      'Sales': '#f59e0b', // amber
+      'Operations': '#71717a', // zinc
+      'Electronics': '#3b82f6', // blue
+      'Infrastructure': '#78716c' // stone
+    };
+    return sectorColors[sector] || '#3b82f6';
+  };
+
   const getCompanyTheme = (companyName: string) => {
     const themes: { [key: string]: string } = {
-      // FAANG + Big Tech (60k+ stipends)
       'Google': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
       'Microsoft': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
       'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
       'Meta': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
       'Apple': 'border-l-4 border-l-gray-800 bg-gray-50/70 dark:bg-gray-950/20',
-      'Netflix': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      
-      // High-paying Tech Companies
-      'Nvidia': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      'Uber': 'border-l-4 border-l-black bg-gray-50/70 dark:bg-gray-950/20',
-      'Airbnb': 'border-l-4 border-l-pink-500 bg-pink-50/70 dark:bg-pink-950/20',
-      'Spotify': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      'Tesla': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'Salesforce': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Adobe': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'PayPal': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Stripe': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20',
-      'Coinbase': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Snapchat': 'border-l-4 border-l-yellow-400 bg-yellow-50/70 dark:bg-yellow-950/20',
-      'Twitter': 'border-l-4 border-l-blue-400 bg-blue-50/70 dark:bg-blue-950/20',
-      'LinkedIn': 'border-l-4 border-l-blue-700 bg-blue-50/70 dark:bg-blue-950/20',
-      'Dropbox': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Slack': 'border-l-4 border-l-purple-500 bg-purple-50/70 dark:bg-purple-950/20',
-      'Zoom': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Atlassian': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Palantir': 'border-l-4 border-l-gray-700 bg-gray-50/70 dark:bg-gray-950/20',
-      'Databricks': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
-      'Snowflake': 'border-l-4 border-l-blue-400 bg-blue-50/70 dark:bg-blue-950/20',
-      'MongoDB': 'border-l-4 border-l-green-600 bg-green-50/70 dark:bg-green-950/20',
-      'Twilio': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
-      'Square': 'border-l-4 border-l-black bg-gray-50/70 dark:bg-gray-950/20',
-      'DoorDash': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
-      'Instacart': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      'Robinhood': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      
-      // Chip Companies
-      'Intel': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'AMD': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'Qualcomm': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Broadcom': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      
-      // Cloud/Enterprise
-      'IBM': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Oracle': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'VMware': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'ServiceNow': 'border-l-4 border-l-green-600 bg-green-50/70 dark:bg-green-950/20',
-      
-      // Indian Companies
       'Flipkart': 'border-l-4 border-l-yellow-500 bg-yellow-50/70 dark:bg-yellow-950/20',
-      'Myntra': 'border-l-4 border-l-pink-500 bg-pink-50/70 dark:bg-pink-950/20',
-      'Infosys': 'border-l-4 border-l-cyan-500 bg-cyan-50/70 dark:bg-cyan-950/20',
-      'Amazon India': 'border-l-4 border-l-orange-600 bg-orange-50/70 dark:bg-orange-950/20',
-      'Paytm': 'border-l-4 border-l-blue-900 bg-blue-50/70 dark:bg-blue-950/20',
-      'Nestle': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'HDFC Bank': 'border-l-4 border-l-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/20',
-      'ITC': 'border-l-4 border-l-gray-500 bg-gray-50/70 dark:bg-gray-950/20',
-      'Mahindra': 'border-l-4 border-l-red-600 bg-red-50/70 dark:bg-red-950/20',
-      'Britannia': 'border-l-4 border-l-green-400 bg-green-50/70 dark:bg-green-950/20',
-      'Airtel': 'border-l-4 border-l-red-700 bg-red-50/70 dark:bg-red-950/20',
       'TCS': 'border-l-4 border-l-blue-700 bg-blue-50/70 dark:bg-blue-950/20',
-      'Reliance': 'border-l-4 border-l-yellow-600 bg-yellow-50/70 dark:bg-yellow-950/20',
-      'Axis Bank': 'border-l-4 border-l-pink-600 bg-pink-50/70 dark:bg-pink-950/20',
-      'Unacademy': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      'Cognizant': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Wipro': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
-      'Accenture': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20',
-      'Zomato': 'border-l-4 border-l-red-500 bg-red-50/70 dark:bg-red-950/20',
-      'Swiggy': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
-      'Ola': 'border-l-4 border-l-green-500 bg-green-50/70 dark:bg-green-950/20',
-      'BYJU\'S': 'border-l-4 border-l-purple-600 bg-purple-50/70 dark:bg-purple-950/20'
+      'Infosys': 'border-l-4 border-l-cyan-500 bg-cyan-50/70 dark:bg-cyan-950/20'
     };
     return themes[companyName] || '';
   };
@@ -266,54 +231,51 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   return (
     <>
-    <Card className={`relative minimal-card flex flex-col h-full rounded border shadow-lg hover:shadow-xl transition-all duration-300 internship-card ${
+    <Card className={`relative minimal-card flex flex-col h-full rounded-lg border shadow-md hover:shadow-lg transition-all duration-300 internship-card ${
         featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
       } ${getCompanyTheme(company)}`}
     >
+      {/* Share Button - Top Right Corner */}
+      <div className="absolute top-3 right-3 z-10">
+        <ShareInternship internship={{ id, title, company }} />
+      </div>
       {aiTags && aiTags.includes('AI Recommended') && (
-        <div className="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg transform -rotate-3">
+        <div className="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg transform -rotate-3">
           Recommended
         </div>
       )}
 
 
-      <CardContent className="p-6 md:p-7 sm:p-6 flex flex-col h-full card-content">
-        <div className="flex items-start justify-between mb-2">
+      <CardContent className="p-4 flex flex-col h-full card-content">
+        <div className="flex items-start justify-between mb-3">
           <div className="flex items-center space-x-2 pr-6">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
               {sector_tags && sector_tags.length > 0 ? (
-                <SectorIcon sector={sector_tags[0]} className="w-4 h-4 text-primary" />
+                <SectorIcon sector={sector_tags[0]} className="w-7 h-7" style={{ color: getSectorColor(sector_tags[0]) }} />
               ) : (
-                <Building2 className="w-4 h-4 text-primary" />
+                <Building2 className="w-7 h-7 text-primary" />
               )}
             </div>
             
-            <div>
-              <h3 className="font-grotesk font-semibold text-sm text-foreground mb-1 text-left notranslate">
+            <div className="ml-3 flex flex-col">
+              <a 
+                href={`/title/${role.toLowerCase().replace(/\s+/g, '-')}`}
+                className="font-grotesk font-semibold text-base text-foreground mb-1.5 text-left notranslate leading-tight hover:text-primary hover:underline cursor-pointer transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {title}
-              </h3>
-              <p className="text-muted-foreground text-xs flex items-center mb-1">
+              </a>
+              <p className="text-muted-foreground text-sm flex items-center leading-tight">
                 <Building2 className="w-3 h-3 mr-1" />
                 <a 
-                  href={`/company/${encodeURIComponent(company.toLowerCase())}`}
+                  href={`/company/${company.toLowerCase().replace(/\s+/g, '-')}`}
                   className="notranslate hover:text-primary hover:underline cursor-pointer transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {company}
                 </a>
               </p>
-              <a 
-                href={`/title/${encodeURIComponent(role.toLowerCase())}`}
-                className="text-xs text-primary font-medium notranslate hover:underline cursor-pointer transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {role}
-              </a>
-              {pmis_id && (
-                <p className="text-xs text-muted-foreground font-mono mt-1">
-                  ID: {pmis_id}
-                </p>
-              )}
+
             </div>
           </div>
           
@@ -326,11 +288,11 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-sm mb-2">
+        <div className="flex items-center justify-between text-sm mb-3">
           <div className="flex items-center text-muted-foreground">
             <MapPin className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
             <a 
-              href={`/city/${encodeURIComponent(locationText.toLowerCase())}`}
+              href={`/city/${locationText.toLowerCase().replace(/\s+/g, '-')}`}
               className="text-xs hover:text-primary hover:underline cursor-pointer transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
@@ -349,8 +311,8 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         </div>
 
         {required_skills && required_skills.length > 0 && (
-          <div className="text-sm mb-2">
-            <div className="flex flex-wrap gap-1">
+          <div className="text-sm mb-1">
+            <div className="skills-container" style={{ maxHeight: '3.2rem', overflow: 'hidden', lineHeight: '1.4', paddingBottom: '0.75rem' }}>
               {(() => {
                 const normalizeSkill = (skill: string) => {
                   const normalized = skill.toLowerCase().trim();
@@ -360,8 +322,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                   if (normalized.includes('react')) return 'react';
                   if (normalized.includes('node')) return 'nodejs';
                   if (normalized.includes('python')) return 'python';
-                  if (normalized.includes('java') && !normalized.includes('script')) return 'java';
-                  return normalized;
+                return normalized;
                 };
                 
                 const userSkills = userProfile?.skills || [];
@@ -376,8 +337,11 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                   )
                 );
                 
-                const skillsToShow = [...matchedSkills, ...unmatchedSkills].slice(0, 3);
-                const remainingCount = required_skills.length - 3;
+                // Show skills with +X more logic
+                const allSkills = [...matchedSkills, ...unmatchedSkills];
+                const maxSkillsToShow = Math.min(3, allSkills.length);
+                const skillsToShow = allSkills.slice(0, maxSkillsToShow);
+                const remainingCount = required_skills.length - skillsToShow.length;
                 
                 return (
                   <>
@@ -386,8 +350,8 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                       return (
                         <a 
                           key={index}
-                          href={`/skill/${encodeURIComponent(skill.toLowerCase())}`}
-                          className={`px-1.5 py-0.5 rounded text-xs notranslate hover:opacity-80 cursor-pointer transition-all ${
+                          href={`/skill/${skill.toLowerCase().replace(/\s+/g, '-')}`}
+                          className={`inline-block px-1.5 py-0.5 rounded text-xs notranslate hover:opacity-80 cursor-pointer transition-all mr-1 mb-1 ${
                             isMatched 
                               ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
                               : 'bg-secondary/50'
@@ -400,7 +364,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                       );
                     })}
                     {remainingCount > 0 && (
-                      <span className="px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground">
+                      <span className="inline-block px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground mr-1 mb-1">
                         +{remainingCount} more
                       </span>
                     )}
@@ -415,32 +379,67 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
 
 
-        <div className="mt-auto pt-4 button-container">
-          <div className="flex gap-1 items-center">
+        <div className="mt-auto pt-2">
+          {/* Main Action Button with 3 Icons */}
+          <div className="flex items-center gap-2">
             <Button 
               onClick={() => {
-                // Request internship data for modal navigation
                 window.dispatchEvent(new CustomEvent('requestInternshipData', {
                   detail: { internshipId: id }
                 }));
                 setShowModal(true);
               }}
-              className="flex-1 h-9 bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground font-medium transition-all duration-150 group rounded-full active:scale-95"
+              className="flex-1 h-9 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
             >
-              <span className="text-xs">View More</span>
-              <Info className="w-3 h-3 ml-1 group-hover:scale-110 transition-transform" />
+              <span className="text-sm">More</span>
             </Button>
+            
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className={`h-8 w-10 text-xs font-bold rounded flex items-center justify-center cursor-default transition-all duration-200 ${
+                <Button 
+                  onClick={handleCompareToggle}
+                  disabled={!isInComparison(id) && selectedInternships.length >= maxComparisons}
+                  size="sm"
+                  className={`h-9 w-9 p-0 shadow-sm hover:shadow-md transition-all ${
+                    isInComparison(id) 
+                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                      : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                  }`}
+                >
+                  <GitCompare className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Compare</TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={handleWishlistToggle}
+                  size="sm"
+                  className={`h-9 w-9 p-0 shadow-sm hover:shadow-md transition-all ${
+                    isWishlisted(id)
+                      ? 'bg-red-500 hover:bg-red-600 text-white'
+                      : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                  }`}
+                >
+                  <Bookmark className={`w-4 h-4 ${isWishlisted(id) ? 'fill-current' : ''}`} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Wishlist</TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className={`h-9 w-9 text-xs font-bold flex items-center justify-center cursor-default shadow-sm ${
                   (aiScore || matchScore || 0) >= 90 
-                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg' 
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' 
                     : (aiScore || matchScore || 0) >= 80 
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
                     : (aiScore || matchScore || 0) >= 70
-                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-md'
+                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
                     : (aiScore || matchScore || 0) >= 60
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-sm'
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
                     : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
                 }`}>
                   {aiScore || matchScore || (userProfile ? 
@@ -453,33 +452,14 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                 <div className="text-center">
                   <div className="font-semibold">AI Match Score</div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    {(aiScore || matchScore || 0) >= 90 ? '🔥 Excellent Match' :
-                     (aiScore || matchScore || 0) >= 80 ? '⭐ Great Match' :
-                     (aiScore || matchScore || 0) >= 70 ? '👍 Good Match' :
-                     (aiScore || matchScore || 0) >= 60 ? '👌 Fair Match' : '📝 Basic Match'}
+                    {(aiScore || matchScore || 0) >= 90 ? '🔥 Excellent' :
+                     (aiScore || matchScore || 0) >= 80 ? '⭐ Great' :
+                     (aiScore || matchScore || 0) >= 70 ? '👍 Good' :
+                     (aiScore || matchScore || 0) >= 60 ? '👌 Fair' : '📝 Basic'}
                   </div>
                 </div>
               </TooltipContent>
             </Tooltip>
-            <Button 
-              onClick={handleCompareToggle}
-              disabled={!isInComparison(id) && selectedInternships.length >= maxComparisons}
-              className={`h-8 w-8 p-0 rounded active:scale-95 transition-all duration-150 ${
-                isInComparison(id) 
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                  : 'bg-primary/10 hover:bg-primary/20'
-              }`}
-            >
-              <GitCompare className={`w-3 h-3 ${
-                isInComparison(id) ? 'text-white' : 'text-primary'
-              }`} />
-            </Button>
-            <Button 
-              onClick={handleWishlistToggle}
-              className="h-8 w-8 p-0 bg-primary/10 hover:bg-primary/20 rounded active:scale-95 transition-all duration-150"
-            >
-              <Bookmark className={`w-3 h-3 ${isWishlisted(id) ? 'fill-current text-primary' : 'text-primary'}`} />
-            </Button>
           </div>
         </div>
       </CardContent>

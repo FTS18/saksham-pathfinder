@@ -15,6 +15,9 @@ import MagicBento from '@/components/MagicBento';
 import { LazyComponent } from '@/components/LazyComponent';
 import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
 import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
+import { InternshipCardSkeleton } from '@/components/skeletons/InternshipCardSkeleton';
+import { HomeFAQ } from '@/components/HomeFAQ';
+import { PartnerCompanies } from '@/components/PartnerCompanies';
 import { ComparisonButton } from '@/components/ComparisonButton';
 import { SEOHead } from '@/components/SEOHead';
 import { SearchResultsCount } from '@/components/SearchResultsCount';
@@ -860,14 +863,17 @@ const Index = () => {
 
       <Hero onGetStartedClick={handleGetStartedClick} />
       
-
-      <SuccessStoriesMarquee />
+      {/* Success Stories Section */}
+      <section className="py-8 bg-background">
+        <h2 className="text-4xl font-racing font-bold text-center mb-4">Success Stories</h2>
+        <SuccessStoriesMarquee />
+      </section>
       
       {/* PM Internship Eligibility Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-4xl font-racing font-bold text-foreground mb-4">
               Are you Eligible for PM <span className="relative text-foreground">
                 Internship
                 <div className="absolute -bottom-1 left-0 w-full h-1 flex">
@@ -959,7 +965,7 @@ const Index = () => {
           
           {/* Core Benefits */}
           <div className="mt-16 mb-12">
-            <h3 className="text-2xl font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
+            <h3 className="text-2xl font-racing font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <MagicBento 
                 spotlightRadius={200}
@@ -1426,6 +1432,8 @@ const Index = () => {
           <Testimonials />
         </Suspense>
       </LazyComponent>
+      <HomeFAQ />
+      <PartnerCompanies />
       <ComparisonButton userProfile={profileData} />
       </div>
     </>

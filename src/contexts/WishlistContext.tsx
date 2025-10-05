@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSafeAuth } from '@/hooks/useSafeAuth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import UserPreferencesService from '@/services/userPreferencesService';
+import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 interface WishlistContextType {
   wishlist: string[];
-  addToWishlist: (id: string) => void;
-  removeFromWishlist: (id: string) => void;
+  addToWishlist: (id: string) => Promise<void>;
+  removeFromWishlist: (id: string) => Promise<void>;
   isWishlisted: (id: string) => boolean;
 }
 
@@ -38,21 +39,23 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   const loadWishlist = async () => {
     if (!user) return;
     try {
-      const docRef = doc(db, 'profiles', user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        setWishlist(userData.wishlist || []);
-      }
+      await UserPreferencesService.syncLocalToFirebase(user.uid);
+      const preferences = await UserPreferencesService.getUserPreferences(user.uid);
+      setWishlist(preferences.wishlist || []);
     } catch (error) {
       console.error('Error loading wishlist:', error);
+      const savedWishlist = localStorage.getItem('wishlist');
+      if (savedWishlist) {
+        setWishlist(JSON.parse(savedWishlist));
+      }
     }
   };
 
   const saveWishlist = async (newWishlist: string[]) => {
     if (user) {
       try {
-        const docRef = doc(db, 'profiles', user.uid);
+        const preferences = await UserPreferencesService.getUserPreferences(user.uid);
+        const docRef = doc(db, 'userPreferences', user.uid);
         await updateDoc(docRef, { wishlist: newWishlist });
       } catch (error) {
         console.error('Error saving wishlist:', error);
@@ -63,20 +66,48 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
     }
   };
 
-  const addToWishlist = (id: string) => {
-    setWishlist(prev => {
-      const newWishlist = [...prev, id];
-      saveWishlist(newWishlist);
-      return newWishlist;
-    });
+  const addToWishlist = async (id: string) => {
+    if (user) {
+      try {
+        await UserPreferencesService.addToWishlist(user.uid, id);
+        setWishlist(prev => [...prev, id]);
+      } catch (error) {
+        console.error('Error adding to wishlist:', error);
+        setWishlist(prev => {
+          const newWishlist = [...prev, id];
+          localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+          return newWishlist;
+        });
+      }
+    } else {
+      setWishlist(prev => {
+        const newWishlist = [...prev, id];
+        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+        return newWishlist;
+      });
+    }
   };
 
-  const removeFromWishlist = (id: string) => {
-    setWishlist(prev => {
-      const newWishlist = prev.filter(itemId => itemId !== id);
-      saveWishlist(newWishlist);
-      return newWishlist;
-    });
+  const removeFromWishlist = async (id: string) => {
+    if (user) {
+      try {
+        await UserPreferencesService.removeFromWishlist(user.uid, id);
+        setWishlist(prev => prev.filter(itemId => itemId !== id));
+      } catch (error) {
+        console.error('Error removing from wishlist:', error);
+        setWishlist(prev => {
+          const newWishlist = prev.filter(itemId => itemId !== id);
+          localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+          return newWishlist;
+        });
+      }
+    } else {
+      setWishlist(prev => {
+        const newWishlist = prev.filter(itemId => itemId !== id);
+        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+        return newWishlist;
+      });
+    }
   };
 
   const isWishlisted = (id: string) => wishlist.includes(id);

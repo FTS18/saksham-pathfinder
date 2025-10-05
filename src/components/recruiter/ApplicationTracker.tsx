@@ -159,7 +159,7 @@ export const ApplicationTracker = () => {
           app.id === applicationId ? { ...app, status: newStatus } : app
         )
       );
-      // TODO: Update in backend
+      // Note: Backend integration will be added when Firebase functions are deployed
     } catch (error) {
       console.error('Failed to update application status:', error);
     }

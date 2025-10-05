@@ -17,9 +17,7 @@ export const Footer = () => {
     return () => window.removeEventListener('sidebarToggle', handleSidebarToggle as EventListener);
   }, []);
   
-  const handleNavigation = (path: string) => {
-    window.dispatchEvent(new CustomEvent('navigate', { detail: { path } }));
-  };
+
   
   return (
     <footer className={`bg-background border-t border-border mt-auto transition-all duration-300 ${
@@ -28,7 +26,7 @@ export const Footer = () => {
         : 'md:ml-[60px] md:mr-[60px]'
     }`}>
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <h3 className="font-poppins font-bold text-lg text-foreground">HexaForces</h3>
             <p className="text-sm text-muted-foreground">
@@ -39,16 +37,23 @@ export const Footer = () => {
             </p>
           </div>
           
-          <div className="space-y-4">
-            <h4 className="font-semibold">Quick Links</h4>
-            <div className="flex flex-col space-y-2 text-sm">
-              <button onClick={() => handleNavigation('/')} className="text-muted-foreground hover:text-primary text-left transition-colors">Home</button>
-              <button onClick={() => handleNavigation('/about')} className="text-muted-foreground hover:text-primary text-left transition-colors">About</button>
-              <button onClick={() => handleNavigation('/wishlist')} className="text-muted-foreground hover:text-primary text-left transition-colors">Wishlist</button>
-              <button onClick={() => handleNavigation('/referrals')} className="text-muted-foreground hover:text-primary text-left transition-colors">Referrals</button>
-              <button onClick={() => handleNavigation('/profile')} className="text-muted-foreground hover:text-primary text-left transition-colors">Profile Settings</button>
-              <button onClick={() => handleNavigation('/dashboard/tutorials')} className="text-muted-foreground hover:text-primary text-left transition-colors">Tutorials</button>
-              <button onClick={() => handleNavigation('/dashboard/news-events')} className="text-muted-foreground hover:text-primary text-left transition-colors">News & Events</button>
+          <div className="space-y-4 md:col-span-2">
+            <h4 className="font-semibold">Quick Links & Resources</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-sm">
+              <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">Home</Link>
+              <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">About</Link>
+              <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link>
+              <Link to="/wishlist" className="text-muted-foreground hover:text-primary transition-colors">Wishlist</Link>
+              {currentUser && <Link to="/applications" className="text-muted-foreground hover:text-primary transition-colors">Applications</Link>}
+              {currentUser && <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">Dashboard</Link>}
+              <Link to="/referrals" className="text-muted-foreground hover:text-primary transition-colors">Referrals</Link>
+              <Link to="/profile" className="text-muted-foreground hover:text-primary transition-colors">Settings</Link>
+              <Link to="/tutorials" className="text-muted-foreground hover:text-primary transition-colors">Tutorials</Link>
+              <Link to="/sitemap" className="text-muted-foreground hover:text-primary transition-colors">Sitemap</Link>
+              <Link to="/report-issue" className="text-muted-foreground hover:text-primary transition-colors">Report Issue</Link>
+              <Link to="/register" className="text-muted-foreground hover:text-primary transition-colors">Recruiter</Link>
+              <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Login</Link>
+              <a href="https://pminternship.mca.gov.in/mca-api/files/cdn?path=PMIS-Data-Privacy-Protection-Policy.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
             </div>
           </div>
           
@@ -70,20 +75,10 @@ export const Footer = () => {
             </div>
           </div>
           
-          <div className="space-y-4">
-            <h4 className="font-semibold">Legal & Resources</h4>
-            <div className="flex flex-col space-y-2 text-sm">
-              <a href="https://pminternship.mca.gov.in/mca-api/files/cdn?path=PMIS-Data-Privacy-Protection-Policy.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                <FileText className="w-3 h-3" /> Privacy Policy
-              </a>
-              <a href="https://pminternship.mca.gov.in/assets/docs/Partner_Companies.pdf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                <Building2 className="w-3 h-3" /> Partner Companies
-              </a>
-              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
-              <Link to="/accessibility" className="text-muted-foreground hover:text-primary transition-colors">Accessibility</Link>
-            </div>
-          </div>
+
         </div>
+        
+
         
         <div className="border-t border-border mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">

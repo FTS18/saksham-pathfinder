@@ -4,15 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { InternshipMigration } from '@/components/admin/InternshipMigration';
 
-import { Database, Users, Briefcase, Shield } from 'lucide-react';
+import { Users, Briefcase, Shield } from 'lucide-react';
 
 const AdminDemo = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -32,25 +30,7 @@ const AdminDemo = () => {
     }
   };
 
-  const handleCreateDemoData = async () => {
-    setLoading(true);
-    try {
-      // Mock demo data creation
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast({
-        title: "Demo Mode",
-        description: "Demo data creation is currently disabled in this version"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create demo data",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   if (!isAuthenticated) {
     return (
@@ -152,41 +132,31 @@ const AdminDemo = () => {
             </Card>
           </div>
 
-          {/* Internship Migration Component */}
-          <InternshipMigration />
+
 
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Database className="w-5 h-5" />
-                Create Demo Data
+                <Briefcase className="w-5 h-5" />
+                Demo Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                This will create a demo recruiter account and 5 sample internships in the database.
-                The recruiter can be accessed with the credentials above.
+                This admin panel provides access to demo features and testing capabilities.
               </p>
               
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                <h4 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2">
-                  ⚠️ Important Notes:
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
+                  ℹ️ Available Features:
                 </h4>
-                <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                  <li>• This will add real data to your Firestore database</li>
-                  <li>• The demo recruiter account will be created with ID: demo-recruiter-123</li>
-                  <li>• All internships will be marked as active and available for applications</li>
-                  <li>• You can login as the recruiter using admin@demo.com (any password)</li>
+                <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                  <li>• Access to recruiter portal with admin@gmail.com</li>
+                  <li>• View and manage internship applications</li>
+                  <li>• Test notification system</li>
+                  <li>• Monitor user engagement metrics</li>
                 </ul>
               </div>
-
-              <Button 
-                onClick={handleCreateDemoData} 
-                disabled={loading}
-                className="w-full"
-              >
-                {loading ? 'Creating Demo Data...' : 'Create Demo Data'}
-              </Button>
             </CardContent>
           </Card>
 

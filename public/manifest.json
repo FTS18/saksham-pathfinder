@@ -17,32 +17,40 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/logo192.png",
-      "type": "image/png",
+      "src": "/favicon.ico",
       "sizes": "192x192",
-      "purpose": "maskable"
+      "type": "image/x-icon",
+      "purpose": "any maskable"
     },
     {
-      "src": "/logo512.png",
-      "type": "image/png",
+      "src": "/favicon.ico",
       "sizes": "512x512",
-      "purpose": "any"
+      "type": "image/x-icon",
+      "purpose": "any maskable"
     }
   ],
+  "screenshots": [],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "description": "View your personalized dashboard",
-      "url": "/dashboard",
-      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+      "name": "Browse Internships",
+      "short_name": "Browse",
+      "description": "Browse available internships",
+      "url": "/",
+      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
     },
     {
-      "name": "Search Internships",
-      "short_name": "Search",
-      "description": "Find internship opportunities",
-      "url": "/search",
-      "icons": [{ "src": "/logo192.png", "sizes": "192x192" }]
+      "name": "My Applications",
+      "short_name": "Applications",
+      "description": "View your applications",
+      "url": "/applications",
+      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+    },
+    {
+      "name": "Wishlist",
+      "short_name": "Wishlist",
+      "description": "View saved internships",
+      "url": "/wishlist",
+      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
     }
   ]
 }

@@ -18,6 +18,7 @@ import { auth, googleProvider, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { generateUniqueUserId } from '@/lib/userIdGenerator';
 import { useNavigate } from 'react-router-dom';
+import DataSyncService from '@/services/dataSyncService';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -311,6 +312,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
+        // Load all user data from Firebase (theme, wishlist, profile, etc.)
+        await DataSyncService.loadUserDataFromFirebase(user.uid);
+        
+        // Then sync any new local changes to Firebase
+        await DataSyncService.syncAllUserData(user.uid);
+        
         // Check email verification first
         if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
           setNeedsEmailVerification(true);

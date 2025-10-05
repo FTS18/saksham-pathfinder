@@ -36,7 +36,24 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const applyToInternship = async (internship: any) => {
-    if (!currentUser) return;
+    if (!currentUser) {
+      toast({
+        title: "Login Required",
+        description: "Please login to apply for internships.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if already applied
+    if (hasApplied(internship.id)) {
+      toast({
+        title: "Already Applied",
+        description: "You have already applied to this internship.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
       setLoading(true);
@@ -46,27 +63,39 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         internshipTitle: internship.title,
         companyName: internship.company,
         status: 'pending',
+        priority: 'medium',
+        source: 'direct',
+        metadata: {},
+        // Just store internship ID for fetching details later
+        // internshipData removed to simplify and fetch from source
       });
+
+      if (!applicationId) {
+        throw new Error('Failed to create application');
+      }
 
       // Create notification
       await NotificationService.createNotification({
         userId: currentUser.uid,
         type: 'application_update',
         title: 'Application Submitted',
-        message: `Your application for ${internship.title} at ${internship.company} has been submitted.`,
+        message: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
         read: false,
-        data: { internshipId: internship.id, applicationId }
+        priority: 'medium',
+        category: 'application',
+        data: { internshipId: internship.id, applicationId, companyName: internship.company }
       });
 
       toast({
-        title: "Application Submitted!",
-        description: `Applied to ${internship.title} at ${internship.company}`,
+        title: "✅ Application Submitted!",
+        description: `Successfully applied to ${internship.title} at ${internship.company}`,
       });
 
       await refreshApplications();
     } catch (error) {
+      console.error('Application error:', error);
       toast({
-        title: "Application Failed",
+        title: "❌ Application Failed",
         description: "Failed to submit application. Please try again.",
         variant: "destructive",
       });

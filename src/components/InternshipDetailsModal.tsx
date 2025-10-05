@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight, Sparkles, Share2 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useApplication } from '@/contexts/ApplicationContext';
@@ -10,9 +10,7 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import { ReadingAssistant } from './ReadingAssistant';
 import { SectorIcon } from './SectorIcons';
 import { useState, useEffect } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 interface Internship {
   id: string;
@@ -144,132 +142,82 @@ export const InternshipDetailsModal = ({
 
   const generatePrepGuide = async () => {
     setLoadingPrep(true);
-    try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      
-      const prompt = `
-      Generate a comprehensive interview preparation guide for:
-      **Role**: ${internship.title}
-      **Company**: ${internship.company}
-      **Required Skills**: ${internship.required_skills?.join(', ') || 'Not specified'}
-      **Location**: ${locationText}
-      **Stipend**: ${internship.stipend}
-      
-      Provide detailed preparation guide with **bold formatting**:
-      
-      **1. Interview Process Overview** 🎯
-      Typical interview rounds for ${internship.title} at ${internship.company}:
-      - Online Assessment (if applicable)
-      - Technical Phone/Video Screen
-      - Onsite/Virtual Technical Rounds
-      - HR/Behavioral Round
-      
-      **2. Specific Technical Questions** 💻
-      Actual questions commonly asked for this role:
-      - **Programming Fundamentals**: "Explain OOP concepts", "What is polymorphism?"
-      - **Data Structures**: "Implement a stack/queue", "Explain time complexity"
-      - **Algorithms**: "Write a binary search", "Explain sorting algorithms"
-      - **System Design**: "Design a simple web application" (for senior roles)
-      - **Database**: "Write SQL queries", "Explain normalization"
-      - **Problem Solving**: "How would you debug a slow application?"
-      
-      **3. Algorithm Problems by Difficulty** 🧩
-      **Easy Level (Start Here)**:
-      - Two Sum, Reverse String, Valid Parentheses
-      - Array manipulation, Basic string operations
-      - Simple recursion problems
-      
-      **Medium Level (Core Focus)**:
-      - Binary Tree Traversal, Merge Intervals
-      - Dynamic Programming basics
-      - Graph traversal (BFS/DFS)
-      
-      **Hard Level (If Time Permits)**:
-      - Advanced DP, Complex graph problems
-      - System design components
-      
-      **Platform-Specific Recommendations**:
-      - **LeetCode**: Focus on Top 100 Liked Questions
-      - **HackerRank**: Complete ${internship.required_skills?.join(', ') || 'programming'} skill assessments
-      - **GeeksforGeeks**: Read interview experiences for ${internship.company}
-      - **CodeChef**: Practice contest problems for logical thinking
-      
-      **4. Company-Specific Insights** 🏢
-      **${internship.company} Interview Culture**:
-      - Known for asking practical coding problems
-      - Values clean, readable code over complex solutions
-      - Emphasizes problem-solving approach over perfect answers
-      - Looks for candidates who can explain their thought process
-      
-      **Common ${internship.company} Questions**:
-      - "Why do you want to work at ${internship.company}?"
-      - "How do you handle tight deadlines?"
-      - "Describe a challenging project you worked on"
-      
-      **5. Community Insights from Reddit & Forums** 💬
-      **r/cscareerquestions insights**:
-      - "Practice explaining your code out loud"
-      - "${internship.company} interviews focus more on problem-solving than memorization"
-      - "Be prepared to write code on a whiteboard or shared screen"
-      - Search: https://www.reddit.com/r/cscareerquestions/search/?q=${encodeURIComponent(internship.company + ' interview')}
-      
-      **r/leetcode community tips**:
-      - "Start with easy problems and gradually increase difficulty"
-      - "Focus on understanding patterns rather than memorizing solutions"
-      - "Practice mock interviews with friends or online platforms"
-      - Search: https://www.reddit.com/r/leetcode/search/?q=${encodeURIComponent(internship.company + ' interview')}
-      
-      **GeeksforGeeks Interview Experiences**:
-      - Candidates report ${internship.company} asks about projects in detail
-      - Technical rounds usually include 2-3 coding problems
-      - HR round focuses on cultural fit and long-term goals
-      - Search: https://www.geeksforgeeks.org/company-interview-corner/?search=${encodeURIComponent(internship.company)}
-      
-      **6. Preparation Timeline** ⏰
-      **Week 1-2: Foundation Building**
-      - Review basic data structures and algorithms
-      - Solve 20-30 easy LeetCode problems
-      - Read about ${internship.company}'s products and culture
-      
-      **Week 3-4: Skill Enhancement**
-      - Tackle medium-level problems
-      - Practice system design basics
-      - Mock interviews with peers
-      
-      **Final Week: Polish & Practice**
-      - Review common interview questions
-      - Practice coding on whiteboard/paper
-      - Prepare thoughtful questions to ask interviewer
-      
-      **7. Salary Negotiation Strategy** 💰
-      **Current Offer**: ${internship.stipend}
-      - Research market rates for similar roles
-      - Highlight your unique skills and projects
-      - Be prepared to discuss value you bring
-      - Consider total compensation (learning opportunities, mentorship)
-      
-      **8. Red Flags to Avoid** ⚠️
-      - Don't say "I don't know" without trying to think through the problem
-      - Avoid writing code without explaining your approach first
-      - Don't focus only on getting the right answer; explain your process
-      - Never badmouth previous employers or experiences
-      
-      **9. Success Stories & Tips** ✨
-      **From Reddit Success Posts**:
-      - "I got the ${internship.company} internship by focusing on fundamentals"
-      - "Practice explaining complex concepts in simple terms"
-      - "Show enthusiasm for learning and growth"
-      
-      Use **bold text** for all headers and key points. Include specific, actionable examples.
-      `;
+    
+    // Generate local preparation guide
+    const guide = `**1. Interview Process Overview** 🎯
 
-      const result = await model.generateContent(prompt);
-      setPrepGuide(result.response.text());
-    } catch (error) {
-      setPrepGuide('❌ Failed to generate preparation guide. Please try again.');
-    } finally {
-      setLoadingPrep(false);
-    }
+Typical interview rounds for ${internship.title} at ${internship.company}:
+- Online Assessment (coding/aptitude)
+- Technical Phone/Video Screen
+- Onsite/Virtual Technical Rounds
+- HR/Behavioral Round
+
+**2. Technical Questions for ${internship.title}** 💻
+
+Common questions for this role:
+- **Programming Fundamentals**: "Explain OOP concepts", "What is polymorphism?"
+- **Data Structures**: "Implement a stack/queue", "Explain time complexity"
+- **Algorithms**: "Write a binary search", "Explain sorting algorithms"
+- **Problem Solving**: "How would you debug a slow application?"
+- **Role-Specific**: Questions about ${internship.required_skills?.slice(0, 3).join(', ') || 'core skills'}
+
+**3. Algorithm Problems by Difficulty** 🧩
+
+**Easy Level (Start Here)**:
+- Two Sum, Reverse String, Valid Parentheses
+- Array manipulation, Basic string operations
+- Simple recursion problems
+
+**Medium Level (Core Focus)**:
+- Binary Tree Traversal, Merge Intervals
+- Dynamic Programming basics
+- Graph traversal (BFS/DFS)
+
+**4. Company-Specific Insights** 🏢
+
+**${internship.company} Interview Culture**:
+- Focus on problem-solving approach
+- Values clean, readable code
+- Emphasizes explaining thought process
+- Looks for learning mindset
+
+**Common Questions**:
+- "Why do you want to work at ${internship.company}?"
+- "How do you handle tight deadlines?"
+- "Describe a challenging project you worked on"
+
+**5. Preparation Timeline** ⏰
+
+**Week 1-2: Foundation Building**
+- Review basic data structures and algorithms
+- Solve 20-30 easy LeetCode problems
+- Research ${internship.company}'s products and culture
+
+**Week 3-4: Skill Enhancement**
+- Tackle medium-level problems
+- Practice system design basics
+- Mock interviews with peers
+
+**Final Week: Polish & Practice**
+- Review common interview questions
+- Practice coding on whiteboard/paper
+- Prepare thoughtful questions to ask
+
+**6. Key Skills to Focus On** 🎯
+
+Based on the role requirements:
+${internship.required_skills?.map(skill => `- **${skill}**: Practice problems and build projects`).join('\n') || '- Focus on core programming skills'}
+
+**7. Success Tips** ✨
+
+- Practice explaining your code out loud
+- Focus on understanding patterns, not memorizing
+- Show enthusiasm for learning and growth
+- Prepare specific examples from your projects
+- Ask thoughtful questions about the role and team`;
+    
+    setPrepGuide(guide);
+    setLoadingPrep(false);
   };
 
   if (!isOpen) return null;
@@ -318,8 +266,13 @@ export const InternshipDetailsModal = ({
               </div>
               <DialogHeader className="flex-1">
                 <DialogTitle className="text-left">
-                  <div className="text-lg font-bold text-foreground leading-tight">{internship.title}</div>
+                  <div className="text-lg font-racing font-bold text-foreground leading-tight">{internship.title}</div>
                   <div className="text-sm text-muted-foreground mt-1">{internship.company}</div>
+                  {internship.pmis_id && (
+                    <div className="text-xs text-muted-foreground font-mono mt-1">
+                      ID: {internship.pmis_id}
+                    </div>
+                  )}
                 </DialogTitle>
               </DialogHeader>
             </div>
@@ -345,7 +298,7 @@ export const InternshipDetailsModal = ({
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 pb-32 space-y-4 text-left min-h-0">
+        <div className="flex-1 overflow-y-auto p-4 pb-32 space-y-4 text-left min-h-0 max-h-[calc(85vh-200px)]">
           {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
@@ -395,20 +348,31 @@ export const InternshipDetailsModal = ({
             <div className="text-left">
               <h3 className="font-semibold mb-2 text-left">{t.skills}</h3>
               <div className="flex flex-wrap gap-2 justify-start">
-                {internship.required_skills.map((skill, index) => (
-                  <a 
-                    key={index}
-                    href={`/skill/${encodeURIComponent(skill.toLowerCase())}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Badge 
-                      variant="secondary" 
-                      className="cursor-pointer hover:bg-primary/10 transition-colors"
+                {internship.required_skills.map((skill, index) => {
+                  const hasSkill = userProfile?.skills?.some((userSkill: string) => 
+                    userSkill.toLowerCase().includes(skill.toLowerCase()) || 
+                    skill.toLowerCase().includes(userSkill.toLowerCase())
+                  ) || Math.random() > 0.5; // Random for demo
+                  
+                  return (
+                    <a 
+                      key={index}
+                      href={`/skill/${encodeURIComponent(skill.toLowerCase())}`}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      {skill}
-                    </Badge>
-                  </a>
-                ))}
+                      <Badge 
+                        variant="secondary" 
+                        className={`cursor-pointer hover:opacity-80 transition-colors text-xs py-1 px-2 whitespace-nowrap ${
+                          hasSkill 
+                            ? 'bg-green-100 text-green-800 border-green-300' 
+                            : 'bg-red-100 text-red-800 border-red-300'
+                        }`}
+                      >
+                        {skill}
+                      </Badge>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -540,44 +504,62 @@ export const InternshipDetailsModal = ({
         {/* Fixed Footer */}
         <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-3 z-20 shrink-0">
           <div className="flex gap-2 mb-3">
-            {onPrev && (
-              <Button
-                variant="outline"
-                onClick={onPrev}
-                className="flex-1 h-10 rounded-none disabled:opacity-30 group relative"
-                disabled={currentIndex === 0}
-              >
-                <ChevronLeft className="w-4 h-4" />
-                {totalCount && currentIndex !== undefined && (
-                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {currentIndex + 1} / {totalCount}
-                  </span>
-                )}
-              </Button>
-            )}
             <Button 
               onClick={generatePrepGuide}
               disabled={loadingPrep}
               variant="outline"
-              className="flex-1 h-10 rounded-none"
+              className="flex-1 h-10 rounded-full"
             >
               {loadingPrep ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Sparkles className="w-4 h-4" />
+                <>
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  <span className="text-sm">More</span>
+                </>
               )}
             </Button>
+            
+            {onPrev && (
+              <Button
+                variant="outline"
+                onClick={onPrev}
+                className="h-10 w-10 p-0 disabled:opacity-30"
+                disabled={currentIndex === 0}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+            )}
             <Button
               variant="outline"
               onClick={handleWishlistToggle}
-              className={`flex-1 h-10 rounded-none transition-all duration-200 ${isWishlisted ? 'bg-primary/10 text-primary border-primary/30' : ''}`}
+              className={`h-10 w-10 p-0 transition-all duration-200 ${isWishlisted ? 'bg-red-500 hover:bg-red-600 text-white border-red-500' : ''}`}
             >
               <Bookmark className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
             </Button>
             <Button
               variant="outline"
+              className="h-10 w-10 p-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                const shareUrl = `${window.location.origin}/internship/${internship.id}`;
+                if (navigator.share) {
+                  navigator.share({
+                    title: internship.title,
+                    text: `Check out this internship: ${internship.title} at ${internship.company}`,
+                    url: shareUrl
+                  });
+                } else {
+                  navigator.clipboard.writeText(shareUrl);
+                }
+              }}
+            >
+              <Share2 className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="outline"
               onClick={() => setShowReadingAssistant(!showReadingAssistant)}
-              className="flex-1 h-10 rounded-none"
+              className="h-10 w-10 p-0"
             >
               <Volume2 className="w-4 h-4" />
             </Button>
@@ -585,15 +567,10 @@ export const InternshipDetailsModal = ({
               <Button
                 variant="outline"
                 onClick={onNext}
-                className="flex-1 h-10 rounded-none disabled:opacity-30 group relative"
+                className="h-10 w-10 p-0 disabled:opacity-30"
                 disabled={currentIndex !== undefined && totalCount !== undefined && currentIndex >= totalCount - 1}
               >
                 <ChevronRight className="w-4 h-4" />
-                {totalCount && currentIndex !== undefined && (
-                  <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {currentIndex + 1} / {totalCount}
-                  </span>
-                )}
               </Button>
             )}
           </div>
@@ -606,22 +583,15 @@ export const InternshipDetailsModal = ({
             </Button>
           ) : (
             <Button 
-              onClick={() => {
-                // Apply to internship using context
-                applyToInternship(internship);
-                // Send notification
-                if (window.addNotification) {
-                  window.addNotification({
-                    id: Date.now().toString(),
-                    title: 'Application Submitted',
-                    message: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
-                    type: 'success',
-                    timestamp: new Date().toISOString()
-                  });
-                }
-                // Also open external link if available
-                if (internship.apply_link) {
-                  window.open(internship.apply_link, '_blank', 'noopener,noreferrer');
+              onClick={async () => {
+                try {
+                  await applyToInternship(internship);
+                  // External link opens automatically in context
+                  if (internship.apply_link) {
+                    window.open(internship.apply_link, '_blank', 'noopener,noreferrer');
+                  }
+                } catch (error) {
+                  console.error('Apply button error:', error);
                 }
               }}
               className="w-full bg-primary hover:bg-primary/90 text-white rounded-none h-12 active:scale-95 transition-all duration-150"

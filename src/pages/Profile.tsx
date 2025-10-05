@@ -197,10 +197,12 @@ const Profile = () => {
           desiredLocation: typeof firestoreData.desiredLocation === 'string'
             ? { state: '', city: firestoreData.desiredLocation }
             : firestoreData.desiredLocation || { state: '', city: '' },
-          // Ensure all required fields exist
+          // Ensure all required fields exist and are arrays
           dateOfBirth: firestoreData.dateOfBirth || '',
-          sectors: firestoreData.sectors || [],
-          skills: firestoreData.skills || [],
+          sectors: Array.isArray(firestoreData.sectors) ? firestoreData.sectors : [],
+          skills: Array.isArray(firestoreData.skills) ? firestoreData.skills : [],
+          education: Array.isArray(firestoreData.education) ? firestoreData.education : [],
+          experience: Array.isArray(firestoreData.experience) ? firestoreData.experience : [],
           linkedAccounts: { google: !!currentUser.providerData.find(p => p.providerId === 'google.com') }
         };
         
@@ -335,24 +337,36 @@ const Profile = () => {
 
   const addEducation = () => {
     if (newEducation.degree && newEducation.institution) {
-      setProfile(prev => ({ ...prev, education: [...prev.education, newEducation] }));
+      setProfile(prev => ({ 
+        ...prev, 
+        education: [...(Array.isArray(prev.education) ? prev.education : []), newEducation] 
+      }));
       setNewEducation({ degree: '', institution: '', year: '' });
     }
   };
 
   const removeEducation = (index: number) => {
-    setProfile(prev => ({ ...prev, education: prev.education.filter((_, i) => i !== index) }));
+    setProfile(prev => ({ 
+      ...prev, 
+      education: Array.isArray(prev.education) ? prev.education.filter((_, i) => i !== index) : []
+    }));
   };
 
   const addExperience = () => {
     if (newExperience.title && newExperience.company) {
-      setProfile(prev => ({ ...prev, experience: [...prev.experience, newExperience] }));
+      setProfile(prev => ({ 
+        ...prev, 
+        experience: [...(Array.isArray(prev.experience) ? prev.experience : []), newExperience] 
+      }));
       setNewExperience({ title: '', company: '', duration: '' });
     }
   };
 
   const removeExperience = (index: number) => {
-    setProfile(prev => ({ ...prev, experience: prev.experience.filter((_, i) => i !== index) }));
+    setProfile(prev => ({ 
+      ...prev, 
+      experience: Array.isArray(prev.experience) ? prev.experience.filter((_, i) => i !== index) : []
+    }));
   };
 
   const changePassword = async () => {
@@ -872,7 +886,7 @@ const Profile = () => {
               </div>
             </div>
             <div className="space-y-2">
-              {profile.education.map((edu, index) => (
+              {Array.isArray(profile.education) && profile.education.map((edu, index) => (
                 <div key={`${edu.institution}-${edu.degree}-${index}`} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <div className="font-medium">{edu.degree}</div>
@@ -924,7 +938,7 @@ const Profile = () => {
               </Button>
             </div>
             <div className="space-y-2">
-              {profile.experience.map((exp, index) => (
+              {Array.isArray(profile.experience) && profile.experience.map((exp, index) => (
                 <div key={`${exp.company}-${exp.title}-${index}`} className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <div className="font-medium">{exp.title}</div>

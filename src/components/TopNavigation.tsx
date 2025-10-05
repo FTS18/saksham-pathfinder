@@ -1,8 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Search, Menu, Sun, Moon, X } from 'lucide-react';
+import { Search, Menu, Sun, Moon, X, MessageCircle, Sparkles } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { NotificationSystem } from './NotificationSystem';
+import { ReportIssue } from './ReportIssue';
+
 import { SearchSuggestions } from './SearchSuggestions';
 import { SearchHistoryDropdown } from './SearchHistoryDropdown';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
@@ -16,6 +17,7 @@ export const TopNavigation = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
   const { searchHistory, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
   const { currentUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -44,9 +46,13 @@ export const TopNavigation = () => {
     } else if (suggestion.type === 'sector') {
       navigate(`/sector/${encodeURIComponent(suggestion.value)}`);
     } else if (suggestion.type === 'company') {
-      navigate(`/company/${encodeURIComponent(suggestion.value.toLowerCase())}`);
+      // For companies, replace spaces with dashes and lowercase
+      const companySlug = suggestion.value.replace(/\s+/g, '-').toLowerCase();
+      navigate(`/company/${companySlug}`);
     } else if (suggestion.type === 'location') {
-      navigate(`/city/${encodeURIComponent(suggestion.value.toLowerCase())}`);
+      // For locations, replace spaces with dashes and lowercase
+      const locationSlug = suggestion.value.replace(/\s+/g, '-').toLowerCase();
+      navigate(`/city/${locationSlug}`);
     } else if (suggestion.type === 'title') {
       navigate(`/title/${encodeURIComponent(suggestion.value)}`);
     }
@@ -68,6 +74,13 @@ export const TopNavigation = () => {
 
   const toggleMobileSidebar = () => {
     window.dispatchEvent(new CustomEvent('toggleMobileSidebar'));
+  };
+  
+  const toggleQuickActions = () => {
+    setShowQuickActions(!showQuickActions);
+    if (!showQuickActions) {
+      window.dispatchEvent(new CustomEvent('openChatbot'));
+    }
   };
 
   // Listen for global search events and keyboard shortcuts
@@ -114,7 +127,7 @@ export const TopNavigation = () => {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search companies, locations, skills..."
+                placeholder="Try: 'Show Google internships' or 'Internships in Mumbai'..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -139,27 +152,46 @@ export const TopNavigation = () => {
                     handleSearch(searchQuery);
                   }
                 }}
-                className="w-full pl-10 pr-10 py-2 text-sm bg-muted border-border/30 text-foreground placeholder-muted-foreground rounded-md"
+                className="w-full pl-10 pr-24 py-2 text-sm bg-muted border-border/30 text-foreground placeholder-muted-foreground rounded-md"
                 aria-label="Search internships"
                 role="searchbox"
                 aria-expanded={showSuggestions}
                 aria-autocomplete="list"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              {searchQuery && (
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setShowSuggestions(false);
-                    setShowHistory(false);
-                  }}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
+                  onClick={toggleQuickActions}
+                  className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
+                  title="Open AI Assistant"
                 >
-                  <X className="w-3 h-3" />
+                  <Sparkles className="w-3 h-3" />
                 </Button>
-              )}
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setShowSuggestions(false);
+                      setShowHistory(false);
+                    }}
+                    className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => window.dispatchEvent(new CustomEvent('openChatbot'))}
+                  className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                </Button>
+              </div>
               <SearchSuggestions
                 query={searchQuery}
                 onSelect={handleSuggestionSelect}
@@ -177,10 +209,30 @@ export const TopNavigation = () => {
           </div>
           
           <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/login')}
+              className="hidden md:flex px-3 py-1.5 text-sm rounded-xl hover:bg-muted/50 transition-all duration-200"
+            >
+              Recruiter?
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleTheme}
+              className="hidden md:flex p-2 rounded-xl hover:bg-muted/50 transition-all duration-200"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 rotate-0 scale-100 transition-all" />
+              ) : (
+                <Moon className="w-5 h-5 rotate-0 scale-100 transition-all" />
+              )}
+            </Button>
             {currentUser && (
               <div className="hidden sm:flex items-center gap-2 text-foreground">
                 <NotificationCenter />
-                <NotificationSystem />
               </div>
             )}
 

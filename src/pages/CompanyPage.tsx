@@ -40,8 +40,18 @@ const CompanyPage = () => {
   const [userProfile, setUserProfile] = useState<ProfileData | null>(null);
   const [scoredInternships, setScoredInternships] = useState<any[]>([]);
   
-  const decodedCompany = decodeURIComponent(company || '');
-  const displayCompany = decodedCompany.charAt(0).toUpperCase() + decodedCompany.slice(1);
+  // Better decoding for display
+  const decodedCompany = decodeURIComponent(company || '')
+    .replace(/-/g, ' ')
+    .replace(/%20/g, ' ')
+    .replace(/\+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  const displayCompany = decodedCompany
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 
   useEffect(() => {
     if (company) {
@@ -171,26 +181,61 @@ const CompanyPage = () => {
       const response = await fetch('/internships.json');
       const allInternships = await response.json();
       
-      const decodedCompany = decodeURIComponent(companyName).toLowerCase();
+      // Handle URL decoding and normalization
+      let normalizedCompany = decodeURIComponent(companyName).toLowerCase().trim();
       
-      // Normalize the search term - handle URL encoding and spaces properly
-      let normalizedCompany = decodedCompany.toLowerCase().trim();
-      normalizedCompany = normalizedCompany.replace(/%20/g, ' ').replace(/\+/g, ' ').replace(/\s+/g, ' ').trim();
+      // Replace URL-encoded spaces and dashes with spaces
+      normalizedCompany = normalizedCompany
+        .replace(/%20/g, ' ')
+        .replace(/\+/g, ' ')
+        .replace(/-/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
       
-      // Filter internships for this company - only match in company field
+      console.log('Searching for company:', normalizedCompany);
+      
+      // Filter internships for this company with strict matching
       const companyInternships = allInternships.filter((internship: CompanyInternship) => {
         const company = (internship.company || '').toLowerCase().trim();
         
-        // Try multiple matching strategies
-        const exactMatch = company === normalizedCompany;
-        const containsMatch = company.includes(normalizedCompany) || 
-                             normalizedCompany.includes(company);
-        const wordMatch = normalizedCompany.split(' ').some(word => 
-          word.length > 2 && company.includes(word)
-        );
+        // 1. Exact match (highest priority)
+        if (company === normalizedCompany) {
+          return true;
+        }
         
-        return exactMatch || containsMatch || wordMatch;
+        // 2. Direct contains match (both directions)
+        if (company.includes(normalizedCompany) || normalizedCompany.includes(company)) {
+          // But avoid partial matches that are too different
+          const lengthDiff = Math.abs(company.length - normalizedCompany.length);
+          if (lengthDiff <= Math.max(company.length, normalizedCompany.length) * 0.3) {
+            return true;
+          }
+        }
+        
+        // 3. Word-based matching (more strict)
+        const companyWords = company.split(' ').filter(w => w.length > 2);
+        const searchWords = normalizedCompany.split(' ').filter(w => w.length > 2);
+        
+        // Require at least 70% of words to match
+        if (searchWords.length > 0 && companyWords.length > 0) {
+          const matchingWords = searchWords.filter(searchWord => 
+            companyWords.some(companyWord => 
+              companyWord === searchWord || 
+              (companyWord.includes(searchWord) && searchWord.length > 3) ||
+              (searchWord.includes(companyWord) && companyWord.length > 3)
+            )
+          );
+          
+          const matchRatio = matchingWords.length / Math.max(searchWords.length, companyWords.length);
+          if (matchRatio >= 0.7) {
+            return true;
+          }
+        }
+        
+        return false;
       });
+      
+      console.log('Found internships:', companyInternships.length);
 
       setInternships(companyInternships);
 
@@ -244,7 +289,7 @@ const CompanyPage = () => {
             className="mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Search
+            Back to Home
           </Button>
           <div className="text-center py-12">
             <Building className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -285,7 +330,7 @@ const CompanyPage = () => {
                 size="sm"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Search
+                Back to Home
               </Button>
             </div>
           </div>

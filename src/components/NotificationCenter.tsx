@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Bell, Check, CheckCheck, FileText, Eye, AlertCircle } from 'lucide-react';
+import { Bell, Check, CheckCheck, FileText, Eye, AlertCircle, Briefcase } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const NotificationCenter = () => {
@@ -13,7 +13,7 @@ export const NotificationCenter = () => {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'application_update': return <FileText className="w-4 h-4 text-blue-500" />;
+      case 'application_update': return <Briefcase className="w-4 h-4 text-blue-500" />;
       case 'profile_view': return <Eye className="w-4 h-4 text-green-500" />;
       case 'new_internship': return <AlertCircle className="w-4 h-4 text-purple-500" />;
       default: return <Bell className="w-4 h-4 text-gray-500" />;

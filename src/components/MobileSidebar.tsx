@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, LayoutDashboard } from 'lucide-react';
+import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, LayoutDashboard, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
@@ -21,11 +21,12 @@ export const MobileSidebar = () => {
     { href: '/', label: 'Home', icon: Home },
     ...(currentUser ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
     { href: '/about', label: 'About', icon: Info },
-    { href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart },
-    { href: '/dashboard/news-events', label: 'News & Events', icon: Newspaper },
-    { href: '/dashboard/tutorials', label: 'Tutorials', icon: Play },
-    { href: '/referrals', label: 'Refer', icon: Users },
-    { href: '/profile', label: 'Settings', icon: SettingsIcon }
+    ...(currentUser ? [{ href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart }] : []),
+    ...(currentUser ? [{ href: '/applications', label: 'Applications', icon: FileText }] : []),
+    { href: '/news-events', label: 'News & Events', icon: Newspaper },
+    { href: '/tutorials', label: 'Tutorials', icon: Play },
+    ...(currentUser ? [{ href: '/referrals', label: 'Refer', icon: Users }] : []),
+    ...(currentUser ? [{ href: '/profile', label: 'Settings', icon: SettingsIcon }] : [])
   ];
 
   useEffect(() => {

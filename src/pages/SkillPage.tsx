@@ -15,7 +15,7 @@ export const SkillPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const decodedSkill = decodeURIComponent(skill || '');
+  const decodedSkill = (skill || '').replace(/-/g, ' ');
   const displaySkill = decodedSkill.charAt(0).toUpperCase() + decodedSkill.slice(1);
 
   useEffect(() => {
@@ -86,11 +86,11 @@ export const SkillPage = () => {
       <div className="max-w-6xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           className="mb-4 p-2 hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Back
+          Back to Home
         </Button>
         
         <Breadcrumbs />

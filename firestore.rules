@@ -1,7 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -11,52 +10,248 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.email == 'admin@gmail.com';
+      return isAuthenticated() && 
+        (request.auth.token.email == 'admin@gmail.com' || 
+         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
     
-    // User profiles - only user can access their own profile
+    function isRecruiter() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/recruiters/$(request.auth.uid));
+    }
+    
     match /profiles/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+      match /{document=**} {
+        allow delete: if isOwner(userId) || isAdmin();
+      }
     }
     
-    // Internships - public read, authenticated write, admin full access
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+      match /{document=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+        allow delete: if isOwner(userId) || isAdmin();
+      }
+    }
+    
+    match /gamification/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /recruiters/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
     match /internships/{internshipId} {
-      allow read: if true; // Public read access for browsing
-      allow create: if isAuthenticated(); // Any authenticated user can create
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || 
+         resource.data.recruiterId == request.auth.uid || 
+         isAdmin());
+    }
+    
+    match /applications/{applicationId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || isAdmin());
+    }
+    
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    match /analytics/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /companies/{companyId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated() && 
         (resource.data.createdBy == request.auth.uid || isAdmin());
     }
     
-    // Applications - only involved parties can access
-    match /applications/{applicationId} {
-      allow read, write: if isAuthenticated() && 
-        (request.auth.uid == resource.data.candidateId || 
-         request.auth.uid == resource.data.recruiterId ||
-         isAdmin());
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.candidateId;
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
     }
     
-    // Notifications - only user can access their notifications
-    match /notifications/{notificationId} {
-      allow read, write: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
+    match /timeTracking/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /wishlists/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /userPreferences/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /chats/{chatId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+    }
+    
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    match /savedSearches/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /userSessions/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /feedback/{ticketId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    match /systemSettings/{document} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /reports/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /admins/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /emailQueue/{emailId} {
+      allow read: if isAdmin();
       allow create: if isAuthenticated();
     }
     
-    // Time tracking - user's own data only
-    match /timeTracking/{userId} {
-      allow read, write: if isOwner(userId);
+    match /searchHistory/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
     }
     
-    // Wishlist - user's own wishlist only
-    match /wishlists/{userId} {
-      allow read, write: if isOwner(userId);
+    match /comparisons/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
     }
     
-    // User preferences/settings - user's own data only
-    match /userPreferences/{userId} {
-      allow read, write: if isOwner(userId);
+    match /onboardingProgress/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /profilePhotos/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /applicationStats/{statId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /skillRecommendations/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /resumes/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /interviews/{interviewId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.candidateId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.recruiterId || 
+         request.auth.uid == resource.data.candidateId ||
+         isAdmin());
+    }
+    
+    match /referrals/{referralCode} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.referrerId || isAdmin());
+    }
+    
+    match /activityLogs/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /cache/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow delete: if isOwner(userId) || isAdmin();
     }
   }
 }
