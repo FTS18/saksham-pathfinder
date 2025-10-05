@@ -2,5 +2,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./styles/card-grid.css";
+import "./utils/themeInitializer";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Initialize theme before rendering to prevent flash
+const root = createRoot(document.getElementById("root")!);
+root.render(<App />);

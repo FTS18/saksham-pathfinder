@@ -6,9 +6,8 @@ import { Badge } from './ui/badge';
 import { X, Sparkles, Building2, MapPin, IndianRupee, Loader2 } from 'lucide-react';
 import { useComparison } from '@/contexts/ComparisonContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { localAIService } from '@/lib/localAI';
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 interface ComparisonModalProps {
   isOpen: boolean;
@@ -63,68 +62,62 @@ export const ComparisonModal = ({ isOpen, onClose, userProfile }: ComparisonModa
     if (selectedInternships.length < 2) return;
     
     setLoading(true);
+    
     try {
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-      
       const internshipsWithScores = selectedInternships.map(internship => ({
         ...internship,
         calculatedScore: calculateScore(internship)
       })).sort((a, b) => b.calculatedScore - a.calculatedScore);
       
-      const prompt = `
-      As an AI career advisor, analyze and compare these ${selectedInternships.length} internships for a student:
+      // Create personalized prompt for Gemini AI
+      const comparisonPrompt = `You are analyzing internships for a student. Make it personal and well-formatted.
 
-      USER PROFILE:
-      - Skills: ${userProfile?.skills?.join(', ') || 'Not specified'}
-      - Preferred Sectors: ${userProfile?.sectors?.join(', ') || 'Not specified'}
-      - Location: ${userProfile?.desiredLocation?.city || 'Not specified'}
-      - Min Stipend: ₹${userProfile?.minStipend || 'Not specified'}
+**Your Profile:**
+${userProfile ? `• **Skills:** ${userProfile.skills?.join(', ') || 'Not specified'}\n• **Preferred Location:** ${userProfile.desiredLocation?.city || userProfile.location || 'Any location'}\n• **Interests:** ${userProfile.interests?.join(', ') || 'Open to opportunities'}` : '• Profile being analyzed'}
 
-      INTERNSHIPS TO COMPARE (ranked by AI score):
-      ${internshipsWithScores.map((internship, index) => `
-      ${index + 1}. ${internship.title} at ${internship.company}
-         - AI Score: ${internship.calculatedScore}%
-         - Location: ${typeof internship.location === 'string' ? internship.location : internship.location.city}
-         - Stipend: ${internship.stipend}
-         - Skills Required: ${internship.required_skills?.join(', ') || 'Not specified'}
-         - Sectors: ${internship.sector_tags?.join(', ') || 'Not specified'}
-      `).join('\n')}
+**Internships to Compare:**
+${internshipsWithScores.map((internship, index) => `**${index + 1}. ${internship.title}** at **${internship.company}**\n   📍 ${typeof internship.location === 'string' ? internship.location : internship.location.city} | 💰 ${internship.stipend} | 🤖 **AI Score: ${internship.calculatedScore}%**`).join('\n\n')}
 
-      SCORING ALGORITHM EXPLANATION:
-      - Skills Match: 50% weight (matched skills / total required skills)
-      - Stipend: 30% weight (₹12k+ = full points, ₹8k+ = 70%, below = 40%)
-      - Location: 15% weight (exact match with preference)
-      - Sector: 5% weight (matched sectors / total sectors)
+**AI Scoring Breakdown:**
+• **Skills Match:** 50% weight - How well your skills align with requirements
+• **Stipend Score:** 30% weight - Competitive compensation (₹12k+ gets full points)
+• **Location Match:** 15% weight - Distance from your preferred location
+• **Sector Alignment:** 5% weight - Match with your interests
 
-      Please provide a detailed analysis with **bold formatting** for headings:
-      
-      **1. Ranking Explanation** 🏆
-      Why each internship is ranked in this specific order based on the AI algorithm
-      
-      **2. Score Breakdown** 📊
-      Detailed breakdown of how each internship achieved its AI score:
-      - Skills Match (50% weight)
-      - Stipend Score (30% weight for 12k+, 20% for lower)
-      - Location Match (15% weight)
-      - Sector Alignment (5% weight)
-      - Company Tier Bonus (if applicable)
-      
-      **3. Best Match Analysis** ⭐
-      Which internship is the optimal choice and comprehensive reasoning
-      
-      **4. Personalized Recommendations** 💡
-      Specific actionable advice for the student's career growth
-      
-      **5. Skill Gap Analysis** 🎯
-      What skills to develop for better matches in the future
-      
-      Use **bold text** for all section headers and key points. Include emojis and clear formatting.
-      `;
+**Format your response with:**
 
-      const result = await model.generateContent(prompt);
-      setAnalysis(result.response.text());
+## 🏆 **Personalized Ranking**
+Explain why each scored what it did based on YOUR profile
+
+## ⭐ **My Recommendation for You**
+Which internship YOU should choose and why it's perfect for YOUR goals
+
+## 🤖 **How I Calculated Your Scores**
+Brief explanation of the algorithm used for YOUR comparison
+
+Use **bold text**, bullet points, and make it feel personal to the student.`;
+      
+      // Use dedicated comparison method
+      const aiAnalysis = await localAIService.generateInternshipComparison(comparisonPrompt);
+      
+      setAnalysis(aiAnalysis);
     } catch (error) {
-      setAnalysis('❌ Failed to generate comparison. Please try again.');
+      console.error('AI comparison failed:', error);
+      
+      // Fallback to local analysis only if completely offline
+      if (!navigator.onLine) {
+        const internshipsWithScores = selectedInternships.map(internship => ({
+          ...internship,
+          calculatedScore: calculateScore(internship)
+        })).sort((a, b) => b.calculatedScore - a.calculatedScore);
+        
+        // Don't show offline fallback - just show error
+        setAnalysis('**❌ Unable to generate AI analysis**\n\nPlease check your internet connection and try again.');
+        
+        setAnalysis(fallbackAnalysis);
+      } else {
+        setAnalysis('**❌ Analysis Failed**\n\nUnable to generate AI comparison. Please try again or check your connection.');
+      }
     } finally {
       setLoading(false);
     }

@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Plus, Gift, User, MapPin, Briefcase, Star, CheckCircle } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Gift, User, MapPin, Briefcase, Star, CheckCircle, GraduationCap, Code } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { Confetti } from '@/components/Confetti';
 import { SearchableSelect } from '@/components/SearchableSelect';
+import OnboardingService from '@/services/onboardingService';
+import { StudentOnboardingData } from '@/types/onboarding';
 
 const OnboardingSteps = () => {
   const { currentUser } = useAuth();
@@ -23,14 +23,24 @@ const OnboardingSteps = () => {
   const [saving, setSaving] = useState(false);
   
   // Form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<StudentOnboardingData>({
     username: '',
     location: { city: '', state: '', country: 'India' },
     desiredLocation: { city: '', state: '', country: 'India' },
     minStipend: '',
-    sectors: [] as string[],
-    skills: [] as string[],
-    referralCode: ''
+    sectors: [],
+    skills: [],
+    referralCode: '',
+    education: {
+      level: '',
+      institution: '',
+      field: '',
+      year: ''
+    },
+    experience: {
+      hasExperience: false,
+      projects: []
+    }
   });
 
   const [existingProfile, setExistingProfile] = useState<any>(null);
@@ -41,11 +51,9 @@ const OnboardingSteps = () => {
       if (!currentUser) return;
       
       try {
-        const docRef = doc(db, 'profiles', currentUser.uid);
-        const docSnap = await getDoc(docRef);
+        const profileData = await OnboardingService.getExistingProfile(currentUser.uid, 'student');
         
-        if (docSnap.exists()) {
-          const profileData = docSnap.data();
+        if (profileData) {
           setExistingProfile(profileData);
           
           // Auto-fill form with existing data
@@ -56,12 +64,13 @@ const OnboardingSteps = () => {
             desiredLocation: profileData.desiredLocation || prev.desiredLocation,
             minStipend: profileData.minStipend?.toString() || '',
             sectors: profileData.sectors || [],
-            skills: profileData.skills || []
+            skills: profileData.skills || [],
+            education: profileData.education || prev.education,
+            experience: profileData.experience || prev.experience
           }));
         }
       } catch (error) {
-        const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
-        console.warn('Failed to load profile data:', sanitizedError);
+        console.warn('Failed to load profile data:', error);
       }
     };
 
@@ -155,93 +164,11 @@ const OnboardingSteps = () => {
     
     setSaving(true);
     try {
-      const userReferralCode = existingProfile?.referralCode || generateReferralCode();
-      
-      // Handle referral code if provided
-      if (formData.referralCode.trim()) {
-        try {
-          const referralCode = formData.referralCode.trim().toUpperCase();
-          console.log('Looking up referral code:', referralCode);
-          
-          const referrerQuery = await getDoc(doc(db, 'referrals', referralCode));
-          if (referrerQuery.exists()) {
-            const referrerUid = referrerQuery.data().userId;
-            console.log('Found referrer:', referrerUid);
-            
-            // Update referrer points
-            await updateDoc(doc(db, 'profiles', referrerUid), {
-              points: increment(100),
-              referralEarnings: increment(100),
-              lastReferralAt: new Date().toISOString()
-            });
-            
-            // Create notification for referrer
-            await setDoc(doc(db, 'notifications', `${referrerUid}_${Date.now()}`), {
-              userId: referrerUid,
-              type: 'referral_reward',
-              title: 'Referral Reward Earned!',
-              message: `You earned 100 points for referring ${formData.username || currentUser.displayName}!`,
-              points: 100,
-              createdAt: new Date().toISOString(),
-              read: false
-            });
-            
-            toast({ 
-              title: 'Referral Success!', 
-              description: `Your referrer earned 100 points! Code: ${referralCode}` 
-            });
-          } else {
-            console.log('Referral code not found:', referralCode);
-            toast({ 
-              title: 'Invalid Referral Code', 
-              description: 'The referral code you entered was not found.',
-              variant: 'destructive'
-            });
-          }
-        } catch (error) {
-          const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
-          console.warn('Referral processing failed:', sanitizedError);
-          toast({ 
-            title: 'Referral Error', 
-            description: 'Failed to process referral code. Please try again.',
-            variant: 'destructive'
-          });
-        }
-      }
-
-      const profileData = {
-        username: formData.username || generateUsername(),
-        email: currentUser.email,
-        location: formData.location,
-        desiredLocation: formData.desiredLocation,
-        minStipend: parseInt(formData.minStipend) || 0,
-        sectors: formData.sectors,
-        skills: formData.skills,
-        onboardingCompleted: true,
-        referralCode: userReferralCode,
-        points: (existingProfile?.points || 0) + 50,
-        badges: [...(existingProfile?.badges || []), 'Welcome'],
-        updatedAt: new Date().toISOString()
-      };
-
-      // Save to Firebase
-      const docRef = doc(db, 'profiles', currentUser.uid);
-      await setDoc(docRef, profileData, { merge: true });
-      
-      // Create referral code mapping if new
-      if (!existingProfile?.referralCode) {
-        await setDoc(doc(db, 'referrals', userReferralCode), {
-          userId: currentUser.uid,
-          createdAt: new Date().toISOString()
-        });
-      }
-
-      // Save to localStorage for immediate use
-      localStorage.setItem('userProfile', JSON.stringify({
-        ...profileData,
-        searchRadius: 50
-      }));
-      localStorage.setItem('onboardingCompleted', 'true');
+      await OnboardingService.completeStudentOnboarding(
+        currentUser.uid,
+        formData,
+        existingProfile
+      );
       
       // Show confetti and success
       setShowConfetti(true);
@@ -249,17 +176,24 @@ const OnboardingSteps = () => {
       // Update onboarding status in AuthContext
       window.dispatchEvent(new CustomEvent('onboardingCompleted'));
       
-      // Force navigation after a short delay
+      toast({ 
+        title: 'Welcome to Saksham AI!', 
+        description: 'Your profile has been set up successfully.' 
+      });
+      
+      // Navigate after delay
       setTimeout(() => {
         setShowConfetti(false);
-        // Navigate to home page
         navigate('/');
       }, 2000);
       
     } catch (error) {
-      const sanitizedError = error instanceof Error ? error.message.replace(/[\r\n]/g, ' ') : 'Unknown error';
-      console.warn('Failed to save profile data:', sanitizedError);
-      toast({ title: 'Error', description: 'Failed to save profile', variant: 'destructive' });
+      console.error('Failed to complete onboarding:', error);
+      toast({ 
+        title: 'Error', 
+        description: 'Failed to complete setup. Please try again.',
+        variant: 'destructive' 
+      });
     } finally {
       setSaving(false);
     }
@@ -468,6 +402,99 @@ const OnboardingSteps = () => {
         return (
           <div className="space-y-6">
             <div className="text-center">
+              <GraduationCap className="w-16 h-16 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Education & Experience</h2>
+              <p className="text-muted-foreground">Tell us about your educational background</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Education Level</Label>
+                  <Select 
+                    value={formData.education?.level || ''} 
+                    onValueChange={(value) => 
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        education: { ...prev.education!, level: value } 
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="high-school">High School</SelectItem>
+                      <SelectItem value="diploma">Diploma</SelectItem>
+                      <SelectItem value="bachelors">Bachelor's Degree</SelectItem>
+                      <SelectItem value="masters">Master's Degree</SelectItem>
+                      <SelectItem value="phd">PhD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Field of Study</Label>
+                  <Input
+                    value={formData.education?.field || ''}
+                    onChange={(e) => 
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        education: { ...prev.education!, field: e.target.value } 
+                      }))
+                    }
+                    placeholder="e.g., Computer Science"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label>Institution</Label>
+                <Input
+                  value={formData.education?.institution || ''}
+                  onChange={(e) => 
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      education: { ...prev.education!, institution: e.target.value } 
+                    }))
+                  }
+                  placeholder="Your college/university name"
+                />
+              </div>
+              
+              <div>
+                <Label>Graduation Year</Label>
+                <Select 
+                  value={formData.education?.year || ''} 
+                  onValueChange={(value) => 
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      education: { ...prev.education!, year: value } 
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const year = new Date().getFullYear() + i - 2;
+                      return (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 6:
+        return (
+          <div className="space-y-6">
+            <div className="text-center">
               <Gift className="w-16 h-16 text-primary mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">Referral Code</h2>
               <p className="text-muted-foreground">Have a friend's referral code? Enter it here!</p>
@@ -491,7 +518,7 @@ const OnboardingSteps = () => {
           </div>
         );
 
-      case 6:
+      case 7:
         return (
           <div className="space-y-6 text-center">
             <Confetti active={showConfetti} />
@@ -499,7 +526,7 @@ const OnboardingSteps = () => {
               <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
             </div>
             <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              🎉 Yaay! You Have Access to the World of Internships Now! 🎉
+              🎉 Welcome to Saksham AI! 🎉
             </h2>
             <p className="text-lg text-muted-foreground mb-6">
               Your journey begins here! Discover thousands of internship opportunities perfectly matched to your skills and interests.
@@ -527,14 +554,7 @@ const OnboardingSteps = () => {
   };
 
   const canProceed = () => {
-    switch (currentStep) {
-      case 1: return true; // Username is optional
-      case 2: return formData.location.city && formData.desiredLocation.city;
-      case 3: return formData.sectors.length > 0;
-      case 4: return true; // Skills are optional
-      case 5: return true; // Referral code is optional
-      default: return false;
-    }
+    return OnboardingService.validateStudentStep(currentStep, formData);
   };
 
   return (
@@ -543,7 +563,7 @@ const OnboardingSteps = () => {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="flex space-x-2">
-              {[1, 2, 3, 4, 5].map((step) => (
+              {[1, 2, 3, 4, 5, 6].map((step) => (
                 <div
                   key={step}
                   className={`w-3 h-3 rounded-full ${
@@ -553,12 +573,12 @@ const OnboardingSteps = () => {
               ))}
             </div>
           </div>
-          <CardTitle className="text-xl">Step {currentStep} of 5</CardTitle>
+          <CardTitle className="text-xl">Step {currentStep} of 6</CardTitle>
         </CardHeader>
         <CardContent>
           {renderStep()}
           
-          {currentStep < 6 && (
+          {currentStep < 7 && (
             <div className="flex gap-4 pt-6">
               {currentStep > 1 && (
                 <Button 
@@ -570,7 +590,7 @@ const OnboardingSteps = () => {
                 </Button>
               )}
               
-              {currentStep < 5 ? (
+              {currentStep < 6 ? (
                 <Button 
                   onClick={handleNext}
                   disabled={!canProceed()}

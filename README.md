@@ -16,9 +16,11 @@
 - **Real-time Scoring**: Dynamic AI scores based on profile compatibility
 
 ### 🎯 Personalized Experience
-- **Profile Onboarding**: 5-step guided setup with sector-skill mapping
+- **Simplified Onboarding**: 4-step guided setup with real location API
+- **Profile Photo Upload**: Professional profile pictures with Firebase Storage
 - **Smart Filters**: Location, stipend, sector, and skill-based filtering
 - **Wishlist System**: Save and track favorite internships
+- **Application Tracking**: Complete lifecycle management with status updates
 - **Progress Tracking**: Application status and career milestone tracking
 
 ### 🌐 Multi-Language Support
@@ -53,6 +55,17 @@
 - **Installable App**: Progressive Web App with offline capabilities
 - **Push Notifications**: Real-time updates and alerts
 - **Native Feel**: App-like experience on mobile devices
+- **Offline Mode**: Service worker caching for offline access
+- **App Shortcuts**: Quick access to key features
+
+### 🚀 New Features (v2.0)
+- **4-Step Onboarding**: Reduced from 6 to 4 steps (2-3 min completion)
+- **Real Location API**: All Indian cities via countrystatecity.in
+- **Profile Photos**: Upload with drag-and-drop, preview, and Firebase Storage
+- **Application System**: Apply, track, and manage internship applications
+- **AI Rate Limiting**: Queue system with exponential backoff and caching
+- **Layout Optimization**: Common elements don't re-render on navigation
+- **Auto-save**: Onboarding progress saved to localStorage
 
 ## 🛠️ Tech Stack
 
@@ -132,11 +145,18 @@ VITE_ADZUNA_APP_KEY=your_adzuna_app_key
 ```
 src/
 ├── components/          # Reusable UI components
+│   ├── ui/             # Shadcn/ui base components
+│   └── Layout.tsx      # Common layout wrapper
 ├── pages/              # Main application pages
+│   ├── SimplifiedOnboarding.tsx  # New 4-step onboarding
+│   └── Applications.tsx          # Application tracking
 ├── contexts/           # React context providers
 ├── hooks/              # Custom React hooks
 ├── lib/                # Utility libraries and configurations
 ├── services/           # API services and integrations
+│   ├── applicationService.ts     # Application management
+│   ├── aiQueueService.ts         # AI rate limiting
+│   └── locationService.ts        # Real location API
 └── data/              # Static data and configurations
 ```
 
@@ -161,7 +181,13 @@ npm run preview
 firebase deploy
 ```
 
+## 📚 Documentation
+
+- [Contributing Guidelines](docs/CONTRIBUTING.md) - How to contribute to the project
+
 ## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)

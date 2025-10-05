@@ -119,6 +119,11 @@ export class InternshipMigrationService {
    */
   static async getAllInternships(): Promise<FirebaseInternship[]> {
     try {
+      if (!db) {
+        console.warn('Firebase not initialized, returning empty array');
+        return [];
+      }
+      
       const q = query(
         this.getInternshipsCollection(),
         where('status', '==', 'active'),
@@ -134,7 +139,8 @@ export class InternshipMigrationService {
       } as FirebaseInternship));
     } catch (error) {
       console.error('Error fetching internships:', error);
-      throw error;
+      // Return empty array instead of throwing to prevent app crash
+      return [];
     }
   }
 

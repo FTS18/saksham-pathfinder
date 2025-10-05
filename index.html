@@ -22,7 +22,7 @@
 <link rel="manifest" href="/manifest.json" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     
-    <!-- Preload critical resources -->
+    <!-- DNS prefetch only -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -36,6 +36,15 @@
     <meta name="theme-color" content="#3b82f6" id="theme-color" />
     <meta name="msapplication-TileColor" content="#3b82f6" id="tile-color" />
     <link rel="canonical" href="https://sakshamai.com" />
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,6 +105,14 @@
   </head>
 
   <body>
+    <script>
+      // Prevent theme flash - apply theme immediately before render
+      (function() {
+        const theme = localStorage.getItem('theme') || 'dark';
+        const colorTheme = localStorage.getItem('colorTheme') || 'blue';
+        document.documentElement.classList.add(theme, colorTheme);
+      })();
+    </script>
     <div id="initial-skeleton">
       <div style="padding: 1rem; max-width: 1200px; margin: 0 auto;">
         <div style="height: 64px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e5e5;">
