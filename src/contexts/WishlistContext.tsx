@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSafeAuth } from '@/hooks/useSafeAuth';
-import UserPreferencesService from '@/services/userPreferencesService';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 interface WishlistContextType {
@@ -23,91 +22,57 @@ export const useWishlist = () => {
 
 export const WishlistProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useSafeAuth();
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    const saved = localStorage.getItem('wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     if (user) {
       loadWishlist();
-    } else {
-      const savedWishlist = localStorage.getItem('wishlist');
-      if (savedWishlist) {
-        setWishlist(JSON.parse(savedWishlist));
-      }
     }
   }, [user]);
 
   const loadWishlist = async () => {
     if (!user) return;
     try {
-      await UserPreferencesService.syncLocalToFirebase(user.uid);
-      const preferences = await UserPreferencesService.getUserPreferences(user.uid);
-      setWishlist(preferences.wishlist || []);
+      const docRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const profile = docSnap.data();
+        if (profile?.wishlist && Array.isArray(profile.wishlist)) {
+          setWishlist(profile.wishlist);
+          localStorage.setItem('wishlist', JSON.stringify(profile.wishlist));
+        }
+      }
     } catch (error) {
       console.error('Error loading wishlist:', error);
-      const savedWishlist = localStorage.getItem('wishlist');
-      if (savedWishlist) {
-        setWishlist(JSON.parse(savedWishlist));
-      }
     }
   };
 
   const saveWishlist = async (newWishlist: string[]) => {
+    localStorage.setItem('wishlist', JSON.stringify(newWishlist));
     if (user) {
       try {
-        const preferences = await UserPreferencesService.getUserPreferences(user.uid);
-        const docRef = doc(db, 'userPreferences', user.uid);
+        const docRef = doc(db, 'profiles', user.uid);
         await updateDoc(docRef, { wishlist: newWishlist });
       } catch (error) {
-        console.error('Error saving wishlist:', error);
-        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
+        console.error('Error saving wishlist to profile:', error);
       }
-    } else {
-      localStorage.setItem('wishlist', JSON.stringify(newWishlist));
     }
   };
 
   const addToWishlist = async (id: string) => {
-    if (user) {
-      try {
-        await UserPreferencesService.addToWishlist(user.uid, id);
-        setWishlist(prev => [...prev, id]);
-      } catch (error) {
-        console.error('Error adding to wishlist:', error);
-        setWishlist(prev => {
-          const newWishlist = [...prev, id];
-          localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-          return newWishlist;
-        });
-      }
-    } else {
-      setWishlist(prev => {
-        const newWishlist = [...prev, id];
-        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-        return newWishlist;
-      });
-    }
+    const newWishlist = [...wishlist, id];
+    setWishlist(newWishlist);
+    await saveWishlist(newWishlist);
   };
 
   const removeFromWishlist = async (id: string) => {
-    if (user) {
-      try {
-        await UserPreferencesService.removeFromWishlist(user.uid, id);
-        setWishlist(prev => prev.filter(itemId => itemId !== id));
-      } catch (error) {
-        console.error('Error removing from wishlist:', error);
-        setWishlist(prev => {
-          const newWishlist = prev.filter(itemId => itemId !== id);
-          localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-          return newWishlist;
-        });
-      }
-    } else {
-      setWishlist(prev => {
-        const newWishlist = prev.filter(itemId => itemId !== id);
-        localStorage.setItem('wishlist', JSON.stringify(newWishlist));
-        return newWishlist;
-      });
-    }
+    const newWishlist = wishlist.filter(itemId => itemId !== id);
+    setWishlist(newWishlist);
+    await saveWishlist(newWishlist);
   };
 
   const isWishlisted = (id: string) => wishlist.includes(id);

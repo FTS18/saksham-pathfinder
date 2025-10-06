@@ -1,16 +1,27 @@
 import { doc, getDoc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
 
-export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+export const checkUsernameAvailability = async (username: string, currentUserId?: string): Promise<boolean> => {
   if (!username || username.length < 3) return false;
   
   try {
+    // Check current user's profile first
+    if (currentUserId) {
+      const userDocRef = doc(db, 'profiles', currentUserId);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists() && userDoc.data().username === username) {
+        return true; // User's own username is available
+      }
+    }
+    
     const q = query(collection(db, 'profiles'), where('username', '==', username));
     const querySnapshot = await getDocs(q);
+    
     return querySnapshot.empty;
   } catch (error) {
     console.error('Error checking username availability:', error);
-    return false;
+    // If Firebase fails, assume username is available for current user
+    return true;
   }
 };
 

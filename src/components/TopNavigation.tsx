@@ -123,7 +123,7 @@ export const TopNavigation = () => {
             </a>
           </div>
           
-          <div className="flex-1 max-w-2xl mx-4">
+          <div className="flex-1 max-w-2xl mx-auto">
             <div className="relative">
               <Input
                 type="text"
@@ -159,39 +159,20 @@ export const TopNavigation = () => {
                 aria-autocomplete="list"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+              {searchQuery && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={toggleQuickActions}
-                  className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
-                  title="Open AI Assistant"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setShowSuggestions(false);
+                    setShowHistory(false);
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
                 >
-                  <Sparkles className="w-3 h-3" />
+                  <X className="w-3 h-3" />
                 </Button>
-                {searchQuery && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSearchQuery('');
-                      setShowSuggestions(false);
-                      setShowHistory(false);
-                    }}
-                    className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => window.dispatchEvent(new CustomEvent('openChatbot'))}
-                  className="h-6 w-6 p-0 rounded-none hover:bg-muted-foreground/10"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </Button>
-              </div>
+              )}
               <SearchSuggestions
                 query={searchQuery}
                 onSelect={handleSuggestionSelect}

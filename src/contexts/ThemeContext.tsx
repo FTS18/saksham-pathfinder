@@ -46,13 +46,12 @@ interface ThemeProviderProps {
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const { user } = useSafeAuth();
   
-  // Initialize with values from localStorage to prevent flash
-  const [theme, setTheme] = useState<Theme>(() => 
-    (localStorage.getItem('theme') as Theme) || 'dark'
-  );
-  const [colorTheme, setColorTheme] = useState<ColorTheme>(() => 
-    (localStorage.getItem('colorTheme') as ColorTheme) || 'blue'
-  );
+  // Get initial values from localStorage
+  const getInitialTheme = (): Theme => localStorage.getItem('theme') as Theme || 'dark';
+  const getInitialColorTheme = (): ColorTheme => localStorage.getItem('colorTheme') as ColorTheme || 'blue';
+  
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [colorTheme, setColorThemeState] = useState<ColorTheme>(getInitialColorTheme);
   const [language, setLanguage] = useState<Language>(() => 
     (localStorage.getItem('language') as Language) || 'en'
   );
@@ -61,97 +60,98 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Initialize theme immediately on mount
+  // Apply themes to DOM
+  const applyThemeToDOM = (newTheme: Theme, newColorTheme: ColorTheme) => {
+    const root = document.documentElement;
+    // Remove only conflicting classes, not all at once
+    root.classList.remove('light', 'dark');
+    root.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
+    // Add classes immediately
+    root.classList.add(newTheme);
+    root.classList.add(newColorTheme);
+  };
+
+  // Initialize theme on mount and sync with Firebase when user loads
   useEffect(() => {
-    const initializeTheme = () => {
-      const savedTheme = localStorage.getItem('theme') as Theme;
-      const savedColorTheme = localStorage.getItem('colorTheme') as ColorTheme;
-      const savedLanguage = localStorage.getItem('language') as Language;
-      const savedFontSize = localStorage.getItem('fontSize');
-      
-      if (savedTheme) setTheme(savedTheme);
-      if (savedColorTheme) setColorTheme(savedColorTheme);
-      if (savedLanguage) setLanguage(savedLanguage);
-      if (savedFontSize) setFontSize(Number(savedFontSize));
-    };
-    
-    // Initialize immediately
-    initializeTheme();
-    
-    // Load user preferences if logged in
+    const savedTheme = getInitialTheme();
+    const savedColorTheme = getInitialColorTheme();
+    applyThemeToDOM(savedTheme, savedColorTheme);
+    setThemeState(savedTheme);
+    setColorThemeState(savedColorTheme);
+  }, []);
+
+  // Load Firebase preferences when user changes
+  useEffect(() => {
     if (user) {
-      loadUserPreferences();
+      loadUserThemePreferences();
     }
   }, [user]);
 
-  const loadUserPreferences = async () => {
+  // Ensure theme persists on state changes
+  useEffect(() => {
+    applyThemeToDOM(theme, colorTheme);
+  }, [theme, colorTheme]);
+
+  const loadUserThemePreferences = async () => {
     if (!user) return;
     try {
-      // First sync local to Firebase to ensure latest settings are saved
-      await UserPreferencesService.syncLocalToFirebase(user.uid);
+      const { doc, getDoc } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      const docRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(docRef);
       
-      // Then get preferences from Firebase
-      const preferences = await UserPreferencesService.getUserPreferences(user.uid);
-      
-      // Apply Firebase preferences (they are the source of truth for synced data)
-      if (preferences.theme) {
-        setTheme(preferences.theme as Theme);
-        localStorage.setItem('theme', preferences.theme);
-      }
-      if (preferences.colorTheme) {
-        setColorTheme(preferences.colorTheme as ColorTheme);
-        localStorage.setItem('colorTheme', preferences.colorTheme);
-      }
-      if (preferences.language) {
-        setLanguage(preferences.language as Language);
-        localStorage.setItem('language', preferences.language);
-      }
-      if (preferences.fontSize) {
-        setFontSize(preferences.fontSize);
-        localStorage.setItem('fontSize', String(preferences.fontSize));
+      if (docSnap.exists()) {
+        const profile = docSnap.data();
+        if (profile?.theme && profile.theme !== theme) {
+          const newTheme = profile.theme as Theme;
+          setThemeState(newTheme);
+          localStorage.setItem('theme', newTheme);
+        }
+        if (profile?.colorTheme && profile.colorTheme !== colorTheme) {
+          const newColorTheme = profile.colorTheme as ColorTheme;
+          setColorThemeState(newColorTheme);
+          localStorage.setItem('colorTheme', newColorTheme);
+        }
       }
     } catch (error) {
-      console.error('Error loading preferences:', error);
+      console.error('Error loading theme preferences:', error);
       // Keep current localStorage values on error
     }
   };
 
-  const saveThemePreference = async (theme: Theme, colorTheme: ColorTheme) => {
-    if (!user) return;
-    try {
-      await UserPreferencesService.updateTheme(user.uid, theme, colorTheme);
-    } catch (error) {
-      console.error('Error saving theme preference to Firebase:', error);
+  // Theme setters that update both state and DOM
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    localStorage.setItem('theme', newTheme);
+    applyThemeToDOM(newTheme, colorTheme);
+    
+    // Save to profile document immediately
+    if (user) {
+      saveThemeToProfile(user.uid, newTheme, colorTheme).catch(console.error);
     }
   };
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(theme);
+  const setColorTheme = (newColorTheme: ColorTheme) => {
+    setColorThemeState(newColorTheme);
+    localStorage.setItem('colorTheme', newColorTheme);
+    applyThemeToDOM(theme, newColorTheme);
     
-    // Save to localStorage immediately
-    localStorage.setItem('theme', theme);
-    
-    // Save to Firebase if user is logged in
+    // Save to profile document immediately
     if (user) {
-      saveThemePreference(theme, colorTheme);
+      saveThemeToProfile(user.uid, theme, newColorTheme).catch(console.error);
     }
-  }, [theme, user]);
+  };
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
-    root.classList.add(colorTheme);
-    
-    // Save to localStorage immediately
-    localStorage.setItem('colorTheme', colorTheme);
-    
-    // Save to Firebase if user is logged in
-    if (user) {
-      saveThemePreference(theme, colorTheme);
+  const saveThemeToProfile = async (userId: string, theme: Theme, colorTheme: ColorTheme) => {
+    try {
+      const { doc, updateDoc } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      const docRef = doc(db, 'profiles', userId);
+      await updateDoc(docRef, { theme, colorTheme });
+    } catch (error) {
+      console.error('Error saving theme to profile:', error);
     }
-  }, [colorTheme, user]);
+  };
 
   useEffect(() => {
     // Save to localStorage immediately
@@ -197,7 +197,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, colorTheme, language, fontSize, isTransitioning, toggleTheme, setTheme, setColorTheme, setLanguage, increaseFontSize, decreaseFontSize, getColorThemeName }}>
+    <ThemeContext.Provider value={{ theme, colorTheme, language, fontSize, isTransitioning, toggleTheme, setTheme: setTheme, setColorTheme: setColorTheme, setLanguage, increaseFontSize, decreaseFontSize, getColorThemeName }}>
       {children}
       {isTransitioning && (
         <div className="fixed inset-0 z-[9999] pointer-events-none">
