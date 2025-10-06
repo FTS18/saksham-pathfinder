@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
-import { Button } from './ui/button';
+import { useState, useMemo } from 'react';
 import { Input } from './ui/input';
-import { ScrollArea } from './ui/scroll-area';
-import { Check, ChevronDown, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Button } from './ui/button';
+import { Checkbox } from './ui/checkbox';
+import { Label } from './ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { ChevronDown, Search } from 'lucide-react';
 
 interface SearchableSelectProps {
   options: string[];
@@ -12,25 +13,34 @@ interface SearchableSelectProps {
   placeholder?: string;
   maxHeight?: string;
   multiple?: boolean;
+  disabled?: boolean;
+  groupedOptions?: Record<string, string[]>;
+  selectedGroups?: string[];
 }
 
 export const SearchableSelect = ({ 
   options, 
   selected, 
   onSelectionChange, 
-  placeholder = "Search and select...",
-  maxHeight = "200px",
-  multiple = true 
+  placeholder = "Select options...",
+  maxHeight = "240px",
+  multiple = true,
+  disabled = false,
+  groupedOptions,
+  selectedGroups
 }: SearchableSelectProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  const filteredOptions = options.filter(option =>
-    option.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = useMemo(() => {
+    if (!searchTerm) return options;
+    return options.filter(option =>
+      option.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [options, searchTerm]);
 
   const toggleOption = (option: string) => {
+    if (disabled) return;
+    
     if (multiple) {
       const newSelected = selected.includes(option)
         ? selected.filter(item => item !== option)
@@ -38,92 +48,138 @@ export const SearchableSelect = ({
       onSelectionChange(newSelected);
     } else {
       onSelectionChange([option]);
-      setIsOpen(false);
     }
   };
 
-  const removeSelected = (option: string) => {
-    onSelectionChange(selected.filter(item => item !== option));
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   return (
-    <div className="relative" ref={containerRef}>
-      <div 
-        className="min-h-[40px] w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background cursor-pointer rounded-md"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex flex-wrap gap-1 flex-1">
-            {selected.length > 0 ? (
-              selected.map((item) => (
-                <span
-                  key={item}
-                  className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded text-xs"
-                >
-                  {item}
-                  <X 
-                    className="h-3 w-3 cursor-pointer hover:text-destructive" 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeSelected(item);
-                    }}
-                  />
-                </span>
-              ))
-            ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
-            )}
-          </div>
-          <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-        </div>
-      </div>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-input rounded-md shadow-lg">
-          <div className="p-2">
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button 
+          variant="outline" 
+          className="w-full justify-between" 
+          disabled={disabled}
+        >
+          {selected.length > 0 
+            ? `${selected.length} ${selected.length === 1 ? 'item' : 'items'} selected`
+            : placeholder
+          }
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0" align="start">
+        <div className="p-3 border-b">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-8"
+              className="pl-9 h-9"
             />
           </div>
-          <ScrollArea style={{ maxHeight }}>
-            <div className="p-1">
+        </div>
+        
+        <div className="max-h-60 overflow-y-auto p-4">
+          {groupedOptions && selectedGroups ? (
+            <div className="space-y-4">
+              {selectedGroups.map(group => {
+                const groupOptions = groupedOptions[group] || [];
+                const filteredGroupOptions = groupOptions.filter(option =>
+                  !searchTerm || option.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                const allGroupSelected = filteredGroupOptions.length > 0 && 
+                  filteredGroupOptions.every(option => selected.includes(option));
+                
+                if (filteredGroupOptions.length === 0) return null;
+                
+                return (
+                  <div key={group}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-semibold text-primary">{group}</h4>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`select-all-${group}`}
+                          checked={allGroupSelected}
+                          onCheckedChange={() => {
+                            if (allGroupSelected) {
+                              onSelectionChange(selected.filter(item => !filteredGroupOptions.includes(item)));
+                            } else {
+                              onSelectionChange([...new Set([...selected, ...filteredGroupOptions])]);
+                            }
+                          }}
+                        />
+                        <Label htmlFor={`select-all-${group}`} className="text-xs text-muted-foreground cursor-pointer">
+                          Select All
+                        </Label>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      {filteredGroupOptions.map((option) => (
+                        <div key={option} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`option-${option}`}
+                            checked={selected.includes(option)}
+                            onCheckedChange={() => toggleOption(option)}
+                          />
+                          <Label 
+                            htmlFor={`option-${option}`} 
+                            className="text-sm font-normal cursor-pointer flex-1"
+                          >
+                            {option}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-2">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
-                  <div
-                    key={option}
-                    className={cn(
-                      "flex items-center justify-between px-2 py-2 text-sm cursor-pointer rounded hover:bg-accent",
-                      selected.includes(option) && "bg-accent"
-                    )}
-                    onClick={() => toggleOption(option)}
-                  >
-                    <span>{option}</span>
-                    {selected.includes(option) && <Check className="h-4 w-4 text-primary" />}
+                  <div key={option} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`option-${option}`}
+                      checked={selected.includes(option)}
+                      onCheckedChange={() => toggleOption(option)}
+                    />
+                    <Label 
+                      htmlFor={`option-${option}`} 
+                      className="text-sm font-normal cursor-pointer flex-1"
+                    >
+                      {option}
+                    </Label>
                   </div>
                 ))
               ) : (
-                <div className="px-2 py-2 text-sm text-muted-foreground">
-                  No options found
+                <div className="text-center py-4 text-sm text-muted-foreground">
+                  {searchTerm ? 'No results found' : 'No options available'}
                 </div>
               )}
             </div>
-          </ScrollArea>
+          )}
         </div>
-      )}
-    </div>
+        
+        {selected.length > 0 && (
+          <div className="p-3 border-t bg-muted/30">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-muted-foreground">
+                {selected.length} item{selected.length !== 1 ? 's' : ''} selected
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectionChange([]);
+                }}
+                className="text-destructive hover:underline"
+              >
+                Clear all
+              </button>
+            </div>
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
   );
 };

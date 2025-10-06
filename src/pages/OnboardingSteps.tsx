@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Gift, User, MapPin, Briefcase, Star, CheckCircle, GraduationCap, Code } from 'lucide-react';
+import { Gift, User, MapPin, Briefcase, Star, CheckCircle, GraduationCap, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Confetti } from '@/components/Confetti';
 import { SearchableSelect } from '@/components/SearchableSelect';
 import OnboardingService from '@/services/onboardingService';
 import { StudentOnboardingData } from '@/types/onboarding';
+import { getStates, getCities } from '@/lib/locations';
 
 const OnboardingSteps = () => {
   const { currentUser } = useAuth();
@@ -21,8 +21,8 @@ const OnboardingSteps = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
   const [saving, setSaving] = useState(false);
-  
-  // Form data
+  const [savingStep, setSavingStep] = useState('');
+
   const [formData, setFormData] = useState<StudentOnboardingData>({
     username: '',
     location: { city: '', state: '', country: 'India' },
@@ -44,19 +44,16 @@ const OnboardingSteps = () => {
   });
 
   const [existingProfile, setExistingProfile] = useState<any>(null);
+  const [locations, setLocations] = useState<{ states: string[], cities: string[] }>({ states: [], cities: [] });
+  const [loadingLocations, setLoadingLocations] = useState(true);
 
-  // Load existing profile data
   useEffect(() => {
     const loadExistingProfile = async () => {
       if (!currentUser) return;
-      
       try {
         const profileData = await OnboardingService.getExistingProfile(currentUser.uid, 'student');
-        
         if (profileData) {
           setExistingProfile(profileData);
-          
-          // Auto-fill form with existing data
           setFormData(prev => ({
             ...prev,
             username: profileData.username || currentUser.displayName || '',
@@ -74,8 +71,32 @@ const OnboardingSteps = () => {
       }
     };
 
+    const fetchLocations = async () => {
+      setLoadingLocations(true);
+      try {
+        const states = await getStates();
+        setLocations(prev => ({ ...prev, states }));
+      } catch (error) {
+        console.error("Failed to fetch states", error);
+        toast({ title: "Error", description: "Could not load states. Please refresh.", variant: "destructive" });
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+
     loadExistingProfile();
-  }, [currentUser]);
+    fetchLocations();
+  }, [currentUser, toast]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (formData.location.state) {
+        const cities = await getCities(formData.location.state);
+        setLocations(prev => ({ ...prev, cities }));
+      }
+    };
+    fetchCities();
+  }, [formData.location.state]);
 
   const sectorsList = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'E-commerce', 'Manufacturing', 'Media', 'Gaming', 'Consulting', 'Banking', 'Automotive', 'Construction', 'Hospitality', 'Travel', 'NGO', 'Research', 'Sales', 'Operations', 'Electronics', 'Infrastructure'];
   
@@ -103,9 +124,6 @@ const OnboardingSteps = () => {
     'Infrastructure': ['Project Management', 'Construction', 'Safety', 'Quality Assurance']
   };
 
-  const cities = ['Delhi', 'Mumbai', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Lucknow'];
-  const states = ['Delhi', 'Maharashtra', 'Karnataka', 'Telangana', 'Tamil Nadu', 'West Bengal', 'Gujarat', 'Rajasthan', 'Uttar Pradesh'];
-
   const generateUsername = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = (currentUser?.displayName?.replace(/\s+/g, '') || 'User') + '_';
@@ -115,16 +133,7 @@ const OnboardingSteps = () => {
     return result;
   };
 
-  const generateReferralCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 5; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
-  const getAvailableSkills = () => {
+  const getAvailableSkills = useMemo(() => {
     if (formData.sectors.length === 0) return [];
     const allSkills = new Set<string>();
     formData.sectors.forEach(sector => {
@@ -132,25 +141,7 @@ const OnboardingSteps = () => {
       sectorSkills.forEach(skill => allSkills.add(skill));
     });
     return Array.from(allSkills);
-  };
-
-  const toggleSector = (sector: string) => {
-    setFormData(prev => ({
-      ...prev,
-      sectors: prev.sectors.includes(sector) 
-        ? prev.sectors.filter(s => s !== sector)
-        : [...prev.sectors, sector]
-    }));
-  };
-
-  const toggleSkill = (skill: string) => {
-    setFormData(prev => ({
-      ...prev,
-      skills: prev.skills.includes(skill) 
-        ? prev.skills.filter(s => s !== skill)
-        : [...prev.skills, skill]
-    }));
-  };
+  }, [formData.sectors]);
 
   const handleNext = () => {
     if (currentStep === 1 && !formData.username.trim()) {
@@ -163,6 +154,7 @@ const OnboardingSteps = () => {
     if (!currentUser) return;
     
     setSaving(true);
+    setSavingStep('Saving profile...');
     try {
       await OnboardingService.completeStudentOnboarding(
         currentUser.uid,
@@ -170,10 +162,8 @@ const OnboardingSteps = () => {
         existingProfile
       );
       
-      // Show confetti and success
+      setSavingStep('Finalizing setup...');
       setShowConfetti(true);
-      
-      // Update onboarding status in AuthContext
       window.dispatchEvent(new CustomEvent('onboardingCompleted'));
       
       toast({ 
@@ -181,7 +171,6 @@ const OnboardingSteps = () => {
         description: 'Your profile has been set up successfully.' 
       });
       
-      // Navigate after delay
       setTimeout(() => {
         setShowConfetti(false);
         navigate('/');
@@ -196,16 +185,9 @@ const OnboardingSteps = () => {
       });
     } finally {
       setSaving(false);
+      setSavingStep('');
     }
   };
-
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -249,60 +231,24 @@ const OnboardingSteps = () => {
               <div className="space-y-4">
                 <h3 className="font-medium">Current Location</h3>
                 <div className="space-y-2">
-                  <Label>City</Label>
-                  {isDesktop ? (
-                    <Select value={formData.location.city} onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, location: { ...prev.location, city: value } }))
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cities.map(city => (
-                          <SelectItem key={city} value={city}>{city}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <select 
-                      value={formData.location.city}
-                      onChange={(e) => setFormData(prev => ({ ...prev, location: { ...prev.location, city: e.target.value } }))}
-                      className="w-full p-2 border rounded-md"
-                    >
-                      <option value="">Select city</option>
-                      {cities.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
-                  )}
+                  <Label>State</Label>
+                  <SearchableSelect
+                    options={locations.states}
+                    selected={[formData.location.state]}
+                    onSelectionChange={(selection) => setFormData(prev => ({ ...prev, location: { ...prev.location, state: selection[0] } }))}
+                    placeholder={loadingLocations ? "Loading states..." : "Select state"}
+                    disabled={loadingLocations}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label>State</Label>
-                  {isDesktop ? (
-                    <Select value={formData.location.state} onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, location: { ...prev.location, state: value } }))
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {states.map(state => (
-                          <SelectItem key={state} value={state}>{state}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <select 
-                      value={formData.location.state}
-                      onChange={(e) => setFormData(prev => ({ ...prev, location: { ...prev.location, state: e.target.value } }))}
-                      className="w-full p-2 border rounded-md"
-                    >
-                      <option value="">Select state</option>
-                      {states.map(state => (
-                        <option key={state} value={state}>{state}</option>
-                      ))}
-                    </select>
-                  )}
+                  <Label>City</Label>
+                  <SearchableSelect
+                    options={locations.cities}
+                    selected={[formData.location.city]}
+                    onSelectionChange={(selection) => setFormData(prev => ({ ...prev, location: { ...prev.location, city: selection[0] } }))}
+                    placeholder={!formData.location.state ? "Select a state first" : "Select city"}
+                    disabled={!formData.location.state}
+                  />
                 </div>
               </div>
 
@@ -310,33 +256,12 @@ const OnboardingSteps = () => {
                 <h3 className="font-medium">Preferred Work Location</h3>
                 <div className="space-y-2">
                   <Label>City</Label>
-                  {isDesktop ? (
-                    <Select value={formData.desiredLocation.city} onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, desiredLocation: { ...prev.desiredLocation, city: value } }))
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Remote">Remote</SelectItem>
-                        {cities.map(city => (
-                          <SelectItem key={city} value={city}>{city}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <select 
-                      value={formData.desiredLocation.city}
-                      onChange={(e) => setFormData(prev => ({ ...prev, desiredLocation: { ...prev.desiredLocation, city: e.target.value } }))}
-                      className="w-full p-2 border rounded-md"
-                    >
-                      <option value="">Select city</option>
-                      <option value="Remote">Remote</option>
-                      {cities.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                      ))}
-                    </select>
-                  )}
+                  <SearchableSelect
+                    options={['Remote', ...locations.cities]}
+                    selected={[formData.desiredLocation.city]}
+                    onSelectionChange={(selection) => setFormData(prev => ({ ...prev, desiredLocation: { ...prev.desiredLocation, city: selection[0] } }))}
+                    placeholder="Select city or Remote"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Minimum Stipend (₹/month)</Label>
@@ -384,7 +309,7 @@ const OnboardingSteps = () => {
             
             {formData.sectors.length > 0 ? (
               <SearchableSelect
-                options={getAvailableSkills()}
+                options={getAvailableSkills}
                 selected={formData.skills}
                 onSelectionChange={(skills) => setFormData(prev => ({ ...prev, skills }))}
                 placeholder="Search and select skills..."
@@ -604,7 +529,12 @@ const OnboardingSteps = () => {
                   disabled={saving || !canProceed()}
                   className="flex-1"
                 >
-                  {saving ? 'Setting up...' : 'Complete Setup'}
+                  {saving ? (
+                    <div className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {savingStep}
+                    </div>
+                  ) : 'Complete Setup'}
                 </Button>
               )}
             </div>

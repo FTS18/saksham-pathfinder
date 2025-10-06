@@ -298,7 +298,7 @@ ${internship.required_skills?.map(skill => `- **${skill}**: Practice problems an
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 pb-32 space-y-4 text-left min-h-0 max-h-[calc(85vh-200px)]">
+        <div className="flex-1 overflow-y-auto p-4 pb-40 space-y-4 text-left min-h-0 max-h-[calc(85vh-200px)]">
           {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
@@ -503,7 +503,7 @@ ${internship.required_skills?.map(skill => `- **${skill}**: Practice problems an
         
         {/* Fixed Footer */}
         <div className="absolute bottom-0 left-0 right-0 bg-background border-t p-3 z-20 shrink-0">
-          <div className="flex gap-2 mb-3">
+          <div className="flex gap-2 mb-2">
             <Button 
               onClick={generatePrepGuide}
               disabled={loadingPrep}

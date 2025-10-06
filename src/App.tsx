@@ -44,6 +44,7 @@ import Profile from "./pages/Profile";
 import PublicProfile from "./pages/PublicProfile";
 import OnboardingSteps from "./pages/OnboardingSteps";
 import SimplifiedOnboarding from "./pages/SimplifiedOnboarding";
+import ImprovedOnboarding from "./pages/ImprovedOnboarding";
 import RecruiterOnboarding from "./pages/RecruiterOnboarding";
 import Referrals from "./pages/Referrals";
 import DashboardSettings from "./pages/DashboardSettings";
@@ -171,8 +172,9 @@ const AppContent = () => {
           <Route path="/admin-demo" element={<Layout><AdminDemo /></Layout>} />
           
           {/* Protected Routes */}
-          <Route path="/onboarding" element={<ProtectedRoute><Layout><SimplifiedOnboarding /></Layout></ProtectedRoute>} />
-          <Route path="/onboarding-old" element={<ProtectedRoute><Layout><OnboardingSteps /></Layout></ProtectedRoute>} />
+          <Route path="/onboarding" element={<ProtectedRoute><Layout><ImprovedOnboarding /></Layout></ProtectedRoute>} />
+          <Route path="/onboarding-old" element={<ProtectedRoute><Layout><SimplifiedOnboarding /></Layout></ProtectedRoute>} />
+          <Route path="/onboarding-legacy" element={<ProtectedRoute><Layout><OnboardingSteps /></Layout></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Layout><StudentDashboard /></Layout></ProtectedRoute>} />
           <Route path="/wishlist" element={<ProtectedRoute><Layout><Wishlist /></Layout></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />

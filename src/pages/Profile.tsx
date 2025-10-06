@@ -73,6 +73,9 @@ interface UserProfile {
   linkedAccounts: {
     google: boolean;
   };
+  theme?: string;
+  colorTheme?: string;
+  wishlist?: string[];
 }
 
 const Profile = () => {
@@ -235,15 +238,21 @@ const Profile = () => {
     }
     
     setUsernameChecking(true);
-    const available = await checkUsernameAvailability(username);
-    setUsernameAvailable(available);
-    setUsernameChecking(false);
+    try {
+      const available = await checkUsernameAvailability(username, currentUser?.uid);
+      setUsernameAvailable(available);
+    } catch (error) {
+      console.error('Username check failed:', error);
+      setUsernameAvailable(null);
+    } finally {
+      setUsernameChecking(false);
+    }
   };
 
   const saveProfile = async () => {
     if (!currentUser) return;
     
-    if (profile.username && !usernameAvailable && profile.username !== profile.username) {
+    if (profile.username && usernameAvailable === false) {
       toast({ title: 'Error', description: 'Username is not available', variant: 'destructive' });
       return;
     }
@@ -255,8 +264,16 @@ const Profile = () => {
         await reserveUsername(profile.username, currentUser.uid);
       }
       
+      // Add current theme and wishlist to profile
+      const profileWithTheme = {
+        ...profile,
+        theme,
+        colorTheme,
+        wishlist: JSON.parse(localStorage.getItem('wishlist') || '[]')
+      };
+      
       const docRef = doc(db, 'profiles', currentUser.uid);
-      await setDoc(docRef, profile, { merge: true });
+      await setDoc(docRef, profileWithTheme, { merge: true });
       toast({ title: 'Success', description: 'Profile saved successfully' });
     } catch (error) {
       console.error('Firestore not available:', error);
@@ -535,7 +552,7 @@ const Profile = () => {
         </div>
         <div className="space-y-6">
         {/* Fixed Header with Navigation */}
-        <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b">
+        <div className="fixed top-16 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-b">
           <div className="max-w-3xl mx-auto px-6">
             <div className="flex items-center justify-between py-4">
               <div className="flex items-center gap-4">
@@ -646,18 +663,29 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  value={profile.username}
-                  onChange={(e) => {
-                    const newUsername = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '');
-                    setProfile(prev => ({ ...prev, username: newUsername }));
-                    checkUsername(newUsername);
-                  }}
-                  placeholder="johndoe"
-                  className="border-2 rounded-lg h-11 transition-colors focus:border-ring"
-                />
-                {usernameChecking && <p className="text-xs text-muted-foreground mt-1">Checking...</p>}
+                <div className="flex gap-2">
+                  <Input
+                    id="username"
+                    value={profile.username}
+                    onChange={(e) => {
+                      const newUsername = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+                      setProfile(prev => ({ ...prev, username: newUsername }));
+                      checkUsername(newUsername);
+                    }}
+                    placeholder="johndoe"
+                    className="border-2 rounded-lg h-11 transition-colors focus:border-ring flex-1"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => checkUsername(profile.username)}
+                    disabled={usernameChecking || !profile.username}
+                    className="h-11 px-3"
+                  >
+                    {usernameChecking ? 'Checking...' : 'Check'}
+                  </Button>
+                </div>
+                {usernameChecking && <p className="text-xs text-muted-foreground mt-1">Checking availability...</p>}
                 {usernameAvailable === true && <p className="text-xs text-green-600 mt-1">✓ Available</p>}
                 {usernameAvailable === false && <p className="text-xs text-red-600 mt-1">✗ Already taken</p>}
                 <p className="text-xs text-muted-foreground mt-1">

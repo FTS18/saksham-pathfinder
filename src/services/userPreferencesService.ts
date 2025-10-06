@@ -21,6 +21,8 @@ export interface UserPreferences {
   language: string;
   fontSize: number;
   wishlist: string[];
+  lastLoginTheme?: string;
+  lastLoginColorTheme?: string;
   lastUpdated: Timestamp;
 }
 
@@ -281,6 +283,21 @@ class UserPreferencesService {
       });
     } catch (error) {
       console.error('Error removing from wishlist:', error);
+      throw error;
+    }
+  }
+
+  static async updateLastLoginTheme(userId: string, theme: string, colorTheme: string): Promise<void> {
+    try {
+      const docRef = this.getPreferencesRef(userId);
+      
+      await updateDoc(docRef, {
+        lastLoginTheme: theme,
+        lastLoginColorTheme: colorTheme,
+        lastUpdated: Timestamp.now()
+      });
+    } catch (error) {
+      console.error('Error updating last login theme:', error);
       throw error;
     }
   }

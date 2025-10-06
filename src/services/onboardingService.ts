@@ -9,25 +9,35 @@ class OnboardingService {
     data: StudentOnboardingData,
     existingProfile?: any
   ): Promise<void> {
+    if (!userId || !data) {
+      throw new Error('Invalid user ID or data');
+    }
+
     try {
       const userReferralCode = existingProfile?.referralCode || this.generateReferralCode();
       
-      // Handle referral code if provided
-      if (data.referralCode.trim()) {
-        await this.processReferralCode(data.referralCode.trim(), data.username, userId);
+      // Handle referral code if provided (non-blocking)
+      if (data.referralCode?.trim()) {
+        try {
+          await this.processReferralCode(data.referralCode.trim(), data.username, userId);
+        } catch (error) {
+          console.warn('Referral processing failed, continuing:', error);
+        }
       }
 
       const profileData = {
         uniqueUserId: existingProfile?.uniqueUserId || generateUniqueUserId(),
         username: data.username || this.generateUsername(userId),
-        email: existingProfile?.email,
-        location: data.location,
-        desiredLocation: data.desiredLocation,
+        email: existingProfile?.email || '',
+        photoURL: data.photoURL || '',
+        location: data.location || { city: '', state: '', country: 'India' },
+        desiredLocation: data.desiredLocation || { city: '', state: '', country: 'India' },
         minStipend: parseInt(data.minStipend) || 0,
-        sectors: data.sectors,
-        skills: data.skills,
-        education: data.education,
-        experience: data.experience,
+        workMode: data.workMode || 'any',
+        sectors: data.sectors || [],
+        skills: data.skills || [],
+        education: data.education || { level: '', field: '', year: '' },
+        experience: data.experience || { hasExperience: false, projects: [] },
         onboardingCompleted: true,
         referralCode: userReferralCode,
         points: (existingProfile?.points || 0) + 50,
@@ -37,28 +47,48 @@ class OnboardingService {
         updatedAt: new Date().toISOString()
       };
 
-      // Save to Firebase
+      // Save to Firebase with retry logic
       const docRef = doc(db, 'profiles', userId);
-      await setDoc(docRef, profileData, { merge: true });
+      let attempts = 0;
+      const maxAttempts = 3;
       
-      // Create referral code mapping if new
+      while (attempts < maxAttempts) {
+        try {
+          await setDoc(docRef, profileData, { merge: true });
+          break;
+        } catch (error) {
+          attempts++;
+          if (attempts === maxAttempts) throw error;
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+        }
+      }
+      
+      // Create referral code mapping (non-blocking)
       if (!existingProfile?.referralCode) {
-        await setDoc(doc(db, 'referrals', userReferralCode), {
-          userId: userId,
-          createdAt: new Date().toISOString()
-        });
+        try {
+          await setDoc(doc(db, 'referrals', userReferralCode), {
+            userId: userId,
+            createdAt: new Date().toISOString()
+          });
+        } catch (error) {
+          console.warn('Referral code mapping failed:', error);
+        }
       }
 
       // Save to localStorage for immediate use
-      localStorage.setItem('userProfile', JSON.stringify({
-        ...profileData,
-        searchRadius: 50
-      }));
-      localStorage.setItem('onboardingCompleted', 'true');
+      try {
+        localStorage.setItem('userProfile', JSON.stringify({
+          ...profileData,
+          searchRadius: 50
+        }));
+        localStorage.setItem('onboardingCompleted', 'true');
+      } catch (error) {
+        console.warn('localStorage save failed:', error);
+      }
       
     } catch (error) {
       console.error('Failed to complete student onboarding:', error);
-      throw error;
+      throw new Error(`Onboarding failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

@@ -5,62 +5,49 @@ import { db, storage, auth } from '../lib/firebase';
 
 export const deleteUserAccount = async (userId: string) => {
   try {
-    const batch = writeBatch(db);
+    // Clear all localStorage data first
+    localStorage.clear();
+    sessionStorage.clear();
     
-    // Delete user profile
-    const profileRef = doc(db, 'profiles', userId);
-    batch.delete(profileRef);
-    
-    // Delete recruiter profile if exists
-    const recruiterRef = doc(db, 'recruiters', userId);
-    batch.delete(recruiterRef);
-    
-    // Delete user's applications
-    const applicationsQuery = query(collection(db, 'applications'), where('userId', '==', userId));
-    const applicationsSnapshot = await getDocs(applicationsQuery);
-    applicationsSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    
-    // Delete user's referrals
-    const referralsQuery = query(collection(db, 'referrals'), where('referrerId', '==', userId));
-    const referralsSnapshot = await getDocs(referralsQuery);
-    referralsSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    
-    // Delete user's notifications
-    const notificationsQuery = query(collection(db, 'notifications'), where('userId', '==', userId));
-    const notificationsSnapshot = await getDocs(notificationsQuery);
-    notificationsSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    
-    // Delete user's feedback/reviews
-    const feedbackQuery = query(collection(db, 'feedback'), where('userId', '==', userId));
-    const feedbackSnapshot = await getDocs(feedbackQuery);
-    feedbackSnapshot.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    
-    // Commit all deletions
-    await batch.commit();
-    
-    // Delete user's files from storage
+    // Delete only essential user data
     try {
-      const userStorageRef = ref(storage, `users/${userId}`);
-      const filesList = await listAll(userStorageRef);
-      
-      const deletePromises = filesList.items.map(fileRef => deleteObject(fileRef));
-      await Promise.all(deletePromises);
-    } catch (storageError) {
-      console.warn('Storage deletion failed:', storageError);
+      const profileRef = doc(db, 'profiles', userId);
+      await deleteDoc(profileRef);
+    } catch (error) {
+      console.warn('Failed to delete profile:', error);
     }
     
-    // Finally delete the user account
+    // Delete applications
+    try {
+      const appsQuery = query(collection(db, 'applications'), where('userId', '==', userId));
+      const appsSnapshot = await getDocs(appsQuery);
+      const deletePromises = appsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.warn('Failed to delete applications:', error);
+    }
+    
+    // Delete notifications
+    try {
+      const notifsQuery = query(collection(db, 'notifications'), where('userId', '==', userId));
+      const notifsSnapshot = await getDocs(notifsQuery);
+      const deletePromises = notifsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.warn('Failed to delete notifications:', error);
+    }
+    
+    // Only delete auth and redirect if data deletion was successful
     if (auth.currentUser && auth.currentUser.uid === userId) {
       await deleteUser(auth.currentUser);
     }
+    
+    // Clear all storage and redirect to home
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Force redirect to home page
+    window.location.href = '/';
     
     return { success: true };
   } catch (error) {
