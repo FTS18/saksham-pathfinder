@@ -3,10 +3,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { X, Sparkles, Building2, MapPin, IndianRupee, Loader2 } from 'lucide-react';
+import { X, Sparkles, Building2, MapPin, IndianRupee, Loader2, Download, Share2, Copy, Check } from 'lucide-react';
 import { useComparison } from '@/contexts/ComparisonContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { localAIService } from '@/lib/localAI';
+import { exportComparisonAsPDF } from '@/lib/pdfExporter';
+import { useToast } from '@/hooks/use-toast';
 
 
 interface ComparisonModalProps {
@@ -19,6 +21,8 @@ export const ComparisonModal = ({ isOpen, onClose, userProfile }: ComparisonModa
   const { selectedInternships, removeFromComparison, clearComparison } = useComparison();
   const [analysis, setAnalysis] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { toast } = useToast();
   
   useScrollLock(isOpen);
 
@@ -123,6 +127,53 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
     }
   };
 
+  const handleExportPDF = () => {
+    if (selectedInternships.length === 0) return;
+    
+    try {
+      exportComparisonAsPDF(selectedInternships);
+      toast({
+        title: 'PDF Exported',
+        description: `Comparison of ${selectedInternships.length} internships exported successfully!`,
+      });
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      toast({
+        title: 'Export Failed',
+        description: 'Could not export PDF. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleShareLink = async () => {
+    if (selectedInternships.length === 0) return;
+    
+    try {
+      const internshipIds = selectedInternships.map(i => i.id).join(',');
+      const shareUrl = `${window.location.origin}/shared-comparison?ids=${internshipIds}`;
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      
+      toast({
+        title: 'Link Copied!',
+        description: 'Share this link with friends to show your comparison.',
+      });
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Share failed:', error);
+      toast({
+        title: 'Share Failed',
+        description: 'Could not copy link. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -208,6 +259,33 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
                 </Button>
                 <Button variant="outline" onClick={clearComparison}>
                   Clear All
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleExportPDF}
+                  disabled={selectedInternships.length === 0}
+                  title="Export comparison as PDF"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export PDF
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleShareLink}
+                  disabled={selectedInternships.length === 0}
+                  title="Copy shareable link"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share Link
+                    </>
+                  )}
                 </Button>
               </div>
 
