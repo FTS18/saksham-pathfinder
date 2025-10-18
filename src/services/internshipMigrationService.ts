@@ -151,7 +151,7 @@ export class InternshipMigrationService {
       }
 
       const q = query(
-        this.getInternshipsCollection(),
+        InternshipMigrationService.getInternshipsCollection(),
         where("status", "==", "active"),
         orderBy("createdAt", "desc")
       );
