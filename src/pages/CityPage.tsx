@@ -5,13 +5,14 @@ import { InternshipFilters } from '@/components/InternshipFilters';
 import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, MapPin, AlertCircle } from 'lucide-react';
-import { FirestoreService } from '@/services/firestoreService';
+import { Internship } from '@/types';
+
 import { fetchInternships } from '@/lib/dataExtractor';
 
 export const CityPage = () => {
   const { city } = useParams<{ city: string }>();
   const navigate = useNavigate();
-  const [allInternships, setAllInternships] = useState<any[]>([]);
+  const [allInternships, setAllInternships] = useState<Internship[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

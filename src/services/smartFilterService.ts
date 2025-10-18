@@ -1,4 +1,30 @@
-import type { ProfileData, FilterState } from '@/types';
+interface ProfileData {
+  name?: string;
+  email?: string;
+  phone?: string;
+  location: string | { city: string; state?: string };
+  desiredLocation?: string | { city: string; state?: string };
+  education: string;
+  skills: string[];
+  interests: string[];
+  minStipend?: number;
+  maxStipend?: number;
+  preferredWorkMode?: string;
+  searchRadius?: number;
+  bio?: string;
+}
+
+interface FilterState {
+  search: string;
+  sector: string;
+  location: string;
+  workMode: string;
+  education: string;
+  minStipend: string;
+  sortBy: string;
+  selectedSectors?: string[];
+  selectedSkills?: string[];
+}
 
 export interface SmartFilterOptions {
   prioritizeHighStipend?: boolean;

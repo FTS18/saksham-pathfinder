@@ -1,6 +1,7 @@
 export interface Internship {
   id: string;
   title: string;
+  role?: string;
   company: string;
   location: string | { city: string; state?: string };
   stipend: string;
@@ -12,13 +13,14 @@ export interface Internship {
   description: string;
   apply_link: string;
   posted_date: string;
-  deadline: string;
+  deadline?: string;
+  application_deadline?: string;
   work_mode: 'Remote' | 'On-site' | 'Hybrid';
 }
 
 export interface ProfileData {
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
   phone?: string;
   location: string | { city: string; state?: string };
   desiredLocation?: string | { city: string; state?: string };
@@ -28,6 +30,7 @@ export interface ProfileData {
   minStipend?: number;
   maxStipend?: number;
   preferredWorkMode?: string;
+  searchRadius?: number;
   bio?: string;
 }
 
@@ -38,9 +41,10 @@ export interface FilterState {
   workMode: string;
   education: string;
   minStipend: string;
+  minAiScore?: string;
   sortBy: string;
-  selectedSectors: string[];
-  selectedSkills: string[];
+  selectedSectors?: string[];
+  selectedSkills?: string[];
 }
 
 export interface RecommendationItem {
