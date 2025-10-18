@@ -13,6 +13,7 @@ import { Progress } from './ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Slider } from './ui/slider';
 import { Checkbox } from './ui/checkbox';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 import { CurrencyInput } from './CurrencyInput';
 
@@ -100,25 +101,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
   useEffect(() => {
     const loadData = async () => {
       try {
-        let internships: any[] = [];
-        
-        // Try Firebase first
-        try {
-          const { getAllInternships } = await import('@/services/internshipService');
-          internships = await getAllInternships();
-          if (Array.isArray(internships) && internships.length > 0) {
-            // Successfully loaded from Firebase, process the data
-            processinternships(internships);
-            return;
-          }
-        } catch (firebaseError) {
-          console.warn('Firebase unavailable, falling back to JSON:', firebaseError);
-        }
-
-        // Fallback to JSON file
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch internships');
-        internships = await response.json();
+        const internships = await fetchInternships();
         processinternships(internships);
       } catch (error) {
         console.error('Failed to load data:', error);
