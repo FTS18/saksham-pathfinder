@@ -1,5 +1,21 @@
-import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, updateDoc, deleteDoc, writeBatch, startAfter, limit as fsLimit, increment, setDoc } from 'firebase/firestore';
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  writeBatch,
+  startAfter,
+  limit as fsLimit,
+  increment,
+  setDoc,
+} from "firebase/firestore";
 
 // Enhanced internship interface for Firebase
 export interface FirebaseInternship {
@@ -8,7 +24,7 @@ export interface FirebaseInternship {
   title: string;
   role: string;
   company: string;
-  location: string | { city: string; lat?: number; lng?: number; };
+  location: string | { city: string; lat?: number; lng?: number };
   stipend: string;
   duration?: string;
   sector_tags: string[];
@@ -25,7 +41,7 @@ export interface FirebaseInternship {
   apply_link?: string;
   logo?: string;
   featured?: boolean;
-  status: 'active' | 'inactive' | 'expired';
+  status: "active" | "inactive" | "expired";
   createdAt: Date;
   updatedAt: Date;
   applicationCount?: number;
@@ -34,7 +50,7 @@ export interface FirebaseInternship {
 }
 
 export class InternshipMigrationService {
-  private static readonly COLLECTION_NAME = 'internships';
+  private static readonly COLLECTION_NAME = "internships";
   private static readonly BATCH_SIZE = 500; // Firestore batch limit
 
   /**
@@ -49,8 +65,10 @@ export class InternshipMigrationService {
    */
   static async migrateFromJSON(internshipsData: any[]): Promise<void> {
     try {
-      console.log(`Starting migration of ${internshipsData.length} internships...`);
-      
+      console.log(
+        `Starting migration of ${internshipsData.length} internships...`
+      );
+
       const batch = writeBatch(db);
       let batchCount = 0;
       let totalMigrated = 0;
@@ -66,31 +84,37 @@ export class InternshipMigrationService {
           duration: internship.duration,
           sector_tags: internship.sector_tags || [],
           required_skills: internship.required_skills || [],
-          preferred_education_levels: internship.preferred_education_levels || [],
+          preferred_education_levels:
+            internship.preferred_education_levels || [],
           work_mode: internship.work_mode,
-          type: internship.type || 'Internship',
+          type: internship.type || "Internship",
           openings: internship.openings || 1,
           featured: internship.featured || false,
-          status: 'active',
+          status: "active",
           createdAt: new Date(),
           updatedAt: new Date(),
           applicationCount: 0,
           viewCount: 0,
-
         };
 
         // Only add fields that are not undefined
-        if (internship.description) firestoreInternship.description = internship.description;
-        if (internship.responsibilities) firestoreInternship.responsibilities = internship.responsibilities;
+        if (internship.description)
+          firestoreInternship.description = internship.description;
+        if (internship.responsibilities)
+          firestoreInternship.responsibilities = internship.responsibilities;
         if (internship.perks) firestoreInternship.perks = internship.perks;
-        if (internship.application_deadline) firestoreInternship.application_deadline = internship.application_deadline;
-        if (internship.posted_date) firestoreInternship.posted_date = internship.posted_date;
-        if (internship.apply_link) firestoreInternship.apply_link = internship.apply_link;
+        if (internship.application_deadline)
+          firestoreInternship.application_deadline =
+            internship.application_deadline;
+        if (internship.posted_date)
+          firestoreInternship.posted_date = internship.posted_date;
+        if (internship.apply_link)
+          firestoreInternship.apply_link = internship.apply_link;
         if (internship.logo) firestoreInternship.logo = internship.logo;
 
         const docRef = doc(this.getInternshipsCollection());
         batch.set(docRef, firestoreInternship);
-        
+
         batchCount++;
         totalMigrated++;
 
@@ -107,9 +131,11 @@ export class InternshipMigrationService {
         await batch.commit();
       }
 
-      console.log(`✅ Migration completed! Total migrated: ${totalMigrated} internships`);
+      console.log(
+        `✅ Migration completed! Total migrated: ${totalMigrated} internships`
+      );
     } catch (error) {
-      console.error('❌ Migration failed:', error);
+      console.error("❌ Migration failed:", error);
       throw error;
     }
   }
@@ -120,25 +146,28 @@ export class InternshipMigrationService {
   static async getAllInternships(): Promise<FirebaseInternship[]> {
     try {
       if (!db) {
-        console.warn('Firebase not initialized, returning empty array');
+        console.warn("Firebase not initialized, returning empty array");
         return [];
       }
-      
+
       const q = query(
         this.getInternshipsCollection(),
-        where('status', '==', 'active'),
-        orderBy('createdAt', 'desc')
+        where("status", "==", "active"),
+        orderBy("createdAt", "desc")
       );
-      
+
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      return querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
     } catch (error) {
-      console.error('Error fetching internships:', error);
+      console.error("Error fetching internships:", error);
       // Return empty array instead of throwing to prevent app crash
       return [];
     }
@@ -147,28 +176,33 @@ export class InternshipMigrationService {
   /**
    * Get internships posted by a recruiter
    */
-  static async getRecruiterInternships(recruiterId: string): Promise<FirebaseInternship[]> {
+  static async getRecruiterInternships(
+    recruiterId: string
+  ): Promise<FirebaseInternship[]> {
     try {
       if (!db) {
-        console.warn('Firebase not initialized, returning empty array');
+        console.warn("Firebase not initialized, returning empty array");
         return [];
       }
-      
+
       const q = query(
         this.getInternshipsCollection(),
-        where('recruiterId', '==', recruiterId),
-        orderBy('createdAt', 'desc')
+        where("recruiterId", "==", recruiterId),
+        orderBy("createdAt", "desc")
       );
-      
+
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      return querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
     } catch (error) {
-      console.error('Error fetching recruiter internships:', error);
+      console.error("Error fetching recruiter internships:", error);
       return [];
     }
   }
@@ -176,7 +210,10 @@ export class InternshipMigrationService {
   /**
    * Get internships with pagination
    */
-  static async getInternshipsPaginated(limit: number = 20, lastDoc?: any): Promise<{
+  static async getInternshipsPaginated(
+    limit: number = 20,
+    lastDoc?: any
+  ): Promise<{
     internships: FirebaseInternship[];
     lastDoc: any;
     hasMore: boolean;
@@ -184,8 +221,8 @@ export class InternshipMigrationService {
     try {
       let q = query(
         this.getInternshipsCollection(),
-        where('status', '==', 'active'),
-        orderBy('createdAt', 'desc')
+        where("status", "==", "active"),
+        orderBy("createdAt", "desc")
       );
 
       if (lastDoc) {
@@ -196,22 +233,25 @@ export class InternshipMigrationService {
 
       const querySnapshot = await getDocs(q);
       const docs = querySnapshot.docs;
-      
+
       const hasMore = docs.length > limit;
-      const internships = docs.slice(0, limit).map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      const internships = docs.slice(0, limit).map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
 
       return {
         internships,
         lastDoc: docs[limit - 1] || null,
-        hasMore
+        hasMore,
       };
     } catch (error) {
-      console.error('Error fetching paginated internships:', error);
+      console.error("Error fetching paginated internships:", error);
       throw error;
     }
   }
@@ -231,41 +271,44 @@ export class InternshipMigrationService {
     try {
       let q = query(
         this.getInternshipsCollection(),
-        where('status', '==', 'active')
+        where("status", "==", "active")
       );
 
       // Apply basic filters
       if (filters.location) {
-        q = query(q, where('location', '==', filters.location));
+        q = query(q, where("location", "==", filters.location));
       }
-      
+
       if (filters.company) {
-        q = query(q, where('company', '==', filters.company));
+        q = query(q, where("company", "==", filters.company));
       }
-      
+
       if (filters.workMode) {
-        q = query(q, where('work_mode', '==', filters.workMode));
+        q = query(q, where("work_mode", "==", filters.workMode));
       }
 
       const querySnapshot = await getDocs(q);
-      let results = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      let results = querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
 
       // Client-side filtering for complex queries
       if (filters.sector) {
-        results = results.filter(internship => 
+        results = results.filter((internship) =>
           internship.sector_tags.includes(filters.sector!)
         );
       }
 
       if (filters.skills && filters.skills.length > 0) {
-        results = results.filter(internship => 
-          filters.skills!.some(skill => 
-            internship.required_skills.some(s => 
+        results = results.filter((internship) =>
+          filters.skills!.some((skill) =>
+            internship.required_skills.some((s) =>
               s.toLowerCase().includes(skill.toLowerCase())
             )
           )
@@ -274,24 +317,28 @@ export class InternshipMigrationService {
 
       if (filters.searchQuery) {
         const query = filters.searchQuery.toLowerCase();
-        results = results.filter(internship => 
-          internship.title.toLowerCase().includes(query) ||
-          internship.company.toLowerCase().includes(query) ||
-          internship.role.toLowerCase().includes(query) ||
-          internship.description?.toLowerCase().includes(query)
+        results = results.filter(
+          (internship) =>
+            internship.title.toLowerCase().includes(query) ||
+            internship.company.toLowerCase().includes(query) ||
+            internship.role.toLowerCase().includes(query) ||
+            internship.description?.toLowerCase().includes(query)
         );
       }
 
       if (filters.stipendRange) {
-        results = results.filter(internship => {
-          const stipend = parseInt(internship.stipend.replace(/[^\\d]/g, ''));
-          return stipend >= filters.stipendRange!.min && stipend <= filters.stipendRange!.max;
+        results = results.filter((internship) => {
+          const stipend = parseInt(internship.stipend.replace(/[^\\d]/g, ""));
+          return (
+            stipend >= filters.stipendRange!.min &&
+            stipend <= filters.stipendRange!.max
+          );
         });
       }
 
       return results;
     } catch (error) {
-      console.error('Error searching internships:', error);
+      console.error("Error searching internships:", error);
       throw error;
     }
   }
@@ -299,23 +346,25 @@ export class InternshipMigrationService {
   /**
    * Get internship by ID
    */
-  static async getInternshipById(id: string): Promise<FirebaseInternship | null> {
+  static async getInternshipById(
+    id: string
+  ): Promise<FirebaseInternship | null> {
     try {
       const docRef = doc(this.getInternshipsCollection(), id);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
           ...docSnap.data(),
           createdAt: docSnap.data().createdAt?.toDate() || new Date(),
-          updatedAt: docSnap.data().updatedAt?.toDate() || new Date()
+          updatedAt: docSnap.data().updatedAt?.toDate() || new Date(),
         } as FirebaseInternship;
       }
-      
+
       return null;
     } catch (error) {
-      console.error('Error fetching internship:', error);
+      console.error("Error fetching internship:", error);
       throw error;
     }
   }
@@ -328,34 +377,39 @@ export class InternshipMigrationService {
       const docRef = doc(this.getInternshipsCollection(), id);
       await updateDoc(docRef, {
         viewCount: increment(1),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
     } catch (error) {
-      console.error('Error updating view count:', error);
+      console.error("Error updating view count:", error);
     }
   }
 
   /**
    * Get trending internships (most viewed)
    */
-  static async getTrendingInternships(limit: number = 10): Promise<FirebaseInternship[]> {
+  static async getTrendingInternships(
+    limit: number = 10
+  ): Promise<FirebaseInternship[]> {
     try {
       const q = query(
         this.getInternshipsCollection(),
-        where('status', '==', 'active'),
-        orderBy('viewCount', 'desc'),
-        orderBy('createdAt', 'desc')
+        where("status", "==", "active"),
+        orderBy("viewCount", "desc"),
+        orderBy("createdAt", "desc")
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.slice(0, limit).map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      return querySnapshot.docs.slice(0, limit).map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
     } catch (error) {
-      console.error('Error fetching trending internships:', error);
+      console.error("Error fetching trending internships:", error);
       throw error;
     }
   }
@@ -367,20 +421,23 @@ export class InternshipMigrationService {
     try {
       const q = query(
         this.getInternshipsCollection(),
-        where('status', '==', 'active'),
-        where('featured', '==', true),
-        orderBy('createdAt', 'desc')
+        where("status", "==", "active"),
+        where("featured", "==", true),
+        orderBy("createdAt", "desc")
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+      return querySnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+          } as FirebaseInternship)
+      );
     } catch (error) {
-      console.error('Error fetching featured internships:', error);
+      console.error("Error fetching featured internships:", error);
       throw error;
     }
   }
@@ -388,7 +445,9 @@ export class InternshipMigrationService {
   /**
    * Create a new internship
    */
-  static async createInternship(internshipData: Omit<FirebaseInternship, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  static async createInternship(
+    internshipData: Omit<FirebaseInternship, "id" | "createdAt" | "updatedAt">
+  ): Promise<string> {
     try {
       const docRef = doc(this.getInternshipsCollection());
       const firestoreInternship: FirebaseInternship = {
@@ -396,14 +455,14 @@ export class InternshipMigrationService {
         createdAt: new Date(),
         updatedAt: new Date(),
         applicationCount: 0,
-        viewCount: 0
+        viewCount: 0,
       };
-      
+
       await setDoc(docRef, firestoreInternship);
-      console.log('✅ Internship created:', docRef.id);
+      console.log("✅ Internship created:", docRef.id);
       return docRef.id;
     } catch (error) {
-      console.error('❌ Error creating internship:', error);
+      console.error("❌ Error creating internship:", error);
       throw error;
     }
   }
@@ -411,16 +470,19 @@ export class InternshipMigrationService {
   /**
    * Update an existing internship
    */
-  static async updateInternship(id: string, updates: Partial<FirebaseInternship>): Promise<void> {
+  static async updateInternship(
+    id: string,
+    updates: Partial<FirebaseInternship>
+  ): Promise<void> {
     try {
       const docRef = doc(this.getInternshipsCollection(), id);
       await updateDoc(docRef, {
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
-      console.log('✅ Internship updated:', id);
+      console.log("✅ Internship updated:", id);
     } catch (error) {
-      console.error('❌ Error updating internship:', error);
+      console.error("❌ Error updating internship:", error);
       throw error;
     }
   }
@@ -432,9 +494,9 @@ export class InternshipMigrationService {
     try {
       const docRef = doc(this.getInternshipsCollection(), id);
       await deleteDoc(docRef);
-      console.log('✅ Internship deleted:', id);
+      console.log("✅ Internship deleted:", id);
     } catch (error) {
-      console.error('❌ Error deleting internship:', error);
+      console.error("❌ Error deleting internship:", error);
       throw error;
     }
   }
@@ -446,15 +508,15 @@ export class InternshipMigrationService {
     try {
       const querySnapshot = await getDocs(this.getInternshipsCollection());
       const batch = writeBatch(db);
-      
-      querySnapshot.docs.forEach(doc => {
+
+      querySnapshot.docs.forEach((doc) => {
         batch.delete(doc.ref);
       });
-      
+
       await batch.commit();
-      console.log('✅ All internships cleared');
+      console.log("✅ All internships cleared");
     } catch (error) {
-      console.error('❌ Error clearing internships:', error);
+      console.error("❌ Error clearing internships:", error);
       throw error;
     }
   }
