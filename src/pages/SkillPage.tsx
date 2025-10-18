@@ -7,6 +7,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Code, AlertCircle } from 'lucide-react';
 import { FirestoreService } from '@/services/firestoreService';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 export const SkillPage = () => {
   const { skill } = useParams<{ skill: string }>();
@@ -23,9 +24,7 @@ export const SkillPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
+        const data = await fetchInternships();
         setAllInternships(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to load internships:', error);

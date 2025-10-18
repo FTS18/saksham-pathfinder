@@ -6,6 +6,7 @@ import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, MapPin, AlertCircle } from 'lucide-react';
 import { FirestoreService } from '@/services/firestoreService';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 export const CityPage = () => {
   const { city } = useParams<{ city: string }>();
@@ -27,10 +28,7 @@ export const CityPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Load from JSON file directly (no Firebase for now)
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch internships data');
-        const data = await response.json();
+        const data = await fetchInternships();
         setAllInternships(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to load internships:', error);

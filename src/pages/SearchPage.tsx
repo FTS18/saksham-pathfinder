@@ -5,6 +5,7 @@ import { LazyComponent } from '@/components/LazyComponent';
 import { SkeletonCard } from '@/components/SkeletonLoaders';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search, AlertCircle } from 'lucide-react';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 export const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -21,20 +22,7 @@ export const SearchPage = () => {
       setLoading(true);
       setError(null);
       try {
-        // Try Firebase first
-        try {
-          const { getAllInternships } = await import('@/services/internshipService');
-          const data = await getAllInternships();
-          setAllInternships(Array.isArray(data) ? data : []);
-          return;
-        } catch (firebaseError) {
-          console.warn('Firebase internships unavailable, falling back to JSON:', firebaseError);
-        }
-
-        // Fallback to JSON file
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch internships data');
-        const data = await response.json();
+        const data = await fetchInternships();
         setAllInternships(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Failed to load internships:', error);
