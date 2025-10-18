@@ -10,6 +10,37 @@ export const useSearchHistory = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
+    // Clean up corrupted localStorage data on mount
+    const saved = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Check if any items are objects (corrupted data)
+          const hasCorruptedData = parsed.some(
+            (item) => typeof item === "object" && item !== null
+          );
+          if (hasCorruptedData) {
+            // Extract all query strings and save clean data
+            const cleanedHistory = parsed
+              .map((item: any) => {
+                if (typeof item === "string") return item;
+                if (typeof item === "object" && item.query) return item.query;
+                return "";
+              })
+              .filter(Boolean)
+              .slice(0, MAX_HISTORY_ITEMS);
+            localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(cleanedHistory));
+          }
+        }
+      } catch {
+        // If parse fails, clear the corrupted data
+        localStorage.removeItem(SEARCH_HISTORY_KEY);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const loadHistory = async () => {
       if (currentUser) {
         try {
@@ -39,7 +70,19 @@ export const useSearchHistory = () => {
           if (saved) {
             try {
               const parsed = JSON.parse(saved);
-              setSearchHistory(Array.isArray(parsed) ? parsed : []);
+              if (Array.isArray(parsed)) {
+                // Extract strings from potential mixed array of strings and objects
+                const historyQueries = parsed
+                  .map((item: any) => {
+                    if (typeof item === "string") return item;
+                    if (typeof item === "object" && item.query) return item.query;
+                    return "";
+                  })
+                  .filter(Boolean);
+                setSearchHistory(historyQueries);
+              } else {
+                setSearchHistory([]);
+              }
             } catch {
               setSearchHistory([]);
             }
@@ -50,7 +93,19 @@ export const useSearchHistory = () => {
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
-            setSearchHistory(Array.isArray(parsed) ? parsed : []);
+            if (Array.isArray(parsed)) {
+              // Extract strings from potential mixed array of strings and objects
+              const historyQueries = parsed
+                .map((item: any) => {
+                  if (typeof item === "string") return item;
+                  if (typeof item === "object" && item.query) return item.query;
+                  return "";
+                })
+                .filter(Boolean);
+              setSearchHistory(historyQueries);
+            } else {
+              setSearchHistory([]);
+            }
           } catch {
             setSearchHistory([]);
           }

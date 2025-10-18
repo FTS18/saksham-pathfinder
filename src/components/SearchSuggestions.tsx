@@ -34,6 +34,17 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Try Firebase first
+        try {
+          const { getAllInternships } = await import('@/services/internshipService');
+          const data = await getAllInternships();
+          setInternshipsData(Array.isArray(data) ? data : []);
+          return;
+        } catch (firebaseError) {
+          console.warn('Firebase internships unavailable, falling back to JSON:', firebaseError);
+        }
+
+        // Fallback to cache + JSON
         const data = await cache.fetchWithCache(
           CACHE_KEYS.INTERNSHIPS,
           async () => {
