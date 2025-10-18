@@ -1,6 +1,6 @@
-import { getAuth } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 class AdminService {
   /**
@@ -10,21 +10,21 @@ class AdminService {
     try {
       const auth = getAuth();
       const currentUser = auth.currentUser;
-      
+
       if (!currentUser) return false;
-      
+
       // Check if email is admin email
-      if (currentUser.email === 'spacify1807@gmail.com') {
+      if (currentUser.email === "spacify1807@gmail.com") {
         return true;
       }
-      
+
       // Check admins collection
-      const adminDocRef = doc(db, 'admins', userId);
+      const adminDocRef = doc(db, "admins", userId);
       const adminDoc = await getDoc(adminDocRef);
-      
+
       return adminDoc.exists();
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error("Error checking admin status:", error);
       return false;
     }
   }
@@ -34,15 +34,15 @@ class AdminService {
    */
   static async addAdmin(userId: string, email: string): Promise<void> {
     try {
-      const adminDocRef = doc(db, 'admins', userId);
+      const adminDocRef = doc(db, "admins", userId);
       await setDoc(adminDocRef, {
         userId,
         email,
         createdAt: new Date().toISOString(),
-        role: 'admin'
+        role: "admin",
       });
     } catch (error) {
-      console.error('Error adding admin:', error);
+      console.error("Error adding admin:", error);
       throw error;
     }
   }
@@ -52,10 +52,10 @@ class AdminService {
    */
   static async removeAdmin(userId: string): Promise<void> {
     try {
-      const adminDocRef = doc(db, 'admins', userId);
+      const adminDocRef = doc(db, "admins", userId);
       await setDoc(adminDocRef, { deletedAt: new Date().toISOString() });
     } catch (error) {
-      console.error('Error removing admin:', error);
+      console.error("Error removing admin:", error);
       throw error;
     }
   }
