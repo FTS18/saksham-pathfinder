@@ -3,20 +3,22 @@ const fetchInternships = async (): Promise<any[]> => {
   try {
     // Try Firebase first
     try {
-      const { getAllInternships } = await import('@/services/internshipService');
+      const { getAllInternships } = await import(
+        "@/services/internshipService"
+      );
       const data = await getAllInternships();
       return Array.isArray(data) ? data : [];
     } catch (firebaseError) {
-      console.warn('Firebase unavailable, falling back to JSON');
+      console.warn("Firebase unavailable, falling back to JSON");
     }
 
     // Fallback to JSON file
-    const response = await fetch('/internships.json');
-    if (!response.ok) throw new Error('Failed to fetch');
+    const response = await fetch("/internships.json");
+    if (!response.ok) throw new Error("Failed to fetch");
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Failed to fetch internships:', error);
+    console.error("Failed to fetch internships:", error);
     return [];
   }
 };
@@ -25,37 +27,51 @@ const fetchInternships = async (): Promise<any[]> => {
 export const extractAllSkills = async (): Promise<string[]> => {
   try {
     const internships = await fetchInternships();
-    
+
     const skillsSet = new Set<string>();
-    
+
     const maxInternships = Math.min(internships.length, 10000);
     for (let i = 0; i < maxInternships; i++) {
       const internship = internships[i];
-      if (internship?.required_skills && Array.isArray(internship.required_skills)) {
+      if (
+        internship?.required_skills &&
+        Array.isArray(internship.required_skills)
+      ) {
         const maxSkills = Math.min(internship.required_skills.length, 50);
         for (let j = 0; j < maxSkills; j++) {
           const skill = internship.required_skills[j];
-          if (typeof skill === 'string') {
+          if (typeof skill === "string") {
             skillsSet.add(skill.trim());
           }
         }
       }
     }
-    
+
     return Array.from(skillsSet).sort();
   } catch (error) {
-    console.warn('Failed to extract skills data');
+    console.warn("Failed to extract skills data");
     // Fallback to default skills
-    return ['Python', 'JavaScript', 'React', 'HTML', 'CSS', 'Java', 'C++', 'SQL', 'AWS', 'Node.js'];
+    return [
+      "Python",
+      "JavaScript",
+      "React",
+      "HTML",
+      "CSS",
+      "Java",
+      "C++",
+      "SQL",
+      "AWS",
+      "Node.js",
+    ];
   }
 };
 
 export const extractAllSectors = async (): Promise<string[]> => {
   try {
     const internships = await fetchInternships();
-    
+
     const sectorsSet = new Set<string>();
-    
+
     const maxInternships = Math.min(internships.length, 10000);
     for (let i = 0; i < maxInternships; i++) {
       const internship = internships[i];
@@ -63,45 +79,47 @@ export const extractAllSectors = async (): Promise<string[]> => {
         const maxSectors = Math.min(internship.sector_tags.length, 20);
         for (let j = 0; j < maxSectors; j++) {
           const sector = internship.sector_tags[j];
-          if (typeof sector === 'string') {
+          if (typeof sector === "string") {
             sectorsSet.add(sector.trim());
           }
         }
       }
     }
-    
+
     return Array.from(sectorsSet).sort();
   } catch (error) {
-    console.warn('Failed to extract sectors data');
+    console.warn("Failed to extract sectors data");
     // Fallback to default sectors
-    return ['Technology', 'Finance', 'Healthcare', 'Education', 'Marketing'];
+    return ["Technology", "Finance", "Healthcare", "Education", "Marketing"];
   }
 };
 
-export const extractSkillsBySector = async (): Promise<Record<string, string[]>> => {
+export const extractSkillsBySector = async (): Promise<
+  Record<string, string[]>
+> => {
   try {
     const internships = await fetchInternships();
-    
+
     const skillsBySector: Record<string, Set<string>> = {};
-    
+
     const maxInternships = Math.min(internships.length, 10000);
     for (let i = 0; i < maxInternships; i++) {
       const internship = internships[i];
       const sectors = internship?.sector_tags || [];
       const skills = internship?.required_skills || [];
-      
+
       if (Array.isArray(sectors) && Array.isArray(skills)) {
         const maxSectors = Math.min(sectors.length, 20);
         for (let j = 0; j < maxSectors; j++) {
           const sector = sectors[j];
-          if (typeof sector === 'string') {
+          if (typeof sector === "string") {
             if (!skillsBySector[sector]) {
               skillsBySector[sector] = new Set();
             }
             const maxSkills = Math.min(skills.length, 50);
             for (let k = 0; k < maxSkills; k++) {
               const skill = skills[k];
-              if (typeof skill === 'string') {
+              if (typeof skill === "string") {
                 skillsBySector[sector].add(skill.trim());
               }
             }
@@ -109,7 +127,7 @@ export const extractSkillsBySector = async (): Promise<Record<string, string[]>>
         }
       }
     }
-    
+
     // Convert Sets to Arrays
     const result: Record<string, string[]> = {};
     const sectorKeys = Object.keys(skillsBySector);
@@ -118,10 +136,10 @@ export const extractSkillsBySector = async (): Promise<Record<string, string[]>>
       const sector = sectorKeys[i];
       result[sector] = Array.from(skillsBySector[sector]).sort();
     }
-    
+
     return result;
   } catch (error) {
-    console.warn('Failed to extract skills by sector data');
+    console.warn("Failed to extract skills by sector data");
     return {};
   }
 };
@@ -129,27 +147,36 @@ export const extractSkillsBySector = async (): Promise<Record<string, string[]>>
 export const extractTopCities = async (): Promise<string[]> => {
   try {
     const internships = await fetchInternships();
-    
+
     const citiesCount: Record<string, number> = {};
-    
+
     const maxInternships = Math.min(internships.length, 10000);
     for (let i = 0; i < maxInternships; i++) {
       const internship = internships[i];
-      const location = internship?.location || '';
-      if (typeof location === 'string' && location.trim()) {
+      const location = internship?.location || "";
+      if (typeof location === "string" && location.trim()) {
         citiesCount[location] = (citiesCount[location] || 0) + 1;
       }
     }
-    
+
     // Sort by count and return top cities
     const sortedCities = Object.entries(citiesCount)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 20)
       .map(([city]) => city);
-    
-    return ['Home', ...sortedCities];
+
+    return ["Home", ...sortedCities];
   } catch (error) {
-    console.warn('Failed to extract cities data');
-    return ['Home', 'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata'];
+    console.warn("Failed to extract cities data");
+    return [
+      "Home",
+      "Mumbai",
+      "Delhi",
+      "Bangalore",
+      "Hyderabad",
+      "Chennai",
+      "Pune",
+      "Kolkata",
+    ];
   }
 };
