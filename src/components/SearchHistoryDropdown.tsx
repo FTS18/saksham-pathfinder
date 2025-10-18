@@ -51,13 +51,15 @@ export const SearchHistoryDropdown = ({
         </div>
       </div>
       <div className="py-1">
-        {history.map((query, index) => (
-          <div
-            key={index}
-            className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-colors ${getThemeHover()}`}
-            onClick={() => onSelect(query)}
-          >
-            <span className="text-sm text-foreground truncate flex-1">{query}</span>
+        {history
+          .filter((item) => typeof item === "string" && item.trim().length > 0)
+          .map((query, index) => (
+            <div
+              key={index}
+              className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-colors ${getThemeHover()}`}
+              onClick={() => onSelect(query)}
+            >
+              <span className="text-sm text-foreground truncate flex-1">{query}</span>
             <Button
               variant="ghost"
               size="sm"

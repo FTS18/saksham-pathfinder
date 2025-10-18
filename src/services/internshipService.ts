@@ -1,5 +1,5 @@
 // Import the new migration service
-import InternshipMigrationService, { FirebaseInternship } from './internshipMigrationService';
+import { InternshipMigrationService, FirebaseInternship } from './internshipMigrationService';
 import { db } from '@/lib/firebase';
 import { 
   collection, 

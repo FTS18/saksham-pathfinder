@@ -1,8 +1,30 @@
+// Helper function to fetch internships from Firebase or JSON fallback
+const fetchInternships = async (): Promise<any[]> => {
+  try {
+    // Try Firebase first
+    try {
+      const { getAllInternships } = await import('@/services/internshipService');
+      const data = await getAllInternships();
+      return Array.isArray(data) ? data : [];
+    } catch (firebaseError) {
+      console.warn('Firebase unavailable, falling back to JSON');
+    }
+
+    // Fallback to JSON file
+    const response = await fetch('/internships.json');
+    if (!response.ok) throw new Error('Failed to fetch');
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('Failed to fetch internships:', error);
+    return [];
+  }
+};
+
 // Extract skills, sectors, and cities from internships.json
 export const extractAllSkills = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/internships.json');
-    const internships = await response.json();
+    const internships = await fetchInternships();
     
     const skillsSet = new Set<string>();
     
@@ -30,8 +52,7 @@ export const extractAllSkills = async (): Promise<string[]> => {
 
 export const extractAllSectors = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/internships.json');
-    const internships = await response.json();
+    const internships = await fetchInternships();
     
     const sectorsSet = new Set<string>();
     
@@ -59,8 +80,7 @@ export const extractAllSectors = async (): Promise<string[]> => {
 
 export const extractSkillsBySector = async (): Promise<Record<string, string[]>> => {
   try {
-    const response = await fetch('/internships.json');
-    const internships = await response.json();
+    const internships = await fetchInternships();
     
     const skillsBySector: Record<string, Set<string>> = {};
     
@@ -108,8 +128,7 @@ export const extractSkillsBySector = async (): Promise<Record<string, string[]>>
 
 export const extractTopCities = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/internships.json');
-    const internships = await response.json();
+    const internships = await fetchInternships();
     
     const citiesCount: Record<string, number> = {};
     
