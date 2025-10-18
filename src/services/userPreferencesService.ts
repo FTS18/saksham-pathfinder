@@ -28,7 +28,12 @@ export interface UserPreferences {
 
 class UserPreferencesService {
   private static getPreferencesRef(userId: string) {
-    return doc(db, 'userPreferences', userId);
+    // Validate Firebase is initialized
+    if (!db) {
+      throw new Error('Firebase database not initialized');
+    }
+    // Now reading from profiles collection instead of userPreferences
+    return doc(db, 'profiles', userId);
   }
 
   static async getUserPreferences(userId: string): Promise<UserPreferences> {
@@ -36,8 +41,20 @@ class UserPreferencesService {
       const docRef = this.getPreferencesRef(userId);
       const docSnap = await getDoc(docRef);
       
+      let preferences: UserPreferences;
+      
       if (docSnap.exists()) {
-        return docSnap.data() as UserPreferences;
+        const profileData = docSnap.data();
+        preferences = {
+          searchHistory: profileData?.searchHistory || [],
+          recentlyViewed: profileData?.recentlyViewed || [],
+          theme: String(profileData?.theme || 'dark').replace(/[\s\n\r\t]/g, ''),
+          colorTheme: String(profileData?.colorTheme || 'blue').replace(/[\s\n\r\t]/g, ''),
+          language: profileData?.language || 'en',
+          fontSize: profileData?.fontSize || 16,
+          wishlist: profileData?.wishlist || [],
+          lastUpdated: profileData?.updatedAt || Timestamp.now()
+        };
       } else {
         // Sync localStorage data to Firebase on first login
         const localData = this.getLocalStorageData();
@@ -52,9 +69,15 @@ class UserPreferencesService {
           lastUpdated: Timestamp.now()
         };
         
-        await setDoc(docRef, defaultPreferences);
-        return defaultPreferences;
+        // Save to profiles collection instead
+        await setDoc(docRef, {
+          ...defaultPreferences,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+        preferences = defaultPreferences;
       }
+      
+      return preferences;
     } catch (error) {
       console.error('Error getting user preferences:', error);
       throw error;
@@ -98,7 +121,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         searchHistory: newHistory,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error adding to search history:', error);
@@ -115,7 +138,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         searchHistory: filteredHistory,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error removing from search history:', error);
@@ -129,7 +152,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         searchHistory: [],
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error clearing search history:', error);
@@ -153,7 +176,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         recentlyViewed: newViewed,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error adding to recently viewed:', error);
@@ -165,10 +188,11 @@ class UserPreferencesService {
     try {
       const docRef = this.getPreferencesRef(userId);
       
+      // Save to profiles collection (single source of truth)
       await updateDoc(docRef, {
         theme,
         colorTheme,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error updating theme:', error);
@@ -182,7 +206,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         language,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error updating language:', error);
@@ -196,7 +220,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         fontSize,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error updating font size:', error);
@@ -211,27 +235,31 @@ class UserPreferencesService {
       const localData = this.getLocalStorageData();
       
       if (docSnap.exists()) {
-        const firebaseData = docSnap.data() as UserPreferences;
+        const firebaseData = docSnap.data();
         
-        // Merge data (Firebase takes priority for theme, local for others)
-        const mergedWishlist = [...new Set([...firebaseData.wishlist, ...localData.wishlist])];
-        const mergedSearchHistory = [...firebaseData.searchHistory, ...localData.searchHistory].slice(0, 10);
-        const mergedRecentlyViewed = [...firebaseData.recentlyViewed, ...localData.recentlyViewed].slice(0, 10);
+        // Merge data with profiles collection (reading from profiles only now)
+        const mergedWishlist = [...new Set([...(firebaseData.wishlist || []), ...localData.wishlist])];
+        const mergedSearchHistory = [...(firebaseData.searchHistory || []), ...localData.searchHistory].slice(0, 10);
+        const mergedRecentlyViewed = [...(firebaseData.recentlyViewed || []), ...localData.recentlyViewed].slice(0, 10);
         
-        await updateDoc(docRef, {
+        // Build update object - only include fields that have values (avoid undefined)
+        const updateData: any = {
           wishlist: mergedWishlist,
           searchHistory: mergedSearchHistory,
           recentlyViewed: mergedRecentlyViewed,
-          // Keep Firebase theme preferences (they are synced across devices)
-          theme: firebaseData.theme,
-          colorTheme: firebaseData.colorTheme,
-          language: firebaseData.language,
-          fontSize: firebaseData.fontSize,
-          lastUpdated: Timestamp.now()
-        });
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Only add theme/language/fontSize if they exist in Firebase data
+        if (firebaseData.theme) updateData.theme = firebaseData.theme;
+        if (firebaseData.colorTheme) updateData.colorTheme = firebaseData.colorTheme;
+        if (firebaseData.language) updateData.language = firebaseData.language;
+        if (firebaseData.fontSize) updateData.fontSize = firebaseData.fontSize;
+        
+        await updateDoc(docRef, updateData);
       } else {
-        // First time user - save local data to Firebase
-        const defaultPreferences: UserPreferences = {
+        // First time user - save local data to profiles collection
+        const defaultPreferences = {
           searchHistory: localData.searchHistory,
           recentlyViewed: localData.recentlyViewed,
           theme: localData.theme,
@@ -239,10 +267,10 @@ class UserPreferencesService {
           language: localData.language,
           fontSize: localData.fontSize,
           wishlist: localData.wishlist,
-          lastUpdated: Timestamp.now()
+          updatedAt: new Date().toISOString()
         };
         
-        await setDoc(docRef, defaultPreferences);
+        await setDoc(docRef, defaultPreferences, { merge: true });
       }
     } catch (error) {
       console.error('Error syncing local to Firebase:', error);
@@ -265,7 +293,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         wishlist: arrayUnion(internshipId),
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error adding to wishlist:', error);
@@ -279,7 +307,7 @@ class UserPreferencesService {
       
       await updateDoc(docRef, {
         wishlist: arrayRemove(internshipId),
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error removing from wishlist:', error);
@@ -294,7 +322,7 @@ class UserPreferencesService {
       await updateDoc(docRef, {
         lastLoginTheme: theme,
         lastLoginColorTheme: colorTheme,
-        lastUpdated: Timestamp.now()
+        updatedAt: new Date().toISOString()
       });
     } catch (error) {
       console.error('Error updating last login theme:', error);

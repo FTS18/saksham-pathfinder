@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme Cleanup Tool</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .info-box {
+      background: #f0f4ff;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .status {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    .status.loading {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #b8daff;
+      display: block;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .steps {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 6px;
+      margin-top: 25px;
+    }
+    .steps h3 {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .steps ol {
+      margin-left: 20px;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+    }
+    .steps li {
+      margin-bottom: 8px;
+    }
+    .error-details {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Theme Cleanup Tool</h1>
+    <p class="subtitle">Fix corrupted theme preferences in Firestore</p>
+
+    <div class="info-box">
+      ℹ️ Your Firestore has corrupted theme values stored. This tool will reset them to defaults so your theme preferences work correctly.
+    </div>
+
+    <div id="status"></div>
+
+    <button id="cleanupBtn" onclick="startCleanup()">
+      🚀 Clean Up Themes Now
+    </button>
+
+    <div class="steps">
+      <h3>What this does:</h3>
+      <ol>
+        <li>Resets all corrupted theme values to defaults (dark, blue)</li>
+        <li>Clears corrupted localStorage data</li>
+        <li>Reloads the page to apply changes</li>
+        <li>You can then set your preferred theme normally</li>
+      </ol>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { getFirestore, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    // Initialize Firebase (uses environment variables from app)
+    let db, auth;
+
+    window.startCleanup = async function() {
+      const statusDiv = document.getElementById('status');
+      const btn = document.getElementById('cleanupBtn');
+
+      try {
+        // Try to get Firebase from the app context
+        const firebaseApp = window.__firebaseApp;
+        if (!firebaseApp) {
+          throw new Error('Firebase not initialized. Please reload this page.');
+        }
+
+        db = getFirestore(firebaseApp);
+        auth = getAuth(firebaseApp);
+
+        if (!auth.currentUser) {
+          statusDiv.innerHTML = '❌ Not logged in. Please log in to the app first.';
+          statusDiv.className = 'status error';
+          return;
+        }
+
+        btn.disabled = true;
+        statusDiv.innerHTML = '⏳ Cleaning up corrupted themes...';
+        statusDiv.className = 'status loading';
+
+        const userId = auth.currentUser.uid;
+        console.log('🔍 Cleaning up for user:', userId);
+
+        // Reset userPreferences
+        try {
+          await updateDoc(doc(db, 'userPreferences', userId), {
+            theme: 'dark',
+            colorTheme: 'blue'
+          });
+          console.log('✅ Fixed userPreferences');
+        } catch (e) {
+          console.warn('⚠️  userPreferences not found (may not exist yet)');
+        }
+
+        // Reset profile
+        try {
+          await updateDoc(doc(db, 'profiles', userId), {
+            theme: 'dark',
+            colorTheme: 'blue'
+          });
+          console.log('✅ Fixed profile');
+        } catch (e) {
+          console.warn('⚠️  profiles not found (may not exist yet)');
+        }
+
+        // Clear localStorage
+        localStorage.removeItem('theme');
+        localStorage.removeItem('colorTheme');
+        console.log('✅ Cleared localStorage');
+
+        statusDiv.innerHTML = '✅ Cleanup successful! Reloading page in 2 seconds...';
+        statusDiv.className = 'status success';
+
+        setTimeout(() => window.location.reload(), 2000);
+
+      } catch (error) {
+        console.error('Error:', error);
+        statusDiv.innerHTML = `❌ Error: ${error.message}<div class="error-details">${error.stack}</div>`;
+        statusDiv.className = 'status error';
+        btn.disabled = false;
+      }
+    };
+
+    // Make Firebase available globally when the main app loads
+    window.addEventListener('firebaseReady', () => {
+      console.log('Firebase is ready');
+    });
+  </script>
+</body>
+</html>

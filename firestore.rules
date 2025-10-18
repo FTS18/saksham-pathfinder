@@ -1,6 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -11,7 +12,7 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-        (request.auth.token.email == 'admin@gmail.com' || 
+        (request.auth.token.email == 'spacify1807@gmail.com' || 
          exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
     
@@ -20,49 +21,174 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/recruiters/$(request.auth.uid));
     }
     
+    // Helper function for user-owned collections
+    function isUserOwnerOrAdmin(userId) {
+      return isOwner(userId) || isAdmin();
+    }
+    
     match /profiles/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
+      allow read: if isOwner(userId) || isAdmin() || resource.data.isPublic == true;
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isUserOwnerOrAdmin(userId);
       match /{document=**} {
-        allow delete: if isOwner(userId) || isAdmin();
+        allow read, write, delete: if isUserOwnerOrAdmin(userId);
       }
     }
     
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
+      allow read: if isUserOwnerOrAdmin(userId);
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow delete: if isUserOwnerOrAdmin(userId);
       match /{document=**} {
-        allow read, write: if isOwner(userId) || isAdmin();
-        allow delete: if isOwner(userId) || isAdmin();
+        allow read, write, delete: if isUserOwnerOrAdmin(userId);
       }
     }
     
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow write: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // User-owned preference collections (consolidated pattern)
     match /gamification/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+      allow read, write: if isUserOwnerOrAdmin(userId);
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow delete: if isUserOwnerOrAdmin(userId);
     }
     
+    match /analytics/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /timeTracking/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /wishlists/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /userPreferences/{userId} {
+      allow read, write, delete: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+    }
+    
+    match /savedSearches/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /userSessions/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /searchHistory/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /comparisons/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /onboardingProgress/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /skillRecommendations/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /resumes/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /activityLogs/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /cache/{userId} {
+      allow read, write, delete: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+    }
+    
+    match /profilePhotos/{userId} {
+      allow read: if true;
+      allow write, create: if isOwner(userId);
+      allow delete: if isUserOwnerOrAdmin(userId);
+      match /{photoId} {
+        allow read: if true;
+        allow write, create, delete: if isUserOwnerOrAdmin(userId);
+      }
+    }
+    
+    // Recruiter collection
     match /recruiters/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
+      allow read: if isUserOwnerOrAdmin(userId);
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+      allow delete: if isUserOwnerOrAdmin(userId);
     }
     
+    // Public/shared content
     match /internships/{internshipId} {
       allow read: if true;
       allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.createdBy == request.auth.uid || 
-         resource.data.recruiterId == request.auth.uid || 
-         isAdmin());
+      allow update: if isAdmin() || (isAuthenticated() && 
+        (resource.data.get('createdBy') == request.auth.uid || 
+         resource.data.get('recruiterId') == request.auth.uid));
+      allow delete: if isAdmin() || (isAuthenticated() && 
+        (resource.data.get('createdBy') == request.auth.uid || 
+         resource.data.get('recruiterId') == request.auth.uid));
     }
     
+    match /companies/{companyId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    // Multi-party collections
     match /applications/{applicationId} {
       allow read: if isAuthenticated() && 
         (request.auth.uid == resource.data.userId || 
@@ -86,141 +212,12 @@ service cloud.firestore {
         request.auth.uid == resource.data.userId;
     }
     
-    match /analytics/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /companies/{companyId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.createdBy == request.auth.uid || isAdmin());
-    }
-    
-    match /reviews/{reviewId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
-    }
-    
-    match /timeTracking/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /wishlists/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /userPreferences/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
     match /chats/{chatId} {
       allow read: if isAuthenticated() && 
         (request.auth.uid in resource.data.participants || isAdmin());
       allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated() && 
         (request.auth.uid in resource.data.participants || isAdmin());
-    }
-    
-    match /jobs/{jobId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.createdBy == request.auth.uid || isAdmin());
-    }
-    
-    match /savedSearches/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /userSessions/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /feedback/{ticketId} {
-      allow read: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
-      allow delete: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
-    }
-    
-    match /systemSettings/{document} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-    
-    match /reports/{document} {
-      allow read, write: if isAdmin();
-    }
-    
-    match /admins/{userId} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-    
-    match /emailQueue/{emailId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated();
-    }
-    
-    match /searchHistory/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /comparisons/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /onboardingProgress/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /profilePhotos/{userId} {
-      allow read: if true;
-      allow write: if isOwner(userId);
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /applicationStats/{statId} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-    
-    match /skillRecommendations/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /resumes/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
     }
     
     match /interviews/{interviewId} {
@@ -242,16 +239,44 @@ service cloud.firestore {
         (request.auth.uid == resource.data.referrerId || isAdmin());
     }
     
-    match /activityLogs/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+    match /feedback/{ticketId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
     }
     
-    match /cache/{userId} {
-      allow read, write: if isOwner(userId) || isAdmin();
+    // Admin collections
+    match /systemSettings/{document} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /reports/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /admins/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /emailQueue/{emailId} {
+      allow read: if isAdmin();
       allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
+    }
+    
+    match /applicationStats/{statId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Default deny all unmatched collections (security best practice)
+    match /{document=**} {
+      allow read, write, delete: if false;
     }
   }
 }

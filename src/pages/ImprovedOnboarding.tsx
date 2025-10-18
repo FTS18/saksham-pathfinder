@@ -5,16 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, MapPin, Briefcase, GraduationCap, CheckCircle, Upload, X, Loader2 } from 'lucide-react';
+import { User, MapPin, Briefcase, GraduationCap, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Confetti } from '@/components/Confetti';
 import { SearchableSelect } from '@/components/SearchableSelect';
+import { InitialsAvatar } from '@/components/InitialsAvatar';
 import OnboardingService from '@/services/onboardingService';
 import LocationService from '@/services/locationService';
 import { Progress } from '@/components/ui/progress';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
 
 const ImprovedOnboarding = () => {
   const { currentUser } = useAuth();
@@ -29,9 +28,6 @@ const ImprovedOnboarding = () => {
   const [states, setStates] = useState<any[]>([]);
   const [currentCities, setCurrentCities] = useState<any[]>([]);
   const [desiredCities, setDesiredCities] = useState<any[]>([]);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string>('');
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [formData, setFormData] = useState({
     username: '',
@@ -58,7 +54,6 @@ const ImprovedOnboarding = () => {
       try {
         const parsed = JSON.parse(draft);
         setFormData(parsed);
-        if (parsed.photoURL) setPhotoPreview(parsed.photoURL);
       } catch (e) {
         console.warn('Failed to restore draft');
       }
@@ -178,37 +173,6 @@ const ImprovedOnboarding = () => {
     return Array.from(allSkills);
   };
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: 'Error', description: 'Image must be less than 5MB', variant: 'destructive' });
-      return;
-    }
-
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
-  };
-
-  const uploadPhoto = async (): Promise<string> => {
-    if (!photoFile || !currentUser) return '';
-
-    setUploadingPhoto(true);
-    try {
-      const storageRef = ref(storage, `profile-photos/${currentUser.uid}/${Date.now()}_${photoFile.name}`);
-      await uploadBytes(storageRef, photoFile);
-      const url = await getDownloadURL(storageRef);
-      return url;
-    } catch (error) {
-      console.error('Photo upload failed:', error);
-      toast({ title: 'Warning', description: 'Photo upload failed, continuing without photo', variant: 'default' });
-      return '';
-    } finally {
-      setUploadingPhoto(false);
-    }
-  };
-
   const handleNext = () => {
     if (currentStep === 1 && !formData.username.trim()) {
       setFormData(prev => ({ ...prev, username: generateUsername() }));
@@ -224,16 +188,17 @@ const ImprovedOnboarding = () => {
     
     setSaving(true);
     try {
-      // Upload photo if exists
-      let photoURL = formData.photoURL;
-      if (photoFile) {
-        photoURL = await uploadPhoto();
-      }
+      // Generate initials for avatar
+      const initials = formData.username
+        .split(' ')
+        .map(n => n[0]?.toUpperCase())
+        .join('')
+        .slice(0, 2) || formData.username.slice(0, 2).toUpperCase();
 
       // Ensure required fields have defaults
       const completeFormData = {
         ...formData,
-        photoURL,
+        photoURL: `initials:${initials}`, // Special marker for initials avatar
         username: formData.username || generateUsername(),
         experience: { hasExperience: false, projects: [] }
       };
@@ -321,39 +286,17 @@ const ImprovedOnboarding = () => {
               </div>
 
               <div>
-                <Label>Profile Photo (Optional)</Label>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
-                  {photoPreview ? (
-                    <div className="relative">
-                      <img src={photoPreview} alt="Preview" className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover" />
-                      <button
-                        onClick={() => {
-                          setPhotoFile(null);
-                          setPhotoPreview('');
-                          setFormData(prev => ({ ...prev, photoURL: '' }));
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-muted flex items-center justify-center">
-                      <Upload className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground" />
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                    id="photo-upload"
+                <Label>Avatar Preview</Label>
+                <div className="flex items-center gap-4 mt-4">
+                  <InitialsAvatar 
+                    name={formData.username || 'User'} 
+                    size="lg"
+                    seed={formData.username}
                   />
-                  <label htmlFor="photo-upload">
-                    <Button type="button" variant="outline" size="sm" asChild>
-                      <span>Choose Photo</span>
-                    </Button>
-                  </label>
+                  <div className="text-sm text-muted-foreground">
+                    <p className="font-medium">{formData.username || 'Your Username'}</p>
+                    <p className="text-xs">Your profile avatar will display your initials with a unique color theme</p>
+                  </div>
                 </div>
               </div>
 
@@ -686,10 +629,10 @@ const ImprovedOnboarding = () => {
               ) : (
                 <Button 
                   onClick={handleComplete} 
-                  disabled={saving || uploadingPhoto || !canProceed()} 
+                  disabled={saving || !canProceed()} 
                   className="w-full sm:flex-1"
                 >
-                  {saving || uploadingPhoto ? (
+                  {saving ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Setting up...

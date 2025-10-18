@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ApplicationService, Application } from '@/services/applicationService';
 import { NotificationService } from '@/services/notificationService';
 import { useAuth } from './AuthContext';
-import { useToast } from '@/hooks/use-toast';
 
 interface ApplicationContextType {
   applications: Application[];
@@ -19,7 +18,6 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
-  const { toast } = useToast();
 
   const refreshApplications = async () => {
     if (!currentUser) return;
@@ -37,21 +35,13 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const applyToInternship = async (internship: any) => {
     if (!currentUser) {
-      toast({
-        title: "Login Required",
-        description: "Please login to apply for internships.",
-        variant: "destructive",
-      });
+      console.warn("Login required to apply");
       return;
     }
 
     // Check if already applied
     if (hasApplied(internship.id)) {
-      toast({
-        title: "Already Applied",
-        description: "You have already applied to this internship.",
-        variant: "destructive",
-      });
+      console.warn("Already applied to this internship");
       return;
     }
 
@@ -86,19 +76,11 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         data: { internshipId: internship.id, applicationId, companyName: internship.company }
       });
 
-      toast({
-        title: "✅ Application Submitted!",
-        description: `Successfully applied to ${internship.title} at ${internship.company}`,
-      });
+      console.log('✅ Application Submitted!', `Successfully applied to ${internship.title} at ${internship.company}`);
 
       await refreshApplications();
     } catch (error) {
       console.error('Application error:', error);
-      toast({
-        title: "❌ Application Failed",
-        description: "Failed to submit application. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
@@ -109,18 +91,11 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setLoading(true);
       await ApplicationService.withdrawApplication(applicationId);
       
-      toast({
-        title: "Application Withdrawn",
-        description: "Your application has been withdrawn successfully.",
-      });
+      console.log("✅ Application Withdrawn", "Your application has been withdrawn successfully.");
 
       await refreshApplications();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to withdraw application. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Failed to withdraw application", error);
     } finally {
       setLoading(false);
     }
