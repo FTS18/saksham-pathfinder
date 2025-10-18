@@ -26,6 +26,7 @@ import { cache, CACHE_KEYS } from '@/lib/cache';
 import { sanitizeInternshipData } from '@/lib/sanitize';
 import { saveFilters, loadFilters } from '@/lib/filterPersistence';
 import { SmartFilterService } from '@/services/smartFilterService';
+import { fetchInternships } from '@/lib/dataExtractor';
 import type { Internship, ProfileData, FilterState } from '@/types';
 
 
@@ -465,20 +466,7 @@ const Index = () => {
   useEffect(() => {
     const loadInternships = async () => {
       try {
-        // Try Firebase first
-        try {
-          const { getAllInternships } = await import('@/services/internshipService');
-          const data = await getAllInternships();
-          setAllInternships(data);
-          return;
-        } catch (firebaseError) {
-          console.warn('Firebase internships unavailable, falling back to JSON:', firebaseError);
-        }
-
-        // Fallback to JSON file
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
+        const data = await fetchInternships();
         setAllInternships(sanitizeInternshipData(data));
       } catch (error) {
         console.error('Failed to load internships:', error);

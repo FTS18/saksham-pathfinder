@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllInternships } from "@/services/internshipService";
+import { fetchInternships } from "@/lib/dataExtractor";
 
 /**
  * Hook to fetch internships from Firebase or fallback to JSON
@@ -15,25 +15,7 @@ export const useInternshipsFirebase = () => {
       setError(null);
 
       try {
-        // Try Firebase first
-        try {
-          const data = await getAllInternships();
-          setInternships(Array.isArray(data) ? data : []);
-          setLoading(false);
-          return;
-        } catch (firebaseError) {
-          console.warn(
-            "Firebase internships unavailable, falling back to JSON:",
-            firebaseError
-          );
-        }
-
-        // Fallback to JSON file
-        const response = await fetch("/internships.json");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
+        const data = await fetchInternships();
         setInternships(Array.isArray(data) ? data : []);
       } catch (err) {
         const error =
