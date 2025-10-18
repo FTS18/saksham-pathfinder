@@ -1,5 +1,5 @@
 // Helper function to fetch internships from Firebase or JSON fallback
-const fetchInternships = async (): Promise<any[]> => {
+export const fetchInternships = async (): Promise<any[]> => {
   try {
     // Try Firebase first
     try {

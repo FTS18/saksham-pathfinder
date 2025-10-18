@@ -96,45 +96,64 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
   });
   const [isMobile, setIsMobile] = useState(false);
   
-  // Load real data from internships.json
+  // Load real data from Firebase or JSON fallback
   useEffect(() => {
     const loadData = async () => {
       try {
+        let internships: any[] = [];
+        
+        // Try Firebase first
+        try {
+          const { getAllInternships } = await import('@/services/internshipService');
+          internships = await getAllInternships();
+          if (Array.isArray(internships) && internships.length > 0) {
+            // Successfully loaded from Firebase, process the data
+            processinternships(internships);
+            return;
+          }
+        } catch (firebaseError) {
+          console.warn('Firebase unavailable, falling back to JSON:', firebaseError);
+        }
+
+        // Fallback to JSON file
         const response = await fetch('/internships.json');
         if (!response.ok) throw new Error('Failed to fetch internships');
-        
-        const internships = await response.json();
-        
-        const sectorsSet = new Set<string>();
-        const sectorSkillsMap: Record<string, Set<string>> = {};
-        
-        internships.forEach((internship: any) => {
-          const sectors = internship.sector_tags || [];
-          const skills = internship.required_skills || [];
-          
-          sectors.forEach((sector: string) => {
-            sectorsSet.add(sector);
-            if (!sectorSkillsMap[sector]) sectorSkillsMap[sector] = new Set();
-            skills.forEach((skill: string) => {
-              sectorSkillsMap[sector].add(skill);
-            });
-          });
-        });
-        
-        setSectors(Array.from(sectorsSet).sort());
-        
-        const finalSectorSkills: Record<string, string[]> = {};
-        Object.keys(sectorSkillsMap).forEach(sector => {
-          finalSectorSkills[sector] = Array.from(sectorSkillsMap[sector]).sort();
-        });
-        setSkillsBySector(finalSectorSkills);
+        internships = await response.json();
+        processinternships(internships);
       } catch (error) {
         console.error('Failed to load data:', error);
-        // Fallback to empty arrays
+        // Fallback to empty arrays on complete failure
         setSectors([]);
         setSkillsBySector({});
       }
     };
+
+    const processinternships = (internships: any[]) => {
+      const sectorsSet = new Set<string>();
+      const sectorSkillsMap: Record<string, Set<string>> = {};
+      
+      internships.forEach((internship: any) => {
+        const sectors = internship.sector_tags || [];
+        const skills = internship.required_skills || [];
+        
+        sectors.forEach((sector: string) => {
+          sectorsSet.add(sector);
+          if (!sectorSkillsMap[sector]) sectorSkillsMap[sector] = new Set();
+          skills.forEach((skill: string) => {
+            sectorSkillsMap[sector].add(skill);
+          });
+        });
+      });
+      
+      setSectors(Array.from(sectorsSet).sort());
+      
+      const finalSectorSkills: Record<string, string[]> = {};
+      Object.keys(sectorSkillsMap).forEach(sector => {
+        finalSectorSkills[sector] = Array.from(sectorSkillsMap[sector]).sort();
+      });
+      setSkillsBySector(finalSectorSkills);
+    };
+
     loadData();
   }, []);
 

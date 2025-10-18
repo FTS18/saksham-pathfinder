@@ -6,6 +6,7 @@ import { SkeletonCard } from '@/components/SkeletonLoaders';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Briefcase, AlertCircle } from 'lucide-react';
 import { FirestoreService } from '@/services/firestoreService';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 export const SectorPage = () => {
   const { sector } = useParams<{ sector: string }>();
@@ -22,9 +23,7 @@ export const SectorPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
+        const data = await fetchInternships();
         
         const allData = Array.isArray(data) ? data : [];
         

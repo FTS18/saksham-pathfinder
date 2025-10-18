@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, Building, MapPin, Briefcase, Code, Target } from 'lucide-react';
 import { cache, CACHE_KEYS } from '@/lib/cache';
 import { useTheme } from '@/contexts/ThemeContext';
+import { fetchInternships } from '@/lib/dataExtractor';
 
 interface SearchSuggestionsProps {
   query: string;
@@ -34,40 +35,13 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Try Firebase first
-        try {
-          const { getAllInternships } = await import('@/services/internshipService');
-          const data = await getAllInternships();
-          setInternshipsData(Array.isArray(data) ? data : []);
-          return;
-        } catch (firebaseError) {
-          console.warn('Firebase internships unavailable, falling back to JSON:', firebaseError);
-        }
-
-        // Fallback to cache + JSON
-        const data = await cache.fetchWithCache(
-          CACHE_KEYS.INTERNSHIPS,
-          async () => {
-            const response = await fetch('/internships.json');
-            if (!response.ok) throw new Error('Failed to fetch');
-            return response.json();
-          },
-          5 * 60 * 1000
-        );
+        const data = await fetchInternships();
         setInternshipsData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.warn('Failed to load internships for suggestions:', error);
-        // Try direct fetch as fallback
-        try {
-          const response = await fetch('/internships.json');
-          if (response.ok) {
-            const data = await response.json();
-            setInternshipsData(Array.isArray(data) ? data : []);
-          }
-        } catch (fallbackError) {
-          console.error('Fallback fetch also failed:', fallbackError);
-        }
+        setInternshipsData([]);
       }
+
     };
     loadData();
   }, []);
