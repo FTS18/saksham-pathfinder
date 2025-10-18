@@ -58,6 +58,7 @@ import CompanyPage from "./pages/CompanyPage";
 import { SkillPage } from "./pages/SkillPage";
 import { SectorPage } from "./pages/SectorPage";
 import { CityPage } from "./pages/CityPage";
+import { SharedComparisonPage } from "./pages/SharedComparisonPage";
 import { TitlePage } from "./pages/TitlePage";
 import { SearchPage } from "./pages/SearchPage";
 import StudentDashboard from "./pages/StudentDashboard";
@@ -172,6 +173,7 @@ const AppContent = () => {
           <Route path="/city/:city" element={<Layout><CityPage /></Layout>} />
           <Route path="/title/:title" element={<Layout><TitlePage /></Layout>} />
           <Route path="/search" element={<Layout><SearchPage /></Layout>} />
+          <Route path="/shared-comparison" element={<Layout><SharedComparisonPage /></Layout>} />
           <Route path="/admin-demo" element={<Layout><AdminDemo /></Layout>} />
           
           {/* Protected Routes */}
