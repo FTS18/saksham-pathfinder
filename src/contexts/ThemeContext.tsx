@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useSafeAuth } from '@/hooks/useSafeAuth';
 import UserPreferencesService from '@/services/userPreferencesService';
+import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 type Theme = 'light' | 'dark';
 type ColorTheme = 'blue' | 'grey' | 'red' | 'yellow' | 'green';
@@ -44,14 +46,26 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const { user } = useSafeAuth();
+  const { currentUser: user } = useSafeAuth();
   
-  // Get initial values from localStorage
-  const getInitialTheme = (): Theme => localStorage.getItem('theme') as Theme || 'dark';
-  const getInitialColorTheme = (): ColorTheme => localStorage.getItem('colorTheme') as ColorTheme || 'blue';
+  // Get initial values from localStorage with validation
+  const getInitialTheme = (): Theme => {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+    localStorage.removeItem('theme');
+    return 'dark';
+  };
   
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
-  const [colorTheme, setColorThemeState] = useState<ColorTheme>(getInitialColorTheme);
+  const getInitialColorTheme = (): ColorTheme => {
+    const validColors: ColorTheme[] = ['blue', 'grey', 'red', 'yellow', 'green'];
+    const saved = localStorage.getItem('colorTheme') as ColorTheme;
+    if (saved && validColors.includes(saved)) return saved;
+    localStorage.removeItem('colorTheme');
+    return 'blue';
+  };
+  
+  const [theme, setThemeState] = useState<Theme>(() => getInitialTheme());
+  const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => getInitialColorTheme());
   const [language, setLanguage] = useState<Language>(() => 
     (localStorage.getItem('language') as Language) || 'en'
   );
@@ -59,6 +73,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     parseInt(localStorage.getItem('fontSize') || '16')
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const [pendingSaveTheme, setPendingSaveTheme] = useState<Theme | null>(null);
+  const [pendingSaveColor, setPendingSaveColor] = useState<ColorTheme | null>(null);
 
   // Apply themes to DOM
   const applyThemeToDOM = (newTheme: Theme, newColorTheme: ColorTheme) => {
@@ -71,21 +88,24 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     root.classList.add(newColorTheme);
   };
 
-  // Initialize theme on mount and sync with Firebase when user loads
+  // Initialize theme on mount from localStorage
   useEffect(() => {
     const savedTheme = getInitialTheme();
     const savedColorTheme = getInitialColorTheme();
     applyThemeToDOM(savedTheme, savedColorTheme);
     setThemeState(savedTheme);
     setColorThemeState(savedColorTheme);
+    setHasInitialized(true);
   }, []);
 
-  // Load Firebase preferences when user changes
+  // Load Firebase preferences when user changes (after localStorage is set)
   useEffect(() => {
-    if (user) {
+    if (user && hasInitialized) {
       loadUserThemePreferences();
+      // Also clean up any corrupted data
+      cleanupCorruptedThemeData();
     }
-  }, [user]);
+  }, [user, hasInitialized]);
 
   // Ensure theme persists on state changes
   useEffect(() => {
@@ -95,22 +115,40 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const loadUserThemePreferences = async () => {
     if (!user) return;
     try {
-      const { doc, getDoc } = await import('firebase/firestore');
-      const { db } = await import('@/lib/firebase');
       const docRef = doc(db, 'profiles', user.uid);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
         const profile = docSnap.data();
-        if (profile?.theme && profile.theme !== theme) {
-          const newTheme = profile.theme as Theme;
+        let themeUpdated = false;
+        let colorUpdated = false;
+        
+        // Validate theme before using it
+        const validThemes: Theme[] = ['light', 'dark'];
+        const validColors: ColorTheme[] = ['blue', 'grey', 'red', 'yellow', 'green'];
+        
+        // Aggressively clean values - remove all whitespace/newlines
+        const trimmedTheme = profile?.theme ? String(profile.theme).replace(/[\s\n\r\t]/g, '') : '';
+        const trimmedColor = profile?.colorTheme ? String(profile.colorTheme).replace(/[\s\n\r\t]/g, '') : '';
+        
+        if (trimmedTheme && validThemes.includes(trimmedTheme as Theme) && trimmedTheme !== theme) {
+          const newTheme = trimmedTheme as Theme;
           setThemeState(newTheme);
           localStorage.setItem('theme', newTheme);
+          themeUpdated = true;
         }
-        if (profile?.colorTheme && profile.colorTheme !== colorTheme) {
-          const newColorTheme = profile.colorTheme as ColorTheme;
+        if (trimmedColor && validColors.includes(trimmedColor as ColorTheme) && trimmedColor !== colorTheme) {
+          const newColorTheme = trimmedColor as ColorTheme;
           setColorThemeState(newColorTheme);
           localStorage.setItem('colorTheme', newColorTheme);
+          colorUpdated = true;
+        }
+        
+        // Apply immediately to DOM if changes detected
+        if (themeUpdated || colorUpdated) {
+          const finalTheme = (validThemes.includes(trimmedTheme as Theme) ? trimmedTheme : theme) as Theme;
+          const finalColor = (validColors.includes(trimmedColor as ColorTheme) ? trimmedColor : colorTheme) as ColorTheme;
+          applyThemeToDOM(finalTheme, finalColor);
         }
       }
     } catch (error) {
@@ -119,37 +157,108 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     }
   };
 
+  // Auto-cleanup corrupted theme data from Firestore
+  const cleanupCorruptedThemeData = async () => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'profiles', user.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const profile = docSnap.data();
+        const validThemes = ['light', 'dark'];
+        const validColors = ['blue', 'grey', 'red', 'yellow', 'green'];
+        
+        // Check if theme or colorTheme are corrupted (not in valid list)
+        const themeCorrupted = profile?.theme && !validThemes.includes(profile.theme);
+        const colorCorrupted = profile?.colorTheme && !validColors.includes(profile.colorTheme);
+        
+        if (themeCorrupted || colorCorrupted) {
+          // Fix corrupted data
+          const updates: any = {};
+          if (themeCorrupted) updates.theme = 'dark';
+          if (colorCorrupted) updates.colorTheme = 'blue';
+          
+          await updateDoc(docRef, updates);
+        }
+      }
+    } catch (error) {
+      // Silently fail on cleanup
+    }
+  };
+
   // Theme setters that update both state and DOM
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
+    setPendingSaveTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     applyThemeToDOM(newTheme, colorTheme);
     
-    // Save to profile document immediately
+    // Save to profile document immediately if user is authenticated
     if (user) {
-      saveThemeToProfile(user.uid, newTheme, colorTheme).catch(console.error);
+      saveThemeToProfile(user.uid, newTheme, colorTheme).then(() => {
+        setPendingSaveTheme(null);
+      }).catch(error => {
+        console.error('❌ Failed to save theme to Firestore:', error);
+        // Pending save will retry when user loads
+      });
     }
   };
 
   const setColorTheme = (newColorTheme: ColorTheme) => {
     setColorThemeState(newColorTheme);
+    setPendingSaveColor(newColorTheme);
     localStorage.setItem('colorTheme', newColorTheme);
     applyThemeToDOM(theme, newColorTheme);
     
-    // Save to profile document immediately
+    // Save to profile document immediately if user is authenticated
     if (user) {
-      saveThemeToProfile(user.uid, theme, newColorTheme).catch(console.error);
+      saveThemeToProfile(user.uid, theme, newColorTheme).then(() => {
+        setPendingSaveColor(null);
+      }).catch(error => {
+        console.error('❌ Failed to save color theme to Firestore:', error);
+        // Pending save will retry when user loads
+      });
     }
   };
 
   const saveThemeToProfile = async (userId: string, theme: Theme, colorTheme: ColorTheme) => {
     try {
-      const { doc, updateDoc } = await import('firebase/firestore');
-      const { db } = await import('@/lib/firebase');
-      const docRef = doc(db, 'profiles', userId);
-      await updateDoc(docRef, { theme, colorTheme });
+      // Validate before saving
+      const validThemes = ['light', 'dark'];
+      const validColors = ['blue', 'grey', 'red', 'yellow', 'green'];
+      
+      const validatedTheme = validThemes.includes(theme) ? theme : 'dark';
+      const validatedColor = validColors.includes(colorTheme) ? colorTheme : 'blue';
+      
+      // Save to profiles collection (single source of truth)
+      const profileRef = doc(db, 'profiles', userId);
+      
+      // Check if document exists
+      const docSnap = await getDoc(profileRef);
+      
+      if (docSnap.exists()) {
+        // Document exists, update it
+        await updateDoc(profileRef, { 
+          theme: validatedTheme, 
+          colorTheme: validatedColor,
+          updatedAt: new Date().toISOString()
+        });
+      } else {
+        // Document doesn't exist, create it with merge
+        await setDoc(profileRef, { 
+          theme: validatedTheme, 
+          colorTheme: validatedColor,
+          updatedAt: new Date().toISOString()
+        }, { merge: true });
+      }
+      
+      // Ensure localStorage is in sync
+      localStorage.setItem('theme', validatedTheme);
+      localStorage.setItem('colorTheme', validatedColor);
     } catch (error) {
-      console.error('Error saving theme to profile:', error);
+      console.error('❌ Error in saveThemeToProfile:', error);
+      throw error; // Re-throw so caller can handle
     }
   };
 
@@ -168,6 +277,29 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     }
   }, [language, user]);
 
+  // Sync theme to Firestore when user becomes available
+  useEffect(() => {
+    if (!user) return;
+    
+    // If there are pending saves (user wasn't available earlier), retry them
+    if (pendingSaveTheme !== null || pendingSaveColor !== null) {
+      const saveThemeVal = pendingSaveTheme !== null ? pendingSaveTheme : theme;
+      const saveColorVal = pendingSaveColor !== null ? pendingSaveColor : colorTheme;
+      
+      saveThemeToProfile(user.uid, saveThemeVal, saveColorVal).then(() => {
+        setPendingSaveTheme(null);
+        setPendingSaveColor(null);
+      }).catch(error => {
+        console.error('Error retrying pending saves:', error);
+      });
+    } else if (theme && colorTheme) {
+      // No pending saves, just sync current values
+      saveThemeToProfile(user.uid, theme, colorTheme).catch(error => {
+        console.error('Error syncing theme after user loaded:', error);
+      });
+    }
+  }, [user]);
+
   useEffect(() => {
     // Save to localStorage immediately
     localStorage.setItem('fontSize', String(fontSize));
@@ -184,7 +316,8 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const toggleTheme = () => {
     setIsTransitioning(true);
     setTimeout(() => {
-      setTheme(prev => prev === 'light' ? 'dark' : 'light');
+      const newTheme: Theme = theme === 'light' ? 'dark' : 'light';
+      setTheme(newTheme);
       setTimeout(() => setIsTransitioning(false), 800);
     }, 400);
   };

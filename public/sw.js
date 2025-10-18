@@ -39,6 +39,7 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
+  // Don't cache non-GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
@@ -47,22 +48,40 @@ self.addEventListener('fetch', (event) => {
         return response;
       }
 
-      return fetch(event.request).then((fetchResponse) => {
-        if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+      return fetch(event.request)
+        .then((fetchResponse) => {
+          if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+            return fetchResponse;
+          }
+
+          const responseToCache = fetchResponse.clone();
+          caches.open(DYNAMIC_CACHE).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+
           return fetchResponse;
-        }
-
-        const responseToCache = fetchResponse.clone();
-        caches.open(DYNAMIC_CACHE).then((cache) => {
-          cache.put(event.request, responseToCache);
+        })
+        .catch((error) => {
+          console.log('Fetch failed for', event.request.url, error);
+          // Return offline page for navigation requests
+          if (event.request.mode === 'navigate') {
+            return caches.match('/').catch(() => {
+              // If even the homepage isn't cached, return a basic response
+              return new Response('Offline - Please check your connection', {
+                status: 503,
+                statusText: 'Service Unavailable',
+                headers: new Headers({ 'Content-Type': 'text/plain' })
+              });
+            });
+          }
+          // For other requests, just fail silently
+          throw error;
         });
-
-        return fetchResponse;
-      }).catch(() => {
-        // Return offline page for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/');
-        }
+    }).catch((error) => {
+      console.log('Cache operation failed:', error);
+      // Return original fetch as fallback
+      return fetch(event.request).catch(() => {
+        return new Response('Service Unavailable', { status: 503 });
       });
     })
   );

@@ -58,20 +58,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [needsEmailVerification, setNeedsEmailVerification] = useState(false);
 
   const login = async (email: string, password: string) => {
-    // Check for admin login
-    if (email === 'admin@gmail.com' && password === '123456') {
-      // Create a mock admin user
-      const adminUser = {
-        uid: 'admin-user',
-        email: 'admin@gmail.com',
-        displayName: 'Admin User',
-        emailVerified: true
-      } as User;
-      setCurrentUser(adminUser);
-      setUserType('recruiter');
-      return;
-    }
-    
     const result = await signInWithEmailAndPassword(auth, email, password);
     
     // Check if user exists in students collection
@@ -120,6 +106,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: user.email,
         displayName: name,
         userType,
+        // Theme and preferences - for students only
+        ...(userType === 'student' && {
+          theme: localStorage.getItem('theme') || 'dark',
+          colorTheme: localStorage.getItem('colorTheme') || 'blue',
+          language: localStorage.getItem('language') || 'en',
+          fontSize: parseInt(localStorage.getItem('fontSize') || '16'),
+          searchHistory: [],
+          recentlyViewed: [],
+          wishlist: []
+        }),
         createdAt: new Date().toISOString(),
         onboardingCompleted: false,
         emailVerified: false
@@ -150,6 +146,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           displayName: result.user.displayName,
           photoURL: result.user.photoURL,
           userType,
+          // Theme and preferences - for students only
+          ...(userType === 'student' && {
+            theme: localStorage.getItem('theme') || 'dark',
+            colorTheme: localStorage.getItem('colorTheme') || 'blue',
+            language: localStorage.getItem('language') || 'en',
+            fontSize: parseInt(localStorage.getItem('fontSize') || '16'),
+            searchHistory: [],
+            recentlyViewed: [],
+            wishlist: []
+          }),
           createdAt: new Date().toISOString(),
           onboardingCompleted: false,
           emailVerified: true // Google accounts are pre-verified
@@ -170,24 +176,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const loginAsRecruiter = async (email: string, password: string) => {
-    // Check for admin login
-    if (email === 'admin@gmail.com' && password === '123456') {
-      // Create a mock admin user
-      const adminUser = {
-        uid: 'admin-user',
-        email: 'admin@gmail.com',
-        displayName: 'Admin User',
-        emailVerified: true
-      } as User;
-      setCurrentUser(adminUser);
-      setUserType('recruiter');
-      return;
-    }
-    
     const result = await signInWithEmailAndPassword(auth, email, password);
     
-    // Check if user exists in recruiters collection
+    // Check if user is admin or exists in recruiters collection
     try {
+      // Allow admin account - check email directly
+      if (email === 'spacify1807@gmail.com') {
+        setUserType('recruiter');
+        // Admin doesn't need onboarding
+        setNeedsOnboarding(false);
+        localStorage.setItem('onboardingCompleted', 'true');
+        return;
+      }
+      
+      // Check recruiters collection
       const docRef = doc(db, 'recruiters', result.user.uid);
       const docSnap = await getDoc(docRef);
       
@@ -197,7 +199,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         throw new Error('Account not found in recruiter database. Please register as a recruiter first or login as a student.');
       }
       
-      setUserType('recruiter');
+      // User is a recruiter - check onboarding status
+      await checkOnboardingStatus(result.user, 'recruiter');
     } catch (error) {
       await signOut(auth);
       throw error;
@@ -275,33 +278,56 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      // Try both collections to determine user type
-      let docRef = doc(db, 'profiles', user.uid);
-      let docSnap = await getDoc(docRef);
-      let currentUserType: 'student' | 'recruiter' = 'student';
+      // Determine user type: check admin, then recruiters, then profiles
+      let currentUserType: 'student' | 'recruiter' = type || 'student';
       
-      if (!docSnap.exists()) {
-        docRef = doc(db, 'recruiters', user.uid);
-        docSnap = await getDoc(docRef);
+      // Check if admin
+      if (user.email === 'spacify1807@gmail.com') {
         currentUserType = 'recruiter';
+        setUserType('recruiter');
+        setNeedsOnboarding(false);
+        return;
       }
+      
+      // Try recruiters collection
+      let docRef = doc(db, 'recruiters', user.uid);
+      let docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        currentUserType = 'recruiter';
+        const data = docSnap.data();
+        const completed = data?.onboardingCompleted || false;
+        
+        setUserType('recruiter');
+        setNeedsOnboarding(!completed);
+        
+        if (completed) {
+          localStorage.setItem('onboardingCompleted', 'true');
+        }
+        return;
+      }
+      
+      // Try profiles collection (student)
+      docRef = doc(db, 'profiles', user.uid);
+      docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
         const data = docSnap.data();
-        currentUserType = data?.userType || currentUserType;
+        currentUserType = data?.userType || 'student';
         const completed = data?.onboardingCompleted || false;
         
         setUserType(currentUserType);
         setNeedsOnboarding(!completed);
         
-        // Update localStorage to match Firebase
         if (completed) {
           localStorage.setItem('onboardingCompleted', 'true');
         }
-      } else {
-        setUserType(type || 'student');
-        setNeedsOnboarding(true);
+        return;
       }
+      
+      // Default to student for new users
+      setUserType('student');
+      setNeedsOnboarding(true);
     } catch (error) {
       console.error('Error checking onboarding status:', error);
       setNeedsOnboarding(true);
@@ -310,28 +336,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        // Load all user data from Firebase (theme, wishlist, profile, etc.)
-        await DataSyncService.loadUserDataFromFirebase(user.uid);
-        
-        // Then sync any new local changes to Firebase
-        await DataSyncService.syncAllUserData(user.uid);
-        
-        // Check email verification first
-        if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
-          setNeedsEmailVerification(true);
-          setNeedsOnboarding(false);
+      try {
+        setCurrentUser(user);
+        if (user) {
+          // Load all user data from Firebase (theme, wishlist, profile, etc.)
+          await DataSyncService.loadUserDataFromFirebase(user.uid);
+          
+          // Then sync any new local changes to Firebase
+          await DataSyncService.syncAllUserData(user.uid);
+          
+          // Check email verification first
+          if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
+            setNeedsEmailVerification(true);
+            setNeedsOnboarding(false);
+          } else {
+            setNeedsEmailVerification(false);
+            await checkOnboardingStatus(user);
+          }
         } else {
+          setNeedsOnboarding(false);
           setNeedsEmailVerification(false);
-          await checkOnboardingStatus(user);
+          setUserType(null);
         }
-      } else {
+      } catch (error) {
+        console.error('Error in auth state change:', error);
         setNeedsOnboarding(false);
         setNeedsEmailVerification(false);
-        setUserType(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     // Listen for onboarding completion

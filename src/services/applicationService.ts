@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, doc, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, doc, query, where, getDocs, serverTimestamp, QueryConstraint } from 'firebase/firestore';
 
 export interface Application {
   id?: string;
@@ -88,6 +88,76 @@ export class ApplicationService {
 
   static async withdrawApplication(applicationId: string): Promise<void> {
     return this.updateApplicationStatus(applicationId, 'withdrawn');
+  }
+
+  static async getRecruiterApplications(recruiterId: string, internshipIds: string[]): Promise<Application[]> {
+    try {
+      if (internshipIds.length === 0) return [];
+      
+      // Firestore has a limit of 30 items for 'in' queries
+      // Chunk the internshipIds if needed
+      const chunks = [];
+      for (let i = 0; i < internshipIds.length; i += 30) {
+        chunks.push(internshipIds.slice(i, i + 30));
+      }
+      
+      let allApplications: Application[] = [];
+      
+      for (const chunk of chunks) {
+        // Query 1: Search by string IDs (new format)
+        try {
+          const q1 = query(
+            collection(db, this.COLLECTION),
+            where('internshipId', 'in', chunk)
+          );
+          const snapshot1 = await getDocs(q1);
+          const applications1 = snapshot1.docs.map(doc => ({ 
+            id: doc.id, 
+            ...doc.data(),
+            appliedAt: doc.data().appliedAt?.toDate(),
+            updatedAt: doc.data().updatedAt?.toDate()
+          } as Application));
+          allApplications = [...allApplications, ...applications1];
+        } catch (e) {
+          console.error('Error querying by string IDs:', e);
+        }
+        
+        // Query 2: Search by numeric IDs (legacy format from old DB)
+        // Convert internship IDs to numbers
+        const numericIds = chunk
+          .map(id => parseInt(id, 10))
+          .filter(num => !isNaN(num));
+        
+        if (numericIds.length > 0) {
+          try {
+            const q2 = query(
+              collection(db, this.COLLECTION),
+              where('internshipId', 'in', numericIds)
+            );
+            const snapshot2 = await getDocs(q2);
+            const applications2 = snapshot2.docs.map(doc => ({ 
+              id: doc.id, 
+              ...doc.data(),
+              appliedAt: doc.data().appliedAt?.toDate(),
+              updatedAt: doc.data().updatedAt?.toDate()
+            } as Application));
+            allApplications = [...allApplications, ...applications2];
+          } catch (e) {
+            console.error('Error querying by numeric IDs:', e);
+          }
+        }
+      }
+      
+      // Remove duplicates (same application might be found in both queries)
+      const uniqueApplications = Array.from(
+        new Map(allApplications.map(app => [app.id, app])).values()
+      );
+      
+      return uniqueApplications;
+    } catch (error) {
+      console.error('Error fetching recruiter applications:', error);
+      return [];
+    }
   }
 }
 

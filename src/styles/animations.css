@@ -95,3 +95,94 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Page fade-in animations */
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-fade-in {
+  animation: fadeInPage 0.4s ease-out;
+}
+
+/* Loading pulse animation */
+@keyframes loadingPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.loading-pulse {
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+/* Shimmer skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.dark .shimmer-skeleton {
+  background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Staggered animations for multiple elements */
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-fade-in {
+  animation: staggerFadeIn 0.5s ease-out forwards;
+}
+
+.stagger-fade-in:nth-child(1) { animation-delay: 0.05s; }
+.stagger-fade-in:nth-child(2) { animation-delay: 0.1s; }
+.stagger-fade-in:nth-child(3) { animation-delay: 0.15s; }
+.stagger-fade-in:nth-child(4) { animation-delay: 0.2s; }
+.stagger-fade-in:nth-child(5) { animation-delay: 0.25s; }
+.stagger-fade-in:nth-child(n+6) { animation-delay: 0.3s; }
+
+/* Smooth transitions for theme changes */
+@keyframes smoothBg {
+  from {
+    background-color: inherit;
+  }
+  to {
+    background-color: inherit;
+  }
+}
+
+html,
+body,
+main {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}

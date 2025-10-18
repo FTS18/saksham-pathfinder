@@ -1,0 +1,15 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3001",
+      "https://sakshamai.com",
+      "https://www.sakshamai.com"
+    ],
+    "method": ["GET", "HEAD", "DELETE", "PUT", "POST"],
+    "responseHeader": ["Content-Type", "x-goog-meta-*"],
+    "maxAgeSeconds": 3600
+  }
+]

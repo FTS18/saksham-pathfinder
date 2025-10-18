@@ -16,10 +16,8 @@ export const registerSW = async () => {
           });
         }
       });
-      
-      console.log('SW registered:', registration);
     } catch (error) {
-      console.log('SW registration failed:', error);
+      console.error('SW registration failed:', error);
     }
   }
 };

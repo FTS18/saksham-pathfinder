@@ -16,19 +16,37 @@ export const useSearchHistory = () => {
           // Sync localStorage to Firebase first
           await UserPreferencesService.syncLocalToFirebase(currentUser.uid);
           const preferences = await UserPreferencesService.getUserPreferences(currentUser.uid);
-          const historyQueries = preferences.searchHistory.map(item => item.query);
-          setSearchHistory(historyQueries);
+          if (preferences?.searchHistory && Array.isArray(preferences.searchHistory)) {
+            const historyQueries = preferences.searchHistory.map((item: any) => {
+              if (typeof item === 'string') return item;
+              if (typeof item === 'object' && item.query) return item.query;
+              return '';
+            }).filter(Boolean);
+            setSearchHistory(historyQueries);
+          } else {
+            setSearchHistory([]);
+          }
         } catch (error) {
           console.error('Error loading search history:', error);
           const saved = localStorage.getItem(SEARCH_HISTORY_KEY);
           if (saved) {
-            setSearchHistory(JSON.parse(saved));
+            try {
+              const parsed = JSON.parse(saved);
+              setSearchHistory(Array.isArray(parsed) ? parsed : []);
+            } catch {
+              setSearchHistory([]);
+            }
           }
         }
       } else {
         const saved = localStorage.getItem(SEARCH_HISTORY_KEY);
         if (saved) {
-          setSearchHistory(JSON.parse(saved));
+          try {
+            const parsed = JSON.parse(saved);
+            setSearchHistory(Array.isArray(parsed) ? parsed : []);
+          } catch {
+            setSearchHistory([]);
+          }
         }
       }
     };
@@ -43,8 +61,16 @@ export const useSearchHistory = () => {
       try {
         await UserPreferencesService.addToSearchHistory(currentUser.uid, query.trim());
         const preferences = await UserPreferencesService.getUserPreferences(currentUser.uid);
-        const historyQueries = preferences.searchHistory.map(item => item.query);
-        setSearchHistory(historyQueries);
+        if (preferences?.searchHistory && Array.isArray(preferences.searchHistory)) {
+          const historyQueries = preferences.searchHistory.map((item: any) => {
+            if (typeof item === 'string') return item;
+            if (typeof item === 'object' && item.query) return item.query;
+            return '';
+          }).filter(Boolean);
+          setSearchHistory(historyQueries);
+        } else {
+          setSearchHistory([query]);
+        }
       } catch (error) {
         console.error('Error adding to search history:', error);
         const newHistory = [
@@ -69,8 +95,16 @@ export const useSearchHistory = () => {
       try {
         await UserPreferencesService.removeFromSearchHistory(currentUser.uid, query);
         const preferences = await UserPreferencesService.getUserPreferences(currentUser.uid);
-        const historyQueries = preferences.searchHistory.map(item => item.query);
-        setSearchHistory(historyQueries);
+        if (preferences?.searchHistory && Array.isArray(preferences.searchHistory)) {
+          const historyQueries = preferences.searchHistory.map((item: any) => {
+            if (typeof item === 'string') return item;
+            if (typeof item === 'object' && item.query) return item.query;
+            return '';
+          }).filter(Boolean);
+          setSearchHistory(historyQueries);
+        } else {
+          setSearchHistory([]);
+        }
       } catch (error) {
         console.error('Error removing from search history:', error);
         const newHistory = searchHistory.filter(item => item !== query);

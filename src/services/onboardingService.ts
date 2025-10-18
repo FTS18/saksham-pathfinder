@@ -29,11 +29,9 @@ class OnboardingService {
         uniqueUserId: existingProfile?.uniqueUserId || generateUniqueUserId(),
         username: data.username || this.generateUsername(userId),
         email: existingProfile?.email || '',
-        photoURL: data.photoURL || '',
         location: data.location || { city: '', state: '', country: 'India' },
         desiredLocation: data.desiredLocation || { city: '', state: '', country: 'India' },
         minStipend: parseInt(data.minStipend) || 0,
-        workMode: data.workMode || 'any',
         sectors: data.sectors || [],
         skills: data.skills || [],
         education: data.education || { level: '', field: '', year: '' },
@@ -43,6 +41,16 @@ class OnboardingService {
         points: (existingProfile?.points || 0) + 50,
         badges: [...(existingProfile?.badges || []), 'Welcome'],
         userType: 'student',
+        // Theme preferences (read from localStorage or use defaults)
+        theme: existingProfile?.theme || localStorage.getItem('theme') || 'dark',
+        colorTheme: existingProfile?.colorTheme || localStorage.getItem('colorTheme') || 'blue',
+        // Preference fields
+        language: existingProfile?.language || localStorage.getItem('language') || 'en',
+        fontSize: existingProfile?.fontSize || parseInt(localStorage.getItem('fontSize') || '16'),
+        // Collections
+        searchHistory: existingProfile?.searchHistory || [],
+        recentlyViewed: existingProfile?.recentlyViewed || [],
+        wishlist: existingProfile?.wishlist || [],
         createdAt: existingProfile?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };

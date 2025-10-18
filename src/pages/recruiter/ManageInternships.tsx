@@ -8,41 +8,64 @@ import { Plus, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
 import InternshipMigrationService, { FirebaseInternship } from '@/services/internshipMigrationService';
 import { InternshipForm } from '@/components/recruiter/InternshipForm';
 import { ApplicationTracker } from '@/components/recruiter/ApplicationTracker';
+import { useAuth } from '@/contexts/AuthContext';
+import AdminService from '@/services/adminService';
 import { db } from '@/lib/firebase';
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 
 export default function ManageInternships() {
+  const { currentUser } = useAuth();
   const [internships, setInternships] = useState<FirebaseInternship[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInternship, setSelectedInternship] = useState<FirebaseInternship | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Set up real-time listener
-    const q = query(
-      collection(db, 'internships'),
-      orderBy('createdAt', 'desc')
-    );
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const internshipsList = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date()
-      } as FirebaseInternship));
+    if (!currentUser?.uid) return;
+
+    // Check if user is admin
+    const checkAdmin = async () => {
+      const adminStatus = await AdminService.isAdmin(currentUser.uid);
+      setIsAdmin(adminStatus);
       
-      setInternships(internshipsList);
-      setLoading(false);
-    }, (error) => {
-      console.error('Error listening to internships:', error);
-      setLoading(false);
-    });
+      // Load internships based on admin status
+      try {
+        setLoading(true);
+        const q = adminStatus
+          ? query(collection(db, 'internships'), orderBy('createdAt', 'desc'))
+          : query(
+              collection(db, 'internships'),
+              where('recruiterId', '==', currentUser.uid),
+              orderBy('createdAt', 'desc')
+            );
+        
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const internshipsList = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate() || new Date(),
+            updatedAt: doc.data().updatedAt?.toDate() || new Date()
+          } as FirebaseInternship));
+          
+          setInternships(internshipsList);
+          setLoading(false);
+        }, (error) => {
+          console.error('Error listening to internships:', error);
+          setLoading(false);
+        });
+        
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Error setting up internships query:', error);
+        setLoading(false);
+      }
+    };
     
-    return () => unsubscribe();
-  }, []);
+    checkAdmin();
+  }, [currentUser?.uid]);
 
   const loadInternships = async () => {
     // This function is now handled by the real-time listener
@@ -107,11 +130,15 @@ export default function ManageInternships() {
     return counts[title] || Math.floor(Math.random() * 200) + 50;
   };
 
-  const filteredInternships = internships.filter(internship =>
-    internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredInternships = internships.filter(internship => {
+    const locationStr = typeof internship.location === 'string' 
+      ? internship.location 
+      : internship.location?.city || '';
+    
+    return internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      internship.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      locationStr.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   if (loading) {
     return (
@@ -198,7 +225,9 @@ export default function ManageInternships() {
                     </Badge>
                     {internship.featured && <Badge variant="outline">Featured</Badge>}
                   </div>
-                  <p className="text-muted-foreground mb-2">{internship.company} • {internship.location}</p>
+                  <p className="text-muted-foreground mb-2">
+                    {internship.company} • {typeof internship.location === 'string' ? internship.location : internship.location?.city}
+                  </p>
                   <p className="text-sm text-muted-foreground mb-3">{internship.description}</p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {internship.required_skills.slice(0, 3).map((skill) => (

@@ -4,16 +4,14 @@ import { ApplicationService } from './applicationService';
 class DataSyncService {
   static async syncAllUserData(userId: string): Promise<void> {
     try {
-      // First sync local data to Firebase
-      await UserPreferencesService.syncLocalToFirebase(userId);
+      // Skip syncLocalToFirebase since we now manage theme/preferences directly in ThemeContext
+      // and theme changes save directly to profiles collection
       
-      // Then load all data from Firebase
+      // Just load all data from Firebase
       const preferences = await UserPreferencesService.getUserPreferences(userId);
       
       // Restore all data to localStorage and UI
       this.restoreAllData(preferences);
-      
-      console.log('✅ All user data synced successfully');
     } catch (error) {
       console.error('❌ Error syncing user data:', error);
     }
@@ -22,25 +20,37 @@ class DataSyncService {
   private static restoreAllData(preferences: any) {
     // Restore theme settings
     if (preferences.theme) {
-      localStorage.setItem('theme', preferences.theme);
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(preferences.theme);
+      // Aggressively clean theme value - remove all whitespace and newlines
+      const theme = String(preferences.theme).replace(/[\s\n\r\t]/g, '');
+      const validThemes = ['light', 'dark'];
+      if (validThemes.includes(theme)) {
+        localStorage.setItem('theme', theme);
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(theme);
+      }
     }
     
     if (preferences.colorTheme) {
-      localStorage.setItem('colorTheme', preferences.colorTheme);
-      document.documentElement.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
-      document.documentElement.classList.add(preferences.colorTheme);
+      // Aggressively clean colorTheme value
+      const colorTheme = String(preferences.colorTheme).replace(/[\s\n\r\t]/g, '');
+      const validColors = ['blue', 'grey', 'red', 'yellow', 'green'];
+      if (validColors.includes(colorTheme)) {
+        localStorage.setItem('colorTheme', colorTheme);
+        document.documentElement.classList.remove('blue', 'grey', 'red', 'yellow', 'green');
+        document.documentElement.classList.add(colorTheme);
+      }
     }
     
     if (preferences.language) {
-      localStorage.setItem('language', preferences.language);
-      document.documentElement.lang = preferences.language;
+      const language = String(preferences.language).replace(/[\s\n\r\t]/g, '');
+      localStorage.setItem('language', language);
+      document.documentElement.lang = language;
     }
     
     if (preferences.fontSize) {
-      localStorage.setItem('fontSize', String(preferences.fontSize));
-      document.documentElement.style.fontSize = `${preferences.fontSize}px`;
+      const fontSize = String(preferences.fontSize).replace(/[\s\n\r\t]/g, '');
+      localStorage.setItem('fontSize', fontSize);
+      document.documentElement.style.fontSize = `${fontSize}px`;
     }
     
     // Restore wishlist
@@ -78,14 +88,12 @@ class DataSyncService {
     ];
     
     keysToRemove.forEach(key => localStorage.removeItem(key));
-    console.log('🧹 Local storage cleared after sync');
   }
   
   static async loadUserDataFromFirebase(userId: string): Promise<void> {
     try {
       const preferences = await UserPreferencesService.getUserPreferences(userId);
       this.restoreAllData(preferences);
-      console.log('✅ User data loaded from Firebase');
     } catch (error) {
       console.error('❌ Error loading user data from Firebase:', error);
     }

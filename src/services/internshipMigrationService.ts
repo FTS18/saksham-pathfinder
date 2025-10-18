@@ -1,5 +1,5 @@
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, updateDoc, deleteDoc, writeBatch, startAfter, limit, increment, setDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, updateDoc, deleteDoc, writeBatch, startAfter, limit as fsLimit, increment, setDoc } from 'firebase/firestore';
 
 // Enhanced internship interface for Firebase
 export interface FirebaseInternship {
@@ -145,6 +145,35 @@ export class InternshipMigrationService {
   }
 
   /**
+   * Get internships posted by a recruiter
+   */
+  static async getRecruiterInternships(recruiterId: string): Promise<FirebaseInternship[]> {
+    try {
+      if (!db) {
+        console.warn('Firebase not initialized, returning empty array');
+        return [];
+      }
+      
+      const q = query(
+        this.getInternshipsCollection(),
+        where('recruiterId', '==', recruiterId),
+        orderBy('createdAt', 'desc')
+      );
+      
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date()
+      } as FirebaseInternship));
+    } catch (error) {
+      console.error('Error fetching recruiter internships:', error);
+      return [];
+    }
+  }
+
+  /**
    * Get internships with pagination
    */
   static async getInternshipsPaginated(limit: number = 20, lastDoc?: any): Promise<{
@@ -163,7 +192,7 @@ export class InternshipMigrationService {
         q = query(q, startAfter(lastDoc));
       }
 
-      q = query(q, limit(limit + 1)); // Get one extra to check if there are more
+      q = query(q, fsLimit(limit + 1)); // Get one extra to check if there are more
 
       const querySnapshot = await getDocs(q);
       const docs = querySnapshot.docs;

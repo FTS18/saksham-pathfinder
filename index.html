@@ -108,9 +108,13 @@
     <script>
       // Prevent theme flash - apply theme immediately before render
       (function() {
-        const theme = localStorage.getItem('theme') || 'dark';
-        const colorTheme = localStorage.getItem('colorTheme') || 'blue';
-        document.documentElement.classList.add(theme, colorTheme);
+        const theme = localStorage.getItem('theme');
+        const colorTheme = localStorage.getItem('colorTheme');
+        // Validate to prevent adding invalid tokens
+        const validThemes = ['light', 'dark'];
+        const validColors = ['blue', 'grey', 'red', 'yellow', 'green'];
+        if (validThemes.includes(theme)) document.documentElement.classList.add(theme);
+        if (validColors.includes(colorTheme)) document.documentElement.classList.add(colorTheme);
       })();
     </script>
     <div id="initial-skeleton">

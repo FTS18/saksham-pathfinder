@@ -8,6 +8,7 @@ import { useTimeTracking } from "./hooks/useTimeTracking";
 import { useTimeBasedPoints } from "./hooks/useTimeBasedPoints";
 import { useThemeColor } from "./hooks/useThemeColor";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { RouteTransitionProvider } from "@/contexts/RouteTransitionContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ComparisonProvider } from "./contexts/ComparisonContext";
@@ -17,6 +18,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { OnboardingRouter } from "@/components/OnboardingRouter";
+import { RouteLoadingOverlay } from "@/components/RouteLoadingOverlay";
 
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -70,6 +72,7 @@ import RecruiterDashboardNew from "./pages/recruiter/RecruiterDashboard";
 import PostJob from "./pages/recruiter/PostJob";
 import ManageInternships from "./pages/recruiter/ManageInternships";
 import Candidates from "./pages/recruiter/Candidates";
+import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
 
 const queryClient = new QueryClient();
 
@@ -130,7 +133,7 @@ const AppContent = () => {
               <Route path="post-job" element={<PostJob />} />
               <Route path="manage-internships" element={<ManageInternships />} />
               <Route path="candidates" element={<Candidates />} />
-              <Route path="applications" element={<div className="p-6">Applications - Coming Soon</div>} />
+              <Route path="applications" element={<RecruiterApplications />} />
               <Route path="interviews" element={<div className="p-6">Interviews - Coming Soon</div>} />
               <Route path="analytics" element={<div className="p-6">Analytics - Coming Soon</div>} />
               <Route path="settings" element={<div className="p-6">Settings - Coming Soon</div>} />
@@ -197,28 +200,32 @@ const AppContent = () => {
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <ThemeProvider>
-          <AuthProvider>
-            <NotificationProvider>
-              <ApplicationProvider>
-                <GamificationProvider>
-                  <WishlistProvider>
-                    <ComparisonProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                    <AppContent />
-                  </BrowserRouter>
-                </TooltipProvider>
-                    </ComparisonProvider>
-                  </WishlistProvider>
-                </GamificationProvider>
-              </ApplicationProvider>
-            </NotificationProvider>
-          </AuthProvider>
+          <NotificationProvider>
+            <ApplicationProvider>
+              <GamificationProvider>
+                <WishlistProvider>
+                  <ComparisonProvider>
+                    <TooltipProvider>
+                      <Toaster />
+                      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                        <RouteTransitionProvider>
+                          <RouteLoadingOverlay />
+                          <AppContent />
+                        </RouteTransitionProvider>
+                      </BrowserRouter>
+                    </TooltipProvider>
+                  </ComparisonProvider>
+                </WishlistProvider>
+              </GamificationProvider>
+            </ApplicationProvider>
+          </NotificationProvider>
         </ThemeProvider>
-      </QueryClientProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 };
+
 
 export default App;

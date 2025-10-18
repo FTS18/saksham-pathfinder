@@ -1,10 +1,25 @@
 // Theme initializer to ensure themes are applied immediately on page load
 export const initializeTheme = () => {
-  // Get saved preferences from localStorage
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  const savedColorTheme = localStorage.getItem('colorTheme') || 'blue';
-  const savedLanguage = localStorage.getItem('language') || 'en';
-  const savedFontSize = localStorage.getItem('fontSize') || '16';
+  // Get saved preferences from localStorage with validation
+  // Aggressively clean all whitespace/newlines
+  let savedTheme = (localStorage.getItem('theme') || 'dark').replace(/[\s\n\r\t]/g, '');
+  let savedColorTheme = (localStorage.getItem('colorTheme') || 'blue').replace(/[\s\n\r\t]/g, '');
+  const savedLanguage = (localStorage.getItem('language') || 'en').replace(/[\s\n\r\t]/g, '');
+  const savedFontSize = (localStorage.getItem('fontSize') || '16').replace(/[\s\n\r\t]/g, '');
+
+  // Validate theme values - filter out corrupted/stringified function values
+  const validThemes = ['light', 'dark'];
+  const validColorThemes = ['blue', 'grey', 'red', 'yellow', 'green'];
+  
+  if (!validThemes.includes(savedTheme)) {
+    savedTheme = 'dark';
+    localStorage.removeItem('theme'); // Clear corrupted value
+  }
+  
+  if (!validColorThemes.includes(savedColorTheme)) {
+    savedColorTheme = 'blue';
+    localStorage.removeItem('colorTheme'); // Clear corrupted value
+  }
 
   // Apply theme classes immediately to prevent flash
   const root = document.documentElement;
