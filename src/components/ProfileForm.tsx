@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 import { Slider } from './ui/slider';
 import { Checkbox } from './ui/checkbox';
 import { fetchInternships } from '@/lib/dataExtractor';
+import { ProfileData } from '@/types';
 
 import { CurrencyInput } from './CurrencyInput';
 
@@ -65,20 +66,12 @@ const translations = {
   }
 };
 
-export interface ProfileData {
-  education: string;
-  skills: string[];
-  interests: string[];
-  location: string;
-  searchRadius: number;
-  minStipend: number;
-}
 
 const educationLevels = ["Undergraduate", "Postgraduate"];
 
 interface ProfileFormProps {
     initialData?: ProfileData;
-    onProfileSubmit: (data: ProfileData) => void;
+    onProfileSubmit: (data: ProfileData) => void | Promise<void>;
     showTitle?: boolean
 }
 
@@ -457,7 +450,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
               <Input
                 id="location"
                 type="text"
-                value={formData.location}
+                value={typeof formData.location === 'string' ? formData.location : formData.location?.city || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                 placeholder="e.g., Mumbai, Delhi, Remote"
               />

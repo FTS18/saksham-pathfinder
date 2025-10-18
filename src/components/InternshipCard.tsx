@@ -18,7 +18,7 @@ const InternshipNavigationContext = createContext<{
   setAllInternships: (internships: any[]) => void;
 }>({ allInternships: [], setAllInternships: () => {} });
 
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip';
 
 // Create stable hash function for consistent scoring
 const createStableHash = (str: string) => {
@@ -38,7 +38,7 @@ interface Internship {
   id: string;
   pmis_id?: string;
   title: string;
-  role: string;
+  role?: string;
   company: string;
   location: { city: string; lat?: number; lng?: number; } | string;
   eligibility_text?: string;
@@ -230,7 +230,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
   };
 
   return (
-    <>
+    <TooltipProvider>
     <Card className={`relative minimal-card flex flex-col h-full rounded-lg border shadow-md hover:shadow-lg transition-all duration-300 internship-card ${
         featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
       } ${getCompanyTheme(company)}`}
@@ -480,6 +480,6 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
       currentIndex={modalCurrentIndex}
       totalCount={modalInternships.length || totalCount}
     />
-    </>
+    </TooltipProvider>
   );
 };

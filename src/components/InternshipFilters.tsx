@@ -10,14 +10,20 @@ import { Search, Filter, SortAsc, X, ChevronDown } from 'lucide-react';
 import { SearchSuggestions } from './SearchSuggestions';
 import { SmartFilterService } from '@/services/smartFilterService';
 
-import type { StrictFilterState, StrictComponentProps } from '@/types/strict';
-
-interface FilterState extends StrictFilterState {
+interface FilterState {
+  search: string;
+  sector: string;
+  location: string;
+  workMode: string;
+  education: string;
+  minStipend: string;
   minAiScore?: string;
   sortBy: string;
+  selectedSectors?: string[];
+  selectedSkills?: string[];
 }
 
-interface InternshipFiltersProps extends StrictComponentProps {
+interface InternshipFiltersProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   sectors: string[];

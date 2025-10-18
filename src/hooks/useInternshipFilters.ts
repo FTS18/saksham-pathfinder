@@ -1,31 +1,5 @@
 import { useState, useMemo } from 'react';
-
-interface FilterState {
-  search: string;
-  sector: string;
-  location: string;
-  workMode: string;
-  education: string;
-  minStipend: string;
-  minAiScore?: string;
-  sortBy: string;
-  selectedSectors?: string[];
-  selectedSkills?: string[];
-}
-
-interface Internship {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  stipend: string;
-  sector_tags: string[];
-  required_skills: string[];
-  preferred_education_levels: string[];
-  work_mode?: string;
-  posted_date: string;
-  application_deadline?: string;
-}
+import { Internship, FilterState } from '@/types';
 
 export const useInternshipFilters = (internships: Internship[]) => {
   const [filters, setFilters] = useState<FilterState>({
@@ -256,8 +230,11 @@ export const useInternshipFilters = (internships: Internship[]) => {
   const locations = useMemo(() => {
     const allLocations = new Set<string>();
     internships.forEach(internship => {
-      if (internship.location !== 'Multiple Cities') {
-        allLocations.add(internship.location);
+      const location = typeof internship.location === 'string' 
+        ? internship.location 
+        : internship.location?.city || 'Multiple Cities';
+      if (location !== 'Multiple Cities') {
+        allLocations.add(location);
       }
     });
     return Array.from(allLocations).sort();
