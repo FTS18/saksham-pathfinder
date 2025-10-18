@@ -30,7 +30,10 @@ export const useSearchHistory = () => {
               })
               .filter(Boolean)
               .slice(0, MAX_HISTORY_ITEMS);
-            localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(cleanedHistory));
+            localStorage.setItem(
+              SEARCH_HISTORY_KEY,
+              JSON.stringify(cleanedHistory)
+            );
           }
         }
       } catch {
@@ -75,7 +78,8 @@ export const useSearchHistory = () => {
                 const historyQueries = parsed
                   .map((item: any) => {
                     if (typeof item === "string") return item;
-                    if (typeof item === "object" && item.query) return item.query;
+                    if (typeof item === "object" && item.query)
+                      return item.query;
                     return "";
                   })
                   .filter(Boolean);
