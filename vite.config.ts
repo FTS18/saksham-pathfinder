@@ -67,16 +67,7 @@ export default defineConfig({
       },
     },
     target: "es2020",
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: false,
-      },
-      mangle: {
-        // Preserve Radix UI's forwardRef and other critical functions
-        reserved: ["forwardRef", "createElement", "Fragment"],
-      },
-    },
+    minify: false,
     sourcemap: false,
     reportCompressedSize: false,
     chunkSizeWarningLimit: 2000, // Increased to suppress warning during build
