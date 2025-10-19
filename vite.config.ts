@@ -13,57 +13,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunks - keep separate
+          // ONLY split Firebase - it's completely independent and large
           if (id.includes("node_modules/firebase")) {
             return "firebase-vendor";
           }
-          if (
-            id.includes("node_modules/react") &&
-            !id.includes("react-router")
-          ) {
-            return "react-vendor";
-          }
-          if (id.includes("node_modules/react-router")) {
-            return "router-vendor";
-          }
-          // IMPORTANT: Don't split Radix UI - it has internal dependencies that break
-          // if id.includes("node_modules/@radix-ui")) {
-          //   return "ui-vendor";
-          // }
-          if (id.includes("node_modules/@tanstack/react-query")) {
-            return "query-vendor";
-          }
-          if (id.includes("node_modules/recharts")) {
-            return "charts";
-          }
-          if (
-            id.includes("node_modules/lucide-react") ||
-            id.includes("node_modules/react-icons")
-          ) {
-            return "icons";
-          }
-          if (id.includes("node_modules/date-fns")) {
-            return "dateutils";
-          }
-          if (id.includes("node_modules/purify")) {
-            return "purify";
-          }
-
-          // Lazy load pages separately
-          if (id.includes("/pages/") && id.endsWith(".tsx")) {
-            const match = id.match(/\/pages\/([^/]+)\.tsx$/);
-            if (match) {
-              return `page-${match[1]}`;
-            }
-          }
-
-          // Lazy load components separately
-          if (id.includes("/components/") && id.endsWith(".tsx")) {
-            const match = id.match(/\/components\/([^/]+)\.tsx$/);
-            if (match) {
-              return `comp-${match[1]}`;
-            }
-          }
+          // Everything else bundles together to avoid dependency issues:
+          // - React needs React Router to use its context
+          // - Components need Radix UI utilities
+          // - Pages use Radix UI and icons
+          // - Icons need their utility functions
+          // Bundling together prevents undefined reference errors
         },
       },
     },

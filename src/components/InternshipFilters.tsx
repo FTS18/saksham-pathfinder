@@ -117,43 +117,42 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
   const [allSkills, setAllSkills] = useState<string[]>([]);
   const [skillsBySector, setSkillsBySector] = useState<Record<string, string[]>>({});
 
-  // Load skills data
+  // Load skills data from Firebase with proper error handling
   useEffect(() => {
     const loadSkills = async () => {
       try {
-        const response = await fetch('/internships.json');
-        if (!response.ok) throw new Error('Failed to fetch internships');
+        // Import Firebase service dynamically to handle quota errors
+        const { extractAllSkills, extractSkillsBySector } = await import('@/lib/dataExtractor');
         
-        const internships = await response.json();
+        // Extract skills from Firebase with caching
+        const [allSkillsList, skillsMap] = await Promise.all([
+          extractAllSkills(),
+          extractSkillsBySector()
+        ]);
         
-        const skillsSet = new Set<string>();
-        const sectorSkillsMap: Record<string, Set<string>> = {};
+        setAllSkills(allSkillsList || []);
+        setSkillsBySector(skillsMap || {});
         
-        internships.forEach((internship: any) => {
-          const sectors = internship.sector_tags || [];
-          const skills = internship.required_skills || [];
-          
-          skills.forEach((skill: string) => {
-            skillsSet.add(skill);
-            sectors.forEach((sector: string) => {
-              if (!sectorSkillsMap[sector]) sectorSkillsMap[sector] = new Set();
-              sectorSkillsMap[sector].add(skill);
-            });
-          });
-        });
-        
-        setAllSkills(Array.from(skillsSet).sort());
-        
-        const finalSectorSkills: Record<string, string[]> = {};
-        Object.keys(sectorSkillsMap).forEach(sector => {
-          finalSectorSkills[sector] = Array.from(sectorSkillsMap[sector]).sort();
-        });
-        setSkillsBySector(finalSectorSkills);
       } catch (error) {
-        console.error('Failed to load skills:', error);
-        // Fallback to empty arrays
-        setAllSkills([]);
-        setSkillsBySector({});
+        // Firebase quota exceeded or unavailable - use fallback static skills
+        console.warn('Firebase unavailable or quota exceeded, using fallback skills:', error);
+        
+        // Provide default fallback skills by sector
+        const fallbackSkills = {
+          'Technology': ['JavaScript', 'Python', 'React', 'Node.js', 'Java', 'TypeScript', 'SQL', 'AWS', 'Docker'],
+          'Finance': ['Excel', 'Financial Analysis', 'Accounting', 'Risk Management', 'Trading'],
+          'Healthcare': ['Medical Research', 'Healthcare IT', 'Biotechnology', 'Clinical Trials'],
+          'Marketing': ['Digital Marketing', 'SEO', 'Content Marketing', 'Analytics', 'Social Media'],
+          'Education': ['Curriculum Development', 'E-learning', 'Teaching', 'Content Creation']
+        };
+        
+        const allFallbackSkills = Object.values(fallbackSkills)
+          .flat()
+          .filter((skill, index, self) => self.indexOf(skill) === index)
+          .sort();
+        
+        setAllSkills(allFallbackSkills);
+        setSkillsBySector(fallbackSkills);
       }
     };
     loadSkills();
