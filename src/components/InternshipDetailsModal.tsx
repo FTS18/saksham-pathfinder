@@ -9,6 +9,7 @@ import { useApplication } from '@/contexts/ApplicationContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { ReadingAssistant } from './ReadingAssistant';
 import { SectorIcon } from './SectorIcons';
+import { injectOGTags, generateInternshipOGTags } from '@/lib/ogTagInjector';
 import { useState, useEffect } from 'react';
 
 
@@ -109,6 +110,14 @@ export const InternshipDetailsModal = ({
       delete window.applyToInternship;
     };
   }, [applyToInternship]);
+
+  // Inject OG tags when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const ogConfig = generateInternshipOGTags(internship);
+      injectOGTags(ogConfig);
+    }
+  }, [isOpen, internship]);
   
   // Make addNotification available globally
   useEffect(() => {
