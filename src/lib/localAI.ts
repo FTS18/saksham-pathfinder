@@ -10,9 +10,9 @@ class GeminiAIService {
   private apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   private getCareerPrompt(message: string): string {
-    return `You are Saksham AI, the intelligent career assistant for the Saksham Pathfinder platform - India's leading AI-powered internship discovery and career guidance platform.
+    return `You are Saksham AI, the intelligent career assistant for the Saksham AI platform - India's leading AI-powered internship discovery and career guidance platform.
 
-**ABOUT SAKSHAM PATHFINDER PLATFORM:**
+**ABOUT SAKSHAM AI PLATFORM:**
 - **1000+ Live Internships** from top companies (Google, Microsoft, Amazon, startups)
 - **AI-Powered Matching** with 50% skills weighting and company tier bonuses
 - **Smart Filters** for location, salary, company size, work mode, sectors

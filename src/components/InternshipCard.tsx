@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, ChevronRight, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare, Briefcase, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShareInternship } from './ShareInternship';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,6 @@ import { useWishlist } from '@/contexts/WishlistContext';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { SectorIcon } from './SectorIcons';
 import { useAudioSupport } from '@/hooks/useAudioSupport';
-import { InternshipDetailsModal } from './InternshipDetailsModal';
 import { useComparison } from '@/contexts/ComparisonContext';
 import { useState, useContext, createContext, useEffect } from 'react';
 
@@ -71,6 +70,7 @@ interface InternshipCardProps {
 }
 
 export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore, aiScore }: InternshipCardProps) => {
+  const navigate = useNavigate();
   const {
     id,
     pmis_id,
@@ -98,23 +98,10 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
   const { isSupported: audioSupported, speak, isSpeaking } = useAudioSupport();
   const { addToComparison, removeFromComparison, isInComparison, selectedInternships, maxComparisons } = useComparison();
   const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [modalInternships, setModalInternships] = useState<any[]>([]);
-  const [modalCurrentIndex, setModalCurrentIndex] = useState(0);
   
   // Listen for internship data response with proper cleanup
   useEffect(() => {
-    const handleInternshipDataResponse = (e: CustomEvent) => {
-      const { internships, currentIndex } = e.detail;
-      setModalInternships(internships);
-      setModalCurrentIndex(currentIndex >= 0 ? currentIndex : 0);
-    };
-    
     const controller = new AbortController();
-    window.addEventListener('internshipDataResponse', handleInternshipDataResponse as EventListener, {
-      signal: controller.signal
-    });
-    
     return () => {
       controller.abort();
     };
@@ -379,30 +366,14 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
 
 
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-4">
           {/* Main Action Button with 3 Icons */}
           <div className="flex items-center gap-2">
-            <Link 
-              to={`/internship/${id}`}
-              className="flex-1 h-9"
-            >
-              <Button 
-                className="w-full h-full bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
-              >
-                <span className="text-sm">View Details</span>
-              </Button>
-            </Link>
-            
             <Button 
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent('requestInternshipData', {
-                  detail: { internshipId: id }
-                }));
-                setShowModal(true);
-              }}
-              className="flex-1 h-9 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
+              onClick={() => navigate(`/internship/${id}`)}
+              className="flex-1 h-10 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
             >
-              <span className="text-sm">More</span>
+              <span className="text-sm font-semibold">View Details</span>
             </Button>
             
             <Tooltip>
@@ -411,7 +382,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                   onClick={handleCompareToggle}
                   disabled={!isInComparison(id) && selectedInternships.length >= maxComparisons}
                   size="sm"
-                  className={`h-9 w-9 p-0 shadow-sm hover:shadow-md transition-all ${
+                  className={`h-10 w-10 p-0 shadow-sm hover:shadow-md transition-all ${
                     isInComparison(id) 
                       ? 'bg-blue-500 hover:bg-blue-600 text-white' 
                       : 'bg-muted hover:bg-muted/80 text-muted-foreground'
@@ -428,7 +399,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
                 <Button 
                   onClick={handleWishlistToggle}
                   size="sm"
-                  className={`h-9 w-9 p-0 shadow-sm hover:shadow-md transition-all ${
+                  className={`h-10 w-10 p-0 shadow-sm hover:shadow-md transition-all ${
                     isWishlisted(id)
                       ? 'bg-red-500 hover:bg-red-600 text-white'
                       : 'bg-muted hover:bg-muted/80 text-muted-foreground'
@@ -442,7 +413,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className={`h-9 w-9 text-xs font-bold flex items-center justify-center cursor-default shadow-sm ${
+                <div className={`h-10 w-10 text-xs font-bold flex items-center justify-center cursor-default shadow-sm rounded-full ${
                   (aiScore || matchScore || 0) >= 90 
                     ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' 
                     : (aiScore || matchScore || 0) >= 80 
@@ -475,22 +446,6 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         </div>
       </CardContent>
     </Card>
-    
-    <InternshipDetailsModal
-      internship={modalInternships.length > 0 ? modalInternships[modalCurrentIndex]?.internship || modalInternships[modalCurrentIndex] : internship}
-      isOpen={showModal}
-      onClose={() => setShowModal(false)}
-      matchExplanation={modalInternships.length > 0 ? modalInternships[modalCurrentIndex]?.explanation : matchExplanation}
-      userProfile={userProfile}
-      onNext={modalInternships.length > 0 && modalCurrentIndex < modalInternships.length - 1 ? () => {
-        setModalCurrentIndex(prev => prev + 1);
-      } : undefined}
-      onPrev={modalInternships.length > 0 && modalCurrentIndex > 0 ? () => {
-        setModalCurrentIndex(prev => prev - 1);
-      } : undefined}
-      currentIndex={modalCurrentIndex}
-      totalCount={modalInternships.length || totalCount}
-    />
     </TooltipProvider>
   );
 };

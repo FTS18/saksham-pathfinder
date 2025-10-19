@@ -33,11 +33,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidUpdate(prevProps: ErrorBoundaryProps, prevState: ErrorBoundaryState) {
-    if (this.state.hasError && !prevState.hasError && this.state.retryCount === 0) {
-      this.retryTimeoutId = setTimeout(() => {
-        this.handleRetry();
-      }, 3000);
-    }
+    // Disabled auto-retry to prevent infinite reload loops
+    // Users must manually click "Try Again" or "Reload Page"
   }
 
   componentWillUnmount() {
@@ -71,23 +68,21 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                {this.state.retryCount > 0
-                  ? "The error persists. Please try reloading or contact support."
-                  : "Don't worry, we're automatically trying to fix this..."}
+                An error occurred. You can reload the page or report the issue.
               </p>
-              
-              {this.state.retryCount === 0 && (
-                <p className="text-xs text-muted-foreground">
-                  Auto-retrying in 3 seconds...
-                </p>
-              )}
+
+              <div className="p-2 bg-muted rounded-lg overflow-auto max-h-48 text-xs">
+                <pre>
+                  <code>
+                    {this.state.error?.message}
+                    {this.state.error?.stack}
+                  </code>
+                </pre>
+              </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <Button onClick={this.handleRetry} variant="outline" size="sm">
-                  <RefreshCw className="w-4 h-4 mr-1" />
-                  Try Again
-                </Button>
                 <Button onClick={() => window.location.reload()} variant="outline" size="sm">
+                  <RefreshCw className="w-4 h-4 mr-1" />
                   Reload Page
                 </Button>
                 <Button onClick={() => window.location.href = '/'} size="sm">
@@ -97,14 +92,15 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                 <Button 
                   onClick={() => {
                     const subject = encodeURIComponent('Bug Report: Application Error');
-                    const body = encodeURIComponent(`Error: ${this.state.error?.message}\nURL: ${window.location.href}`);
+                    const body = encodeURIComponent(`Error: ${this.state.error?.message}\nURL: ${window.location.href}\nStack: ${this.state.error?.stack}`);
                     window.open(`mailto:support@sakshami.com?subject=${subject}&body=${body}`);
                   }}
                   variant="outline" 
                   size="sm"
+                  className="col-span-2"
                 >
                   <Bug className="w-4 h-4 mr-1" />
-                  Report
+                  Report Issue
                 </Button>
               </div>
             </CardContent>

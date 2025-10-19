@@ -9,6 +9,7 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import { localAIService } from '@/lib/localAI';
 import { exportComparisonAsPDF } from '@/lib/pdfExporter';
 import { useToast } from '@/hooks/use-toast';
+import { copyToClipboard } from '@/utils/clipboardUtils';
 
 
 interface ComparisonModalProps {
@@ -108,17 +109,9 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
     } catch (error) {
       console.error('AI comparison failed:', error);
       
-      // Fallback to local analysis only if completely offline
+      // Fallback to error message only if completely offline
       if (!navigator.onLine) {
-        const internshipsWithScores = selectedInternships.map(internship => ({
-          ...internship,
-          calculatedScore: calculateScore(internship)
-        })).sort((a, b) => b.calculatedScore - a.calculatedScore);
-        
-        // Don't show offline fallback - just show error
         setAnalysis('**❌ Unable to generate AI analysis**\n\nPlease check your internet connection and try again.');
-        
-        setAnalysis(fallbackAnalysis);
       } else {
         setAnalysis('**❌ Analysis Failed**\n\nUnable to generate AI comparison. Please try again or check your connection.');
       }
@@ -131,7 +124,7 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
     if (selectedInternships.length === 0) return;
     
     try {
-      exportComparisonAsPDF(selectedInternships);
+      exportComparisonAsPDF(selectedInternships as any);
       toast({
         title: 'PDF Exported',
         description: `Comparison of ${selectedInternships.length} internships exported successfully!`,
@@ -154,16 +147,25 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
       const shareUrl = `${window.location.origin}/shared-comparison?ids=${internshipIds}`;
       
       // Copy to clipboard
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
+      const success = await copyToClipboard(shareUrl);
       
-      toast({
-        title: 'Link Copied!',
-        description: 'Share this link with friends to show your comparison.',
-      });
-      
-      // Reset copied state after 2 seconds
-      setTimeout(() => setCopied(false), 2000);
+      if (success) {
+        setCopied(true);
+        
+        toast({
+          title: 'Link Copied!',
+          description: 'Share this link with friends to show your comparison.',
+        });
+        
+        // Reset copied state after 2 seconds
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        toast({
+          title: 'Share Failed',
+          description: 'Could not copy link. Please try using a different method.',
+          variant: 'destructive',
+        });
+      }
     } catch (error) {
       console.error('Share failed:', error);
       toast({

@@ -10,7 +10,7 @@ export const useInternships = () => {
     queryKey: ["internships"],
     queryFn: InternshipMigrationService.getAllInternships,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -20,10 +20,11 @@ export const useInternshipsPaginated = (limit: number = 20) => {
     queryKey: ["internships-paginated", limit],
     queryFn: ({ pageParam }) =>
       InternshipMigrationService.getInternshipsPaginated(limit, pageParam),
-    getNextPageParam: (lastPage) =>
-      lastPage.hasMore ? lastPage.lastDoc : undefined,
+    getNextPageParam: (lastPage: any) =>
+      lastPage?.hasMore ? lastPage?.lastDoc : undefined,
+    initialPageParam: null,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -44,7 +45,7 @@ export const useSearchInternships = (filters: {
       (key) => filters[key as keyof typeof filters]
     ),
     staleTime: 2 * 60 * 1000, // 2 minutes for search results
-    cacheTime: 5 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 };
 
@@ -55,7 +56,7 @@ export const useInternship = (id: string) => {
     queryFn: () => InternshipMigrationService.getInternshipById(id),
     enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes for individual internships
-    cacheTime: 15 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
   });
 };
 
@@ -65,7 +66,7 @@ export const useTrendingInternships = (limit: number = 10) => {
     queryKey: ["trending-internships", limit],
     queryFn: () => InternshipMigrationService.getTrendingInternships(limit),
     staleTime: 15 * 60 * 1000, // 15 minutes
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
 
@@ -75,7 +76,7 @@ export const useFeaturedInternships = () => {
     queryKey: ["featured-internships"],
     queryFn: InternshipMigrationService.getFeaturedInternships,
     staleTime: 30 * 60 * 1000, // 30 minutes
-    cacheTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 60 * 60 * 1000, // 1 hour
   });
 };
 

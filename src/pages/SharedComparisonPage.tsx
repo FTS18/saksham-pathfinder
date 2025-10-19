@@ -254,3 +254,5 @@ export const SharedComparisonPage = () => {
     </div>
   );
 };
+
+export default SharedComparisonPage;
