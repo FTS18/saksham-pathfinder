@@ -26,9 +26,10 @@ export default defineConfig({
           if (id.includes("node_modules/react-router")) {
             return "router-vendor";
           }
-          if (id.includes("node_modules/@radix-ui")) {
-            return "ui-vendor";
-          }
+          // IMPORTANT: Don't split Radix UI - it has internal dependencies that break
+          // if id.includes("node_modules/@radix-ui")) {
+          //   return "ui-vendor";
+          // }
           if (id.includes("node_modules/@tanstack/react-query")) {
             return "query-vendor";
           }
