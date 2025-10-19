@@ -33,10 +33,17 @@ export const InternshipDetailPage = () => {
         }
 
         const allInternships = await fetchInternships();
+        
+        if (allInternships.length === 0) {
+          setError('Data temporarily unavailable - our database is being optimized. Please try again in a few moments.');
+          setLoading(false);
+          return;
+        }
+        
         const found = allInternships.find((int: Internship) => int.id === id);
 
         if (!found) {
-          setError('Internship not found');
+          setError('Internship not found. Please check the ID and try again.');
         } else {
           setInternship(found);
           
@@ -284,3 +291,5 @@ export const InternshipDetailPage = () => {
     </div>
   );
 };
+
+export default InternshipDetailPage;

@@ -16,22 +16,18 @@ service cloud.firestore {
          exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
     
-    function isRecruiter() {
-      return isAuthenticated() && 
-        exists(/databases/$(database)/documents/recruiters/$(request.auth.uid));
-    }
-    
-    function isStudent() {
-      return isAuthenticated() && 
-        exists(/databases/$(database)/documents/students/$(request.auth.uid));
-    }
-    
     function isUserOwnerOrAdmin(userId) {
       return isOwner(userId) || isAdmin();
     }
     
-    function hasValidData(fields) {
-      return request.resource.data.keys().hasAll(fields);
+    // ==================== READ OPTIMIZATION ====================
+    // These functions minimize Firebase reads and writes
+    function isPublicProfile() {
+      return resource.data.get('isPublic', false) == true;
+    }
+    
+    function canReadDocument() {
+      return resource == null || isPublicProfile() || isUserOwnerOrAdmin(resource.data.get('userId'));
     }
     
     match /profiles/{userId} {

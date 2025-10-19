@@ -57,6 +57,9 @@ export class InternshipMigrationService {
    * Get collection reference for internships
    */
   private static getInternshipsCollection() {
+    if (!db) {
+      throw new Error('Firebase Firestore is not initialized');
+    }
     return collection(db, this.COLLECTION_NAME);
   }
 
@@ -150,22 +153,27 @@ export class InternshipMigrationService {
         return [];
       }
 
-      const q = query(
-        InternshipMigrationService.getInternshipsCollection(),
-        where("status", "==", "active"),
-        orderBy("createdAt", "desc")
-      );
+      try {
+        const q = query(
+          InternshipMigrationService.getInternshipsCollection(),
+          where("status", "==", "active"),
+          orderBy("createdAt", "desc")
+        );
 
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate() || new Date(),
-            updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-          } as FirebaseInternship)
-      );
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+              createdAt: doc.data().createdAt?.toDate() || new Date(),
+              updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+            } as FirebaseInternship)
+        );
+      } catch (firebaseError) {
+        console.error("Firestore error:", firebaseError);
+        return [];
+      }
     } catch (error) {
       console.error("Error fetching internships:", error);
       // Return empty array instead of throwing to prevent app crash
@@ -391,6 +399,11 @@ export class InternshipMigrationService {
     limit: number = 10
   ): Promise<FirebaseInternship[]> {
     try {
+      if (!db) {
+        console.warn("Firebase not initialized for trending internships");
+        return [];
+      }
+
       const q = query(
         this.getInternshipsCollection(),
         where("status", "==", "active"),
@@ -410,7 +423,8 @@ export class InternshipMigrationService {
       );
     } catch (error) {
       console.error("Error fetching trending internships:", error);
-      throw error;
+      // Return empty array instead of throwing to prevent app crashes
+      return [];
     }
   }
 
@@ -419,6 +433,11 @@ export class InternshipMigrationService {
    */
   static async getFeaturedInternships(): Promise<FirebaseInternship[]> {
     try {
+      if (!db) {
+        console.warn("Firebase not initialized for featured internships");
+        return [];
+      }
+
       const q = query(
         this.getInternshipsCollection(),
         where("status", "==", "active"),
@@ -438,7 +457,8 @@ export class InternshipMigrationService {
       );
     } catch (error) {
       console.error("Error fetching featured internships:", error);
-      throw error;
+      // Return empty array instead of throwing to prevent app crashes
+      return [];
     }
   }
 

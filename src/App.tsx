@@ -43,7 +43,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
-const Profile = lazy(() => import("./pages/Profile"));
+const Profile = lazy(() => import("./pages/ProfileLazy"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const OnboardingSteps = lazy(() => import("./pages/OnboardingSteps"));
 const SimplifiedOnboarding = lazy(() => import("./pages/SimplifiedOnboarding"));
@@ -188,7 +188,7 @@ const AppContent = () => {
           <Route path="/onboarding-old" element={<ProtectedRoute><Layout><SimplifiedOnboarding /></Layout></ProtectedRoute>} />
           <Route path="/onboarding-legacy" element={<ProtectedRoute><Layout><OnboardingSteps /></Layout></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Layout><StudentDashboard /></Layout></ProtectedRoute>} />
-          <Route path="/wishlist" element={<ProtectedRoute><Layout><Wishlist /></Layout></ProtectedRoute>} />
+          <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
           <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
           <Route path="/referrals" element={<ProtectedRoute><Layout><Referrals /></Layout></ProtectedRoute>} />
           <Route path="/dashboard/settings" element={<ProtectedRoute><Layout><DashboardSettings /></Layout></ProtectedRoute>} />

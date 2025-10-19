@@ -1,4 +1,4 @@
-import { Handler } from '@netlify/functions';
+import { Handler } from "@netlify/functions";
 
 // This function is called by URL rewrite to inject dynamic OG tags
 // Accessed at: /internship/:id or similar
@@ -7,12 +7,13 @@ import { Handler } from '@netlify/functions';
 const handler: Handler = async (event, context) => {
   try {
     // Get the internship ID from query params or path
-    const internshipId = event.queryStringParameters?.id || event.path?.split('/').pop();
+    const internshipId =
+      event.queryStringParameters?.id || event.path?.split("/").pop();
 
     if (!internshipId) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: 'Internship ID not provided' }),
+        body: JSON.stringify({ error: "Internship ID not provided" }),
       };
     }
 
@@ -26,7 +27,7 @@ const handler: Handler = async (event, context) => {
         `${process.env.FIRESTORE_API_URL}/internships/${internshipId}`,
         {
           headers: {
-            'Authorization': `Bearer ${process.env.FIRESTORE_API_KEY}`,
+            Authorization: `Bearer ${process.env.FIRESTORE_API_KEY}`,
           },
         }
       );
@@ -35,22 +36,25 @@ const handler: Handler = async (event, context) => {
         internship = await response.json();
       }
     } catch (err) {
-      console.error('Failed to fetch internship data:', err);
+      console.error("Failed to fetch internship data:", err);
       // Continue with defaults if API fails
     }
 
     // Generate OG tags
-    const title = internship?.title || 'Internship Opportunity';
-    const company = internship?.company || 'Saksham Pathfinder';
+    const title = internship?.title || "Internship Opportunity";
+    const company = internship?.company || "Saksham AI";
     const description =
       internship?.description?.substring(0, 160) ||
-      `Explore this ${internship?.sector || 'exciting'} internship opportunity on Saksham Pathfinder. Perfect for students looking to gain real-world experience.`;
+      `Explore this ${
+        internship?.sector || "exciting"
+      } internship opportunity on Saksham AI. Perfect for students looking to gain real-world experience.`;
     const location =
-      typeof internship?.location === 'string'
+      typeof internship?.location === "string"
         ? internship.location
-        : internship?.location?.city || 'India';
-    const stipend = internship?.stipend || 'Competitive';
-    const image = internship?.logo || 'https://hexaforces.netlify.app/og-default.png';
+        : internship?.location?.city || "India";
+    const stipend = internship?.stipend || "Competitive";
+    const image =
+      internship?.logo || "https://hexaforces.netlify.app/og-default.png";
 
     // Full preview text for social sharing
     const previewText = `${title} at ${company} | ${location} | ${stipend}`;
@@ -63,30 +67,42 @@ const handler: Handler = async (event, context) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>${escapeHtml(title)} - ${escapeHtml(company)} | Saksham Pathfinder</title>
-    <meta name="title" content="${escapeHtml(title)} - ${escapeHtml(company)} | Saksham Pathfinder">
+    <title>${escapeHtml(title)} - ${escapeHtml(
+      company
+    )} | Saksham AI</title>
+    <meta name="title" content="${escapeHtml(title)} - ${escapeHtml(
+      company
+    )} | Saksham AI">
     <meta name="description" content="${escapeHtml(description)}">
-    <meta name="keywords" content="internship, ${escapeHtml(company)}, ${escapeHtml(location)}, ${internship?.sector || 'opportunity'}">
+    <meta name="keywords" content="internship, ${escapeHtml(
+      company
+    )}, ${escapeHtml(location)}, ${internship?.sector || "opportunity"}">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hexaforces.netlify.app/internship/${internshipId}">
-    <meta property="og:title" content="${escapeHtml(title)} - ${escapeHtml(company)}">
+    <meta property="og:title" content="${escapeHtml(title)} - ${escapeHtml(
+      company
+    )}">
     <meta property="og:description" content="${escapeHtml(previewText)}">
     <meta property="og:image" content="${image}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Saksham Pathfinder">
+    <meta property="og:site_name" content="Saksham AI">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://hexaforces.netlify.app/internship/${internshipId}">
-    <meta property="twitter:title" content="${escapeHtml(title)} - ${escapeHtml(company)}">
+    <meta property="twitter:title" content="${escapeHtml(title)} - ${escapeHtml(
+      company
+    )}">
     <meta property="twitter:description" content="${escapeHtml(previewText)}">
     <meta property="twitter:image" content="${image}">
     
     <!-- LinkedIn -->
-    <meta property="linkedin:title" content="${escapeHtml(title)} - ${escapeHtml(company)}">
+    <meta property="linkedin:title" content="${escapeHtml(
+      title
+    )} - ${escapeHtml(company)}">
     <meta property="linkedin:description" content="${escapeHtml(description)}">
     <meta property="linkedin:image" content="${image}">
     
@@ -100,7 +116,7 @@ const handler: Handler = async (event, context) => {
     </script>
 </head>
 <body>
-    <p>Redirecting to Saksham Pathfinder...</p>
+    <p>Redirecting to Saksham AI...</p>
 </body>
 </html>
     `;
@@ -108,16 +124,16 @@ const handler: Handler = async (event, context) => {
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "public, max-age=3600", // Cache for 1 hour
       },
       body: html,
     };
   } catch (error) {
-    console.error('Error generating OG tags:', error);
+    console.error("Error generating OG tags:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to generate preview' }),
+      body: JSON.stringify({ error: "Failed to generate preview" }),
     };
   }
 };
@@ -126,13 +142,13 @@ const handler: Handler = async (event, context) => {
  * Escape HTML special characters to prevent XSS
  */
 function escapeHtml(text: string): string {
-  if (!text) return '';
+  if (!text) return "";
   return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 export { handler };

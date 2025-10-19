@@ -28,6 +28,8 @@ import { saveFilters, loadFilters } from '@/lib/filterPersistence';
 import { SmartFilterService } from '@/services/smartFilterService';
 import { fetchInternships } from '@/lib/dataExtractor';
 import type { Internship, ProfileData, FilterState } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { PublicFeaturesShowcase } from '@/components/PublicFeaturesShowcase';
 
 
 
@@ -387,6 +389,9 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
   }
 
 const Index = () => {
+  // Auth check
+  const { currentUser } = useAuth();
+  
   // SEO for homepage
   const seoProps = {
     title: 'Saksham AI - AI-Powered Internship Discovery Platform',
@@ -863,6 +868,13 @@ const Index = () => {
         )}
 
       <Hero onGetStartedClick={handleGetStartedClick} />
+      
+      {/* Public Features Showcase for Unauthenticated Users */}
+      {!currentUser && (
+        <section className="py-12 px-4 bg-muted/50">
+          <PublicFeaturesShowcase />
+        </section>
+      )}
       
       {/* Success Stories Section */}
       <section className="py-8 bg-background">

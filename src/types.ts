@@ -15,7 +15,7 @@ export interface Internship {
   posted_date: string;
   deadline?: string;
   application_deadline?: string;
-  work_mode: 'Remote' | 'On-site' | 'Hybrid';
+  work_mode: "Remote" | "On-site" | "Hybrid";
 }
 
 export interface ProfileData {

@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { FaTwitter, FaLinkedin, FaWhatsapp, FaFacebook } from "react-icons/fa";
+import { copyToClipboard } from "@/utils/clipboardUtils";
 
 interface ShareInternshipProps {
   internship: {
@@ -21,12 +22,17 @@ export const ShareInternship = ({ internship }: ShareInternshipProps) => {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      toast({ title: "Link copied to clipboard!" });
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast({ title: "Failed to copy link", variant: "destructive" });
+      const success = await copyToClipboard(shareUrl);
+      if (success) {
+        setCopied(true);
+        toast({ title: "Link copied to clipboard!" });
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        toast({ title: "Failed to copy link", description: "Please try using a different method", variant: "destructive" });
+      }
+    } catch (error) {
+      console.error('Copy error:', error);
+      toast({ title: "Failed to copy link", description: "Please try using a different method", variant: "destructive" });
     }
   };
 

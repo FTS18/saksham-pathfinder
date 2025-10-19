@@ -112,6 +112,22 @@ export const TitlePage = () => {
               Try Again
             </Button>
           </div>
+        ) : internships.length === 0 ? (
+          <div className="text-center py-12">
+            <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Data Temporarily Unavailable
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              We're optimizing our database. Please try again in a few moments, or check out our other internships.
+            </p>
+            <Button onClick={() => navigate('/')} className="mr-2">
+              Browse All Internships
+            </Button>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Retry
+            </Button>
+          </div>
         ) : internships.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {internships.map((internship, index) => (
@@ -153,3 +169,5 @@ export const TitlePage = () => {
     </div>
   );
 };
+
+export default TitlePage;

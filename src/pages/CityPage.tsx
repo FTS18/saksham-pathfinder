@@ -159,3 +159,5 @@ export const CityPage = () => {
     </div>
   );
 };
+
+export default CityPage;

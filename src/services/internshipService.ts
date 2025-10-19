@@ -99,9 +99,7 @@ export const getUserApplications = async (userId: string) => {
 
     // Fetch internship details for each application
     const internshipPromises = applications.map(async (app) => {
-      const internshipDoc = await getDoc(
-        doc(db, "internships", app.id)
-      );
+      const internshipDoc = await getDoc(doc(db, "internships", app.id));
       return {
         ...app,
         internship: internshipDoc.exists()

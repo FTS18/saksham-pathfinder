@@ -33,6 +33,7 @@ interface Internship {
   application_deadline?: string;
   posted_date?: string;
   apply_link?: string;
+  pmis_id?: string;
 }
 
 interface InternshipDetailsModalProps {
@@ -101,13 +102,13 @@ export const InternshipDetailsModal = ({
   const [prepGuide, setPrepGuide] = useState<string>('');
   const [loadingPrep, setLoadingPrep] = useState(false);
   
-  const isWishlisted = wishlistContext?.isInWishlist ? wishlistContext.isInWishlist(internship.id) : false;
+  const isWishlisted = wishlistContext?.isWishlisted ? wishlistContext.isWishlisted(internship.id) : false;
   
   // Make applyToInternship available globally for the button
   useEffect(() => {
-    window.applyToInternship = applyToInternship;
+    (window as any).applyToInternship = applyToInternship;
     return () => {
-      delete window.applyToInternship;
+      delete (window as any).applyToInternship;
     };
   }, [applyToInternship]);
 
@@ -121,9 +122,9 @@ export const InternshipDetailsModal = ({
   
   // Make addNotification available globally
   useEffect(() => {
-    const notificationContext = document.querySelector('[data-notification-context]');
+    const notificationContext = document.querySelector('[data-notification-context]') as any;
     if (notificationContext && notificationContext.addNotification) {
-      window.addNotification = notificationContext.addNotification;
+      (window as any).addNotification = notificationContext.addNotification;
     }
   }, []);
   

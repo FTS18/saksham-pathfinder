@@ -7,6 +7,7 @@ import { Building, MapPin, DollarSign, Calendar, Users, Briefcase, ArrowLeft, Al
 import { InternshipCard } from '@/components/InternshipCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { FirestoreService } from '@/services/firestoreService';
+import { fetchInternships } from '@/lib/dataExtractor';
 import type { ProfileData } from '@/types';
 
 interface CompanyInternship {
@@ -177,9 +178,15 @@ const CompanyPage = () => {
 
   const loadCompanyData = async (companyName: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const response = await fetch('/internships.json');
-      const allInternships = await response.json();
+      const allInternships = await fetchInternships();
+      
+      if (allInternships.length === 0) {
+        setError('Data temporarily unavailable - our database is being optimized. Please try again in a few moments.');
+        setLoading(false);
+        return;
+      }
       
       // Handle URL decoding and normalization
       let normalizedCompany = decodeURIComponent(companyName).toLowerCase().trim();

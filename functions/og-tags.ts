@@ -1,6 +1,6 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import * as cors from 'cors';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import * as cors from "cors";
 
 admin.initializeApp();
 
@@ -13,17 +13,21 @@ const corsHandler = cors({ origin: true });
 export const getInternshipForOG = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     try {
-      const internshipId = req.query.id || req.path?.split('/').pop();
+      const internshipId = req.query.id || req.path?.split("/").pop();
 
       if (!internshipId) {
-        return res.status(400).json({ error: 'Internship ID required' });
+        return res.status(400).json({ error: "Internship ID required" });
       }
 
       // Fetch from Firestore
-      const doc = await admin.firestore().collection('internships').doc(internshipId).get();
+      const doc = await admin
+        .firestore()
+        .collection("internships")
+        .doc(internshipId)
+        .get();
 
       if (!doc.exists) {
-        return res.status(404).json({ error: 'Internship not found' });
+        return res.status(404).json({ error: "Internship not found" });
       }
 
       const data = doc.data();
@@ -31,18 +35,18 @@ export const getInternshipForOG = functions.https.onRequest((req, res) => {
       // Return only necessary fields for OG tags (keep response small)
       return res.json({
         id: doc.id,
-        title: data?.title || 'Internship',
-        company: data?.company || 'Company',
-        description: data?.description || '',
-        location: data?.location || 'India',
-        stipend: data?.stipend || 'Competitive',
-        sector: data?.sector || 'Technology',
+        title: data?.title || "Internship",
+        company: data?.company || "Company",
+        description: data?.description || "",
+        location: data?.location || "India",
+        stipend: data?.stipend || "Competitive",
+        sector: data?.sector || "Technology",
         logo: data?.logo || null,
-        work_mode: data?.work_mode || 'Not specified',
+        work_mode: data?.work_mode || "Not specified",
       });
     } catch (error) {
-      console.error('Error fetching internship:', error);
-      return res.status(500).json({ error: 'Failed to fetch internship data' });
+      console.error("Error fetching internship:", error);
+      return res.status(500).json({ error: "Failed to fetch internship data" });
     }
   });
 });
@@ -54,16 +58,20 @@ export const getInternshipForOG = functions.https.onRequest((req, res) => {
 export const getInternshipsForOG = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
     try {
-      const ids = (req.query.ids as string)?.split(',') || [];
+      const ids = (req.query.ids as string)?.split(",") || [];
 
       if (ids.length === 0) {
-        return res.status(400).json({ error: 'Internship IDs required' });
+        return res.status(400).json({ error: "Internship IDs required" });
       }
 
       // Fetch multiple internships
       const internships = await Promise.all(
         ids.map(async (id) => {
-          const doc = await admin.firestore().collection('internships').doc(id).get();
+          const doc = await admin
+            .firestore()
+            .collection("internships")
+            .doc(id)
+            .get();
           return doc.exists ? { id: doc.id, ...doc.data() } : null;
         })
       );
@@ -71,7 +79,7 @@ export const getInternshipsForOG = functions.https.onRequest((req, res) => {
       const validInternships = internships.filter((i) => i !== null);
 
       if (validInternships.length === 0) {
-        return res.status(404).json({ error: 'No internships found' });
+        return res.status(404).json({ error: "No internships found" });
       }
 
       return res.json({
@@ -79,8 +87,8 @@ export const getInternshipsForOG = functions.https.onRequest((req, res) => {
         internships: validInternships,
       });
     } catch (error) {
-      console.error('Error fetching internships:', error);
-      return res.status(500).json({ error: 'Failed to fetch internship data' });
+      console.error("Error fetching internships:", error);
+      return res.status(500).json({ error: "Failed to fetch internship data" });
     }
   });
 });

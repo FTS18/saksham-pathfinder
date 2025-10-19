@@ -2,23 +2,40 @@
 export const fetchInternships = async (): Promise<any[]> => {
   try {
     // Try Firebase first
+    let firebaseError: any = null;
     try {
       const { getAllInternships } = await import(
         "@/services/internshipService"
       );
       const data = await getAllInternships();
-      return Array.isArray(data) ? data : [];
-    } catch (firebaseError) {
-      console.warn("Firebase unavailable, falling back to JSON");
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    } catch (err) {
+      firebaseError = err;
+      console.warn("Firebase unavailable or returned empty data:", err);
     }
 
     // Fallback to JSON file
-    const response = await fetch("/internships.json");
-    if (!response.ok) throw new Error("Failed to fetch");
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
+    try {
+      const response = await fetch("/internships.json");
+      if (!response.ok) throw new Error("Failed to fetch internships.json");
+      const data = await response.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    } catch (jsonError) {
+      console.warn("JSON fallback failed:", jsonError);
+    }
+
+    // If we get here, data loading failed - but don't return empty, let caller know
+    if (firebaseError) {
+      // Firebase quota or error - this is expected during optimization
+      console.warn("Data unavailable (Firebase quota likely exceeded)");
+    }
+    return [];
   } catch (error) {
-    console.error("Failed to fetch internships:", error);
+    console.error("Critical error fetching internships:", error);
     return [];
   }
 };
