@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Calendar, Building2, CheckCircle, Clock, XCircle, Trash2, Eye, Download } from 'lucide-react';
 import { Application } from '@/services/applicationService';
+import { ApplicationDetailsModal } from '@/components/ApplicationDetailsModal';
 import { fetchInternships } from '@/lib/dataExtractor';
 import { Internship } from '@/types';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +18,8 @@ export const ApplicationDashboard = () => {
   const [internships, setInternships] = useState<Map<string, Internship>>(new Map());
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest'>('recent');
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -272,8 +275,11 @@ export const ApplicationDashboard = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate(`/internship/${application.internshipId}`)}
-                            title="View internship details"
+                            onClick={() => {
+                              setSelectedApplication(application);
+                              setIsDetailsModalOpen(true);
+                            }}
+                            title="View application details"
                           >
                             <Eye className="w-4 h-4" />
                             <span className="hidden sm:inline ml-1">View</span>
@@ -355,6 +361,23 @@ export const ApplicationDashboard = () => {
             </li>
           </ul>
         </div>
+
+        {/* Application Details Modal */}
+        {selectedApplication && (
+          <ApplicationDetailsModal
+            application={selectedApplication}
+            internship={internships.get(selectedApplication.internshipId) || null}
+            isOpen={isDetailsModalOpen}
+            onClose={() => setIsDetailsModalOpen(false)}
+            onWithdraw={async () => {
+              if (selectedApplication.id) {
+                await withdrawApplication(selectedApplication.id);
+                setIsDetailsModalOpen(false);
+                await refreshApplications();
+              }
+            }}
+          />
+        )}
       </div>
     </div>
   );
