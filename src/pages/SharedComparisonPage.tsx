@@ -8,6 +8,7 @@ import { Internship } from '@/types';
 import { fetchInternships } from '@/lib/dataExtractor';
 import { SkeletonCard } from '@/components/SkeletonLoaders';
 import { exportComparisonAsPDF } from '@/lib/pdfExporter';
+import { injectOGTags, generateComparisonOGTags } from '@/lib/ogTagInjector';
 import { useToast } from '@/hooks/use-toast';
 
 export const SharedComparisonPage = () => {
@@ -41,6 +42,10 @@ export const SharedComparisonPage = () => {
           setError('No matching internships found. The data may have been updated.');
         } else {
           setInternships(selectedInternships);
+          
+          // Inject OG tags for social sharing
+          const ogConfig = generateComparisonOGTags(selectedInternships);
+          injectOGTags(ogConfig);
         }
       } catch (err) {
         console.error('Failed to load shared comparison:', err);
