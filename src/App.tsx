@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 
 import { useNavigationLoading } from "./hooks/useNavigationLoading";
 import { useTimeTracking } from "./hooks/useTimeTracking";
@@ -35,48 +36,48 @@ import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import { registerSW, preloadImages, requestNotificationPermission } from "@/utils/pwa";
 
+// Lazy load page components for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const About = lazy(() => import("./pages/About"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
+const Profile = lazy(() => import("./pages/Profile"));
+const PublicProfile = lazy(() => import("./pages/PublicProfile"));
+const OnboardingSteps = lazy(() => import("./pages/OnboardingSteps"));
+const SimplifiedOnboarding = lazy(() => import("./pages/SimplifiedOnboarding"));
+const ImprovedOnboarding = lazy(() => import("./pages/ImprovedOnboarding"));
+const RecruiterOnboarding = lazy(() => import("./pages/RecruiterOnboarding"));
+const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
+const Referrals = lazy(() => import("./pages/Referrals"));
+const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
+const NewsEvents = lazy(() => import("./pages/NewsEvents"));
+const Tutorials = lazy(() => import("./pages/Tutorials"));
+const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
+const AdminDemo = lazy(() => import("./pages/AdminDemo"));
+const CompanyPage = lazy(() => import("./pages/CompanyPage"));
+const SkillPage = lazy(() => import("./pages/SkillPage"));
+const SectorPage = lazy(() => import("./pages/SectorPage"));
+const CityPage = lazy(() => import("./pages/CityPage"));
+const SharedComparisonPage = lazy(() => import("./pages/SharedComparisonPage"));
+const InternshipDetailPage = lazy(() => import("./pages/InternshipDetailPage"));
+const TitlePage = lazy(() => import("./pages/TitlePage"));
+const SearchPage = lazy(() => import("./pages/SearchPage"));
+const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
+const Applications = lazy(() => import("./pages/Applications"));
+const ApplicationDashboard = lazy(() => import("./pages/ApplicationDashboard"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const ReportIssuePage = lazy(() => import("./pages/ReportIssuePage"));
+const Sitemap = lazy(() => import("./pages/Sitemap"));
 
-// Import all pages directly for component-based routing
-import Index from "./pages/Index";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import NotFound from "./pages/NotFound";
-import Wishlist from "./pages/Wishlist";
-import Profile from "./pages/Profile";
-import PublicProfile from "./pages/PublicProfile";
-import OnboardingSteps from "./pages/OnboardingSteps";
-import SimplifiedOnboarding from "./pages/SimplifiedOnboarding";
-import ImprovedOnboarding from "./pages/ImprovedOnboarding";
-import RecruiterOnboarding from "./pages/RecruiterOnboarding";
-import Referrals from "./pages/Referrals";
-import DashboardSettings from "./pages/DashboardSettings";
-import NewsEvents from "./pages/NewsEvents";
-import Tutorials from "./pages/Tutorials";
-import RecruiterDashboard from "./pages/RecruiterDashboard";
-import AdminDemo from "./pages/AdminDemo";
-import CompanyPage from "./pages/CompanyPage";
-import { SkillPage } from "./pages/SkillPage";
-import { SectorPage } from "./pages/SectorPage";
-import { CityPage } from "./pages/CityPage";
-import { SharedComparisonPage } from "./pages/SharedComparisonPage";
-import { InternshipDetailPage } from "./pages/InternshipDetailPage";
-import { TitlePage } from "./pages/TitlePage";
-import { SearchPage } from "./pages/SearchPage";
-import StudentDashboard from "./pages/StudentDashboard";
-import Applications from "./pages/Applications";
-import ApplicationDashboard from "./pages/ApplicationDashboard";
-import FAQ from "./pages/FAQ";
-import ReportIssuePage from "./pages/ReportIssuePage";
-import Sitemap from "./pages/Sitemap";
-
-// Recruiter portal imports
-import { RecruiterLayout } from "./pages/recruiter/RecruiterLayout";
-import RecruiterDashboardNew from "./pages/recruiter/RecruiterDashboard";
-import PostJob from "./pages/recruiter/PostJob";
-import ManageInternships from "./pages/recruiter/ManageInternships";
-import Candidates from "./pages/recruiter/Candidates";
-import RecruiterApplications from "./pages/recruiter/RecruiterApplications";
+// Lazy load recruiter pages
+const RecruiterLayout = lazy(() => import("./pages/recruiter/RecruiterLayout").then(m => ({ default: m.RecruiterLayout })));
+const RecruiterDashboardNew = lazy(() => import("./pages/recruiter/RecruiterDashboard"));
+const PostJob = lazy(() => import("./pages/recruiter/PostJob"));
+const ManageInternships = lazy(() => import("./pages/recruiter/ManageInternships"));
+const Candidates = lazy(() => import("./pages/recruiter/Candidates"));
+const RecruiterApplications = lazy(() => import("./pages/recruiter/RecruiterApplications"));
 
 const queryClient = new QueryClient();
 
@@ -158,25 +159,26 @@ const AppContent = () => {
         {isNavigationLoading && <LoadingSpinner />}
         <InstallPrompt />
         
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Layout><Index /></Layout>} />
-          <Route path="/about" element={<Layout><About /></Layout>} />
-          <Route path="/faq" element={<Layout><FAQ /></Layout>} />
-          <Route path="/sitemap" element={<Layout><Sitemap /></Layout>} />
-          <Route path="/report-issue" element={<Layout><ReportIssuePage /></Layout>} />
-          <Route path="/news-events" element={<Layout><NewsEvents /></Layout>} />
-          <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
-          <Route path="/login" element={<Layout><Login /></Layout>} />
-          <Route path="/register" element={<Layout><Register /></Layout>} />
-          <Route path="/profiles/:username" element={<Layout><PublicProfile /></Layout>} />
-          <Route path="/u/*" element={<Layout><PublicProfile /></Layout>} />
-          <Route path="/company/:company" element={<Layout><CompanyPage /></Layout>} />
-          <Route path="/skill/:skill" element={<Layout><SkillPage /></Layout>} />
-          <Route path="/sector/:sector" element={<Layout><SectorPage /></Layout>} />
-          <Route path="/city/:city" element={<Layout><CityPage /></Layout>} />
-          <Route path="/title/:title" element={<Layout><TitlePage /></Layout>} />
-          <Route path="/search" element={<Layout><SearchPage /></Layout>} />
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Layout><Index /></Layout>} />
+            <Route path="/about" element={<Layout><About /></Layout>} />
+            <Route path="/faq" element={<Layout><FAQ /></Layout>} />
+            <Route path="/sitemap" element={<Layout><Sitemap /></Layout>} />
+            <Route path="/report-issue" element={<Layout><ReportIssuePage /></Layout>} />
+            <Route path="/news-events" element={<Layout><NewsEvents /></Layout>} />
+            <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
+            <Route path="/login" element={<Layout><Login /></Layout>} />
+            <Route path="/register" element={<Layout><Register /></Layout>} />
+            <Route path="/profiles/:username" element={<Layout><PublicProfile /></Layout>} />
+            <Route path="/u/:username" element={<Layout><UserProfilePage /></Layout>} />
+            <Route path="/company/:company" element={<Layout><CompanyPage /></Layout>} />
+            <Route path="/skill/:skill" element={<Layout><SkillPage /></Layout>} />
+            <Route path="/sector/:sector" element={<Layout><SectorPage /></Layout>} />
+            <Route path="/city/:city" element={<Layout><CityPage /></Layout>} />
+            <Route path="/title/:title" element={<Layout><TitlePage /></Layout>} />
+            <Route path="/search" element={<Layout><SearchPage /></Layout>} />
           <Route path="/internship/:id" element={<Layout><InternshipDetailPage /></Layout>} />
           <Route path="/shared-comparison" element={<Layout><SharedComparisonPage /></Layout>} />
           <Route path="/admin-demo" element={<Layout><AdminDemo /></Layout>} />
@@ -199,7 +201,8 @@ const AppContent = () => {
           <Route path="/recruiter/dashboard" element={<Navigate to="/recruiter" replace />} />
           
           <Route path="*" element={<Layout><NotFound /></Layout>} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
     </OnboardingRouter>
   );

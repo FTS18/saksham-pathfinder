@@ -137,4 +137,82 @@ export const useInternshipsWithFallback = () => {
   };
 };
 
+// Hooks for FirestoreService queries (with caching)
+// These are for advanced filtering queries
+
+export const useInternshipsByCity = (city: string, pageSize: number = 50) => {
+  return useQuery({
+    queryKey: ['internships-by-city', city],
+    queryFn: async () => {
+      const { FirestoreService } = await import('@/services/firestoreService');
+      return FirestoreService.getInternshipsByCity(city, pageSize);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!city,
+    retry: 2,
+  });
+};
+
+export const useInternshipsBySector = (sector: string, pageSize: number = 50) => {
+  return useQuery({
+    queryKey: ['internships-by-sector', sector],
+    queryFn: async () => {
+      const { FirestoreService } = await import('@/services/firestoreService');
+      return FirestoreService.getInternshipsBySector(sector, pageSize);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!sector,
+    retry: 2,
+  });
+};
+
+export const useInternshipsByCompany = (company: string, pageSize: number = 50) => {
+  return useQuery({
+    queryKey: ['internships-by-company', company],
+    queryFn: async () => {
+      const { FirestoreService } = await import('@/services/firestoreService');
+      return FirestoreService.getInternshipsByCompany(company, pageSize);
+    },
+    staleTime: 15 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!company,
+    retry: 2,
+  });
+};
+
+export const useInternshipsBySkill = (skill: string, pageSize: number = 50) => {
+  return useQuery({
+    queryKey: ['internships-by-skill', skill],
+    queryFn: async () => {
+      const { FirestoreService } = await import('@/services/firestoreService');
+      return FirestoreService.getInternshipsBySkill(skill, pageSize);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!skill,
+    retry: 2,
+  });
+};
+
+export const useInternshipsByTitle = (title: string, pageSize: number = 50) => {
+  return useQuery({
+    queryKey: ['internships-by-title', title],
+    queryFn: async () => {
+      const { FirestoreService } = await import('@/services/firestoreService');
+      return FirestoreService.getInternshipsByTitle(title, pageSize);
+    },
+    staleTime: 10 * 60 * 1000,
+    gcTime: 20 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: !!title,
+    retry: 2,
+  });
+};
+
 export default useInternships;

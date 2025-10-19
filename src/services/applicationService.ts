@@ -9,6 +9,7 @@ import {
   getDocs,
   serverTimestamp,
   QueryConstraint,
+  writeBatch,
 } from "firebase/firestore";
 
 export interface Application {
@@ -60,6 +61,53 @@ export class ApplicationService {
       return docRef.id;
     } catch (error) {
       console.error("Error creating application:", error);
+      throw error;
+    }
+  }
+
+  // Batched version: Create application and notification in single operation
+  static async createApplicationWithNotification(
+    application: Omit<Application, "id" | "appliedAt" | "updatedAt">,
+    notificationData?: {
+      title: string;
+      message: string;
+      type: string;
+      priority?: string;
+      category?: string;
+      data?: any;
+    }
+  ): Promise<string> {
+    try {
+      const batch = writeBatch(db);
+      
+      // Create application document reference
+      const appRef = doc(collection(db, this.COLLECTION));
+      batch.set(appRef, {
+        ...application,
+        status: application.status || "pending",
+        appliedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      // Create notification document reference (if notification data provided)
+      if (notificationData) {
+        const notifRef = doc(collection(db, "notifications"));
+        batch.set(notifRef, {
+          ...notificationData,
+          userId: application.userId,
+          read: false,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          priority: notificationData.priority || "medium",
+          category: notificationData.category || "system",
+        });
+      }
+
+      // Commit both operations in single batch
+      await batch.commit();
+      return appRef.id;
+    } catch (error) {
+      console.error("Error creating application with notification:", error);
       throw error;
     }
   }

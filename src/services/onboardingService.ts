@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc, updateDoc, increment } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, increment, writeBatch } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import {
   StudentOnboardingData,
@@ -74,31 +74,35 @@ class OnboardingService {
         updatedAt: new Date().toISOString(),
       };
 
-      // Save to Firebase with retry logic
+      // Save to Firebase with retry logic using writeBatch for better performance
       const docRef = doc(db, "profiles", userId);
+      const referralRef = doc(db, "referrals", userReferralCode);
+      
       let attempts = 0;
       const maxAttempts = 3;
 
       while (attempts < maxAttempts) {
         try {
-          await setDoc(docRef, profileData, { merge: true });
+          const batch = writeBatch(db);
+          
+          // Batch profile update
+          batch.set(docRef, profileData, { merge: true });
+          
+          // Batch referral mapping (only if new)
+          if (!existingProfile?.referralCode) {
+            batch.set(referralRef, {
+              userId: userId,
+              createdAt: new Date().toISOString(),
+            });
+          }
+          
+          // Commit all writes in single operation
+          await batch.commit();
           break;
         } catch (error) {
           attempts++;
           if (attempts === maxAttempts) throw error;
           await new Promise((resolve) => setTimeout(resolve, 1000 * attempts));
-        }
-      }
-
-      // Create referral code mapping (non-blocking)
-      if (!existingProfile?.referralCode) {
-        try {
-          await setDoc(doc(db, "referrals", userReferralCode), {
-            userId: userId,
-            createdAt: new Date().toISOString(),
-          });
-        } catch (error) {
-          console.warn("Referral code mapping failed:", error);
         }
       }
 

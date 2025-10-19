@@ -13,6 +13,7 @@ import {
   serverTimestamp,
   arrayUnion,
   arrayRemove,
+  writeBatch,
 } from 'firebase/firestore';
 
 export interface UserProfile {
@@ -56,24 +57,30 @@ class SocialService {
     }
 
     try {
+      // Batch all write operations together
+      const batch = writeBatch(db);
+
       // Create follow relationship
       const followRef = doc(
         collection(db, 'profiles', followerId, 'following'),
         followingId
       );
-      await setDoc(followRef, {
+      batch.set(followRef, {
         userId: followingId,
         createdAt: serverTimestamp(),
       });
 
       // Update follower count
       const followersRef = doc(db, 'profiles', followingId);
-      await updateDoc(followersRef, {
+      batch.update(followersRef, {
         followerCount: increment(1),
         updatedAt: serverTimestamp(),
       });
 
-      // Record profile view
+      // Commit all operations in single batch
+      await batch.commit();
+
+      // Record profile view in separate operation (not critical for batch)
       await this.recordProfileView(followerId, followingId);
     } catch (error) {
       console.error('Error following user:', error);

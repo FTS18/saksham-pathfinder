@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useWishlist } from '@/contexts/WishlistContext';
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { useFeaturedInternships, useTrendingInternships } from '@/hooks/useInternships';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +34,11 @@ const StudentDashboard = () => {
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
+  
+  // Use React Query hooks for caching - these will automatically cache results
+  const { data: featuredInternships, isLoading: featuredLoading } = useFeaturedInternships();
+  const { data: trendingInternships, isLoading: trendingLoading } = useTrendingInternships();
+  
   const [dashboardData, setDashboardData] = useState({
     profileCompletion: 0,
     aiMatchScore: 0,
@@ -55,14 +59,7 @@ const StudentDashboard = () => {
     if (currentUser) {
       loadDashboardData();
     }
-  }, [currentUser]);
-
-  const getGreeting = () => {
-    const hour = currentTime.getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
+  }, [currentUser, featuredInternships, trendingInternships]);
 
   const loadDashboardData = async () => {
     try {
@@ -76,17 +73,12 @@ const StudentDashboard = () => {
       const completedFields = profileFields.filter(field => userProfile[field] && userProfile[field].length > 0);
       const profileCompletion = Math.round((completedFields.length / profileFields.length) * 100);
       
-      // Get top internships from Firebase
-      const internshipsQuery = query(
-        collection(db, 'internships'),
-        orderBy('posted_date', 'desc'),
-        limit(3)
-      );
-      const internshipsSnapshot = await getDocs(internshipsQuery);
-      const topInternships = internshipsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // Use featured internships (cached) or trending (cached) - no direct Firebase query needed!
+      const topInternships = (featuredInternships && featuredInternships.length > 0) 
+        ? featuredInternships.slice(0, 3)
+        : (trendingInternships && trendingInternships.length > 0)
+        ? trendingInternships.slice(0, 3)
+        : [];
       
       // Mock AI score based on profile completeness and skills
       const aiScore = Math.min(95, profileCompletion + (userProfile.skills?.length || 0) * 2);
@@ -107,7 +99,7 @@ const StudentDashboard = () => {
           name: skill,
           progress: Math.floor(Math.random() * 30) + 60
         })) || [],
-        topInternships: topInternships.slice(0, 3),
+        topInternships,
         notifications: [
           { message: 'New match found!', time: '2 hours ago', icon: 'Target' },
           { message: 'Application accepted', time: '1 day ago', icon: 'CheckCircle' }

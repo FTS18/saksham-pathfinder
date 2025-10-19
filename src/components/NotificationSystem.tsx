@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
-import { collection, query, where, orderBy, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 interface Notification {
@@ -22,29 +22,39 @@ export const NotificationSystem = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showPanel, setShowPanel] = useState(false);
 
+  // Load initial notifications from localStorage
   useEffect(() => {
-    // Load notifications from localStorage
     const saved = localStorage.getItem('notifications');
     if (saved) {
       setNotifications(JSON.parse(saved));
     }
+  }, []);
 
-    // Listen for Firebase notifications if user is logged in
-    if (currentUser) {
-      const q = query(
-        collection(db, 'notifications'),
-        where('userId', '==', currentUser.uid)
-      );
+  // Only fetch from Firebase when panel is opened
+  // This reduces read operations significantly
+  useEffect(() => {
+    if (!showPanel || !currentUser) {
+      return;
+    }
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const firebaseNotifications = snapshot.docs.map(doc => ({
-          id: doc.id,
-          title: doc.data().title,
-          message: doc.data().message,
-          type: doc.data().type,
-          timestamp: new Date(doc.data().createdAt),
-          read: doc.data().read,
-          points: doc.data().points
+    const fetchNotifications = async () => {
+      try {
+        const q = query(
+          collection(db, 'notifications'),
+          where('userId', '==', currentUser.uid)
+        );
+
+        // Use getDocs instead of onSnapshot to fetch only when needed
+        // This is a single read operation instead of continuous listening
+        const snapshot = await getDocs(q);
+        const firebaseNotifications = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          title: docSnap.data().title,
+          message: docSnap.data().message,
+          type: docSnap.data().type,
+          timestamp: new Date(docSnap.data().createdAt),
+          read: docSnap.data().read,
+          points: docSnap.data().points
         }));
         
         // Merge with local notifications
@@ -54,11 +64,13 @@ export const NotificationSystem = () => {
           .slice(0, 50);
         
         setNotifications(allNotifications);
-      });
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
 
-      return () => unsubscribe();
-    }
-  }, [currentUser]);
+    fetchNotifications();
+  }, [showPanel, currentUser]);
 
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {
