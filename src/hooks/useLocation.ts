@@ -66,20 +66,28 @@ export const useLocation = () => {
 
     const fallbackToIPLocation = async () => {
       try {
-        const response = await fetch('https://ipapi.co/json/');
-        if (response.ok) {
-          const data = await response.json();
-          setLocation({
-            city: data.city || 'Delhi',
-            country: data.country_name || 'India',
-            lat: data.latitude,
-            lng: data.longitude
-          });
-        } else {
-          setLocation({ city: 'Delhi', country: 'India' });
+        // Try ipapi.co first (with CORS handling)
+        try {
+          const response = await fetch('https://ipapi.co/json/');
+          if (response.ok) {
+            const data = await response.json();
+            setLocation({
+              city: data.city || 'Delhi',
+              country: data.country_name || 'India',
+              lat: data.latitude,
+              lng: data.longitude
+            });
+            return;
+          }
+        } catch (ipErr) {
+          // ipapi.co failed, try fallback
+          console.debug('ipapi.co geolocation failed, using default location');
         }
+
+        // Fallback to default location if geolocation API fails
+        setLocation({ city: 'Delhi', country: 'India' });
       } catch (err) {
-        setError('Failed to detect location');
+        console.debug('Location detection error:', err);
         setLocation({ city: 'Delhi', country: 'India' });
       } finally {
         setLoading(false);

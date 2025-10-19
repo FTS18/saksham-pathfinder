@@ -35,6 +35,14 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   
+  // Function to get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+  
   // Use React Query hooks for caching - these will automatically cache results
   const { data: featuredInternships, isLoading: featuredLoading } = useFeaturedInternships();
   const { data: trendingInternships, isLoading: trendingLoading } = useTrendingInternships();
@@ -74,9 +82,9 @@ const StudentDashboard = () => {
       const profileCompletion = Math.round((completedFields.length / profileFields.length) * 100);
       
       // Use featured internships (cached) or trending (cached) - no direct Firebase query needed!
-      const topInternships = (featuredInternships && featuredInternships.length > 0) 
+      const topInternships = (Array.isArray(featuredInternships) && featuredInternships.length > 0) 
         ? featuredInternships.slice(0, 3)
-        : (trendingInternships && trendingInternships.length > 0)
+        : (Array.isArray(trendingInternships) && trendingInternships.length > 0)
         ? trendingInternships.slice(0, 3)
         : [];
       

@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { NotificationService } from '@/services/notificationService';
+import { useQuery } from "@tanstack/react-query";
+import { NotificationService } from "@/services/notificationService";
 
 /**
  * Hook to fetch user notifications with caching
@@ -14,9 +14,9 @@ export const useNotifications = (
   enabled: boolean = true
 ) => {
   return useQuery({
-    queryKey: ['notifications', userId],
+    queryKey: ["notifications", userId],
     queryFn: () => {
-      if (!userId) throw new Error('No user ID provided');
+      if (!userId) throw new Error("No user ID provided");
       return NotificationService.getUserNotifications(userId, limitCount);
     },
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
@@ -38,10 +38,13 @@ export const useUnreadNotificationCount = (
   enabled: boolean = true
 ) => {
   return useQuery({
-    queryKey: ['unread-notifications-count', userId],
+    queryKey: ["unread-notifications-count", userId],
     queryFn: async () => {
       if (!userId) return 0;
-      const notifications = await NotificationService.getUserNotifications(userId, 100);
+      const notifications = await NotificationService.getUserNotifications(
+        userId,
+        100
+      );
       return notifications.filter((n: any) => !n.read).length;
     },
     staleTime: 1 * 60 * 1000, // Cache for 1 minute

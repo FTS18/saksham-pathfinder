@@ -1,4 +1,11 @@
-import { doc, setDoc, getDoc, updateDoc, increment, writeBatch } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  increment,
+  writeBatch,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import {
   StudentOnboardingData,
@@ -77,17 +84,17 @@ class OnboardingService {
       // Save to Firebase with retry logic using writeBatch for better performance
       const docRef = doc(db, "profiles", userId);
       const referralRef = doc(db, "referrals", userReferralCode);
-      
+
       let attempts = 0;
       const maxAttempts = 3;
 
       while (attempts < maxAttempts) {
         try {
           const batch = writeBatch(db);
-          
+
           // Batch profile update
           batch.set(docRef, profileData, { merge: true });
-          
+
           // Batch referral mapping (only if new)
           if (!existingProfile?.referralCode) {
             batch.set(referralRef, {
@@ -95,7 +102,7 @@ class OnboardingService {
               createdAt: new Date().toISOString(),
             });
           }
-          
+
           // Commit all writes in single operation
           await batch.commit();
           break;

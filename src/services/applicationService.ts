@@ -79,7 +79,7 @@ export class ApplicationService {
   ): Promise<string> {
     try {
       const batch = writeBatch(db);
-      
+
       // Create application document reference
       const appRef = doc(collection(db, this.COLLECTION));
       batch.set(appRef, {

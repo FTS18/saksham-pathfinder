@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from "@/lib/firebase";
 import {
   collection,
   doc,
@@ -14,7 +14,7 @@ import {
   arrayUnion,
   arrayRemove,
   writeBatch,
-} from 'firebase/firestore';
+} from "firebase/firestore";
 
 export interface UserProfile {
   uid: string;
@@ -53,7 +53,7 @@ class SocialService {
   // Follow a user
   async followUser(followerId: string, followingId: string): Promise<void> {
     if (followerId === followingId) {
-      throw new Error('Cannot follow yourself');
+      throw new Error("Cannot follow yourself");
     }
 
     try {
@@ -62,7 +62,7 @@ class SocialService {
 
       // Create follow relationship
       const followRef = doc(
-        collection(db, 'profiles', followerId, 'following'),
+        collection(db, "profiles", followerId, "following"),
         followingId
       );
       batch.set(followRef, {
@@ -71,7 +71,7 @@ class SocialService {
       });
 
       // Update follower count
-      const followersRef = doc(db, 'profiles', followingId);
+      const followersRef = doc(db, "profiles", followingId);
       batch.update(followersRef, {
         followerCount: increment(1),
         updatedAt: serverTimestamp(),
@@ -83,7 +83,7 @@ class SocialService {
       // Record profile view in separate operation (not critical for batch)
       await this.recordProfileView(followerId, followingId);
     } catch (error) {
-      console.error('Error following user:', error);
+      console.error("Error following user:", error);
       throw error;
     }
   }
@@ -93,19 +93,19 @@ class SocialService {
     try {
       // Remove follow relationship
       const followRef = doc(
-        collection(db, 'profiles', followerId, 'following'),
+        collection(db, "profiles", followerId, "following"),
         followingId
       );
       await deleteDoc(followRef);
 
       // Decrement follower count
-      const followersRef = doc(db, 'profiles', followingId);
+      const followersRef = doc(db, "profiles", followingId);
       await updateDoc(followersRef, {
         followerCount: increment(-1),
         updatedAt: serverTimestamp(),
       });
     } catch (error) {
-      console.error('Error unfollowing user:', error);
+      console.error("Error unfollowing user:", error);
       throw error;
     }
   }
@@ -114,13 +114,13 @@ class SocialService {
   async isFollowing(followerId: string, followingId: string): Promise<boolean> {
     try {
       const followRef = doc(
-        collection(db, 'profiles', followerId, 'following'),
+        collection(db, "profiles", followerId, "following"),
         followingId
       );
       const followSnap = await getDoc(followRef);
       return followSnap.exists();
     } catch (error) {
-      console.error('Error checking follow status:', error);
+      console.error("Error checking follow status:", error);
       return false;
     }
   }
@@ -128,12 +128,12 @@ class SocialService {
   // Get user's followers
   async getFollowers(userId: string): Promise<UserProfile[]> {
     try {
-      const followersRef = collection(db, 'profiles', userId, 'followers');
+      const followersRef = collection(db, "profiles", userId, "followers");
       const followersSnap = await getDocs(followersRef);
 
       const followers: UserProfile[] = [];
       for (const followerDoc of followersSnap.docs) {
-        const followerData = await getDoc(doc(db, 'profiles', followerDoc.id));
+        const followerData = await getDoc(doc(db, "profiles", followerDoc.id));
         if (followerData.exists()) {
           followers.push({
             uid: followerDoc.id,
@@ -144,7 +144,7 @@ class SocialService {
 
       return followers;
     } catch (error) {
-      console.error('Error getting followers:', error);
+      console.error("Error getting followers:", error);
       return [];
     }
   }
@@ -152,12 +152,14 @@ class SocialService {
   // Get users that user is following
   async getFollowing(userId: string): Promise<UserProfile[]> {
     try {
-      const followingRef = collection(db, 'profiles', userId, 'following');
+      const followingRef = collection(db, "profiles", userId, "following");
       const followingSnap = await getDocs(followingRef);
 
       const following: UserProfile[] = [];
       for (const followingDoc of followingSnap.docs) {
-        const followingData = await getDoc(doc(db, 'profiles', followingDoc.id));
+        const followingData = await getDoc(
+          doc(db, "profiles", followingDoc.id)
+        );
         if (followingData.exists()) {
           following.push({
             uid: followingDoc.id,
@@ -168,7 +170,7 @@ class SocialService {
 
       return following;
     } catch (error) {
-      console.error('Error getting following list:', error);
+      console.error("Error getting following list:", error);
       return [];
     }
   }
@@ -179,54 +181,61 @@ class SocialService {
       const followers = await this.getFollowers(userId);
       const following = await this.getFollowing(userId);
 
-      const followerIds = new Set(followers.map(f => f.uid));
-      const mutuals = following.filter(f => followerIds.has(f.uid));
+      const followerIds = new Set(followers.map((f) => f.uid));
+      const mutuals = following.filter((f) => followerIds.has(f.uid));
 
       return mutuals;
     } catch (error) {
-      console.error('Error getting mutual follows:', error);
+      console.error("Error getting mutual follows:", error);
       return [];
     }
   }
 
   // Record profile view
-  async recordProfileView(viewerId: string, viewedUserId: string): Promise<void> {
+  async recordProfileView(
+    viewerId: string,
+    viewedUserId: string
+  ): Promise<void> {
     if (viewerId === viewedUserId) return;
 
     try {
       const profileViewRef = doc(
-        collection(db, 'profiles', viewedUserId, 'profileViews'),
+        collection(db, "profiles", viewedUserId, "profileViews"),
         viewerId
       );
-      await setDoc(profileViewRef, {
-        viewerId,
-        viewedAt: serverTimestamp(),
-      }, { merge: true });
+      await setDoc(
+        profileViewRef,
+        {
+          viewerId,
+          viewedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
 
       // Update profile view count
-      const profileRef = doc(db, 'profiles', viewedUserId);
+      const profileRef = doc(db, "profiles", viewedUserId);
       await updateDoc(profileRef, {
         profileViewCount: increment(1),
         lastViewedAt: serverTimestamp(),
       });
     } catch (error) {
-      console.error('Error recording profile view:', error);
+      console.error("Error recording profile view:", error);
     }
   }
 
   // Get profile views
   async getProfileViews(userId: string): Promise<ProfileView[]> {
     try {
-      const viewsRef = collection(db, 'profiles', userId, 'profileViews');
+      const viewsRef = collection(db, "profiles", userId, "profileViews");
       const viewsSnap = await getDocs(viewsRef);
 
-      return viewsSnap.docs.map(doc => ({
+      return viewsSnap.docs.map((doc) => ({
         viewerId: doc.data().viewerId,
         viewedUserId: userId,
         viewedAt: doc.data().viewedAt?.toDate?.() || new Date(),
       }));
     } catch (error) {
-      console.error('Error getting profile views:', error);
+      console.error("Error getting profile views:", error);
       return [];
     }
   }
@@ -239,8 +248,13 @@ class SocialService {
   ): Promise<string> {
     try {
       // Create conversation if doesn't exist
-      const conversationId = [senderId, recipientId].sort().join('_');
-      const messagesRef = collection(db, 'messages', conversationId, 'messages');
+      const conversationId = [senderId, recipientId].sort().join("_");
+      const messagesRef = collection(
+        db,
+        "messages",
+        conversationId,
+        "messages"
+      );
 
       // Add message
       const messageRef = await setDoc(doc(messagesRef), {
@@ -252,7 +266,7 @@ class SocialService {
       });
 
       // Update conversation metadata
-      const conversationRef = doc(db, 'messages', conversationId);
+      const conversationRef = doc(db, "messages", conversationId);
       await setDoc(
         conversationRef,
         {
@@ -266,7 +280,7 @@ class SocialService {
 
       return conversationId;
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
       throw error;
     }
   }
@@ -274,17 +288,25 @@ class SocialService {
   // Get messages between two users
   async getMessages(userId1: string, userId2: string): Promise<Message[]> {
     try {
-      const conversationId = [userId1, userId2].sort().join('_');
-      const messagesRef = collection(db, 'messages', conversationId, 'messages');
+      const conversationId = [userId1, userId2].sort().join("_");
+      const messagesRef = collection(
+        db,
+        "messages",
+        conversationId,
+        "messages"
+      );
       const messagesSnap = await getDocs(messagesRef);
 
-      return messagesSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate?.() || new Date(),
-      } as Message));
+      return messagesSnap.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate?.() || new Date(),
+          } as Message)
+      );
     } catch (error) {
-      console.error('Error getting messages:', error);
+      console.error("Error getting messages:", error);
       return [];
     }
   }
@@ -295,34 +317,44 @@ class SocialService {
     messageId: string
   ): Promise<void> {
     try {
-      const messageRef = doc(db, 'messages', conversationId, 'messages', messageId);
+      const messageRef = doc(
+        db,
+        "messages",
+        conversationId,
+        "messages",
+        messageId
+      );
       await updateDoc(messageRef, {
         read: true,
       });
     } catch (error) {
-      console.error('Error marking message as read:', error);
+      console.error("Error marking message as read:", error);
     }
   }
 
   // Get user conversations
   async getUserConversations(userId: string): Promise<any[]> {
     try {
-      const conversationsRef = collection(db, 'messages');
+      const conversationsRef = collection(db, "messages");
       const conversationsSnap = await getDocs(conversationsRef);
 
       const userConversations: any[] = [];
       for (const convDoc of conversationsSnap.docs) {
         const convData = convDoc.data();
         if (convData.participants?.includes(userId)) {
-          const otherUserId = convData.participants.find((id: string) => id !== userId);
-          const otherUserDoc = await getDoc(doc(db, 'profiles', otherUserId));
-          
+          const otherUserId = convData.participants.find(
+            (id: string) => id !== userId
+          );
+          const otherUserDoc = await getDoc(doc(db, "profiles", otherUserId));
+
           userConversations.push({
             conversationId: convDoc.id,
-            otherUser: otherUserDoc.exists() ? {
-              uid: otherUserId,
-              ...otherUserDoc.data(),
-            } : null,
+            otherUser: otherUserDoc.exists()
+              ? {
+                  uid: otherUserId,
+                  ...otherUserDoc.data(),
+                }
+              : null,
             lastMessage: convData.lastMessage,
             lastMessageAt: convData.lastMessageAt?.toDate?.() || new Date(),
           });
@@ -330,11 +362,13 @@ class SocialService {
       }
 
       // Sort by last message time
-      return userConversations.sort((a, b) => 
-        new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
+      return userConversations.sort(
+        (a, b) =>
+          new Date(b.lastMessageAt).getTime() -
+          new Date(a.lastMessageAt).getTime()
       );
     } catch (error) {
-      console.error('Error getting conversations:', error);
+      console.error("Error getting conversations:", error);
       return [];
     }
   }
@@ -342,7 +376,7 @@ class SocialService {
   // Get user profile
   async getUserProfile(userId: string): Promise<UserProfile | null> {
     try {
-      const userDoc = await getDoc(doc(db, 'profiles', userId));
+      const userDoc = await getDoc(doc(db, "profiles", userId));
       if (userDoc.exists()) {
         return {
           uid: userId,
@@ -353,7 +387,7 @@ class SocialService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting user profile:', error);
+      console.error("Error getting user profile:", error);
       return null;
     }
   }
@@ -363,13 +397,13 @@ class SocialService {
     try {
       // Note: This is a simple prefix search
       // For production, consider using Firestore full-text search or Algolia
-      const profilesRef = collection(db, 'profiles');
+      const profilesRef = collection(db, "profiles");
       const querySnap = await getDocs(profilesRef);
 
       const results: UserProfile[] = [];
       const lowerQuery = query.toLowerCase();
 
-      querySnap.docs.forEach(doc => {
+      querySnap.docs.forEach((doc) => {
         const profile = doc.data();
         if (
           profile.username?.toLowerCase().includes(lowerQuery) ||
@@ -386,7 +420,7 @@ class SocialService {
 
       return results.slice(0, 20); // Limit results
     } catch (error) {
-      console.error('Error searching users:', error);
+      console.error("Error searching users:", error);
       return [];
     }
   }
