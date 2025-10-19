@@ -7,6 +7,7 @@ import { useNavigationLoading } from "./hooks/useNavigationLoading";
 import { useTimeTracking } from "./hooks/useTimeTracking";
 import { useTimeBasedPoints } from "./hooks/useTimeBasedPoints";
 import { useThemeColor } from "./hooks/useThemeColor";
+import { useApplicationStatusWatcher } from "./hooks/useApplicationStatusWatcher";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { RouteTransitionProvider } from "@/contexts/RouteTransitionContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
@@ -86,6 +87,7 @@ const AppContent = () => {
   useTimeTracking();
   useTimeBasedPoints();
   useThemeColor();
+  useApplicationStatusWatcher(); // Monitor application status changes
   
   // Initialize PWA features
   useEffect(() => {
