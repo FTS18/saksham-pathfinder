@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, ChevronRight, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare, Briefcase, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { ShareInternship } from './ShareInternship';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
@@ -258,13 +259,12 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             </div>
             
             <div className="ml-3 flex flex-col">
-              <a 
-                href={`/title/${role.toLowerCase().replace(/\s+/g, '-')}`}
-                className="font-grotesk font-semibold text-base text-foreground mb-1.5 text-left notranslate leading-tight hover:text-primary hover:underline cursor-pointer transition-colors"
-                onClick={(e) => e.stopPropagation()}
+              <Link 
+                to={`/internship/${id}`}
+                className="font-grotesk font-semibold text-base text-foreground mb-1.5 text-left notranslate leading-tight hover:text-primary hover:underline cursor-pointer transition-colors block"
               >
                 {title}
-              </a>
+              </Link>
               <p className="text-muted-foreground text-sm flex items-center leading-tight">
                 <Building2 className="w-3 h-3 mr-1" />
                 <a 
@@ -382,6 +382,17 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
         <div className="mt-auto pt-2">
           {/* Main Action Button with 3 Icons */}
           <div className="flex items-center gap-2">
+            <Link 
+              to={`/internship/${id}`}
+              className="flex-1 h-9"
+            >
+              <Button 
+                className="w-full h-full bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
+              >
+                <span className="text-sm">View Details</span>
+              </Button>
+            </Link>
+            
             <Button 
               onClick={() => {
                 window.dispatchEvent(new CustomEvent('requestInternshipData', {
