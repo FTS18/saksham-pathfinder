@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface LocationData {
   city: string;
@@ -17,7 +17,7 @@ export const useLocation = () => {
     const detectLocation = async () => {
       try {
         // First try to get precise location with permission
-        if ('geolocation' in navigator && !permissionRequested) {
+        if ("geolocation" in navigator && !permissionRequested) {
           setPermissionRequested(true);
           navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -29,24 +29,24 @@ export const useLocation = () => {
                 if (response.ok) {
                   const data = await response.json();
                   setLocation({
-                    city: data.city || data.locality || 'Unknown',
-                    country: data.countryName || 'Unknown',
+                    city: data.city || data.locality || "Unknown",
+                    country: data.countryName || "Unknown",
                     lat: position.coords.latitude,
-                    lng: position.coords.longitude
+                    lng: position.coords.longitude,
                   });
                   setLoading(false);
                   return;
                 }
               } catch (err) {
-                console.error('Reverse geocoding failed:', err);
+                console.error("Reverse geocoding failed:", err);
               }
-              
+
               // Fallback with coordinates only
               setLocation({
-                city: 'Current Location',
-                country: 'India',
+                city: "Current Location",
+                country: "India",
                 lat: position.coords.latitude,
-                lng: position.coords.longitude
+                lng: position.coords.longitude,
               });
               setLoading(false);
             },
@@ -68,27 +68,27 @@ export const useLocation = () => {
       try {
         // Try ipapi.co first (with CORS handling)
         try {
-          const response = await fetch('https://ipapi.co/json/');
+          const response = await fetch("https://ipapi.co/json/");
           if (response.ok) {
             const data = await response.json();
             setLocation({
-              city: data.city || 'Delhi',
-              country: data.country_name || 'India',
+              city: data.city || "Delhi",
+              country: data.country_name || "India",
               lat: data.latitude,
-              lng: data.longitude
+              lng: data.longitude,
             });
             return;
           }
         } catch (ipErr) {
           // ipapi.co failed, try fallback
-          console.debug('ipapi.co geolocation failed, using default location');
+          console.debug("ipapi.co geolocation failed, using default location");
         }
 
         // Fallback to default location if geolocation API fails
-        setLocation({ city: 'Delhi', country: 'India' });
+        setLocation({ city: "Delhi", country: "India" });
       } catch (err) {
-        console.debug('Location detection error:', err);
-        setLocation({ city: 'Delhi', country: 'India' });
+        console.debug("Location detection error:", err);
+        setLocation({ city: "Delhi", country: "India" });
       } finally {
         setLoading(false);
       }
