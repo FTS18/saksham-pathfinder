@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { GraduationCap, Lightbulb, Building, MapPin, HelpCircle, X, ChevronDown } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useLocation } from '@/hooks/useLocation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Progress } from './ui/progress';
@@ -76,7 +75,6 @@ interface ProfileFormProps {
 }
 
 export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: ProfileFormProps) => {
-  const { location: detectedLocation } = useLocation();
   const [sectors, setSectors] = useState<string[]>([]);
   const [skillsBySector, setSkillsBySector] = useState<Record<string, string[]>>({});
 
