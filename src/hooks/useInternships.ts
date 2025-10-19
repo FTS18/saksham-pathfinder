@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import InternshipMigrationService, { FirebaseInternship } from '@/services/internshipMigrationService';
+import { useState, useEffect } from "react";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import InternshipMigrationService, {
+  FirebaseInternship,
+} from "@/services/internshipMigrationService";
 
 // Hook for getting all internships
 export const useInternships = () => {
   return useQuery({
-    queryKey: ['internships'],
+    queryKey: ["internships"],
     queryFn: InternshipMigrationService.getAllInternships,
     staleTime: 5 * 60 * 1000, // 5 minutes
     cacheTime: 10 * 60 * 1000, // 10 minutes
@@ -15,10 +17,10 @@ export const useInternships = () => {
 // Hook for paginated internships
 export const useInternshipsPaginated = (limit: number = 20) => {
   return useInfiniteQuery({
-    queryKey: ['internships-paginated', limit],
-    queryFn: ({ pageParam }) => 
+    queryKey: ["internships-paginated", limit],
+    queryFn: ({ pageParam }) =>
       InternshipMigrationService.getInternshipsPaginated(limit, pageParam),
-    getNextPageParam: (lastPage) => 
+    getNextPageParam: (lastPage) =>
       lastPage.hasMore ? lastPage.lastDoc : undefined,
     staleTime: 5 * 60 * 1000,
     cacheTime: 10 * 60 * 1000,
@@ -36,9 +38,11 @@ export const useSearchInternships = (filters: {
   searchQuery?: string;
 }) => {
   return useQuery({
-    queryKey: ['search-internships', filters],
+    queryKey: ["search-internships", filters],
     queryFn: () => InternshipMigrationService.searchInternships(filters),
-    enabled: Object.keys(filters).some(key => filters[key as keyof typeof filters]),
+    enabled: Object.keys(filters).some(
+      (key) => filters[key as keyof typeof filters]
+    ),
     staleTime: 2 * 60 * 1000, // 2 minutes for search results
     cacheTime: 5 * 60 * 1000,
   });
@@ -47,7 +51,7 @@ export const useSearchInternships = (filters: {
 // Hook for getting a single internship
 export const useInternship = (id: string) => {
   return useQuery({
-    queryKey: ['internship', id],
+    queryKey: ["internship", id],
     queryFn: () => InternshipMigrationService.getInternshipById(id),
     enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes for individual internships
@@ -58,7 +62,7 @@ export const useInternship = (id: string) => {
 // Hook for trending internships
 export const useTrendingInternships = (limit: number = 10) => {
   return useQuery({
-    queryKey: ['trending-internships', limit],
+    queryKey: ["trending-internships", limit],
     queryFn: () => InternshipMigrationService.getTrendingInternships(limit),
     staleTime: 15 * 60 * 1000, // 15 minutes
     cacheTime: 30 * 60 * 1000,
@@ -68,7 +72,7 @@ export const useTrendingInternships = (limit: number = 10) => {
 // Hook for featured internships
 export const useFeaturedInternships = () => {
   return useQuery({
-    queryKey: ['featured-internships'],
+    queryKey: ["featured-internships"],
     queryFn: InternshipMigrationService.getFeaturedInternships,
     staleTime: 30 * 60 * 1000, // 30 minutes
     cacheTime: 60 * 60 * 1000, // 1 hour
@@ -84,14 +88,14 @@ export const useLocalInternships = () => {
   useEffect(() => {
     const loadLocalData = async () => {
       try {
-        const response = await fetch('/internships.json');
+        const response = await fetch("/internships.json");
         if (!response.ok) {
-          throw new Error('Failed to load local internships');
+          throw new Error("Failed to load local internships");
         }
         const data = await response.json();
         setInternships(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -114,7 +118,7 @@ export const useInternshipsWithFallback = () => {
       data: [],
       isLoading: true,
       error: null,
-      source: 'firebase'
+      source: "firebase",
     };
   }
 
@@ -124,7 +128,7 @@ export const useInternshipsWithFallback = () => {
       data: firebaseQuery.data,
       isLoading: false,
       error: firebaseQuery.error,
-      source: 'firebase'
+      source: "firebase",
     };
   }
 
@@ -133,7 +137,7 @@ export const useInternshipsWithFallback = () => {
     data: localQuery.internships,
     isLoading: localQuery.loading,
     error: localQuery.error || firebaseQuery.error,
-    source: 'local'
+    source: "local",
   };
 };
 
@@ -142,9 +146,9 @@ export const useInternshipsWithFallback = () => {
 
 export const useInternshipsByCity = (city: string, pageSize: number = 50) => {
   return useQuery({
-    queryKey: ['internships-by-city', city],
+    queryKey: ["internships-by-city", city],
     queryFn: async () => {
-      const { FirestoreService } = await import('@/services/firestoreService');
+      const { FirestoreService } = await import("@/services/firestoreService");
       return FirestoreService.getInternshipsByCity(city, pageSize);
     },
     staleTime: 10 * 60 * 1000,
@@ -155,11 +159,14 @@ export const useInternshipsByCity = (city: string, pageSize: number = 50) => {
   });
 };
 
-export const useInternshipsBySector = (sector: string, pageSize: number = 50) => {
+export const useInternshipsBySector = (
+  sector: string,
+  pageSize: number = 50
+) => {
   return useQuery({
-    queryKey: ['internships-by-sector', sector],
+    queryKey: ["internships-by-sector", sector],
     queryFn: async () => {
-      const { FirestoreService } = await import('@/services/firestoreService');
+      const { FirestoreService } = await import("@/services/firestoreService");
       return FirestoreService.getInternshipsBySector(sector, pageSize);
     },
     staleTime: 10 * 60 * 1000,
@@ -170,11 +177,14 @@ export const useInternshipsBySector = (sector: string, pageSize: number = 50) =>
   });
 };
 
-export const useInternshipsByCompany = (company: string, pageSize: number = 50) => {
+export const useInternshipsByCompany = (
+  company: string,
+  pageSize: number = 50
+) => {
   return useQuery({
-    queryKey: ['internships-by-company', company],
+    queryKey: ["internships-by-company", company],
     queryFn: async () => {
-      const { FirestoreService } = await import('@/services/firestoreService');
+      const { FirestoreService } = await import("@/services/firestoreService");
       return FirestoreService.getInternshipsByCompany(company, pageSize);
     },
     staleTime: 15 * 60 * 1000,
@@ -187,9 +197,9 @@ export const useInternshipsByCompany = (company: string, pageSize: number = 50) 
 
 export const useInternshipsBySkill = (skill: string, pageSize: number = 50) => {
   return useQuery({
-    queryKey: ['internships-by-skill', skill],
+    queryKey: ["internships-by-skill", skill],
     queryFn: async () => {
-      const { FirestoreService } = await import('@/services/firestoreService');
+      const { FirestoreService } = await import("@/services/firestoreService");
       return FirestoreService.getInternshipsBySkill(skill, pageSize);
     },
     staleTime: 10 * 60 * 1000,
@@ -202,9 +212,9 @@ export const useInternshipsBySkill = (skill: string, pageSize: number = 50) => {
 
 export const useInternshipsByTitle = (title: string, pageSize: number = 50) => {
   return useQuery({
-    queryKey: ['internships-by-title', title],
+    queryKey: ["internships-by-title", title],
     queryFn: async () => {
-      const { FirestoreService } = await import('@/services/firestoreService');
+      const { FirestoreService } = await import("@/services/firestoreService");
       return FirestoreService.getInternshipsByTitle(title, pageSize);
     },
     staleTime: 10 * 60 * 1000,

@@ -14,44 +14,50 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // Vendor chunks - keep separate
-          if (id.includes('node_modules/firebase')) {
-            return 'firebase-vendor';
+          if (id.includes("node_modules/firebase")) {
+            return "firebase-vendor";
           }
-          if (id.includes('node_modules/react') && !id.includes('react-router')) {
-            return 'react-vendor';
+          if (
+            id.includes("node_modules/react") &&
+            !id.includes("react-router")
+          ) {
+            return "react-vendor";
           }
-          if (id.includes('node_modules/react-router')) {
-            return 'router-vendor';
+          if (id.includes("node_modules/react-router")) {
+            return "router-vendor";
           }
-          if (id.includes('node_modules/@radix-ui')) {
-            return 'ui-vendor';
+          if (id.includes("node_modules/@radix-ui")) {
+            return "ui-vendor";
           }
-          if (id.includes('node_modules/@tanstack/react-query')) {
-            return 'query-vendor';
+          if (id.includes("node_modules/@tanstack/react-query")) {
+            return "query-vendor";
           }
-          if (id.includes('node_modules/recharts')) {
-            return 'charts';
+          if (id.includes("node_modules/recharts")) {
+            return "charts";
           }
-          if (id.includes('node_modules/lucide-react') || id.includes('node_modules/react-icons')) {
-            return 'icons';
+          if (
+            id.includes("node_modules/lucide-react") ||
+            id.includes("node_modules/react-icons")
+          ) {
+            return "icons";
           }
-          if (id.includes('node_modules/date-fns')) {
-            return 'dateutils';
+          if (id.includes("node_modules/date-fns")) {
+            return "dateutils";
           }
-          if (id.includes('node_modules/purify')) {
-            return 'purify';
+          if (id.includes("node_modules/purify")) {
+            return "purify";
           }
-          
+
           // Lazy load pages separately
-          if (id.includes('/pages/') && id.endsWith('.tsx')) {
+          if (id.includes("/pages/") && id.endsWith(".tsx")) {
             const match = id.match(/\/pages\/([^/]+)\.tsx$/);
             if (match) {
               return `page-${match[1]}`;
             }
           }
-          
+
           // Lazy load components separately
-          if (id.includes('/components/') && id.endsWith('.tsx')) {
+          if (id.includes("/components/") && id.endsWith(".tsx")) {
             const match = id.match(/\/components\/([^/]+)\.tsx$/);
             if (match) {
               return `comp-${match[1]}`;

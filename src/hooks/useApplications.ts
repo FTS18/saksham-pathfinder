@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import ApplicationService from '@/services/applicationService';
+import { useQuery } from "@tanstack/react-query";
+import ApplicationService from "@/services/applicationService";
 
 /**
  * Hook to fetch user applications with caching
@@ -12,9 +12,9 @@ export const useApplications = (
   enabled: boolean = true
 ) => {
   return useQuery({
-    queryKey: ['applications', userId],
+    queryKey: ["applications", userId],
     queryFn: () => {
-      if (!userId) throw new Error('No user ID provided');
+      if (!userId) throw new Error("No user ID provided");
       return ApplicationService.getUserApplications(userId);
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
@@ -34,7 +34,7 @@ export const useApplicationCount = (
   enabled: boolean = true
 ) => {
   return useQuery({
-    queryKey: ['applications-count', userId],
+    queryKey: ["applications-count", userId],
     queryFn: async () => {
       if (!userId) return 0;
       const applications = await ApplicationService.getUserApplications(userId);
@@ -57,7 +57,7 @@ export const useApplicationsByStatus = (
   enabled: boolean = true
 ) => {
   return useQuery({
-    queryKey: ['applications-by-status', userId, status],
+    queryKey: ["applications-by-status", userId, status],
     queryFn: async () => {
       if (!userId) return [];
       const applications = await ApplicationService.getUserApplications(userId);
