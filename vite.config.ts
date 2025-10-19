@@ -74,7 +74,7 @@ export default defineConfig({
       },
       mangle: {
         // Preserve Radix UI's forwardRef and other critical functions
-        reserved: ['forwardRef', 'createElement', 'Fragment'],
+        reserved: ["forwardRef", "createElement", "Fragment"],
       },
     },
     sourcemap: false,
