@@ -73,6 +73,7 @@ export const Navbar = () => {
       hasDropdown: true,
       dropdownItems: [
         { href: '/wishlist', label: `Wishlist (${wishlist.length})` },
+        { href: '/application-dashboard', label: 'Applications' },
         { href: '/dashboard/news-events', label: 'News & Events' },
         { href: '/dashboard/tutorials', label: 'Tutorials' },
         { href: '/referrals', label: 'Refer' },

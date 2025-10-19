@@ -64,6 +64,7 @@ import { TitlePage } from "./pages/TitlePage";
 import { SearchPage } from "./pages/SearchPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import Applications from "./pages/Applications";
+import ApplicationDashboard from "./pages/ApplicationDashboard";
 import FAQ from "./pages/FAQ";
 import ReportIssuePage from "./pages/ReportIssuePage";
 import Sitemap from "./pages/Sitemap";
@@ -188,6 +189,7 @@ const AppContent = () => {
           <Route path="/referrals" element={<ProtectedRoute><Layout><Referrals /></Layout></ProtectedRoute>} />
           <Route path="/dashboard/settings" element={<ProtectedRoute><Layout><DashboardSettings /></Layout></ProtectedRoute>} />
           <Route path="/applications" element={<ProtectedRoute><Layout><Applications /></Layout></ProtectedRoute>} />
+          <Route path="/application-dashboard" element={<ProtectedRoute><Layout><ApplicationDashboard /></Layout></ProtectedRoute>} />
           
           {/* Redirects */}
           <Route path="/dashboard/news-events" element={<Navigate to="/news-events" replace />} />
