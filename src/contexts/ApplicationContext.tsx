@@ -47,34 +47,31 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     try {
       setLoading(true);
-      const applicationId = await ApplicationService.applyToInternship({
-        userId: currentUser.uid,
-        internshipId: internship.id,
-        internshipTitle: internship.title,
-        companyName: internship.company,
-        status: 'pending',
-        priority: 'medium',
-        source: 'direct',
-        metadata: {},
-        // Just store internship ID for fetching details later
-        // internshipData removed to simplify and fetch from source
-      });
+      // Use batched method: creates application and notification in single operation
+      const applicationId = await ApplicationService.createApplicationWithNotification(
+        {
+          userId: currentUser.uid,
+          internshipId: internship.id,
+          internshipTitle: internship.title,
+          companyName: internship.company,
+          status: 'pending',
+          priority: 'medium',
+          source: 'direct',
+          metadata: {},
+        },
+        {
+          type: 'application_update',
+          title: 'Application Submitted',
+          message: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
+          priority: 'medium',
+          category: 'application',
+          data: { internshipId: internship.id, applicationId: 'pending', companyName: internship.company }
+        }
+      );
 
       if (!applicationId) {
         throw new Error('Failed to create application');
       }
-
-      // Create notification
-      await NotificationService.createNotification({
-        userId: currentUser.uid,
-        type: 'application_update',
-        title: 'Application Submitted',
-        message: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
-        read: false,
-        priority: 'medium',
-        category: 'application',
-        data: { internshipId: internship.id, applicationId, companyName: internship.company }
-      });
 
       console.log('✅ Application Submitted!', `Successfully applied to ${internship.title} at ${internship.company}`);
 

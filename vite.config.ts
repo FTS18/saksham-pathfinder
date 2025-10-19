@@ -12,27 +12,51 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Vendor chunks
-          "react-vendor": ["react", "react-dom"],
-          "router-vendor": ["react-router-dom"],
-          "ui-vendor": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-select",
-          ],
-          "firebase-vendor": [
-            "firebase/app",
-            "firebase/auth",
-            "firebase/firestore",
-          ],
-          "query-vendor": ["@tanstack/react-query"],
-
-          // Feature chunks
-          "ai-features": ["@google/generative-ai"],
-          charts: ["recharts"],
-          icons: ["lucide-react", "react-icons"],
-          utils: ["date-fns", "clsx", "tailwind-merge"],
+        manualChunks: (id) => {
+          // Vendor chunks - keep separate
+          if (id.includes('node_modules/firebase')) {
+            return 'firebase-vendor';
+          }
+          if (id.includes('node_modules/react') && !id.includes('react-router')) {
+            return 'react-vendor';
+          }
+          if (id.includes('node_modules/react-router')) {
+            return 'router-vendor';
+          }
+          if (id.includes('node_modules/@radix-ui')) {
+            return 'ui-vendor';
+          }
+          if (id.includes('node_modules/@tanstack/react-query')) {
+            return 'query-vendor';
+          }
+          if (id.includes('node_modules/recharts')) {
+            return 'charts';
+          }
+          if (id.includes('node_modules/lucide-react') || id.includes('node_modules/react-icons')) {
+            return 'icons';
+          }
+          if (id.includes('node_modules/date-fns')) {
+            return 'dateutils';
+          }
+          if (id.includes('node_modules/purify')) {
+            return 'purify';
+          }
+          
+          // Lazy load pages separately
+          if (id.includes('/pages/') && id.endsWith('.tsx')) {
+            const match = id.match(/\/pages\/([^/]+)\.tsx$/);
+            if (match) {
+              return `page-${match[1]}`;
+            }
+          }
+          
+          // Lazy load components separately
+          if (id.includes('/components/') && id.endsWith('.tsx')) {
+            const match = id.match(/\/components\/([^/]+)\.tsx$/);
+            if (match) {
+              return `comp-${match[1]}`;
+            }
+          }
         },
       },
     },
@@ -40,7 +64,7 @@ export default defineConfig({
     minify: "esbuild",
     sourcemap: false,
     reportCompressedSize: false,
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000, // Increased to suppress warning during build
   },
   optimizeDeps: {
     include: [

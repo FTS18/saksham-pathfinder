@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun, Menu, X, Globe, ZoomIn, ZoomOut, Heart, LogIn, LogOut, User, ChevronDown } from 'lucide-react';
+import { Menu, X, Globe, ZoomIn, ZoomOut, Heart, LogIn, LogOut, User, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { ThemeSwitcher } from './ThemeSwitcher';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const { theme, language, setLanguage, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
+  const { language, setLanguage, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
@@ -178,14 +179,7 @@ export const Navbar = () => {
                    <GoogleTranslate />
                  </div>
                </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-8 h-8 p-0">
-                    {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}</TooltipContent>
-              </Tooltip>
+              <ThemeSwitcher />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" onClick={increaseFontSize} className="w-8 h-8 p-0 hidden sm:inline-flex"><ZoomIn className="w-4 h-4"/></Button>
