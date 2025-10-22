@@ -38,14 +38,7 @@ export const RecruiterTopNavigation = () => {
       <div className="flex items-center justify-between px-4 h-16">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => window.dispatchEvent(new CustomEvent('toggleRecruiterSidebar'))}
-            className="md:hidden"
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
+          {/* Hamburger removed - RecruiterSidebar handles mobile menu */}
           
           <div className="flex items-center space-x-2">
             <Building2 className="w-6 h-6 text-primary" />

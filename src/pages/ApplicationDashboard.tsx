@@ -14,12 +14,13 @@ import { useNavigate } from 'react-router-dom';
 
 export const ApplicationDashboard = () => {
   const { currentUser } = useAuth();
-  const { applications, loading, withdrawApplication, refreshApplications } = useApplication();
+  const { applications, loading, withdrawApplication, refreshApplications, loadMoreApplications, hasMoreApplications } = useApplication();
   const [internships, setInternships] = useState<Map<string, Internship>>(new Map());
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'oldest'>('recent');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -337,6 +338,24 @@ export const ApplicationDashboard = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Load More Button */}
+        {hasMoreApplications && applications.length > 0 && (
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={async () => {
+                setIsLoadingMore(true);
+                await loadMoreApplications();
+                setIsLoadingMore(false);
+              }}
+              disabled={isLoadingMore || loading}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
+              {isLoadingMore ? 'Loading...' : 'Load More Applications'}
+            </Button>
+          </div>
         )}
 
         {/* Application Tips */}

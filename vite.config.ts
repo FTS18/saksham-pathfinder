@@ -12,25 +12,17 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          // ONLY split Firebase - it's completely independent and large
-          if (id.includes("node_modules/firebase")) {
-            return "firebase-vendor";
-          }
-          // Everything else bundles together to avoid dependency issues:
-          // - React needs React Router to use its context
-          // - Components need Radix UI utilities
-          // - Pages use Radix UI and icons
-          // - Icons need their utility functions
-          // Bundling together prevents undefined reference errors
-        },
+        // Re-enable code splitting and emit hashed filenames for cache-busting
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash].[ext]",
       },
     },
     target: "es2020",
     minify: false,
     sourcemap: false,
     reportCompressedSize: false,
-    chunkSizeWarningLimit: 2000, // Increased to suppress warning during build
+    chunkSizeWarningLimit: 5000, // Suppress large bundle warning
   },
   optimizeDeps: {
     include: [
@@ -42,11 +34,11 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
-    port: 5173,
-    open: false,
+    port: 8080,
+    open: true,
     hmr: {
       host: "localhost",
-      port: 5173,
+      port: 8080,
       protocol: "ws",
     },
     middlewareMode: false,

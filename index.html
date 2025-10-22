@@ -139,14 +139,5 @@
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Hide skeleton when React loads
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          const skeleton = document.getElementById('initial-skeleton');
-          if (skeleton) skeleton.style.display = 'none';
-        }, 100);
-      });
-    </script>
   </body>
 </html>

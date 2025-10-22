@@ -3,14 +3,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { useToast } from '@/hooks/use-toast';
+import { User, Lock, BookOpen, Briefcase, Zap, FileText } from 'lucide-react';
 import {
   BasicInfoSkeleton,
   EducationSkeleton,
   ExperienceSkeleton,
   SkillsSkeleton,
   SecuritySkeleton,
+  ResumeSkeleton,
   ProfileSectionSkeleton,
 } from '@/components/SkeletonLoaders';
 
@@ -20,6 +23,7 @@ const EducationSection = lazy(() => import('./ProfileSections/EducationSection')
 const ExperienceSection = lazy(() => import('./ProfileSections/ExperienceSection'));
 const SkillsSection = lazy(() => import('./ProfileSections/SkillsSection'));
 const SecuritySection = lazy(() => import('./ProfileSections/SecuritySection'));
+const ResumeSection = lazy(() => import('./ProfileSections/ResumeSection'));
 
 interface UserProfile {
   username: string;
@@ -163,10 +167,37 @@ export const ProfileLazy = () => {
         </p>
       </div>
 
-      {/* Profile Sections with Lazy Loading */}
-      <div className="space-y-6 grid gap-6 lg:grid-cols-2">
-        {/* Basic Info Section - takes full width on desktop */}
-        <div className="lg:col-span-2">
+      {/* Horizontal Tabs */}
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:flex glass-card">
+          <TabsTrigger value="profile" className="flex items-center gap-2">
+            <User className="w-4 h-4" />
+            <span className="hidden sm:inline">Profile</span>
+          </TabsTrigger>
+          <TabsTrigger value="education" className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden sm:inline">Education</span>
+          </TabsTrigger>
+          <TabsTrigger value="experience" className="flex items-center gap-2">
+            <Briefcase className="w-4 h-4" />
+            <span className="hidden sm:inline">Experience</span>
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="flex items-center gap-2">
+            <Zap className="w-4 h-4" />
+            <span className="hidden sm:inline">Skills</span>
+          </TabsTrigger>
+          <TabsTrigger value="resume" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            <span className="hidden sm:inline">Resume</span>
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex items-center gap-2">
+            <Lock className="w-4 h-4" />
+            <span className="hidden sm:inline">Security</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Profile Tab */}
+        <TabsContent value="profile" className="space-y-4">
           <Suspense fallback={<BasicInfoSkeleton />}>
             <BasicInfoSection
               profile={profile}
@@ -174,28 +205,32 @@ export const ProfileLazy = () => {
               isLoading={isSaving}
             />
           </Suspense>
-        </div>
+        </TabsContent>
 
-        {/* Education Section */}
-        <Suspense fallback={<EducationSkeleton />}>
-          <EducationSection
-            profile={profile}
-            onUpdate={handleUpdate}
-            isLoading={isSaving}
-          />
-        </Suspense>
+        {/* Education Tab */}
+        <TabsContent value="education" className="space-y-4">
+          <Suspense fallback={<EducationSkeleton />}>
+            <EducationSection
+              profile={profile}
+              onUpdate={handleUpdate}
+              isLoading={isSaving}
+            />
+          </Suspense>
+        </TabsContent>
 
-        {/* Experience Section */}
-        <Suspense fallback={<ExperienceSkeleton />}>
-          <ExperienceSection
-            profile={profile}
-            onUpdate={handleUpdate}
-            isLoading={isSaving}
-          />
-        </Suspense>
+        {/* Experience Tab */}
+        <TabsContent value="experience" className="space-y-4">
+          <Suspense fallback={<ExperienceSkeleton />}>
+            <ExperienceSection
+              profile={profile}
+              onUpdate={handleUpdate}
+              isLoading={isSaving}
+            />
+          </Suspense>
+        </TabsContent>
 
-        {/* Skills Section - takes full width */}
-        <div className="lg:col-span-2">
+        {/* Skills Tab */}
+        <TabsContent value="skills" className="space-y-4">
           <Suspense fallback={<SkillsSkeleton />}>
             <SkillsSection
               profile={profile}
@@ -203,15 +238,26 @@ export const ProfileLazy = () => {
               isLoading={isSaving}
             />
           </Suspense>
-        </div>
+        </TabsContent>
 
-        {/* Security Section - takes full width */}
-        <div className="lg:col-span-2">
+        {/* Resume Tab */}
+        <TabsContent value="resume" className="space-y-4">
+          <Suspense fallback={<ResumeSkeleton />}>
+            <ResumeSection
+              profile={profile}
+              onUpdate={handleUpdate}
+              isLoading={isSaving}
+            />
+          </Suspense>
+        </TabsContent>
+
+        {/* Security Tab */}
+        <TabsContent value="security" className="space-y-4">
           <Suspense fallback={<SecuritySkeleton />}>
             <SecuritySection profile={profile} isLoading={isSaving} />
           </Suspense>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Loading State Info */}
       {isSaving && (

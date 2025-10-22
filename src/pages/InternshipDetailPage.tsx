@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Building2, MapPin, IndianRupee, Clock, Users, Share2, Bookmark, AlertCircle } from 'lucide-react';
 import { Internship } from '@/types';
-import { fetchInternships } from '@/lib/dataExtractor';
+import { getInternshipById } from '@/services/internshipService';
 import { SkeletonCard } from '@/components/SkeletonLoaders';
 import { injectOGTags, generateInternshipOGTags } from '@/lib/ogTagInjector';
 import { useToast } from '@/hooks/use-toast';
@@ -32,21 +32,12 @@ export const InternshipDetailPage = () => {
           return;
         }
 
-        const allInternships = await fetchInternships();
-        
-        if (allInternships.length === 0) {
-          setError('Data temporarily unavailable - our database is being optimized. Please try again in a few moments.');
-          setLoading(false);
-          return;
-        }
-        
-        const found = allInternships.find((int: Internship) => int.id === id);
+        const found = await getInternshipById(id);
 
         if (!found) {
           setError('Internship not found. Please check the ID and try again.');
         } else {
           setInternship(found);
-          
           // Inject OG tags for social sharing
           const ogConfig = generateInternshipOGTags(found);
           injectOGTags(ogConfig);

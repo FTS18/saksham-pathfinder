@@ -146,7 +146,6 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
             <StateSelector
               value={profile?.location?.state || ''}
               onChange={(state) => handleSave('location', { ...profile?.location, state })}
-              disabled={isSaving}
             />
           </div>
           <div className="space-y-2">
@@ -155,7 +154,6 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
               state={profile?.location?.state || ''}
               value={profile?.location?.city || ''}
               onChange={(city) => handleSave('location', { ...profile?.location, city })}
-              disabled={isSaving}
             />
           </div>
         </div>
@@ -167,7 +165,6 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
             <StateSelector
               value={profile?.desiredLocation?.state || ''}
               onChange={(state) => handleSave('desiredLocation', { ...profile?.desiredLocation, state })}
-              disabled={isSaving}
             />
           </div>
           <div className="space-y-2">
@@ -176,7 +173,6 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
               state={profile?.desiredLocation?.state || ''}
               value={profile?.desiredLocation?.city || ''}
               onChange={(city) => handleSave('desiredLocation', { ...profile?.desiredLocation, city })}
-              disabled={isSaving}
             />
           </div>
         </div>

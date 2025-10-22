@@ -1,9 +1,12 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  functions = "netlify/functions"
 
 [build.environment]
   SECRETS_SCAN_ENABLED = "false"
+  FIREBASE_PROJECT_ID = "saksham-ai-81c3a"
+  FIREBASE_STORAGE_BUCKET = "saksham-ai-81c3a.appspot.com"
 
 [[headers]]
   for = "/*"

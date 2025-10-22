@@ -43,7 +43,7 @@ const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
-const Profile = lazy(() => import("./pages/ProfileLazy"));
+const Profile = lazy(() => import("./pages/Profile"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const OnboardingSteps = lazy(() => import("./pages/OnboardingSteps"));
 const SimplifiedOnboarding = lazy(() => import("./pages/SimplifiedOnboarding"));
@@ -51,7 +51,6 @@ const ImprovedOnboarding = lazy(() => import("./pages/ImprovedOnboarding"));
 const RecruiterOnboarding = lazy(() => import("./pages/RecruiterOnboarding"));
 const UserProfilePage = lazy(() => import("./pages/UserProfilePage"));
 const Referrals = lazy(() => import("./pages/Referrals"));
-const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
 const NewsEvents = lazy(() => import("./pages/NewsEvents"));
 const Tutorials = lazy(() => import("./pages/Tutorials"));
 const RecruiterDashboard = lazy(() => import("./pages/RecruiterDashboard"));
@@ -73,7 +72,8 @@ const Sitemap = lazy(() => import("./pages/Sitemap"));
 
 // Lazy load recruiter pages
 const RecruiterLayout = lazy(() => import("./pages/recruiter/RecruiterLayout").then(m => ({ default: m.RecruiterLayout })));
-const RecruiterDashboardNew = lazy(() => import("./pages/recruiter/RecruiterDashboard"));
+const RecruiterLayoutNew = lazy(() => import("./pages/recruiter/RecruiterLayoutNew").then(m => ({ default: m.RecruiterLayoutNew })));
+const RecruiterDashboardNew = lazy(() => import("./pages/recruiter/RecruiterDashboardNew").then(m => ({ default: m.RecruiterDashboardNew })));
 const PostJob = lazy(() => import("./pages/recruiter/PostJob"));
 const ManageInternships = lazy(() => import("./pages/recruiter/ManageInternships"));
 const Candidates = lazy(() => import("./pages/recruiter/Candidates"));
@@ -92,9 +92,15 @@ const AppContent = () => {
   
   // Initialize PWA features
   useEffect(() => {
-    registerSW();
+    // registerSW(); // TEMPORARILY DISABLED - causing slow load
     preloadImages();
     requestNotificationPermission();
+    // Fallback: reload if main JS fails to load (asset/SW issue)
+    window.addEventListener('error', (e) => {
+      if (e instanceof Event && (e as any).target && (e as any).target.tagName === 'SCRIPT') {
+        window.location.reload();
+      }
+    }, { once: true });
   }, []);
   
   // Show loading while auth is initializing
@@ -133,7 +139,7 @@ const AppContent = () => {
           <SEOHead />
           <Routes>
             <Route path="/recruiter/onboarding" element={<RecruiterOnboarding />} />
-            <Route path="/recruiter/*" element={<RecruiterRoute><RecruiterLayout /></RecruiterRoute>}>
+            <Route path="/recruiter/*" element={<RecruiterRoute><RecruiterLayoutNew /></RecruiterRoute>}>
               <Route index element={<Navigate to="/recruiter/dashboard" replace />} />
               <Route path="dashboard" element={<RecruiterDashboardNew />} />
               <Route path="post-job" element={<PostJob />} />
@@ -179,7 +185,7 @@ const AppContent = () => {
             <Route path="/city/:city" element={<Layout><CityPage /></Layout>} />
             <Route path="/title/:title" element={<Layout><TitlePage /></Layout>} />
             <Route path="/search" element={<Layout><SearchPage /></Layout>} />
-          <Route path="/internship/:id" element={<Layout><InternshipDetailPage /></Layout>} />
+          <Route path="/internships/:id" element={<Layout><InternshipDetailPage /></Layout>} />
           <Route path="/shared-comparison" element={<Layout><SharedComparisonPage /></Layout>} />
           <Route path="/admin-demo" element={<Layout><AdminDemo /></Layout>} />
           
@@ -191,7 +197,6 @@ const AppContent = () => {
           <Route path="/wishlist" element={<Layout><Wishlist /></Layout>} />
           <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
           <Route path="/referrals" element={<ProtectedRoute><Layout><Referrals /></Layout></ProtectedRoute>} />
-          <Route path="/dashboard/settings" element={<ProtectedRoute><Layout><DashboardSettings /></Layout></ProtectedRoute>} />
           <Route path="/applications" element={<ProtectedRoute><Layout><Applications /></Layout></ProtectedRoute>} />
           <Route path="/application-dashboard" element={<ProtectedRoute><Layout><ApplicationDashboard /></Layout></ProtectedRoute>} />
           

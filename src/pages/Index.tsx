@@ -30,13 +30,11 @@ import { fetchInternships } from '@/lib/dataExtractor';
 import type { Internship, ProfileData, FilterState } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { PublicFeaturesShowcase } from '@/components/PublicFeaturesShowcase';
+import { Stats } from '@/components/Stats';
+import { Testimonials } from '@/components/Testimonials';
 
 
 
-
-// Lazy load heavy components with proper error handling
-const Stats = lazy(() => import('@/components/Stats').then(module => ({ default: module.Stats })));
-const Testimonials = lazy(() => import('@/components/Testimonials').then(module => ({ default: module.Testimonials })));
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';

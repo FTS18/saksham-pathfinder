@@ -109,6 +109,14 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
   const locationText = typeof location === 'string' ? location : location.city;
   
+  const handleApply = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (hasApplied(id)) return;
+    
+    await applyToInternship(internship);
+  }
+
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -247,7 +255,7 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
             
             <div className="ml-3 flex flex-col">
               <Link 
-                to={`/internship/${id}`}
+                to={`/internships/${id}`}
                 className="font-grotesk font-semibold text-base text-foreground mb-1.5 text-left notranslate leading-tight hover:text-primary hover:underline cursor-pointer transition-colors block"
               >
                 {title}
@@ -367,13 +375,27 @@ export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfi
 
 
         <div className="mt-auto pt-4">
-          {/* Main Action Button with 3 Icons */}
+          {/* Main Action Buttons */}
           <div className="flex items-center gap-2">
             <Button 
-              onClick={() => navigate(`/internship/${id}`)}
+              onClick={handleApply}
+              disabled={hasApplied(id)}
+              className={`flex-1 h-10 font-semibold transition-all duration-200 shadow-sm hover:shadow-md rounded-full ${
+                hasApplied(id)
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                  : 'bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600 hover:via-green-700 hover:to-green-600 text-white'
+              }`}
+            >
+              <span className="text-sm font-semibold">
+                {hasApplied(id) ? '✓ Applied' : 'Apply Now'}
+              </span>
+            </Button>
+            
+            <Button 
+              onClick={() => navigate(`/internships/${id}`)}
               className="flex-1 h-10 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
             >
-              <span className="text-sm font-semibold">View Details</span>
+              <span className="text-sm font-semibold">View</span>
             </Button>
             
             <Tooltip>

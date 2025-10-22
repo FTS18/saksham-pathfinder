@@ -14,8 +14,8 @@ export const useInternships = () => {
   });
 };
 
-// Hook for paginated internships
-export const useInternshipsPaginated = (limit: number = 20) => {
+// Hook for paginated internships (DEFAULT: Load only 12 at a time)
+export const useInternshipsPaginated = (limit: number = 12) => {
   return useInfiniteQuery({
     queryKey: ["internships-paginated", limit],
     queryFn: ({ pageParam }) =>

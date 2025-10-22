@@ -4,6 +4,7 @@ import { Menu, X, Globe, ZoomIn, ZoomOut, Heart, LogIn, LogOut, User, ChevronDow
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useApplication } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { ThemeSwitcher } from './ThemeSwitcher';
@@ -27,6 +28,7 @@ export const Navbar = () => {
   const [hasAnimated, setHasAnimated] = useState(false);
   const { language, setLanguage, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
+  const { applications } = useApplication();
   const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
   const t = translations.en;
@@ -74,7 +76,7 @@ export const Navbar = () => {
       hasDropdown: true,
       dropdownItems: [
         { href: '/wishlist', label: `Wishlist (${wishlist.length})` },
-        { href: '/application-dashboard', label: 'Applications' },
+        { href: '/application-dashboard', label: `Applications (${applications.length})` },
         { href: '/dashboard/news-events', label: 'News & Events' },
         { href: '/dashboard/tutorials', label: 'Tutorials' },
         { href: '/referrals', label: 'Refer' },
