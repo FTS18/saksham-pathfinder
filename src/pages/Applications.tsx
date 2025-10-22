@@ -258,14 +258,14 @@ const Applications = () => {
                           const details = allInternships.find((i: any) => i.id === app.internshipId || i.title === app.internshipTitle);
                           return {
                             ...app,
-                            location: details?.location || app.location || 'N/A',
-                            stipend: details?.stipend || app.stipend || 'N/A'
-                          };
+                            location: details?.location || 'N/A',
+                            stipend: details?.stipend || 'N/A'
+                          } as any;
                         } catch {
-                          return app;
+                          return app as any;
                         }
                       }));
-                      exportToCSV(enrichedApps);
+                      exportToCSV(enrichedApps as any);
                     }}>
                       Export as CSV
                     </DropdownMenuItem>
@@ -277,14 +277,14 @@ const Applications = () => {
                           const details = allInternships.find((i: any) => i.id === app.internshipId || i.title === app.internshipTitle);
                           return {
                             ...app,
-                            location: details?.location || app.location || 'N/A',
-                            stipend: details?.stipend || app.stipend || 'N/A'
-                          };
+                            location: details?.location || 'N/A',
+                            stipend: details?.stipend || 'N/A'
+                          } as any;
                         } catch {
-                          return app;
+                          return app as any;
                         }
                       }));
-                      exportToPDF(enrichedApps);
+                      exportToPDF(enrichedApps as any);
                     }}>
                       Export as PDF
                     </DropdownMenuItem>

@@ -44,11 +44,13 @@ async function apiCall<T>(
   const response = await fetch(`${API_BASE}${endpoint}`, options);
 
   const responseData = await response.json();
-  
+
   console.log(`[RecruiterService] Response:`, responseData);
 
   if (!response.ok) {
-    throw new Error(responseData.error || `API request failed: ${response.status}`);
+    throw new Error(
+      responseData.error || `API request failed: ${response.status}`
+    );
   }
 
   return responseData;

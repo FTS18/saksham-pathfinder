@@ -90,7 +90,7 @@ export class ApplicationService {
         appliedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       };
-      
+
       batch.set(appRef, applicationData);
 
       // Create notification document reference (if notification data provided)
@@ -123,7 +123,10 @@ export class ApplicationService {
 
       // Commit all operations in single batch
       await batch.commit();
-      console.log('💾 Application saved to Firestore and added to profile:', appRef.id);
+      console.log(
+        "💾 Application saved to Firestore and added to profile:",
+        appRef.id
+      );
       return appRef.id;
     } catch (error) {
       console.error("Error creating application with notification:", error);

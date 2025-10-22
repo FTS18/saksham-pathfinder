@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 import {
   getAnalytics,
   logEvent,
   setUserProperties,
   isSupported,
   Analytics,
-} from 'firebase/analytics';
-import { useAuth } from '@/contexts/AuthContext';
+} from "firebase/analytics";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const useAnalytics = () => {
   const { currentUser } = useAuth();
@@ -38,7 +38,7 @@ export const useAnalytics = () => {
     if (currentUser && analyticsRef.current) {
       setUserProperties(analyticsRef.current, {
         user_id: currentUser.uid,
-        user_type: 'student'
+        user_type: "student",
       });
     }
   }, [currentUser, analyticsReady]);
@@ -51,42 +51,42 @@ export const useAnalytics = () => {
       logEvent(analytics, eventName, {
         ...parameters,
         timestamp: new Date().toISOString(),
-        user_id: currentUser?.uid
+        user_id: currentUser?.uid,
       });
     } catch (error) {
-      console.error('Analytics error:', error);
+      console.error("Analytics error:", error);
     }
   };
 
   const trackPageView = (pageName: string) => {
-    trackEvent('page_view', { page_name: pageName });
+    trackEvent("page_view", { page_name: pageName });
   };
 
   const trackInternshipView = (internshipId: string, company: string) => {
-    trackEvent('internship_view', { 
+    trackEvent("internship_view", {
       internship_id: internshipId,
-      company_name: company
+      company_name: company,
     });
   };
 
   const trackApplication = (internshipId: string, company: string) => {
-    trackEvent('internship_application', {
+    trackEvent("internship_application", {
       internship_id: internshipId,
-      company_name: company
+      company_name: company,
     });
   };
 
   const trackSearch = (query: string, resultsCount: number) => {
-    trackEvent('search', {
+    trackEvent("search", {
       search_term: query,
-      results_count: resultsCount
+      results_count: resultsCount,
     });
   };
 
   const trackFilterUsage = (filterType: string, filterValue: string) => {
-    trackEvent('filter_usage', {
+    trackEvent("filter_usage", {
       filter_type: filterType,
-      filter_value: filterValue
+      filter_value: filterValue,
     });
   };
 
@@ -96,6 +96,6 @@ export const useAnalytics = () => {
     trackInternshipView,
     trackApplication,
     trackSearch,
-    trackFilterUsage
+    trackFilterUsage,
   };
 };
