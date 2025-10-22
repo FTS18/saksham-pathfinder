@@ -16,16 +16,23 @@ export const fetchInternships = async (): Promise<any[]> => {
       console.warn("Firebase unavailable or returned empty data:", err);
     }
 
-    // Fallback to JSON file
-    try {
-      const response = await fetch("/internships.json");
-      if (!response.ok) throw new Error("Failed to fetch internships.json");
-      const data = await response.json();
-      if (Array.isArray(data) && data.length > 0) {
-        return data;
+    // Fallback to static JSON files
+    const fallbackPaths = [
+      "/extended-internships.json",
+      "/internships.json",
+    ];
+
+    for (const path of fallbackPaths) {
+      try {
+        const response = await fetch(path);
+        if (!response.ok) continue;
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+      } catch (jsonError) {
+        console.warn(`JSON fallback failed for ${path}:`, jsonError);
       }
-    } catch (jsonError) {
-      console.warn("JSON fallback failed:", jsonError);
     }
 
     // If we get here, data loading failed - but don't return empty, let caller know

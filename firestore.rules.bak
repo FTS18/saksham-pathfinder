@@ -1,0 +1,523 @@
+rules_version = '2';rules_version = '2';
+
+service cloud.firestore {service cloud.firestore {
+
+  match /databases/{database}/documents {  match /databases/{database}/documents {
+
+    // ==================== HELPER FUNCTIONS ====================    // ==================== HELPER FUNCTIONS ====================
+
+    function isAuthenticated() {    function isAuthenticated() {
+
+      return request.auth != null;      return request.auth != null;
+
+    }    }
+
+        
+
+    function isOwner(userId) {    function isOwner(userId) {
+
+      return isAuthenticated() && request.auth.uid == userId;      return isAuthenticated() && request.auth.uid == userId;
+
+    }    }
+
+        
+
+    function isAdmin() {    function isAdmin() {
+
+      return isAuthenticated() &&       return isAuthenticated() && 
+
+        (request.auth.token.email == 'spacify1807@gmail.com' ||         (request.auth.token.email == 'spacify1807@gmail.com' || 
+
+         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+
+    }    }
+
+        
+
+    // ==================== USER & PROFILE COLLECTIONS ====================    // ==================== USER & PROFILE COLLECTIONS ====================
+
+    match /profiles/{userId} {    match /profiles/{userId} {
+
+      allow read: if isOwner(userId) || isAdmin() || resource.data.get('isPublic') == true;      allow read: if isOwner(userId) || isAdmin() || resource.data.get('isPublic') == true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow write, update: if isOwner(userId);      allow write, update: if isOwner(userId);
+
+      allow delete: if isOwner(userId) || isAdmin();      allow delete: if isOwner(userId) || isAdmin();
+
+    }    }
+
+        
+
+    match /users/{userId} {    match /users/{userId} {
+
+      allow read, write, update: if isOwner(userId) || isAdmin();      allow read, write, update: if isOwner(userId) || isAdmin();
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow delete: if isOwner(userId) || isAdmin();      allow delete: if isOwner(userId) || isAdmin();
+
+    }    }
+
+        
+
+    match /usernames/{username} {    match /usernames/{username} {
+
+      allow read: if true;      allow read: if true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow write, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;      allow write, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+
+    }    }
+
+        
+
+    match /userProfiles/{userId} {    match /userProfiles/{userId} {
+
+      allow read: if true;      allow read: if true;
+
+      allow write, create: if isOwner(userId) || isAdmin();      allow write, create: if isOwner(userId) || isAdmin();
+
+      allow delete: if isOwner(userId) || isAdmin();      allow delete: if isOwner(userId) || isAdmin();
+
+    }    }
+
+        
+
+    // ==================== INTERNSHIPS & JOBS ====================    // ==================== INTERNSHIPS & JOBS ====================
+
+    match /internships/{internshipId} {    match /internships/{internshipId} {
+
+      allow read: if true;      allow read: if true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update: if isAdmin() || (isAuthenticated() &&       allow update: if isAdmin() || (isAuthenticated() && 
+
+        (resource.data.get('createdBy') == request.auth.uid ||         (resource.data.get('createdBy') == request.auth.uid || 
+
+         resource.data.get('recruiterId') == request.auth.uid));         resource.data.get('recruiterId') == request.auth.uid));
+
+      allow delete: if isAdmin() || (isAuthenticated() &&       allow delete: if isAdmin() || (isAuthenticated() && 
+
+        (resource.data.get('createdBy') == request.auth.uid ||         (resource.data.get('createdBy') == request.auth.uid || 
+
+         resource.data.get('recruiterId') == request.auth.uid));         resource.data.get('recruiterId') == request.auth.uid));
+
+    }    }
+
+        
+
+    match /companies/{companyId} {    match /companies/{companyId} {
+
+      allow read: if true;      allow read: if true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        (resource.data.createdBy == request.auth.uid || isAdmin());        (resource.data.createdBy == request.auth.uid || isAdmin());
+
+    }    }
+
+        
+
+    match /jobs/{jobId} {    match /jobs/{jobId} {
+
+      allow read: if true;      allow read: if true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        (resource.data.createdBy == request.auth.uid || isAdmin());        (resource.data.createdBy == request.auth.uid || isAdmin());
+
+    }    }
+
+        
+
+    // ==================== APPLICATIONS ====================    // ==================== APPLICATIONS ====================
+
+    match /applications/{applicationId} {    match /applications/{applicationId} {
+
+      allow read: if isAuthenticated() &&       allow read: if isAuthenticated() && 
+
+        (request.auth.uid == resource.data.userId ||         (request.auth.uid == resource.data.userId || 
+
+         request.auth.uid == resource.data.recruiterId ||         request.auth.uid == resource.data.recruiterId ||
+
+         isAdmin());         isAdmin());
+
+      allow create: if isAuthenticated() &&       allow create: if isAuthenticated() && 
+
+        request.auth.uid == request.resource.data.userId;        request.auth.uid == request.resource.data.userId;
+
+      allow update: if isAuthenticated() &&       allow update: if isAuthenticated() && 
+
+        (request.auth.uid == resource.data.userId ||         (request.auth.uid == resource.data.userId || 
+
+         request.auth.uid == resource.data.recruiterId ||         request.auth.uid == resource.data.recruiterId ||
+
+         isAdmin());         isAdmin());
+
+      allow delete: if isAuthenticated() &&       allow delete: if isAuthenticated() && 
+
+        (request.auth.uid == resource.data.userId || isAdmin());        (request.auth.uid == resource.data.userId || isAdmin());
+
+    }    }
+
+        
+
+    // ==================== NOTIFICATIONS ====================    // ==================== NOTIFICATIONS ====================
+
+    match /notifications/{notificationId} {    match /notifications/{notificationId} {
+
+      allow read: if isAuthenticated() &&       allow read: if isAuthenticated() && 
+
+        request.auth.uid == resource.data.userId;        request.auth.uid == resource.data.userId;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        request.auth.uid == resource.data.userId;        request.auth.uid == resource.data.userId;
+
+    }    }
+
+        
+
+    // ==================== REFERRALS ====================    // ==================== REFERRALS ====================
+
+    match /referrals/{referralCode} {    match /referrals/{referralCode} {
+
+      allow read: if isAuthenticated();      allow read: if isAuthenticated();
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        (request.auth.uid == resource.data.referrerId || isAdmin());        (request.auth.uid == resource.data.referrerId || isAdmin());
+
+    }    }
+
+        
+
+    // ==================== REVIEWS & FEEDBACK ====================    // ==================== REVIEWS & FEEDBACK ====================
+
+    match /reviews/{reviewId} {    match /reviews/{reviewId} {
+
+      allow read: if true;      allow read: if true;
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        request.auth.uid == resource.data.userId;        request.auth.uid == resource.data.userId;
+
+    }    }
+
+        
+
+    match /feedback/{ticketId} {    match /feedback/{ticketId} {
+
+      allow read: if isAuthenticated() &&       allow read: if isAuthenticated() && 
+
+        (resource.data.userId == request.auth.uid || isAdmin());        (resource.data.userId == request.auth.uid || isAdmin());
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+      allow update, delete: if isAuthenticated() &&       allow update, delete: if isAuthenticated() && 
+
+        (resource.data.userId == request.auth.uid || isAdmin());        (resource.data.userId == request.auth.uid || isAdmin());
+
+    }    }
+
+        
+
+    // ==================== ADMIN ONLY ====================    // ==================== ADMIN ONLY ====================
+
+    match /admins/{userId} {    match /admins/{userId} {
+
+      allow read: if isAuthenticated();      allow read: if isAuthenticated();
+
+      allow write: if isAdmin();      allow write: if isAdmin();
+
+    }    }
+
+        
+
+    match /systemSettings/{document} {    match /systemSettings/{document} {
+
+      allow read: if isAuthenticated();      allow read: if isAuthenticated();
+
+      allow write: if isAdmin();      allow write: if isAdmin();
+
+    }    }
+
+        
+
+    match /reports/{document} {    match /reports/{document} {
+
+      allow read, write: if isAdmin();      allow read, write: if isAdmin();
+
+    }    }
+
+        
+
+    match /emailQueue/{emailId} {    match /emailQueue/{emailId} {
+
+      allow read: if isAdmin();      allow read: if isAdmin();
+
+      allow create: if isAuthenticated();      allow create: if isAuthenticated();
+
+    }    }
+
+        
+
+    // ==================== DEFAULT DENY ====================    // ==================== DEFAULT DENY ====================
+
+    match /{document=**} {    match /{document=**} {
+
+      allow read, write: if false;      allow read, write: if false;
+
+    }    }
+
+  }  }
+
+}}
+
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /recommendations/{userId} {
+      allow read: if isUserOwnerOrAdmin(userId);
+      allow write: if isAdmin() || isOwner(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /onboardingData/{userId} {
+      allow read, write, delete: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+    }
+    
+    match /interviewPrep/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /interviewMockSessions/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /profilePhotos/{userId}/{photoId} {
+      allow read: if true;
+      allow write, create, delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /userProfiles/{userId} {
+      allow read: if true;
+      allow write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /userFollows/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /discussions/{discussionId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    match /forums/{forumId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+    
+    match /qna/{questionId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    match /emailNotifications/{emailId} {
+      allow read: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() || isAdmin();
+      allow delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    match /pushSubscriptions/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /referralRewards/{userId} {
+      allow read, write: if isUserOwnerOrAdmin(userId);
+      allow create: if isAuthenticated();
+      allow delete: if isUserOwnerOrAdmin(userId);
+    }
+    
+    match /referralLeaderboard/{userId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /companyRatings/{companyId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+    }
+    
+    match /userAnalytics/{document=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    
+    match /systemLogs/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /internships/{internshipId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAdmin() || (isAuthenticated() && 
+        (resource.data.get('createdBy') == request.auth.uid || 
+         resource.data.get('recruiterId') == request.auth.uid));
+      allow delete: if isAdmin() || (isAuthenticated() && 
+        (resource.data.get('createdBy') == request.auth.uid || 
+         resource.data.get('recruiterId') == request.auth.uid));
+    }
+    
+    match /companies/{companyId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    // Multi-party collections
+    match /applications/{applicationId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow create: if isAuthenticated() && 
+        request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || isAdmin());
+    }
+    
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    match /chats/{chatId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid in resource.data.participants || isAdmin());
+    }
+    
+    match /interviews/{interviewId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.candidateId || 
+         request.auth.uid == resource.data.recruiterId ||
+         isAdmin());
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.recruiterId || 
+         request.auth.uid == resource.data.candidateId ||
+         isAdmin());
+    }
+    
+    match /referrals/{referralCode} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.referrerId || isAdmin());
+    }
+    
+    match /feedback/{ticketId} {
+      allow read: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Admin collections
+    match /systemSettings/{document} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /reports/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /admins/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    match /emailQueue/{emailId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+    }
+    
+    match /applicationStats/{statId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Default deny all unmatched collections (security best practice)
+    match /{document=**} {
+      allow read, write, delete: if false;
+    }
+  }
+}

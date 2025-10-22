@@ -176,9 +176,18 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const savedPreset = getInitialPreset();
     const savedUseSystemTheme = getInitialUseSystemTheme();
     
+    console.log('🎨 Theme initialization:', { 
+      savedTheme, 
+      savedColorTheme, 
+      savedPreset, 
+      savedUseSystemTheme,
+      source: 'localStorage'
+    });
+    
     // Use system theme if enabled
     const themeToUse = savedUseSystemTheme ? getSystemTheme() : savedTheme;
     
+    console.log('📝 Applying theme to DOM:', { themeToUse, colorTheme: savedColorTheme });
     applyThemeToDOM(themeToUse, savedColorTheme, savedPreset);
     setThemeState(themeToUse);
     setColorThemeState(savedColorTheme);
@@ -258,6 +267,8 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       const validatedTheme = validThemes.includes(theme) ? theme : 'dark';
       const validatedColor = validColors.includes(colorTheme) ? colorTheme : 'blue';
       
+      console.log('💾 Saving theme to Firestore...', { theme: validatedTheme, colorTheme: validatedColor, userId });
+      
       // Save to profiles collection (single source of truth)
       const profileRef = doc(db, 'profiles', userId);
       
@@ -271,6 +282,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           colorTheme: validatedColor,
           updatedAt: new Date().toISOString()
         });
+        console.log('✅ Theme saved to Firestore (updated existing)', { theme: validatedTheme, colorTheme: validatedColor });
       } else {
         // Document doesn't exist, create it with merge
         await setDoc(profileRef, { 
@@ -278,6 +290,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           colorTheme: validatedColor,
           updatedAt: new Date().toISOString()
         }, { merge: true });
+        console.log('✅ Theme saved to Firestore (created new)', { theme: validatedTheme, colorTheme: validatedColor });
       }
       
       // Ensure localStorage is in sync
@@ -396,6 +409,13 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       const profileRef = doc(db, 'profiles', userId);
       const docSnap = await getDoc(profileRef);
       
+      // Only save to localStorage, not Firestore (themePreset is not exposed in UI)
+      localStorage.setItem('themePreset', preset);
+      localStorage.setItem('useSystemTheme', String(useSystemTheme));
+      
+      // Optional: Save only if user explicitly wants cloud sync
+      // Remove to reduce Firestore writes
+      /*
       if (docSnap.exists()) {
         await updateDoc(profileRef, { 
           themePreset: preset,
@@ -409,9 +429,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           updatedAt: new Date().toISOString()
         }, { merge: true });
       }
-      
-      localStorage.setItem('themePreset', preset);
-      localStorage.setItem('useSystemTheme', String(useSystemTheme));
+      */
     } catch (error) {
       console.error('Error in saveThemePresetToProfile:', error);
       throw error;

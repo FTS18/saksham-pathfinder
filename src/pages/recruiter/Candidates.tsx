@@ -199,8 +199,8 @@ export default function Candidates() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-4">
-        <div className="flex-1">
+      <div className="flex gap-4 flex-wrap">
+        <div className="flex-1 min-w-[200px]">
           <Input
             placeholder="Search candidates..."
             value={searchTerm}
@@ -219,6 +219,19 @@ export default function Candidates() {
                 {loc}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+        <Select defaultValue="all">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Application Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="accepted">Accepted</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value="shortlisted">Shortlisted</SelectItem>
+            <SelectItem value="interview">Interview</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -277,15 +290,43 @@ export default function Candidates() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      <Eye className="w-4 h-4" />
-                      View
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <MessageSquare className="w-4 h-4" />
-                      Message
-                    </Button>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(`/profile/${candidate.userId}`, '_blank')}
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View Profile
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <MessageSquare className="w-4 h-4 mr-1" />
+                        Message
+                      </Button>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="default" 
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Accept
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="text-red-600 hover:bg-red-50"
+                      >
+                        Reject
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Shortlist
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Interview
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>

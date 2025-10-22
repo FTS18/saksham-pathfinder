@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { X, Plus } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import InternshipMigrationService, { FirebaseInternship } from '@/services/internshipMigrationService';
 
 interface InternshipFormProps {
@@ -15,6 +16,7 @@ interface InternshipFormProps {
 }
 
 export const InternshipForm = ({ internship, onSave, onCancel }: InternshipFormProps) => {
+  const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     role: '',
@@ -35,7 +37,8 @@ export const InternshipForm = ({ internship, onSave, onCancel }: InternshipFormP
     sector_tags: [] as string[],
     preferred_education_levels: [] as string[],
     responsibilities: [] as string[],
-    perks: [] as string[]
+    perks: [] as string[],
+    recruiterId: currentUser?.uid || ''
   });
 
   const [newSkill, setNewSkill] = useState('');
@@ -66,10 +69,11 @@ export const InternshipForm = ({ internship, onSave, onCancel }: InternshipFormP
         sector_tags: internship.sector_tags || [],
         preferred_education_levels: internship.preferred_education_levels || [],
         responsibilities: internship.responsibilities || [],
-        perks: internship.perks || []
+        perks: internship.perks || [],
+        recruiterId: internship.recruiterId || currentUser?.uid || ''
       });
     }
-  }, [internship]);
+  }, [internship, currentUser?.uid]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

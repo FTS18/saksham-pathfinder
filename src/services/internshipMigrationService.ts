@@ -58,7 +58,7 @@ export class InternshipMigrationService {
    */
   private static getInternshipsCollection() {
     if (!db) {
-      throw new Error('Firebase Firestore is not initialized');
+      throw new Error("Firebase Firestore is not initialized");
     }
     return collection(db, this.COLLECTION_NAME);
   }
@@ -144,7 +144,8 @@ export class InternshipMigrationService {
   }
 
   /**
-   * Get all internships from Firebase
+   * Get all internships from Firebase with caching
+   * Uses firebaseOptimizationService for 5-minute TTL caching
    */
   static async getAllInternships(): Promise<FirebaseInternship[]> {
     try {
@@ -154,20 +155,31 @@ export class InternshipMigrationService {
       }
 
       try {
-        const q = query(
-          InternshipMigrationService.getInternshipsCollection(),
-          where("status", "==", "active"),
-          orderBy("createdAt", "desc")
+        // Dynamic import to avoid circular dependencies
+        const { executeOptimizedQuery } = await import(
+          "@/services/firebaseOptimizationService"
         );
 
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(
-          (doc) =>
+        // Use optimized query with caching (5-minute TTL)
+        const result = await executeOptimizedQuery(
+          "internships",
+          [
+            where("status", "in", ["published", "active"]),
+            orderBy("createdAt", "desc"),
+          ],
+          {
+            pageSize: 1000,
+            orderByField: "createdAt",
+            orderByDirection: "desc",
+          }
+        );
+
+        return result.data.map(
+          (doc: any) =>
             ({
-              id: doc.id,
-              ...doc.data(),
-              createdAt: doc.data().createdAt?.toDate() || new Date(),
-              updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+              ...doc,
+              createdAt: doc.createdAt?.toDate?.() || new Date(),
+              updatedAt: doc.updatedAt?.toDate?.() || new Date(),
             } as FirebaseInternship)
         );
       } catch (firebaseError) {
@@ -358,7 +370,7 @@ export class InternshipMigrationService {
     id: string
   ): Promise<FirebaseInternship | null> {
     try {
-      const docRef = doc(this.getInternshipsCollection(), id);
+      const docRef = doc(collection(db, "internships"), id);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -404,15 +416,17 @@ export class InternshipMigrationService {
         return [];
       }
 
+      // Simplified query to avoid complex index requirement
+      // Only order by viewCount to avoid composite index
       const q = query(
         this.getInternshipsCollection(),
         where("status", "==", "active"),
         orderBy("viewCount", "desc"),
-        orderBy("createdAt", "desc")
+        fsLimit(limit)
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.slice(0, limit).map(
+      return querySnapshot.docs.map(
         (doc) =>
           ({
             id: doc.id,
@@ -480,6 +494,17 @@ export class InternshipMigrationService {
 
       await setDoc(docRef, firestoreInternship);
       console.log("✅ Internship created:", docRef.id);
+
+      // Invalidate cache after creating new internship
+      try {
+        const { clearCollectionCache } = await import(
+          "@/services/firebaseOptimizationService"
+        );
+        clearCollectionCache("internships");
+      } catch (e) {
+        console.warn("Could not invalidate cache:", e);
+      }
+
       return docRef.id;
     } catch (error) {
       console.error("❌ Error creating internship:", error);
@@ -501,6 +526,16 @@ export class InternshipMigrationService {
         updatedAt: new Date(),
       });
       console.log("✅ Internship updated:", id);
+
+      // Invalidate cache after updating internship
+      try {
+        const { clearCollectionCache } = await import(
+          "@/services/firebaseOptimizationService"
+        );
+        clearCollectionCache("internships");
+      } catch (e) {
+        console.warn("Could not invalidate cache:", e);
+      }
     } catch (error) {
       console.error("❌ Error updating internship:", error);
       throw error;

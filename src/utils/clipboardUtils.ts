@@ -14,7 +14,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
       return copyToClipboardLegacy(text);
     }
   } catch (error) {
-    console.error('Clipboard copy failed:', error);
+    console.error("Clipboard copy failed:", error);
     // Try legacy method as fallback
     return copyToClipboardLegacy(text);
   }
@@ -26,11 +26,11 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
  */
 const copyToClipboardLegacy = (text: string): boolean => {
   try {
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    textarea.style.pointerEvents = 'none';
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
     document.body.appendChild(textarea);
 
     // Focus and select
@@ -38,14 +38,14 @@ const copyToClipboardLegacy = (text: string): boolean => {
     textarea.select();
 
     // Try to copy
-    const successful = document.execCommand('copy');
+    const successful = document.execCommand("copy");
 
     // Cleanup
     document.body.removeChild(textarea);
 
     return successful;
   } catch (error) {
-    console.error('Legacy clipboard copy failed:', error);
+    console.error("Legacy clipboard copy failed:", error);
     return false;
   }
 };
@@ -64,15 +64,17 @@ export const shareContent = async (shareData: {
       return true;
     } else {
       // Fallback: copy to clipboard
-      const text = `${shareData.title || ''}\n${shareData.text || ''}\n${shareData.url || ''}`;
+      const text = `${shareData.title || ""}\n${shareData.text || ""}\n${
+        shareData.url || ""
+      }`;
       return await copyToClipboard(text);
     }
   } catch (error) {
-    if ((error as Error).name === 'AbortError') {
+    if ((error as Error).name === "AbortError") {
       // User cancelled share
       return false;
     }
-    console.error('Share failed:', error);
+    console.error("Share failed:", error);
     return false;
   }
 };

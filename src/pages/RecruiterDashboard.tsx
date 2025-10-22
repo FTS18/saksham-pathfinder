@@ -25,9 +25,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, orderBy, doc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { Briefcase, Download, Users, Trophy, Clock, Star, MapPin, DollarSign } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { ApplicationService } from '@/services/applicationService';
 
 interface Internship {
   id: string;
@@ -88,6 +89,9 @@ const RecruiterDashboard = () => {
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [isLoadingMoreApps, setIsLoadingMoreApps] = useState(false);
+  const [hasMoreApplications, setHasMoreApplications] = useState(true);
+  const [lastAppDoc, setLastAppDoc] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newInternship, setNewInternship] = useState({
     title: '',
@@ -103,11 +107,29 @@ const RecruiterDashboard = () => {
     status: 'active' as const,
   });
 
+
   useEffect(() => {
-    if (currentUser) {
-      fetchInternships();
-      fetchApplications();
-    }
+    if (!currentUser) return;
+
+    // Real-time listener for internships
+    const q = query(
+      collection(db, 'internships'),
+      where('recruiterId', '==', currentUser.uid),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const internshipData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date()
+      })) as Internship[];
+      setInternships(internshipData);
+    }, (error) => {
+      console.error('Error listening to internships:', error);
+    });
+
+    return () => unsubscribe();
   }, [currentUser]);
 
   const fetchInternships = async () => {
@@ -131,22 +153,24 @@ const RecruiterDashboard = () => {
     }
   };
 
-  const fetchApplications = async () => {
+
+  useEffect(() => {
     if (!currentUser) return;
-    try {
-      const q = query(
-        collection(db, 'applications'),
-        where('recruiterId', '==', currentUser.uid),
-        orderBy('appliedDate', 'desc')
-      );
-      const querySnapshot = await getDocs(q);
+
+    // Real-time listener for applications
+    const q = query(
+      collection(db, 'applications'),
+      where('recruiterId', '==', currentUser.uid),
+      orderBy('appliedDate', 'desc')
+    );
+    const unsubscribe = onSnapshot(q, async (querySnapshot) => {
       const applicationData = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         appliedDate: doc.data().appliedDate?.toDate() || new Date()
       })) as Application[];
       setApplications(applicationData);
-      
+
       // Fetch candidate details
       const candidateIds = [...new Set(applicationData.map(app => app.candidateId))];
       const candidatePromises = candidateIds.map(async (id) => {
@@ -156,14 +180,44 @@ const RecruiterDashboard = () => {
       });
       const candidateData = await Promise.all(candidatePromises);
       setCandidates(candidateData);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-    }
-  };
+    }, (error) => {
+      console.error('Error listening to applications:', error);
+    });
+
+    return () => unsubscribe();
+  }, [currentUser]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewInternship((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const loadMoreApplications = async () => {
+    if (!currentUser || !hasMoreApplications) return;
+
+    setIsLoadingMoreApps(true);
+    try {
+      const result = await ApplicationService.getRecruiterApplicationsPaginated(
+        currentUser.uid,
+        12,
+        lastAppDoc
+      );
+      
+      if (result.applications.length > 0) {
+        setApplications(prev => [...prev, ...result.applications] as Application[]);
+        setLastAppDoc(result.lastDoc);
+        setHasMoreApplications(result.hasMore);
+      }
+    } catch (error) {
+      console.error('Error loading more applications:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load more applications',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoadingMoreApps(false);
+    }
   };
 
   const handleAddInternship = async (e: React.FormEvent) => {
@@ -294,14 +348,14 @@ const RecruiterDashboard = () => {
     return applications.filter(app => app.internshipId === internshipId);
   };
 
-  const updateApplicationStatus = async (applicationId: string, status: string) => {
+  const updateApplicationStatus = async (applicationId: string, status: 'pending' | 'reviewed' | 'shortlisted' | 'rejected') => {
     try {
       const docRef = doc(db, 'applications', applicationId);
       await updateDoc(docRef, { status, updatedAt: new Date() });
       
       setApplications(prev => prev.map(app => 
         app.id === applicationId ? { ...app, status } : app
-      ));
+      ) as Application[]);
       
       toast({
         title: "Success",
@@ -682,7 +736,7 @@ const RecruiterDashboard = () => {
                               <TableCell>
                                 <Select 
                                   value={application.status} 
-                                  onValueChange={(value) => updateApplicationStatus(application.id, value)}
+                                  onValueChange={(value) => updateApplicationStatus(application.id, value as 'pending' | 'reviewed' | 'shortlisted' | 'rejected')}
                                 >
                                   <SelectTrigger className="w-32">
                                     <SelectValue />
@@ -717,9 +771,23 @@ const RecruiterDashboard = () => {
                               </TableCell>
                             </TableRow>
                           );
-                        })}
+                      })}
                     </TableBody>
                   </Table>
+
+                  {/* Load More Button */}
+                  {hasMoreApplications && applications.length > 0 && (
+                    <div className="flex justify-center mt-6">
+                      <Button
+                        onClick={loadMoreApplications}
+                        disabled={isLoadingMoreApps || loading}
+                        variant="outline"
+                        className="w-full sm:w-auto"
+                      >
+                        {isLoadingMoreApps ? 'Loading...' : 'Load More Applications'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12">

@@ -10,6 +10,8 @@ import {
   serverTimestamp,
   QueryConstraint,
   writeBatch,
+  arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 
 export interface Application {
@@ -82,12 +84,14 @@ export class ApplicationService {
 
       // Create application document reference
       const appRef = doc(collection(db, this.COLLECTION));
-      batch.set(appRef, {
+      const applicationData = {
         ...application,
         status: application.status || "pending",
         appliedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+      };
+      
+      batch.set(appRef, applicationData);
 
       // Create notification document reference (if notification data provided)
       if (notificationData) {
@@ -103,8 +107,23 @@ export class ApplicationService {
         });
       }
 
-      // Commit both operations in single batch
+      // Add application ID to user's profile applications array
+      const profileRef = doc(db, "profiles", application.userId);
+      batch.update(profileRef, {
+        applications: arrayUnion({
+          id: appRef.id,
+          internshipId: application.internshipId,
+          internshipTitle: application.internshipTitle,
+          companyName: application.companyName,
+          status: application.status || "pending",
+          appliedAt: new Date().toISOString(),
+        }),
+        updatedAt: new Date().toISOString(),
+      });
+
+      // Commit all operations in single batch
       await batch.commit();
+      console.log('💾 Application saved to Firestore and added to profile:', appRef.id);
       return appRef.id;
     } catch (error) {
       console.error("Error creating application with notification:", error);
@@ -130,19 +149,75 @@ export class ApplicationService {
     }
   }
 
-  static async getUserApplications(userId: string): Promise<Application[]> {
+  static async getUserApplications(
+    userId: string,
+    limitCount?: number
+  ): Promise<Application[]> {
     try {
-      const q = query(
-        collection(db, this.COLLECTION),
-        where("userId", "==", userId)
-      );
+      const constraints: QueryConstraint[] = [
+        where("userId", "==", userId),
+        // orderBy("appliedAt", "desc") // Removed - requires composite index
+      ];
+
+      const q = query(collection(db, this.COLLECTION), ...constraints);
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(
+
+      const apps = snapshot.docs.map(
         (doc) => ({ id: doc.id, ...doc.data() } as Application)
       );
+
+      // Sort in memory to avoid index requirement
+      apps.sort((a, b) => {
+        const aTime = a.appliedAt?.toMillis?.() || 0;
+        const bTime = b.appliedAt?.toMillis?.() || 0;
+        return bTime - aTime;
+      });
+
+      return limitCount ? apps.slice(0, limitCount) : apps;
     } catch (error) {
       console.error("Error fetching applications:", error);
       return [];
+    }
+  }
+
+  static async getUserApplicationsPaginated(
+    userId: string,
+    limit: number = 12,
+    lastDoc?: any
+  ): Promise<{
+    applications: Application[];
+    lastDoc: any;
+    hasMore: boolean;
+  }> {
+    try {
+      const constraints: QueryConstraint[] = [where("userId", "==", userId)];
+
+      const q = query(collection(db, this.COLLECTION), ...constraints);
+      const snapshot = await getDocs(q);
+
+      const apps = snapshot.docs.map(
+        (doc) => ({ id: doc.id, ...doc.data() } as Application)
+      );
+
+      // Sort in memory
+      apps.sort((a, b) => {
+        const aTime = a.appliedAt?.toMillis?.() || 0;
+        const bTime = b.appliedAt?.toMillis?.() || 0;
+        return bTime - aTime;
+      });
+
+      // Pagination: get one extra to check if there are more
+      const paginatedApps = apps.slice(0, limit);
+      const hasMore = apps.length > limit;
+
+      return {
+        applications: paginatedApps,
+        lastDoc: paginatedApps[paginatedApps.length - 1] || null,
+        hasMore,
+      };
+    } catch (error) {
+      console.error("Error fetching paginated applications:", error);
+      return { applications: [], lastDoc: null, hasMore: false };
     }
   }
 
@@ -259,6 +334,54 @@ export class ApplicationService {
     } catch (error) {
       console.error("Error fetching recruiter applications:", error);
       return [];
+    }
+  }
+
+  static async getRecruiterApplicationsPaginated(
+    recruiterId: string,
+    limit: number = 12,
+    lastDoc?: any
+  ): Promise<{
+    applications: Application[];
+    lastDoc: any;
+    hasMore: boolean;
+  }> {
+    try {
+      const q = query(
+        collection(db, this.COLLECTION),
+        where("recruiterId", "==", recruiterId)
+      );
+      const snapshot = await getDocs(q);
+
+      const apps = snapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+            appliedAt: doc.data().appliedAt?.toDate(),
+            updatedAt: doc.data().updatedAt?.toDate(),
+          } as Application)
+      );
+
+      // Sort by appliedAt descending
+      apps.sort((a, b) => {
+        const aTime = a.appliedAt?.getTime?.() || 0;
+        const bTime = b.appliedAt?.getTime?.() || 0;
+        return bTime - aTime;
+      });
+
+      // Pagination: get one extra to check if there are more
+      const paginatedApps = apps.slice(0, limit);
+      const hasMore = apps.length > limit;
+
+      return {
+        applications: paginatedApps,
+        lastDoc: paginatedApps[paginatedApps.length - 1] || null,
+        hasMore,
+      };
+    } catch (error) {
+      console.error("Error fetching paginated recruiter applications:", error);
+      return { applications: [], lastDoc: null, hasMore: false };
     }
   }
 }

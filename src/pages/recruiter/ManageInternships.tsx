@@ -22,6 +22,9 @@ export default function ManageInternships() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [applicationCounts, setApplicationCounts] = useState<{ [key: string]: number }>({});
+  const itemsPerPage = 10;
 
   useEffect(() => {
     if (!currentUser?.uid) return;
@@ -42,7 +45,7 @@ export default function ManageInternships() {
               orderBy('createdAt', 'desc')
             );
         
-        const unsubscribe = onSnapshot(q, (snapshot) => {
+        const unsubscribe = onSnapshot(q, async (snapshot) => {
           const internshipsList = snapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
@@ -51,6 +54,22 @@ export default function ManageInternships() {
           } as FirebaseInternship));
           
           setInternships(internshipsList);
+          
+          // Fetch real application counts for each internship
+          const counts: { [key: string]: number } = {};
+          for (const internship of internshipsList) {
+            if (internship.id) {
+              const applicationsQuery = query(
+                collection(db, 'applications'),
+                where('internshipId', '==', internship.id)
+              );
+              const applicationsSnapshot = await onSnapshot(applicationsQuery, (appSnap) => {
+                counts[internship.id!] = appSnap.size;
+                setApplicationCounts({...counts});
+              });
+            }
+          }
+          
           setLoading(false);
         }, (error) => {
           console.error('Error listening to internships:', error);
@@ -102,34 +121,6 @@ export default function ManageInternships() {
     setIsFormOpen(true);
   };
 
-  const getApplicationCount = (title: string) => {
-    const counts: { [key: string]: number } = {
-      'Software Developer Intern': 2,
-      'Marketing Intern': 1,
-      'Financial Analyst Intern': 2,
-      'Automotive Engineering Intern': 1,
-      'Civil Engineering Intern': 1,
-      'Hospital Operations Intern': 1,
-      'Network Engineering Intern': 1,
-      'Audit Intern': 1
-    };
-    return counts[title] || 0;
-  };
-
-  const getViewCount = (title: string) => {
-    const counts: { [key: string]: number } = {
-      'Software Developer Intern': 234,
-      'Marketing Intern': 189,
-      'Financial Analyst Intern': 156,
-      'Automotive Engineering Intern': 98,
-      'Civil Engineering Intern': 145,
-      'Hospital Operations Intern': 87,
-      'Network Engineering Intern': 203,
-      'Audit Intern': 134
-    };
-    return counts[title] || Math.floor(Math.random() * 200) + 50;
-  };
-
   const filteredInternships = internships.filter(internship => {
     const locationStr = typeof internship.location === 'string' 
       ? internship.location 
@@ -139,6 +130,14 @@ export default function ManageInternships() {
       internship.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
       locationStr.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredInternships.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedInternships = filteredInternships.slice(startIndex, endIndex);
+
+  const totalApplications = Object.values(applicationCounts).reduce((sum, count) => sum + count, 0);
 
   if (loading) {
     return (
@@ -199,21 +198,23 @@ export default function ManageInternships() {
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-orange-600">8</div>
+            <div className="text-2xl font-bold text-orange-600">{totalApplications}</div>
             <div className="text-sm text-muted-foreground">Total Applications</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-600">1,247</div>
+            <div className="text-2xl font-bold text-purple-600">
+              {internships.reduce((sum, i) => sum + (i.viewCount || 0), 0)}
+            </div>
             <div className="text-sm text-muted-foreground">Total Views</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Internships List */}
+      {/* Internships List with Pagination */}
       <div className="grid gap-4">
-        {filteredInternships.map((internship) => (
+        {paginatedInternships.map((internship) => (
           <Card key={internship.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
@@ -244,8 +245,8 @@ export default function ManageInternships() {
                   <div className="flex gap-4 text-sm text-muted-foreground">
                     <span>Stipend: {internship.stipend}</span>
                     <span>Duration: {internship.duration}</span>
-                    <span>Applications: {getApplicationCount(internship.title)}</span>
-                    <span>Views: {getViewCount(internship.title)}</span>
+                    <span className="font-semibold text-primary">Applications: {applicationCounts[internship.id!] || 0}</span>
+                    <span>Views: {internship.viewCount || 0}</span>
                   </div>
                 </div>
                 <div className="flex gap-2">
@@ -269,6 +270,41 @@ export default function ManageInternships() {
           </Card>
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
+          <div className="flex gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                key={page}
+                variant={currentPage === page ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCurrentPage(page)}
+                className="w-10"
+              >
+                {page}
+              </Button>
+            ))}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
 
       {/* Add/Edit Form Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>

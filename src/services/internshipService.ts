@@ -71,12 +71,41 @@ export const getAllInternships = InternshipMigrationService.getAllInternships;
 export const getInternshipsPaginated =
   InternshipMigrationService.getInternshipsPaginated;
 export const searchInternships = InternshipMigrationService.searchInternships;
-export const getInternshipById = InternshipMigrationService.getInternshipById;
-export const getTrendingInternships =
-  InternshipMigrationService.getTrendingInternships;
-export const getFeaturedInternships =
-  InternshipMigrationService.getFeaturedInternships;
-export const incrementViewCount = InternshipMigrationService.incrementViewCount;
+
+// Enhanced getInternshipById with JSON fallback
+export const getInternshipById = async (id: string): Promise<any | null> => {
+  try {
+    // Try Firestore first
+    const firestoreInternship =
+      await InternshipMigrationService.getInternshipById(id);
+    if (firestoreInternship) {
+      return firestoreInternship;
+    }
+  } catch (err) {
+    console.warn("Error fetching from Firestore:", err);
+  }
+
+  // Fallback to JSON file if not found in Firestore
+  try {
+    const response = await fetch("/internships.json");
+    if (!response.ok) throw new Error("Failed to fetch internships.json");
+    const internships = await response.json();
+
+    // Search by id (string or number)
+    const found = internships.find((i: any) => String(i.id) === String(id));
+    return found || null;
+  } catch (err) {
+    console.warn("Error fetching from JSON fallback:", err);
+    return null;
+  }
+};
+
+export const getTrendingInternships = (limit?: number) =>
+  InternshipMigrationService.getTrendingInternships(limit);
+export const getFeaturedInternships = () =>
+  InternshipMigrationService.getFeaturedInternships();
+export const incrementViewCount = (id: string) =>
+  InternshipMigrationService.incrementViewCount(id);
 
 // Legacy function name for backward compatibility
 export const getInternshipsForStudents =
@@ -86,20 +115,30 @@ export const getUserApplications = async (userId: string) => {
   try {
     const q = query(
       collection(db, "applications"),
-      where("candidateId", "==", userId),
-      orderBy("appliedDate", "desc")
+      where("userId", "==", userId) // Changed from candidateId to userId to match ApplicationService
+      // orderBy removed to avoid index requirement
     );
 
     const querySnapshot = await getDocs(q);
     const applications = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-      appliedDate: doc.data().appliedDate?.toDate() || new Date(),
-    }));
+      appliedDate:
+        doc.data().appliedAt?.toDate() ||
+        doc.data().appliedDate?.toDate() ||
+        new Date(),
+    })) as any[];
+
+    // Sort in memory
+    applications.sort(
+      (a, b) => b.appliedDate.getTime() - a.appliedDate.getTime()
+    );
 
     // Fetch internship details for each application
     const internshipPromises = applications.map(async (app) => {
-      const internshipDoc = await getDoc(doc(db, "internships", app.id));
+      const internshipDoc = await getDoc(
+        doc(db, "internships", app.internshipId)
+      );
       return {
         ...app,
         internship: internshipDoc.exists()

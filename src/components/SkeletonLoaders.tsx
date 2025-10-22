@@ -127,6 +127,20 @@ export const SecuritySkeleton = () => (
   </div>
 );
 
+export const ResumeSkeleton = () => (
+  <div className="p-6 border rounded-lg space-y-4 bg-card">
+    <div className="flex items-center justify-between mb-4">
+      <div className="h-6 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+      <div className="h-9 w-24 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+    </div>
+    <div className="space-y-3">
+      <div className="h-4 w-48 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+      <div className="h-4 w-full bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+      <div className="h-4 w-3/4 bg-gray-300 dark:bg-gray-600 rounded animate-pulse" />
+    </div>
+  </div>
+);
+
 export const ProfileSectionSkeleton = () => (
   <div className="p-6 border rounded-lg space-y-4 bg-card animate-pulse">
     <div className="h-6 w-48 bg-gray-300 dark:bg-gray-600 rounded" />

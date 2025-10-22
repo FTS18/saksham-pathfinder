@@ -1,6 +1,7 @@
-const CACHE_NAME = 'saksham-ai-v3';
-const STATIC_CACHE = 'static-v3';
-const DYNAMIC_CACHE = 'dynamic-v3';
+// Bump Qcache versions to force clients to pick up latest assets and avoid stale module references
+const CACHE_NAME = 'saksham-ai-v6';
+const STATIC_CACHE = 'static-v6';
+const DYNAMIC_CACHE = 'dynamic-v6';
 
 const STATIC_ASSETS = [
   '/',
@@ -37,52 +38,90 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Allow page to tell SW to activate immediately
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  const { type } = event.data;
+  if (type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Fetch event
 self.addEventListener('fetch', (event) => {
-  // Don't cache non-GET requests
+  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+  const isAsset = url.pathname.startsWith('/assets/') ||
+    url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname.endsWith('.map');
+  const isNavigation = event.request.mode === 'navigate';
+
+  // Network-first for HTML pages (index.html, HTML routes)
+  if (isNavigation || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          // Fall back to cached version only if network fails
+          return caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) return cachedResponse;
+            // Return offline page
+            return new Response('Offline - Please check your connection', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({ 'Content-Type': 'text/plain' })
+            });
+          });
+        })
+    );
+    return;
+  }
+
+  // Network-first for assets to avoid stale modules
+  if (isAsset) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for other resources
   event.respondWith(
     caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-
+      if (response) return response;
       return fetch(event.request)
         .then((fetchResponse) => {
-          if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
-            return fetchResponse;
+          if (fetchResponse && fetchResponse.status === 200 && fetchResponse.type === 'basic') {
+            const responseToCache = fetchResponse.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
           }
-
-          const responseToCache = fetchResponse.clone();
-          caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-
           return fetchResponse;
         })
         .catch((error) => {
           console.log('Fetch failed for', event.request.url, error);
-          // Return offline page for navigation requests
-          if (event.request.mode === 'navigate') {
-            return caches.match('/').catch(() => {
-              // If even the homepage isn't cached, return a basic response
-              return new Response('Offline - Please check your connection', {
-                status: 503,
-                statusText: 'Service Unavailable',
-                headers: new Headers({ 'Content-Type': 'text/plain' })
-              });
-            });
-          }
-          // For other requests, just fail silently
-          throw error;
+          return new Response('Service Unavailable', { status: 503 });
         });
-    }).catch((error) => {
-      console.log('Cache operation failed:', error);
-      // Return original fetch as fallback
-      return fetch(event.request).catch(() => {
-        return new Response('Service Unavailable', { status: 503 });
-      });
     })
   );
 });

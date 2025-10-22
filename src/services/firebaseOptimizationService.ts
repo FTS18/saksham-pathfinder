@@ -1,5 +1,15 @@
-import { collection, query, limit, orderBy, getDocs, QueryConstraint, startAfter, Query, DocumentSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import {
+  collection,
+  query,
+  limit,
+  orderBy,
+  getDocs,
+  QueryConstraint,
+  startAfter,
+  Query,
+  DocumentSnapshot,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 /**
  * Firebase Query Optimization Service
@@ -20,7 +30,7 @@ export interface PaginationOptions {
   pageSize?: number;
   startAfterDoc?: DocumentSnapshot;
   orderByField?: string;
-  orderByDirection?: 'asc' | 'desc';
+  orderByDirection?: "asc" | "desc";
 }
 
 /**
@@ -31,20 +41,25 @@ export async function executeOptimizedQuery(
   constraints: QueryConstraint[],
   options: PaginationOptions = {}
 ): Promise<{ data: any[]; nextPageStart: DocumentSnapshot | null }> {
-  const cacheKey = `${collectionName}:${JSON.stringify(constraints)}:${JSON.stringify(options)}`;
-  
+  const cacheKey = `${collectionName}:${JSON.stringify(
+    constraints
+  )}:${JSON.stringify(options)}`;
+
   // Check cache
   const cached = queryCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     return { data: cached.data, nextPageStart: null };
   }
 
-  const pageSize = Math.min(options.pageSize ?? DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+  const pageSize = Math.min(
+    options.pageSize ?? DEFAULT_PAGE_SIZE,
+    MAX_PAGE_SIZE
+  );
   const col = collection(db, collectionName);
-  
+
   const queryConstraints: QueryConstraint[] = [
     ...constraints,
-    limit(pageSize + 1) // Fetch one extra to check if there's a next page
+    limit(pageSize + 1), // Fetch one extra to check if there's a next page
   ];
 
   if (options.startAfterDoc) {
@@ -64,7 +79,7 @@ export async function executeOptimizedQuery(
     nextPageStart = docs[docs.length - 1];
   }
 
-  const data = docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const data = docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
   // Cache results
   queryCache.set(cacheKey, { data, timestamp: Date.now() });
@@ -82,7 +97,7 @@ export function clearCollectionCache(collectionName: string) {
       keysToDelete.push(key);
     }
   });
-  keysToDelete.forEach(key => queryCache.delete(key));
+  keysToDelete.forEach((key) => queryCache.delete(key));
 }
 
 /**
@@ -99,9 +114,9 @@ export function getQuotaEstimate(): { reads: number; writes: number } {
   // Estimate based on cache hits
   const totalQueries = queryCache.size;
   const estimatedReads = totalQueries * 1; // 1 read per unique query
-  
+
   return {
     reads: estimatedReads,
-    writes: 0
+    writes: 0,
   };
 }

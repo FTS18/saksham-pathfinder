@@ -4,7 +4,6 @@ export const registerSW = async () => {
     try {
       const registration = await navigator.serviceWorker.register("/sw.js");
 
-      // Check for updates
       registration.addEventListener("updatefound", () => {
         const newWorker = registration.installing;
         if (newWorker) {
@@ -13,8 +12,21 @@ export const registerSW = async () => {
               newWorker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              // New content available, show update notification
-              showUpdateNotification();
+              // Auto-refresh: activate new SW and reload
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: "SKIP_WAITING" });
+                registration.waiting.addEventListener(
+                  "statechange",
+                  (e: Event) => {
+                    const sw = e.target as ServiceWorker;
+                    if (sw.state === "activated") {
+                      window.location.reload();
+                    }
+                  }
+                );
+              } else {
+                window.location.reload();
+              }
             }
           });
         }
@@ -36,16 +48,6 @@ export const preloadImages = () => {
     link.href = src;
     document.head.appendChild(link);
   });
-};
-
-// Show update notification
-const showUpdateNotification = () => {
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("Update Available", {
-      body: "A new version of Saksham AI is available. Refresh to update.",
-      icon: "/logo192.png",
-    });
-  }
 };
 
 // Request notification permission

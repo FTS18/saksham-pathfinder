@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -23,12 +23,11 @@ import { ShareProfileBanner } from '@/components/ShareProfileBanner';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { DeleteAccountButton } from '@/components/DeleteAccountButton';
 import { ResumeUploader } from '@/components/ResumeUploader';
-import { ProfileSkeleton } from '@/components/ProfileSkeleton';
-
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
 import sectorsSkillsData from '@/data/sectors-skills.json';
-
+const SecuritySection = lazy(() => import('./ProfileSections/SecuritySection'));
+const ResumeSection = lazy(() => import('./ProfileSections/ResumeSection'));
 
 interface UserProfile {
   username: string;
@@ -538,7 +537,11 @@ const Profile = () => {
           <div className="mb-8">
             <Breadcrumbs />
           </div>
-          <ProfileSkeleton />
+          <div className="space-y-4">
+            <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+          </div>
         </div>
       </div>
     );

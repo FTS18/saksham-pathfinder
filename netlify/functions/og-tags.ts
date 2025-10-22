@@ -67,9 +67,7 @@ const handler: Handler = async (event, context) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>${escapeHtml(title)} - ${escapeHtml(
-      company
-    )} | Saksham AI</title>
+    <title>${escapeHtml(title)} - ${escapeHtml(company)} | Saksham AI</title>
     <meta name="title" content="${escapeHtml(title)} - ${escapeHtml(
       company
     )} | Saksham AI">

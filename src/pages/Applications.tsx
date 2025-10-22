@@ -16,15 +16,15 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
   const [selectedInternship, setSelectedInternship] = useState<any>(null);
   const [cardInternshipDetails, setCardInternshipDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { internships } = useInternships();
+  const { data: internshipsData } = useInternships();
 
-  // Load internship details for card display
+  // Load internship details for card display - only once when component mounts
   useEffect(() => {
     const loadInternshipDetails = async () => {
       setLoading(true);
       
       // First try current internships list
-      let details = internships?.find(i => 
+      let details = internshipsData?.find(i => 
         i.id === application.internshipId || 
         i.title === application.internshipTitle
       );
@@ -44,8 +44,11 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
       setLoading(false);
     };
     
-    loadInternshipDetails();
-  }, [internships, application.internshipId, application.internshipTitle]);
+    // Only load once when application changes, not when internships list updates
+    if (application.internshipId || application.internshipTitle) {
+      loadInternshipDetails();
+    }
+  }, [application.internshipId, application.internshipTitle]); // Removed internships dependency
 
   const handleCardClick = () => {
     // Use already loaded card details or fallback
