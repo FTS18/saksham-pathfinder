@@ -14,9 +14,15 @@ const db = admin.firestore();
 /**
  * Verify user is authenticated via JWT
  */
-async function verifyAuth(headers: Record<string, string | string[] | undefined>): Promise<string | null> {
+async function verifyAuth(
+  headers: Record<string, string | string[] | undefined>
+): Promise<string | null> {
   const authHeader = headers.authorization;
-  if (!authHeader || typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+  if (
+    !authHeader ||
+    typeof authHeader !== "string" ||
+    !authHeader.startsWith("Bearer ")
+  ) {
     return null;
   }
 
@@ -49,9 +55,15 @@ async function verifyRecruiterRole(userId: string): Promise<boolean> {
 /**
  * Verify internship ownership
  */
-async function verifyInternshipOwnership(internshipId: string, recruiterId: string): Promise<boolean> {
+async function verifyInternshipOwnership(
+  internshipId: string,
+  recruiterId: string
+): Promise<boolean> {
   try {
-    const internshipDoc = await db.collection("internships").doc(internshipId).get();
+    const internshipDoc = await db
+      .collection("internships")
+      .doc(internshipId)
+      .get();
     if (!internshipDoc.exists) return false;
 
     const data = internshipDoc.data();
@@ -90,13 +102,13 @@ export const handler: Handler = async (event, context) => {
     }
 
     const body = event.body ? JSON.parse(event.body) : {};
-    
+
     // Extract path - handle both .netlify and direct function name routing
     let path = event.path;
     if (path.includes("/.netlify/functions/recruiter-api")) {
       path = path.split("/.netlify/functions/recruiter-api")[1] || "";
     }
-    
+
     const method = event.httpMethod;
 
     console.log(`[Recruiter API] ${method} ${path}`, { userId, body });
@@ -140,7 +152,9 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error?.message || "Internal server error" }),
+      body: JSON.stringify({
+        error: error?.message || "Internal server error",
+      }),
     };
   }
 };
@@ -299,10 +313,13 @@ async function handleUpdateInternship(
       };
     }
 
-    await db.collection("internships").doc(internshipId).update({
-      ...updateData,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    await db
+      .collection("internships")
+      .doc(internshipId)
+      .update({
+        ...updateData,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
     return {
       statusCode: 200,
@@ -407,7 +424,10 @@ async function handlePublishInternship(
   }
 }
 
-async function handleGetApplications(userId: string, headers: Record<string, string>) {
+async function handleGetApplications(
+  userId: string,
+  headers: Record<string, string>
+) {
   try {
     const applicationsRef = await db
       .collection("applications")
@@ -462,7 +482,10 @@ async function handleUpdateApplicationStatus(
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ success: true, message: "Application status updated" }),
+      body: JSON.stringify({
+        success: true,
+        message: "Application status updated",
+      }),
     };
   } catch (error) {
     console.error("Error updating application status:", error);
@@ -530,9 +553,12 @@ async function handleTrackView(data: any, headers: Record<string, string>) {
       };
     }
 
-    await db.collection("internships").doc(internshipId).update({
-      views: admin.firestore.FieldValue.increment(1),
-    });
+    await db
+      .collection("internships")
+      .doc(internshipId)
+      .update({
+        views: admin.firestore.FieldValue.increment(1),
+      });
 
     return {
       statusCode: 200,
@@ -549,7 +575,10 @@ async function handleTrackView(data: any, headers: Record<string, string>) {
   }
 }
 
-async function handleGetAnalytics(userId: string, headers: Record<string, string>) {
+async function handleGetAnalytics(
+  userId: string,
+  headers: Record<string, string>
+) {
   try {
     const internshipsRef = await db
       .collection("internships")
@@ -587,7 +616,10 @@ async function handleGetAnalytics(userId: string, headers: Record<string, string
   }
 }
 
-async function handleExportData(userId: string, headers: Record<string, string>) {
+async function handleExportData(
+  userId: string,
+  headers: Record<string, string>
+) {
   try {
     const recruiterDoc = await db.collection("recruiters").doc(userId).get();
     const internshipsRef = await db
@@ -608,7 +640,10 @@ async function handleExportData(userId: string, headers: Record<string, string>)
 
     return {
       statusCode: 200,
-      headers: { ...headers, "Content-Disposition": 'attachment; filename="user-data.json"' },
+      headers: {
+        ...headers,
+        "Content-Disposition": 'attachment; filename="user-data.json"',
+      },
       body: JSON.stringify(data, null, 2),
     };
   } catch (error) {
@@ -629,11 +664,14 @@ async function handleDeactivateAccount(
   try {
     const { reason } = data;
 
-    await db.collection("recruiters").doc(userId).update({
-      status: "deactivated",
-      deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      deactivationReason: reason || "User requested",
-    });
+    await db
+      .collection("recruiters")
+      .doc(userId)
+      .update({
+        status: "deactivated",
+        deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        deactivationReason: reason || "User requested",
+      });
 
     return {
       statusCode: 200,
@@ -650,7 +688,10 @@ async function handleDeactivateAccount(
   }
 }
 
-async function handleReactivateAccount(userId: string, headers: Record<string, string>) {
+async function handleReactivateAccount(
+  userId: string,
+  headers: Record<string, string>
+) {
   try {
     await db.collection("recruiters").doc(userId).update({
       status: "active",

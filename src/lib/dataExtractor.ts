@@ -17,10 +17,7 @@ export const fetchInternships = async (): Promise<any[]> => {
     }
 
     // Fallback to static JSON files
-    const fallbackPaths = [
-      "/extended-internships.json",
-      "/internships.json",
-    ];
+    const fallbackPaths = ["/extended-internships.json", "/internships.json"];
 
     for (const path of fallbackPaths) {
       try {
