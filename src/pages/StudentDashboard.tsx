@@ -178,8 +178,8 @@ const StudentDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {isLoading
             ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-            : statCards.map(card => (
-              <Card key={card.label}>
+            : statCards.map((card, idx) => (
+              <Card key={card.label} className={"premium-card-hover animate-staggered stagger-" + (idx + 1)}>
                 <CardContent className="pt-4">
                   <div className="flex items-start justify-between">
                     <div>
@@ -223,7 +223,7 @@ const StudentDashboard = () => {
           <div className="lg:col-span-2 space-y-6">
 
             {/* Recent Applications */}
-            <Card>
+            <Card className="animate-staggered stagger-3">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between text-base font-semibold">
                   <div className="flex items-center gap-2"><Briefcase className="w-4 h-4 text-violet-500"/>Recent Applications</div>
@@ -240,7 +240,7 @@ const StudentDashboard = () => {
                 ) : recentApplications.length > 0 ? (
                   <div className="space-y-2">
                     {recentApplications.map((app: any) => (
-                      <div key={app.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => navigate('/application-dashboard')}>
+                      <div key={app.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/60 hover:translate-x-0.5 hover:border-primary/25 active:scale-[0.99] transition-all duration-300 cursor-pointer" onClick={() => navigate('/application-dashboard')}>
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0 font-bold text-violet-500 text-sm">
                             {(app.companyName || '?')[0].toUpperCase()}
@@ -283,7 +283,7 @@ const StudentDashboard = () => {
             </Card>
 
             {/* Top Matches */}
-            <Card>
+            <Card className="animate-staggered stagger-4">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between text-base font-semibold">
                   <div className="flex items-center gap-2"><Zap className="w-4 h-4 text-amber-500"/>Top Matches for You</div>
@@ -296,7 +296,7 @@ const StudentDashboard = () => {
                 ) : topInternships.length > 0 ? (
                   <div className="space-y-2">
                     {topInternships.map((internship: any, i: number) => (
-                      <div key={internship.id || i} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer group" onClick={() => internship.id && navigate('/internships/' + internship.id)}>
+                      <div key={internship.id || i} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/60 hover:translate-x-0.5 hover:border-primary/25 active:scale-[0.99] transition-all duration-300 cursor-pointer group" onClick={() => internship.id && navigate('/internships/' + internship.id)}>
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 font-bold text-amber-600 dark:text-amber-400 text-sm">
                             {(internship.company || '?')[0].toUpperCase()}
@@ -320,7 +320,7 @@ const StudentDashboard = () => {
             </Card>
 
             {/* Skills */}
-            <Card>
+            <Card className="animate-staggered stagger-5">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between text-base font-semibold">
                   <div className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary"/>Skills on Your Profile</div>
@@ -358,7 +358,7 @@ const StudentDashboard = () => {
           <div className="space-y-6">
 
             {/* Points & Badges */}
-            <Card>
+            <Card className="animate-staggered stagger-3">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base font-semibold">
                   <Award className="w-4 h-4 text-amber-500"/>Points & Badges
@@ -390,7 +390,7 @@ const StudentDashboard = () => {
             </Card>
 
             {/* Saved Internships */}
-            <Card>
+            <Card className="animate-staggered stagger-4">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center justify-between text-base font-semibold">
                   <div className="flex items-center gap-2">
@@ -403,7 +403,7 @@ const StudentDashboard = () => {
                 {savedInternships.length > 0 ? (
                   <div className="space-y-2">
                     {savedInternships.map((item: any) => (
-                      <div key={item.id} className="flex items-center gap-2 p-2.5 bg-muted/40 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors" onClick={() => navigate('/internships/' + item.id)}>
+                      <div key={item.id} className="flex items-center gap-2 p-2.5 bg-muted/40 rounded-lg cursor-pointer hover:bg-muted/70 hover:translate-x-0.5 active:scale-[0.99] transition-all duration-300" onClick={() => navigate('/internships/' + item.id)}>
                         <div className="w-7 h-7 rounded bg-rose-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-rose-500">
                           {(item.company || '?')[0].toUpperCase()}
                         </div>
@@ -424,7 +424,7 @@ const StudentDashboard = () => {
             </Card>
 
             {/* Market Trends */}
-            <Card>
+            <Card className="animate-staggered stagger-5">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base font-semibold">
                   <TrendingUp className="w-4 h-4 text-emerald-500"/>Skill Demand Trends
@@ -433,7 +433,7 @@ const StudentDashboard = () => {
               <CardContent>
                 <div className="space-y-2">
                   {marketTrends.map((item, i) => (
-                    <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => navigate('/?skill=' + encodeURIComponent(item.skill))}>
+                    <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/60 hover:translate-x-0.5 active:scale-[0.99] transition-all duration-300 cursor-pointer" onClick={() => navigate('/?skill=' + encodeURIComponent(item.skill))}>
                       <span className="text-sm font-medium text-foreground">{item.skill}</span>
                       <div className="flex items-center gap-1">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-500"/>

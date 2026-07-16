@@ -143,7 +143,7 @@ export const InternshipCard = ({
   return (
     <TooltipProvider>
       <Card
-        className={`group relative flex flex-col h-full bg-card border border-border/40 dark:border-border/60 rounded-xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md dark:hover:border-primary/30 hover:-translate-y-1 cursor-pointer ${
+        className={`group relative flex flex-col h-full bg-card border border-border/40 dark:border-border/60 rounded-xl overflow-hidden premium-card-hover cursor-pointer ${
           featured ? 'ring-1 ring-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.1)] dark:shadow-[0_0_15px_rgba(var(--primary),0.2)]' : ''
         }`}
         onClick={() => navigate(`/internships/${id}`)}

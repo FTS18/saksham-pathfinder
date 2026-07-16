@@ -122,9 +122,9 @@ export const CollapsibleSidebar = ({ isExpanded = false, onToggle }: Collapsible
                     <button
                       key={link.href}
                       onClick={() => handleNavClick(link.href)}
-                      className={`w-full flex items-center justify-between px-4 py-3 transition-all duration-200 relative ${
+                      className={`w-full flex items-center justify-between px-4 py-3 transition-all duration-300 hover:translate-x-0.5 active:scale-[0.98] relative ${
                         isActive(link.href) 
-                          ? 'text-foreground font-bold bg-foreground/10 rounded-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]' 
+                          ? 'text-foreground font-bold bg-foreground/10 rounded-xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]' 
                           : 'text-foreground/70 hover:text-foreground hover:bg-foreground/5 rounded-xl font-medium'
                       }`}
                       title={link.label}

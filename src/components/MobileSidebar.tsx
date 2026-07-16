@@ -72,11 +72,21 @@ export const MobileSidebar = () => {
   return (
     <>
       {/* Mobile Sidebar */}
-      <div className={`md:hidden fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="absolute inset-0 bg-black/20" onClick={() => setIsOpen(false)} />
-        <div className="absolute left-0 top-0 h-full w-72 bg-background border-r border-border shadow-xl transform transition-transform duration-300 ease-in-out">
+      <div className={cn(
+        "md:hidden fixed inset-0 z-50",
+        isOpen ? "pointer-events-auto" : "pointer-events-none"
+      )}>
+        <div 
+          className={cn(
+            "absolute inset-0 bg-black/40 transition-opacity duration-300 ease-out",
+            isOpen ? "opacity-100" : "opacity-0"
+          )} 
+          onClick={() => setIsOpen(false)} 
+        />
+        <div className={cn(
+          "absolute left-0 top-0 h-full w-72 bg-background border-r border-border shadow-xl transform transition-transform duration-300 ease-out",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}>
           <div className="flex flex-col h-full pt-16 overflow-hidden">
             {/* User Profile */}
             {currentUser && (
@@ -110,12 +120,15 @@ export const MobileSidebar = () => {
                 {navLinks.map((link) => {
                   const IconComponent = link.icon;
                   return (
-                  <button
+                    <button
                       key={link.href}
                       onClick={() => handleNavClick(link.href)}
-                      className={`w-full flex items-center justify-between gap-3 px-3 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors ${
-                        isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
-                      }`}
+                      className={cn(
+                        "w-full flex items-center justify-between gap-3 px-3 py-3 text-sm font-medium rounded-lg hover:translate-x-0.5 active:scale-[0.98] transition-all duration-300",
+                        isActive(link.href) 
+                          ? "text-primary bg-primary/10 font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] border border-primary/10" 
+                          : "text-foreground hover:bg-muted"
+                      )}
                     >
                       <div className="flex items-center gap-3">
                         <IconComponent className="w-5 h-5" />

@@ -86,7 +86,7 @@ export const Layout = ({ children }: LayoutProps) => {
             window.dispatchEvent(new CustomEvent('collapseSidebar'));
           }}
         >
-          <div className="mobile-content min-h-full flex flex-col pt-0">
+          <div key={location.pathname} className="mobile-content min-h-full flex flex-col pt-0 animate-page-entry">
             {children || <Outlet />}
             <Footer />
           </div>
