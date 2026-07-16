@@ -39,7 +39,7 @@ export const registerSW = async () => {
 
 // Image preloading for critical assets
 export const preloadImages = () => {
-  const criticalImages = ["/logo192.png", "/logo512.png"];
+  const criticalImages = ["/logo.webp"];
 
   criticalImages.forEach((src) => {
     const link = document.createElement("link");
