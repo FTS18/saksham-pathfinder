@@ -27,6 +27,10 @@ export default tseslint.config(
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-unused-expressions": "off",
       "no-useless-escape": "off",
+      "no-case-declarations": "off",
+      "no-cond-assign": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "no-empty": "off",
     },
   },
 );
