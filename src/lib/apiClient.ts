@@ -27,7 +27,7 @@ export const apiClient = {
     // 1. Determine backend URL
     // All serverless API endpoints (/netlify/ or /recruiter-api/ or /api/) route to /api on Vercel
     const isServerless = endpoint.startsWith("/netlify/") || endpoint.startsWith("/recruiter-api") || endpoint.startsWith("/api/");
-    const baseUrl = isServerless ? "/api" : "https://us-central1-UpSkillers-ai-81c3a.cloudfunctions.net";
+    const baseUrl = isServerless ? "/api" : "https://us-central1-saksham-ai-81c3a.cloudfunctions.net";
     
     // Format the URL properly
     const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;

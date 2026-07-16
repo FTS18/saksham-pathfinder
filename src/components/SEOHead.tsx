@@ -15,7 +15,7 @@ export const SEOHead = ({
   url
 }: SEOHeadProps) => {
   const location = useLocation();
-  const currentUrl = url || `https://UpSkillers.netlify.app${location.pathname}`;
+  const currentUrl = url || `https://upskillers.vercel.app${location.pathname}`;
 
   useEffect(() => {
     // Update document title

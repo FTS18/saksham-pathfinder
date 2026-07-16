@@ -5,4 +5,4 @@ Disallow: /dashboard/
 Disallow: /profile/
 Disallow: /onboarding/
 
-Sitemap: https://saksham-ai.netlify.app/sitemap.xml
+Sitemap: https://upskillers.vercel.app/sitemap.xml
