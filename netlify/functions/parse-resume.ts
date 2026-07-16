@@ -1,6 +1,7 @@
 import { Handler } from '@netlify/functions';
 import Busboy from 'busboy';
-import pdfParse from 'pdf-parse';
+import * as pdfParseModule from 'pdf-parse';
+const pdfParse = (pdfParseModule.default || pdfParseModule) as any;
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Initialize Gemini
@@ -18,7 +19,7 @@ const parseMultipartForm = (event: any): Promise<Buffer> => {
 
     let fileBuffer: Buffer | null = null;
 
-    busboy.on('file', (name, file, info) => {
+    busboy.on('file', (_name, file) => {
       const chunks: Buffer[] = [];
       file.on('data', (data) => {
         chunks.push(data);

@@ -79,7 +79,7 @@ async function verifyInternshipOwnership(
 /**
  * Main API handler for recruiter operations
  */
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event, _context) => {
   // CORS headers
   const headers = {
     "Content-Type": "application/json",
