@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { MessageCircle, Send, X, Bot, User, Minimize2, Sparkles, HelpCircle, Sidebar, ExternalLink } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, User, Minimize2, Sparkles, HelpCircle, Sidebar, ExternalLink, Search, FileText, Heart, Briefcase, BookOpen, Activity, ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useChatbot } from '@/hooks/useChatbot';
 import { localAIService, quickActions } from '@/lib/localAI';
@@ -246,21 +246,42 @@ export const Chatbot = () => {
     return "fixed bottom-4 right-4 w-[400px] h-[650px] shadow-2xl z-[9999] bg-background border rounded-xl";
   };
 
+  const getActionIcon = (id: string) => {
+    switch (id) {
+      case 'search': return <Search className="h-4 w-4 text-blue-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'resume': return <FileText className="h-4 w-4 text-amber-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'interview': return <HelpCircle className="h-4 w-4 text-emerald-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'skills': return <BookOpen className="h-4 w-4 text-violet-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'profile': return <User className="h-4 w-4 text-indigo-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'wishlist': return <Heart className="h-4 w-4 text-rose-500 mr-2.5 shrink-0 fill-rose-500/10 group-hover:scale-110 transition-transform duration-200" />;
+      case 'applications': return <Briefcase className="h-4 w-4 text-sky-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      case 'compare': return <Activity className="h-4 w-4 text-teal-500 mr-2.5 shrink-0 group-hover:scale-110 transition-transform duration-200" />;
+      default: return <Sparkles className="h-4 w-4 text-primary mr-2.5 shrink-0" />;
+    }
+  };
+
   return (
     <TooltipProvider>
       {isSidebar && !isMobile && <div className="fixed inset-0 bg-black/30 z-[9997]" onClick={() => setIsOpen(false)} />}
-      <div className={getChatContainerClass()}>
-        <div className={`flex items-center justify-between p-4 border-b bg-gradient-to-r ${colorTheme === 'blue' ? 'from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900' : colorTheme === 'grey' ? 'from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900' : colorTheme === 'red' ? 'from-red-50 to-red-100 dark:from-red-950 dark:to-red-900' : colorTheme === 'yellow' ? 'from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900' : colorTheme === 'green' ? 'from-green-50 to-green-100 dark:from-green-950 dark:to-green-900' : 'from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950'}`}>
+      <div className={cn(
+        getChatContainerClass(),
+        "flex flex-col border border-border/80 bg-background/95 backdrop-blur-md transition-all duration-200 overflow-hidden"
+      )}>
+        {/* Professional Header */}
+        <div className="flex items-center justify-between p-4 border-b bg-background/95 sticky top-0 z-10">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center`}>
-              <Bot className="h-5 w-5 text-white" />
+            <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${getThemeGradient()} flex items-center justify-center shadow-md shadow-primary/10`}>
+              <Bot className="h-4 w-4 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">UpSkillers</h3>
-              <p className="text-sm text-muted-foreground">Your Career Assistant</p>
+              <h3 className="font-semibold text-sm text-foreground tracking-tight">UpSkillers</h3>
+              <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                AI Career Co-Pilot
+              </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             {!isMobile && (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -268,7 +289,7 @@ export const Chatbot = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsSidebar(!isSidebar)}
-                    className="h-8 w-8"
+                    className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                   >
                     {isSidebar ? <Minimize2 className="h-4 w-4" /> : <Sidebar className="h-4 w-4" />}
                   </Button>
@@ -284,7 +305,7 @@ export const Chatbot = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsOpen(false)}
-                  className="h-8 w-8"
+                  className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -296,6 +317,7 @@ export const Chatbot = () => {
           </div>
         </div>
 
+        {/* Messaging Area */}
         <ScrollArea className="flex-1 p-4" ref={scrollAreaRef} style={{ height: isMobile || isSidebar ? 'calc(100vh - 140px)' : 'calc(100% - 140px)' }}>
           <div className="space-y-4">
             {messages.map((message) => (
@@ -307,45 +329,45 @@ export const Chatbot = () => {
                 )}
               >
                 {message.role === 'assistant' && (
-                  <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center flex-shrink-0`}>
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${getThemeGradient()} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                     <Bot className="h-4 w-4 text-white" />
                   </div>
                 )}
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
                     message.role === 'user'
-                      ? `bg-gradient-to-r ${getThemeGradient()} text-white`
-                      : 'bg-muted border'
+                      ? `bg-gradient-to-tr ${getThemeGradient()} text-white`
+                      : 'bg-muted/50 border border-border/40 text-foreground'
                   )}
                 >
                   <div 
-                    className="whitespace-pre-wrap"
+                    className="whitespace-pre-wrap prose prose-sm dark:prose-invert max-w-none"
                     dangerouslySetInnerHTML={{
                       __html: message.content
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         .replace(/\n/g, '<br/>')
                         .replace(/&#39;/g, "'")
-                        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline inline-flex items-center gap-1">$1 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>')
+                        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary font-medium hover:underline inline-flex items-center gap-0.5">$1<svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>')
                     }}
                   />
                   {message.role === 'assistant' && message.suggestions && (
                     <div className="mt-3 pt-3 border-t border-border/30">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="text-xs text-muted-foreground"> Follow-up questions:</div>
+                        <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Suggested Questions</div>
                         <button
                           onClick={() => setShowQuickActions(true)}
-                          className="text-xs text-primary hover:text-primary/80 transition-colors"
+                          className="text-[11px] font-medium text-primary hover:text-primary/80 transition-colors"
                         >
                           ← Back to menu
                         </button>
                       </div>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5">
                         {message.suggestions.map((suggestion, idx) => (
                           <button
                             key={idx}
                             onClick={() => handleQuickAction(suggestion)}
-                            className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                            className="text-xs text-left px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/10 text-primary hover:bg-primary/10 transition-colors"
                           >
                             {suggestion}
                           </button>
@@ -355,37 +377,37 @@ export const Chatbot = () => {
                   )}
                 </div>
                 {message.role === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
-                    <User className="h-4 w-4" />
+                  <div className="w-8 h-8 rounded-lg bg-muted border flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <User className="h-4 w-4 text-foreground/80" />
                   </div>
                 )}
               </div>
             ))}
             
             {showQuickActions && (
-              <div className="space-y-4">
+              <div className="space-y-4 pt-1">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Quick Actions</span>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span>Quick Tools</span>
                   </div>
                   {messages.length > 1 && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowQuickActions(false)}
-                      className="text-xs text-muted-foreground hover:text-foreground"
+                      className="text-xs text-muted-foreground hover:text-foreground h-6 px-1.5"
                     >
                       Hide
                     </Button>
                   )}
                 </div>
+                
+                {/* Premium Card Tiles */}
                 <div className="grid grid-cols-2 gap-2">
                   {quickActions.map((action) => (
-                    <Button
+                    <button
                       key={action.id}
-                      variant="outline"
-                      size="sm"
                       onClick={() => {
                         if (action.action) {
                           action.action(navigate);
@@ -395,37 +417,41 @@ export const Chatbot = () => {
                           setShowQuickActions(false);
                         }
                       }}
-                      className="justify-start h-auto p-3 text-left"
+                      className="flex items-center w-full text-left p-3 rounded-xl border border-border/80 bg-card hover:bg-muted/40 hover:border-primary/20 transition-all duration-200 group"
                     >
-                      <span className="text-xs">{action.label}</span>
-                      {action.action && <ExternalLink className="h-3 w-3 ml-1" />}
-                    </Button>
+                      {getActionIcon(action.id)}
+                      <span className="text-xs font-medium text-foreground tracking-tight select-none">
+                        {action.label.replace(/[❤️⚖️]/g, '').trim()}
+                      </span>
+                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 ml-auto shrink-0" />
+                    </button>
                   ))}
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <HelpCircle className="h-4 w-4" />
-                    <span>Interview Practice</span>
+                {/* Interview Practice Selection */}
+                <div className="space-y-2.5 pt-2">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    <HelpCircle className="h-3.5 w-3.5 text-primary" />
+                    <span>Interview Simulator</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="w-full">
                     <Select onValueChange={(value) => {
                       const [role, difficulty] = value.split('|');
                       handleInterviewQuestions(role, difficulty as 'easy' | 'medium' | 'hard');
                     }}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Generate interview questions" />
+                      <SelectTrigger className="w-full rounded-xl border border-border/80 bg-card hover:bg-muted/30 transition-colors py-5 text-xs text-foreground font-medium">
+                        <SelectValue placeholder="Select topic & start practice..." />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Software Developer|easy"> Software Dev (Easy)</SelectItem>
-                        <SelectItem value="Software Developer|medium"> Software Dev (Medium)</SelectItem>
-                        <SelectItem value="Software Developer|hard"> Software Dev (Hard)</SelectItem>
-                        <SelectItem value="Data Analyst|easy"> Data Analyst (Easy)</SelectItem>
-                        <SelectItem value="Data Analyst|medium"> Data Analyst (Medium)</SelectItem>
-                        <SelectItem value="Marketing|easy"> Marketing (Easy)</SelectItem>
-                        <SelectItem value="Marketing|medium"> Marketing (Medium)</SelectItem>
-                        <SelectItem value="Design|easy"> Design (Easy)</SelectItem>
-                        <SelectItem value="Design|medium"> Design (Medium)</SelectItem>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="Software Developer|easy">💻 Software Dev (Easy)</SelectItem>
+                        <SelectItem value="Software Developer|medium">💻 Software Dev (Medium)</SelectItem>
+                        <SelectItem value="Software Developer|hard">💻 Software Dev (Hard)</SelectItem>
+                        <SelectItem value="Data Analyst|easy">📊 Data Analyst (Easy)</SelectItem>
+                        <SelectItem value="Data Analyst|medium">📊 Data Analyst (Medium)</SelectItem>
+                        <SelectItem value="Marketing|easy">📈 Marketing (Easy)</SelectItem>
+                        <SelectItem value="Marketing|medium">📈 Marketing (Medium)</SelectItem>
+                        <SelectItem value="Design|easy">🎨 Design (Easy)</SelectItem>
+                        <SelectItem value="Design|medium">🎨 Design (Medium)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -435,14 +461,14 @@ export const Chatbot = () => {
             
             {isLoading && (
               <div className="flex gap-3 justify-start">
-                <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${getThemeGradient()} flex items-center justify-center flex-shrink-0`}>
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-tr ${getThemeGradient()} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                   <Bot className="h-4 w-4 text-white" />
                 </div>
-                <div className="bg-muted border rounded-2xl px-4 py-3">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" />
-                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <div className="bg-muted/50 border border-border/40 rounded-2xl px-4 py-3">
+                  <div className="flex gap-1.5 items-center h-4">
+                    <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" />
+                    <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                    <div className="w-1.5 h-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
                   </div>
                 </div>
               </div>
@@ -450,9 +476,10 @@ export const Chatbot = () => {
           </div>
         </ScrollArea>
 
-        <div className="p-4 border-t bg-background">
+        {/* Command Bar Unified Input */}
+        <div className="p-4 border-t bg-background/95 backdrop-blur-md">
           {autosuggestions.length > 0 && (
-            <div className="mb-2 flex flex-wrap gap-1">
+            <div className="mb-3 flex flex-wrap gap-1.5">
               {autosuggestions.map((suggestion, idx) => (
                 <button
                   key={idx}
@@ -460,39 +487,50 @@ export const Chatbot = () => {
                     setInput(suggestion);
                     setAutosuggestions([]);
                   }}
-                  className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  className="text-xs px-2.5 py-1 rounded-lg bg-primary/5 border border-primary/10 text-primary hover:bg-primary/10 transition-colors select-none"
                 >
                   {suggestion}
                 </button>
               ))}
             </div>
           )}
-          <div className="flex gap-2">
+          
+          <div className="relative flex items-center bg-muted/40 border border-border/80 rounded-2xl px-2 py-1.5 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20 transition-all duration-200">
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={() => setShowQuickActions(!showQuickActions)}
-              className="rounded-full flex-shrink-0"
+              className={cn(
+                "h-8 w-8 rounded-lg flex-shrink-0 text-muted-foreground hover:text-primary transition-all duration-200",
+                showQuickActions && "text-primary bg-primary/10"
+              )}
               title="Toggle quick actions menu"
             >
               <Sparkles className="h-4 w-4" />
             </Button>
-            <Input
+            
+            <input
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Try: 'Show Google internships' or 'Internships in Mumbai'..."
+              onKeyDown={handleKeyPress}
+              placeholder="Ask anything or try 'Show Google internships'..."
               disabled={isLoading}
-              className="flex-1 rounded-full"
+              className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-sm px-3.5 placeholder:text-muted-foreground/50 text-foreground disabled:opacity-50"
             />
+            
             <Button
               onClick={handleSendMessage}
               disabled={!input.trim() || isLoading}
               size="icon"
-              className={`rounded-full bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()}`}
+              className={cn(
+                "h-8 w-8 rounded-lg flex-shrink-0 transition-all duration-200",
+                input.trim() 
+                  ? `bg-gradient-to-tr ${getThemeGradient()} ${getThemeHoverGradient()} text-white scale-100` 
+                  : "bg-muted text-muted-foreground scale-95"
+              )}
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
