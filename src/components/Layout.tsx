@@ -37,6 +37,20 @@ export const Layout = ({ children }: LayoutProps) => {
     return () => controller.abort();
   }, []);
 
+  const [chatbotActive, setChatbotActive] = useState(false);
+
+  useEffect(() => {
+    const handleChatbotState = (e: CustomEvent) => {
+      const { isOpen, isSidebar } = e.detail;
+      setChatbotActive(isOpen && isSidebar);
+    };
+    
+    window.addEventListener('chatbotStateChange', handleChatbotState as EventListener);
+    return () => {
+      window.removeEventListener('chatbotStateChange', handleChatbotState as EventListener);
+    };
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-background dark:bg-[#05050A] flex overflow-hidden z-0">
       {/* Global Ambient Background Orbs */}
@@ -59,8 +73,10 @@ export const Layout = ({ children }: LayoutProps) => {
       <MobileSidebar />
       
       {/* App Shell Wrapper — fixed-positioned to exactly fill viewport with margins */}
-      <div className={`fixed top-0 bottom-0 right-0 flex flex-col md:top-3 md:bottom-3 md:right-3 md:rounded-3xl bg-background dark:bg-background/80 dark:supports-[backdrop-filter]:bg-background/60 dark:backdrop-blur-3xl z-10 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_50px_rgba(0,0,0,0.8),_0_0_30px_rgba(99,102,241,0.12)] transition-[left] duration-300 border border-black/10 dark:border-primary/30 ${
+      <div className={`fixed top-0 bottom-0 flex flex-col md:top-3 md:bottom-3 md:rounded-3xl bg-background dark:bg-background/80 dark:supports-[backdrop-filter]:bg-background/60 dark:backdrop-blur-3xl z-10 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_50px_rgba(0,0,0,0.8),_0_0_30px_rgba(99,102,241,0.12)] transition-all duration-300 border border-black/10 dark:border-primary/30 ${
         sidebarExpanded ? 'left-0 md:left-[292px]' : 'left-0 md:left-[92px]'
+      } ${
+        chatbotActive ? 'right-0 md:right-[432px]' : 'right-0 md:right-3'
       }`}>
         <TopNavigation />
         

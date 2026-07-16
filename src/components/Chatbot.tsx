@@ -28,6 +28,12 @@ export const Chatbot = () => {
   const [width, setWidth] = useState(384);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('chatbotStateChange', { 
+      detail: { isOpen, isSidebar: isSidebar && !isMobile } 
+    }));
+  }, [isOpen, isSidebar, isMobile]);
+
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -218,32 +224,25 @@ export const Chatbot = () => {
     }
   };
 
-  if (!isOpen) {
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={toggleChatbot}
-              className={`fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-2xl z-[9999] bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()} hover:scale-110 transition-all duration-200`}
-              size="icon"
-              data-chatbot-trigger
-            >
-              <MessageCircle className="h-6 w-6" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            Open AI Career Assistant
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
-  }
-
   const getChatContainerClass = () => {
-    if (isMobile) return "fixed inset-0 z-[9999] bg-background";
-    if (isSidebar) return "fixed top-0 right-0 h-full w-[420px] z-[9998] bg-background border-l shadow-2xl";
-    return "fixed bottom-4 right-4 w-[400px] h-[650px] shadow-2xl z-[9999] bg-background border rounded-xl";
+    if (isMobile) {
+      return cn(
+        "fixed inset-y-0 right-0 w-full h-full z-[9999] bg-background transition-transform duration-300 ease-out",
+        isOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
+      );
+    }
+    if (isSidebar) {
+      return cn(
+        "fixed top-0 right-0 h-full w-[420px] z-[9998] bg-background border-l shadow-2xl transition-transform duration-300 ease-out",
+        isOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
+      );
+    }
+    return cn(
+      "fixed bottom-4 right-4 w-[400px] h-[650px] shadow-2xl z-[9999] bg-background border rounded-2xl transition-all duration-300 ease-out origin-bottom-right",
+      isOpen 
+        ? "translate-y-0 translate-x-0 opacity-100 scale-100" 
+        : "translate-y-4 translate-x-4 opacity-0 scale-95 pointer-events-none"
+    );
   };
 
   const getActionIcon = (id: string) => {
@@ -262,10 +261,35 @@ export const Chatbot = () => {
 
   return (
     <TooltipProvider>
-      {isSidebar && !isMobile && <div className="fixed inset-0 bg-black/30 z-[9997]" onClick={() => setIsOpen(false)} />}
+      {/* Floating Trigger Button */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={toggleChatbot}
+            className={cn(
+              `fixed bottom-4 right-4 h-16 w-16 rounded-full shadow-2xl z-[9999] bg-gradient-to-r ${getThemeGradient()} ${getThemeHoverGradient()} hover:scale-110 active:scale-95 transition-all duration-300`,
+              isOpen ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100"
+            )}
+            size="icon"
+            data-chatbot-trigger
+          >
+            <MessageCircle className="h-6 w-6 text-white" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          Open AI Career Assistant
+        </TooltipContent>
+      </Tooltip>
+
+      {/* Backdrop */}
+      {isSidebar && !isMobile && isOpen && (
+        <div className="fixed inset-0 bg-black/30 z-[9997]" onClick={() => setIsOpen(false)} />
+      )}
+
+      {/* Main Drawer Shell */}
       <div className={cn(
         getChatContainerClass(),
-        "flex flex-col border border-border/80 bg-background/95 backdrop-blur-md transition-all duration-200 overflow-hidden"
+        "flex flex-col border border-border/85 bg-background/95 backdrop-blur-md overflow-hidden"
       )}>
         {/* Professional Header */}
         <div className="flex items-center justify-between p-4 border-b bg-background/95 sticky top-0 z-10">
