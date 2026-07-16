@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { db, admin } from "./_utils/firebase";
+import { db, auth, FieldValue } from "./_utils/firebase";
 
 // Shared CORS headers
 const CORS = {
@@ -22,7 +22,7 @@ async function verifyAuth(req: VercelRequest): Promise<string | null> {
   if (!authHeader?.startsWith("Bearer ")) return null;
   const token = authHeader.substring(7);
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = await auth.verifyIdToken(token);
     return decoded.uid;
   } catch {
     return null;
@@ -69,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           userId: userToAward,
           action,
           points: pointsToAward,
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          timestamp: FieldValue.serverTimestamp(),
           grantedBy: uid,
         });
       }
@@ -77,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const userRef = db.collection("users").doc(userToAward);
       tx.set(
         userRef,
-        { points: admin.firestore.FieldValue.increment(pointsToAward) },
+        { points: FieldValue.increment(pointsToAward) },
         { merge: true }
       );
 
@@ -96,8 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         priority: "low",
         category: "social",
         read: false,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       return { status: "success", points_awarded: pointsToAward };

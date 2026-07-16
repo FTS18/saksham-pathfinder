@@ -1,6 +1,6 @@
 // Keeps GEMINI_API_KEY server-side. Frontend calls /api/ai-proxy instead of Gemini directly.
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { admin } from "./_utils/firebase";
+import { auth } from "./_utils/firebase";
 
 // Simple in-memory rate limiter (resets on cold-start)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -32,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   let userId: string;
   try {
     const token = authHeader.substring(7);
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = await auth.verifyIdToken(token);
     userId = decoded.uid;
   } catch {
     return res.status(401).json({ error: "Invalid token" });

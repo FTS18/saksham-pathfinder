@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { admin } from "./_utils/firebase";
+import { auth } from "./_utils/firebase";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const idToken = authHeader.split("Bearer ")[1];
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await auth.verifyIdToken(idToken);
 
     if (decodedToken.admin !== true) {
       return res
@@ -38,11 +38,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: "Invalid role" });
     }
 
-    const userRecord = await admin.auth().getUser(targetUid);
+    const userRecord = await auth.getUser(targetUid);
     const existingClaims = userRecord.customClaims || {};
     const newClaims = { ...existingClaims, [role]: assign };
 
-    await admin.auth().setCustomUserClaims(targetUid, newClaims);
+    await auth.setCustomUserClaims(targetUid, newClaims);
 
     return res.status(200).json({
       success: true,

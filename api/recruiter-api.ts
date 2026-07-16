@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { db, admin } from "./_utils/firebase";
+import { db, auth, FieldValue } from "./_utils/firebase";
+import { DecodedIdToken } from "firebase-admin/auth";
 
 const CORS = {
   "Content-Type": "application/json",
@@ -12,18 +13,18 @@ const CORS = {
 
 async function verifyAuth(
   req: VercelRequest
-): Promise<admin.auth.DecodedIdToken | null> {
+): Promise<DecodedIdToken | null> {
   const authHeader = req.headers.authorization as string | undefined;
   if (!authHeader?.startsWith("Bearer ")) return null;
   try {
-    return await admin.auth().verifyIdToken(authHeader.substring(7));
+    return await auth.verifyIdToken(authHeader.substring(7));
   } catch {
     return null;
   }
 }
 
 async function verifyRecruiterRole(
-  decoded: admin.auth.DecodedIdToken
+  decoded: DecodedIdToken
 ): Promise<boolean> {
   try {
     if (decoded.admin === true || decoded.recruiter === true) return true;
@@ -69,8 +70,8 @@ async function handleInitializeRecruiter(
       gstNumber,
       isVerified: false,
       status: "pending",
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
     });
   return res.status(200).json({
     success: true,
@@ -82,7 +83,7 @@ async function handleInitializeRecruiter(
 async function handleCreateInternship(
   userId: string,
   data: any,
-  decoded: admin.auth.DecodedIdToken,
+  decoded: DecodedIdToken,
   res: VercelResponse
 ) {
   if (!(await verifyRecruiterRole(decoded))) {
@@ -120,8 +121,8 @@ async function handleCreateInternship(
     status: "draft",
     views: 0,
     applications: 0,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   });
   return res.status(201).json({
     success: true,
@@ -142,7 +143,7 @@ async function handleUpdateInternship(
   await db
     .collection("internships")
     .doc(internshipId)
-    .update({ ...updates, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
+    .update({ ...updates, updatedAt: FieldValue.serverTimestamp() });
   return res.status(200).json({ success: true, message: "Internship updated" });
 }
 
@@ -170,8 +171,8 @@ async function handlePublishInternship(
   if (!owned) return res.status(403).json({ error: "Not authorized" });
   await db.collection("internships").doc(internshipId).update({
     status: "published",
-    publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    publishedAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
   });
   return res.status(200).json({ success: true, message: "Internship published" });
 }
@@ -190,7 +191,7 @@ async function handleGetApplications(userId: string, res: VercelResponse) {
 async function handleUpdateApplicationStatus(
   userId: string,
   data: any,
-  decoded: admin.auth.DecodedIdToken,
+  decoded: DecodedIdToken,
   res: VercelResponse
 ) {
   const { applicationId, status } = data;
@@ -204,14 +205,14 @@ async function handleUpdateApplicationStatus(
   await db
     .collection("applications")
     .doc(applicationId)
-    .update({ status, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
+    .update({ status, updatedAt: FieldValue.serverTimestamp() });
   return res.status(200).json({ success: true, message: "Application status updated" });
 }
 
 async function handleBulkUpdateApplications(
   userId: string,
   data: any,
-  decoded: admin.auth.DecodedIdToken,
+  decoded: DecodedIdToken,
   res: VercelResponse
 ) {
   const { applicationIds, status } = data;
@@ -225,7 +226,7 @@ async function handleBulkUpdateApplications(
     if (appDoc.exists && appDoc.data()?.recruiterId === userId) {
       batch.update(db.collection("applications").doc(appId), {
         status,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
     }
   }
@@ -243,7 +244,7 @@ async function handleTrackView(data: any, res: VercelResponse) {
   await db
     .collection("internships")
     .doc(internshipId)
-    .update({ views: admin.firestore.FieldValue.increment(1) });
+    .update({ views: FieldValue.increment(1) });
   return res.status(200).json({ success: true });
 }
 
@@ -298,7 +299,7 @@ async function handleDeactivateAccount(
     .doc(userId)
     .update({
       status: "deactivated",
-      deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      deactivatedAt: FieldValue.serverTimestamp(),
       deactivationReason: data.reason || "User requested",
     });
   return res
@@ -309,7 +310,7 @@ async function handleDeactivateAccount(
 async function handleReactivateAccount(userId: string, res: VercelResponse) {
   await db.collection("recruiters").doc(userId).update({
     status: "active",
-    reactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    reactivatedAt: FieldValue.serverTimestamp(),
   });
   return res
     .status(200)

@@ -1,27 +1,30 @@
-import * as admin from "firebase-admin";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
 // Singleton Firebase Admin initialization
-if (!admin.apps.length) {
+if (!getApps().length) {
   const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   if (serviceAccountJson) {
     try {
-      admin.initializeApp({
-        credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
+      initializeApp({
+        credential: cert(JSON.parse(serviceAccountJson)),
       });
     } catch (e) {
       console.warn("Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY, falling back to projectId");
-      admin.initializeApp({
+      initializeApp({
         projectId: process.env.FIREBASE_PROJECT_ID || "hexaforces",
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       });
     }
   } else {
-    admin.initializeApp({
+    initializeApp({
       projectId: process.env.FIREBASE_PROJECT_ID || "hexaforces",
       storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     });
   }
 }
 
-export const db = admin.firestore();
-export { admin };
+export const db = getFirestore();
+export const auth = getAuth();
+export { FieldValue };
