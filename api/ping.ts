@@ -1,1 +1,1 @@
-import { getAuth } from "firebase-admin/auth"; export default function handler(req, res) { res.status(200).json({ ok: true, msg: "pong v5 auth" }); }
+export default async function handler(req, res) { try { const firebase = await import("./_utils/firebase.js"); res.status(200).json({ ok: true, msg: "firebase imported successfully", db: !!firebase.db }); } catch (e) { res.status(500).json({ error: e.toString(), stack: e.stack, name: e.name, message: e.message }); } }
