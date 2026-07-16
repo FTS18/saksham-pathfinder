@@ -1,6 +1,6 @@
 @echo off
-REM Run development server for saksham-pathfinder
-cd /d C:\Web\saksham-pathfinder
+REM Run development server for UpSkillers-pathfinder
+cd /d C:\Web\UpSkillers-pathfinder
 echo.
 echo ========================================
 echo Starting Development Server...

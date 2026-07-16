@@ -96,7 +96,7 @@ const RecruiterOnboarding = () => {
       window.dispatchEvent(new CustomEvent('onboardingCompleted'));
 
       toast({
-        title: "Welcome to Saksham AI!",
+        title: "Welcome to UpSkillers!",
         description: "Your recruiter profile has been set up successfully!"
       });
 
@@ -348,7 +348,7 @@ const RecruiterOnboarding = () => {
               <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
             </div>
             <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-               Welcome to Saksham AI! 
+               Welcome to UpSkillers! 
             </h2>
             <p className="text-lg text-muted-foreground mb-6">
               Your recruiter profile is now set up. Start posting internships and find the best talent!
@@ -384,7 +384,7 @@ const RecruiterOnboarding = () => {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
                 <span className="text-white font-bold text-sm">S</span>
               </div>
-              <span className="font-racing font-bold text-xl text-foreground">Saksham AI</span>
+              <span className="font-racing font-bold text-xl text-foreground">UpSkillers</span>
             </div>
             
             {currentStep < 4 && (

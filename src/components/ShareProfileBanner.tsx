@@ -60,8 +60,8 @@ export const ShareProfileBanner = ({ profile, onClose }: ShareProfileBannerProps
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${profile.displayName}'s Profile - Saksham AI`,
-          text: `Check out ${profile.displayName}'s profile on Saksham AI`,
+          title: `${profile.displayName}'s Profile - UpSkillers`,
+          text: `Check out ${profile.displayName}'s profile on UpSkillers`,
           url: profileUrl
         });
       } catch (error) {

@@ -12,7 +12,7 @@ export default function Sitemap() {
       icon: Home,
       links: [
         { to: '/', label: 'Home', icon: Home, description: 'Browse internships and get AI recommendations' },
-        { to: '/about', label: 'About Us', icon: Info, description: 'Learn about Saksham AI and our mission' },
+        { to: '/about', label: 'About Us', icon: Info, description: 'Learn about UpSkillers and our mission' },
         { to: '/faq', label: 'FAQ', icon: HelpCircle, description: 'Frequently asked questions and answers' },
         { to: '/sitemap', label: 'Sitemap', icon: MapPin, description: 'Complete directory of all pages' }
       ]
@@ -70,7 +70,7 @@ export default function Sitemap() {
     <div className="container max-w-6xl mx-auto py-8 px-4">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-racing font-bold mb-2">Sitemap</h1>
-        <p className="text-muted-foreground">Complete directory of all pages and features on Saksham AI</p>
+        <p className="text-muted-foreground">Complete directory of all pages and features on UpSkillers</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

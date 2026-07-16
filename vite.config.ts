@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["logo.webp", "robots.txt"],
       manifest: {
-        name: "Saksham AI Pathfinder",
-        short_name: "Saksham",
+        name: "UpSkillers",
+        short_name: "UpSkillers",
         description: "AI-Powered Internship Discovery & Career Guidance Platform",
         theme_color: "#ffffff",
         background_color: "#ffffff",

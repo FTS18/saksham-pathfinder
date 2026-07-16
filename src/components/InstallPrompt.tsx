@@ -49,7 +49,7 @@ export const InstallPrompt = () => {
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">
               <Download className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-sm">Install Saksham AI</h3>
+              <h3 className="font-semibold text-sm">Install UpSkillers</h3>
             </div>
             <Button variant="ghost" size="sm" onClick={handleDismiss}>
               <X className="w-4 h-4" />

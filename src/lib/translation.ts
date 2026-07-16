@@ -25,7 +25,7 @@ export const translations: Translations = {
   'profile.selectSectorsFirst': { en: 'Please select sectors first to enable skills selection', hi: '', pa: '', ur: '' },
   'index.processing': { en: 'Processing Your Profile', hi: '', pa: '', ur: '' },
   'index.analyzing': { en: 'Our AI is analyzing your preferences and finding the best matches...', hi: '', pa: '', ur: '' },
-  'index.teamName': { en: 'Saksham AI Engine', hi: '', pa: '', ur: '' },
+  'index.teamName': { en: 'UpSkillers Engine', hi: '', pa: '', ur: '' },
   'index.recommendations': { en: 'Your AI-Powered Recommendations', hi: '', pa: '', ur: '' },
   'index.found': { en: 'Found', hi: '', pa: '', ur: '' },
   'index.internships': { en: 'internships matching your profile', hi: '', pa: '', ur: '' },

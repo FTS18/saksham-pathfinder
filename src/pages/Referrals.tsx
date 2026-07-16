@@ -153,11 +153,11 @@ export default function Referrals() {
   };
 
   const shareReferral = async () => {
-    const shareText = ` Join Saksham AI - India's #1 AI-powered internship platform!\n\n Find perfect internships with AI matching\n Get personalized career guidance\n Access exclusive opportunities\n\nUse my referral code: ${userProfile?.referralCode}\n\n Sign up now: ${window.location.origin}?ref=${userProfile?.referralCode}`;
+    const shareText = ` Join UpSkillers - India's #1 AI-powered internship platform!\n\n Find perfect internships with AI matching\n Get personalized career guidance\n Access exclusive opportunities\n\nUse my referral code: ${userProfile?.referralCode}\n\n Sign up now: ${window.location.origin}?ref=${userProfile?.referralCode}`;
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Join Saksham AI - AI-Powered Internships',
+          title: 'Join UpSkillers - AI-Powered Internships',
           text: shareText,
           url: `${window.location.origin}?ref=${userProfile?.referralCode}`
         });

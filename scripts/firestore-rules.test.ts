@@ -13,7 +13,7 @@ beforeAll(async () => {
   const rules = fs.readFileSync(rulesPath, 'utf8');
 
   testEnv = await initializeTestEnvironment({
-    projectId: 'saksham-ai-81c3a',
+    projectId: 'UpSkillers-ai-81c3a',
     firestore: {
       rules: rules,
       host: 'localhost',
@@ -26,7 +26,7 @@ afterAll(async () => {
   await testEnv.cleanup();
 });
 
-describe('Firestore Security Rules - Saksham Pathfinder', () => {
+describe('Firestore Security Rules - UpSkillers Pathfinder', () => {
   const testUserId = 'user123';
   const adminUserId = 'admin456';
   const testUsername = 'testuser';

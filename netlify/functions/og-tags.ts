@@ -42,12 +42,12 @@ const handler: Handler = async (event, context) => {
 
     // Generate OG tags
     const title = internship?.title || "Internship Opportunity";
-    const company = internship?.company || "Saksham AI";
+    const company = internship?.company || "UpSkillers";
     const description =
       internship?.description?.substring(0, 160) ||
       `Explore this ${
         internship?.sector || "exciting"
-      } internship opportunity on Saksham AI. Perfect for students looking to gain real-world experience.`;
+      } internship opportunity on UpSkillers. Perfect for students looking to gain real-world experience.`;
     const location =
       typeof internship?.location === "string"
         ? internship.location
@@ -67,10 +67,10 @@ const handler: Handler = async (event, context) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>${escapeHtml(title)} - ${escapeHtml(company)} | Saksham AI</title>
+    <title>${escapeHtml(title)} - ${escapeHtml(company)} | UpSkillers</title>
     <meta name="title" content="${escapeHtml(title)} - ${escapeHtml(
       company
-    )} | Saksham AI">
+    )} | UpSkillers">
     <meta name="description" content="${escapeHtml(description)}">
     <meta name="keywords" content="internship, ${escapeHtml(
       company
@@ -86,7 +86,7 @@ const handler: Handler = async (event, context) => {
     <meta property="og:image" content="${image}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="Saksham AI">
+    <meta property="og:site_name" content="UpSkillers">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -114,7 +114,7 @@ const handler: Handler = async (event, context) => {
     </script>
 </head>
 <body>
-    <p>Redirecting to Saksham AI...</p>
+    <p>Redirecting to UpSkillers...</p>
 </body>
 </html>
     `;

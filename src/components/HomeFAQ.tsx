@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const topFaqs = [
   { q: "How do I create an account?", a: "Click 'Sign Up' in the top right, choose Google or email signup, and complete our quick 4-step onboarding." },
   { q: "How does AI matching work?", a: "Our AI analyzes your skills, preferences, and profile to match you with relevant internships. Skills account for 50% of the match score." },
-  { q: "Is Saksham AI free?", a: "Yes! Completely free for students. Browse, apply, and use all features at no cost." },
+  { q: "Is UpSkillers free?", a: "Yes! Completely free for students. Browse, apply, and use all features at no cost." },
   { q: "How do I apply for internships?", a: "Click any internship card, review details, and click 'Apply Now'. Track all applications in the Applications page." },
   { q: "Can I save internships for later?", a: "Yes! Click the bookmark icon on any internship card to add it to your Wishlist." }
 ];

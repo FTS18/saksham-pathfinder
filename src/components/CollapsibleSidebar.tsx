@@ -103,11 +103,11 @@ export const CollapsibleSidebar = ({ isExpanded = false, onToggle }: Collapsible
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img 
               src="/logo.webp" 
-              alt="Saksham AI" 
+              alt="UpSkillers" 
               className="w-8 h-8 rounded-lg brightness-0 dark:invert shrink-0"
               loading="eager"
             />
-            <span className={`font-racing text-xl font-bold tracking-widest hidden md:block transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>Saksham AI</span>
+            <span className={`font-racing text-xl font-bold tracking-widest hidden md:block transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>UpSkillers</span>
           </a>
         </div>
 

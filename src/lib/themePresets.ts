@@ -1,4 +1,4 @@
-// Theme Presets for Saksham Pathfinder
+// Theme Presets for UpSkillers Pathfinder
 // Each theme maintains consistent color scheme across light and dark modes
 
 export interface ThemePreset {

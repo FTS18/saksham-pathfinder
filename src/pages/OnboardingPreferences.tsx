@@ -196,7 +196,7 @@ const OnboardingPreferences = () => {
         });
       } else {
         toast({ 
-          title: 'Welcome to Saksham AI!', 
+          title: 'Welcome to UpSkillers!', 
           description: `Setup complete! Your referral code: ${userReferralCode}`
         });
       }

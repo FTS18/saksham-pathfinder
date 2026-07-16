@@ -89,9 +89,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@netlify/functions": "^2.8.2",
     "@sentry/react": "^10.65.0",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.9.1",
+    "@vercel/node": "^3.2.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/busboy": "^1.5.4",

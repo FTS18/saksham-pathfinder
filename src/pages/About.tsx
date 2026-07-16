@@ -81,7 +81,7 @@ const About = () => {
             <div className="bg-gradient-to-br from-accent/30 via-primary/20 to-accent/30 rounded-3xl p-8 mb-16 backdrop-blur-md border border-accent/50 shadow-2xl">
               <div className="text-center max-w-4xl mx-auto">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-sans font-black italic bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent mb-6 animate-fade-in-up">
-                  Saksham AI
+                  UpSkillers
                 </h1>
                 <p className="text-lg md:text-xl lg:text-2xl text-foreground/90 mb-8 leading-relaxed font-medium italic animate-fade-in-up animation-delay-200">
                   AI-Based Smart Allocation Engine for PM Internship Scheme
@@ -125,7 +125,7 @@ const About = () => {
                 <div>
                   <h3 className="font-semibold text-lg mb-2">Our Solution</h3>
                   <p className="text-muted-foreground">
-                    Saksham AI builds a lightweight recommendation engine that suggests 3-5 most relevant internships 
+                    UpSkillers builds a lightweight recommendation engine that suggests 3-5 most relevant internships 
                     based on candidate profile, academic background, interests, and location. The system is mobile-compatible, 
                     user-friendly for low digital literacy users, and integrates seamlessly with existing portals.
                   </p>
@@ -458,7 +458,7 @@ const About = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Target className="w-6 h-6 text-primary" />
-                  Why Choose Saksham AI?
+                  Why Choose UpSkillers?
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -467,7 +467,7 @@ const About = () => {
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-4 font-semibold">Features</th>
-                        <th className="text-center p-4 font-semibold text-primary">Saksham AI</th>
+                        <th className="text-center p-4 font-semibold text-primary">UpSkillers</th>
                         <th className="text-center p-4 font-semibold text-muted-foreground">Traditional Platforms</th>
                       </tr>
                     </thead>
@@ -512,7 +512,7 @@ const About = () => {
               <CardContent>
                 <div className="text-center mb-8">
                   <p className="text-muted-foreground mb-6">
-                    Have questions about Saksham AI or want to collaborate? We'd love to hear from you!
+                    Have questions about UpSkillers or want to collaborate? We'd love to hear from you!
                   </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -522,8 +522,8 @@ const About = () => {
                         <Mail className="w-6 h-6 text-blue-500" />
                       </div>
                       <h3 className="font-semibold mb-2">Team Email</h3>
-                      <a href="mailto:team@sakshamai.com" className="text-primary hover:underline transition-colors">
-                        team@sakshamai.com
+                      <a href="mailto:team@upskillers.com" className="text-primary hover:underline transition-colors">
+                        team@upskillers.com
                       </a>
                     </CardContent>
                   </Card>

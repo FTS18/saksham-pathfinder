@@ -22,7 +22,7 @@ async function fetchArbeitnow(): Promise<BaseInternship[]> {
     const response = await fetch('https://arbeitnow.com/api/job-board-api', {
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Saksham-Pathfinder-API/1.0'
+        'User-Agent': 'UpSkillers-Pathfinder-API/1.0'
       }
     });
 

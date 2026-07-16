@@ -128,7 +128,6 @@ export default function PostJob() {
         </CardContent>
       </Card>
       </div>
-      </div>
     </div>
   );
 }

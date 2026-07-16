@@ -42,7 +42,7 @@ export const RecruiterTopNavigation = () => {
           
           <div className="flex items-center space-x-2">
             <Building2 className="w-6 h-6 text-primary" />
-            <span className="font-bold text-xl">Saksham Recruiter</span>
+            <span className="font-bold text-xl">UpSkillers Recruiter</span>
           </div>
         </div>
 

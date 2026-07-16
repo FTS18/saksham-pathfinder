@@ -40,7 +40,7 @@ export const EnhancedInternshipForm = ({
   onCancel,
 }: EnhancedInternshipFormProps) => {
   const { currentUser } = useAuth();
-  const [companyName, setCompanyName] = useState("Saksham AI");
+  const [companyName, setCompanyName] = useState("UpSkillers");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -105,7 +105,7 @@ export const EnhancedInternshipForm = ({
         workMode,
         applicationDeadline,
         maxApplications: parseInt(maxApplications),
-        companyName: "Saksham AI",
+        companyName: "UpSkillers",
         companyLogoUrl,
         status: publish ? "published" : "draft",
       };
@@ -220,7 +220,7 @@ export const EnhancedInternshipForm = ({
             disabled
             className="bg-gray-100 cursor-not-allowed"
           />
-          <p className="text-xs text-muted-foreground mt-1">Company name is locked to Saksham AI</p>
+          <p className="text-xs text-muted-foreground mt-1">Company name is locked to UpSkillers</p>
         </div>
       </div>
 

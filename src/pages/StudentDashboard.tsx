@@ -48,15 +48,15 @@ const timeAgo = (dateStr?: string): string => {
 const EmptyState = ({ icon: Icon, title, description, ctaLabel, ctaAction }: {
   icon: React.ElementType; title: string; description: string; ctaLabel: string; ctaAction: () => void;
 }) => (
-  <div className=flex flex-col items-center justify-center py-8 text-center gap-3>
-    <div className=w-12 h-12 rounded-full bg-muted flex items-center justify-center>
-      <Icon className=w-6 h-6 text-muted-foreground />
+  <div className="flex flex-col items-center justify-center py-8 text-center gap-3">
+    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+      <Icon className="w-6 h-6 text-muted-foreground"/>
     </div>
     <div>
-      <p className=font-semibold text-foreground text-sm>{title}</p>
-      <p className=text-xs text-muted-foreground mt-1 max-w-xs mx-auto>{description}</p>
+      <p className="font-semibold text-foreground text-sm">{title}</p>
+      <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">{description}</p>
     </div>
-    <Button size=sm onClick={ctaAction}>{ctaLabel}</Button>
+    <Button size="sm" onClick={ctaAction}>{ctaLabel}</Button>
   </div>
 );
 
@@ -142,51 +142,51 @@ const StudentDashboard = () => {
       label: 'Profile Complete', value: profilePct + '%', icon: User,
       iconColor: profilePct < 60 ? 'text-amber-500' : 'text-primary',
       sub: profilePct < 100
-        ? <Button variant=link className=p-0 h-auto mt-1 text-xs text-primary onClick={() => navigate('/profile')}>Complete profile →</Button>
-        : <span className=flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 mt-1><CheckCircle className=w-3 h-3 /> All done!</span>,
+        ? <Button variant="link" className="p-0 h-auto mt-1 text-xs text-primary" onClick={() => navigate('/profile')}>Complete profile →</Button>
+        : <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 mt-1"><CheckCircle className="w-3 h-3"/> All done!</span>,
     },
     {
       label: 'AI Match Score', value: aiMatchScore + '%', icon: Target, iconColor: 'text-emerald-500',
-      sub: <Button variant=link className=p-0 h-auto mt-1 text-xs text-emerald-600 dark:text-emerald-400 onClick={() => navigate('/')}>View matches →</Button>,
+      sub: <Button variant="link" className="p-0 h-auto mt-1 text-xs text-emerald-600 dark:text-emerald-400" onClick={() => navigate('/')}>View matches →</Button>,
     },
     {
       label: 'Applications', value: appStats.total > 0 ? appStats.total : '—', icon: Briefcase, iconColor: 'text-violet-500',
       sub: appStats.total > 0
-        ? <div className=flex gap-2 mt-1 flex-wrap text-[11px]>
-            <span className=text-amber-600 dark:text-amber-400>Pending: {appStats.pending}</span>
-            <span className=text-violet-600 dark:text-violet-400>Review: {appStats.inReview}</span>
-            {appStats.accepted > 0 && <span className=text-emerald-600 dark:text-emerald-400>✓ {appStats.accepted}</span>}
+        ? <div className="flex gap-2 mt-1 flex-wrap text-[11px]">
+            <span className="text-amber-600 dark:text-amber-400">Pending: {appStats.pending}</span>
+            <span className="text-violet-600 dark:text-violet-400">Review: {appStats.inReview}</span>
+            {appStats.accepted > 0 && <span className="text-emerald-600 dark:text-emerald-400">✓ {appStats.accepted}</span>}
           </div>
-        : <Button variant=link className=p-0 h-auto mt-1 text-xs text-muted-foreground onClick={() => navigate('/')}>Browse →</Button>,
+        : <Button variant="link" className="p-0 h-auto mt-1 text-xs text-muted-foreground" onClick={() => navigate('/')}>Browse →</Button>,
     },
     {
       label: 'Saved Internships', value: wishlist.length > 0 ? wishlist.length : '—', icon: Heart, iconColor: 'text-rose-500',
-      sub: <Button variant=link className=p-0 h-auto mt-1 text-xs text-rose-500 onClick={() => navigate('/wishlist')}>View wishlist →</Button>,
+      sub: <Button variant="link" className="p-0 h-auto mt-1 text-xs text-rose-500" onClick={() => navigate('/wishlist')}>View wishlist →</Button>,
     },
   ];
 
   return (
-    <div className=bg-background>
+    <div className="bg-background">
       <PageHeader
         title={getGreeting() + ', ' + (currentUser?.displayName?.split(' ')[0] || 'there') + ' 👋'}
-        subtitle=Your internship journey at a glance.
+        subtitle="Your internship journey at a glance."
       />
 
-      <div className=w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6>
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
         {/* Stat Cards */}
-        <div className=grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {isLoading
             ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
             : statCards.map(card => (
               <Card key={card.label}>
-                <CardContent className=pt-4>
-                  <div className=flex items-start justify-between>
+                <CardContent className="pt-4">
+                  <div className="flex items-start justify-between">
                     <div>
-                      <p className=text-xs font-medium text-muted-foreground uppercase tracking-wide>{card.label}</p>
-                      <p className=text-2xl font-bold text-foreground mt-1>{card.value}</p>
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{card.label}</p>
+                      <p className="text-2xl font-bold text-foreground mt-1">{card.value}</p>
                     </div>
-                    <div className=w-10 h-10 bg-muted rounded-lg flex items-center justify-center shrink-0>
+                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center shrink-0">
                       <card.icon className={'w-5 h-5 ' + card.iconColor} />
                     </div>
                   </div>
@@ -199,77 +199,77 @@ const StudentDashboard = () => {
 
         {/* Profile Banner */}
         {!profileLoading && profilePct < 80 && profileMissing.length > 0 && (
-          <Card className=border-amber-500/40 bg-amber-500/5>
-            <CardContent className=flex items-center justify-between py-4 gap-4>
-              <div className=flex items-center gap-3>
-                <div className=w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0>
-                  <User className=w-4 h-4 text-amber-500 />
+          <Card className="border-amber-500/40 bg-amber-500/5">
+            <CardContent className="flex items-center justify-between py-4 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <User className="w-4 h-4 text-amber-500"/>
                 </div>
                 <div>
-                  <p className=text-sm font-semibold text-foreground>Profile {profilePct}% complete — unlock better matches</p>
-                  <p className=text-xs text-muted-foreground mt-0.5>
+                  <p className="text-sm font-semibold text-foreground">Profile {profilePct}% complete — unlock better matches</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Missing: {profileMissing.slice(0, 3).join(', ')}{profileMissing.length > 3 ? ' +' + (profileMissing.length - 3) + ' more' : ''}
                   </p>
                 </div>
               </div>
-              <Button size=sm onClick={() => navigate('/profile')} className=shrink-0>Complete Now</Button>
+              <Button size="sm" onClick={() => navigate('/profile')} className="shrink-0">Complete Now</Button>
             </CardContent>
           </Card>
         )}
 
-        <div className=grid grid-cols-1 lg:grid-cols-3 gap-6>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* ── Left column ── */}
-          <div className=lg:col-span-2 space-y-6>
+          <div className="lg:col-span-2 space-y-6">
 
             {/* Recent Applications */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center justify-between text-base font-semibold>
-                  <div className=flex items-center gap-2><Briefcase className=w-4 h-4 text-violet-500 />Recent Applications</div>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between text-base font-semibold">
+                  <div className="flex items-center gap-2"><Briefcase className="w-4 h-4 text-violet-500"/>Recent Applications</div>
                   {appStats.total > 0 && (
-                    <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/application-dashboard')}>
-                      View all <ChevronRight className=w-3 h-3 ml-1 />
+                    <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => navigate('/application-dashboard')}>
+                      View all <ChevronRight className="w-3 h-3 ml-1"/>
                     </Button>
                   )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {appsLoading ? (
-                  <div className=space-y-3>{[1,2,3].map(i => <div key={i} className=h-14 bg-muted animate-pulse rounded-md />)}</div>
+                  <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 bg-muted animate-pulse rounded-md"/>)}</div>
                 ) : recentApplications.length > 0 ? (
-                  <div className=space-y-2>
+                  <div className="space-y-2">
                     {recentApplications.map((app: any) => (
-                      <div key={app.id} className=flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer onClick={() => navigate('/application-dashboard')}>
-                        <div className=flex items-center gap-3 min-w-0>
-                          <div className=w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0 font-bold text-violet-500 text-sm>
+                      <div key={app.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => navigate('/application-dashboard')}>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0 font-bold text-violet-500 text-sm">
                             {(app.companyName || '?')[0].toUpperCase()}
                           </div>
-                          <div className=min-w-0>
-                            <p className=font-semibold text-sm text-foreground truncate>{app.companyName}</p>
-                            <p className=text-xs text-muted-foreground truncate>{app.internshipTitle}</p>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-sm text-foreground truncate">{app.companyName}</p>
+                            <p className="text-xs text-muted-foreground truncate">{app.internshipTitle}</p>
                           </div>
                         </div>
-                        <div className=flex flex-col items-end gap-1 shrink-0 ml-2>
+                        <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
                           <StatusBadge status={app.status} />
-                          {app.appliedAt?.toDate && <span className=text-[10px] text-muted-foreground>{timeAgo(app.appliedAt.toDate().toISOString())}</span>}
+                          {app.appliedAt?.toDate && <span className="text-[10px] text-muted-foreground">{timeAgo(app.appliedAt.toDate().toISOString())}</span>}
                         </div>
                       </div>
                     ))}
                     {appStats.total > 0 && (
-                      <div className=mt-4 pt-3 border-t border-border>
-                        <p className=text-xs text-muted-foreground mb-2 font-medium>Application Funnel</p>
-                        <div className=flex gap-2 text-[11px]>
+                      <div className="mt-4 pt-3 border-t border-border">
+                        <p className="text-xs text-muted-foreground mb-2 font-medium">Application Funnel</p>
+                        <div className="flex gap-2 text-[11px]">
                           {[
                             { label: 'Applied',   val: appStats.pending,   color: 'bg-blue-500' },
                             { label: 'Review',    val: appStats.inReview,  color: 'bg-violet-500' },
                             { label: 'Interview', val: appStats.interview, color: 'bg-primary' },
                             { label: 'Accepted',  val: appStats.accepted,  color: 'bg-emerald-500' },
                           ].map(item => (
-                            <div key={item.label} className=flex-1 text-center>
+                            <div key={item.label} className="flex-1 text-center">
                               <div className={'h-1.5 rounded-full mb-1 ' + item.color + (item.val > 0 ? '' : ' opacity-30')} />
-                              <div className=font-bold text-foreground>{item.val}</div>
-                              <div className=text-muted-foreground>{item.label}</div>
+                              <div className="font-bold text-foreground">{item.val}</div>
+                              <div className="text-muted-foreground">{item.label}</div>
                             </div>
                           ))}
                         </div>
@@ -277,77 +277,77 @@ const StudentDashboard = () => {
                     )}
                   </div>
                 ) : (
-                  <EmptyState icon={Briefcase} title=No applications yet description=Start applying to internships and track them here in real time. ctaLabel=Browse Internships ctaAction={() => navigate('/')} />
+                  <EmptyState icon={Briefcase} title="No applications yet" description="Start applying to internships and track them here in real time." ctaLabel="Browse Internships" ctaAction={() => navigate('/')} />
                 )}
               </CardContent>
             </Card>
 
             {/* Top Matches */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center justify-between text-base font-semibold>
-                  <div className=flex items-center gap-2><Zap className=w-4 h-4 text-amber-500 />Top Matches for You</div>
-                  <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/')}>See all <ChevronRight className=w-3 h-3 ml-1 /></Button>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between text-base font-semibold">
+                  <div className="flex items-center gap-2"><Zap className="w-4 h-4 text-amber-500"/>Top Matches for You</div>
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => navigate('/')}>See all <ChevronRight className="w-3 h-3 ml-1"/></Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {featuredLoading || trendingLoading ? (
-                  <div className=space-y-3>{[1,2,3].map(i => <div key={i} className=h-14 bg-muted animate-pulse rounded-md />)}</div>
+                  <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-14 bg-muted animate-pulse rounded-md"/>)}</div>
                 ) : topInternships.length > 0 ? (
-                  <div className=space-y-2>
+                  <div className="space-y-2">
                     {topInternships.map((internship: any, i: number) => (
-                      <div key={internship.id || i} className=flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer group onClick={() => internship.id && navigate('/internships/' + internship.id)}>
-                        <div className=flex items-center gap-3 min-w-0>
-                          <div className=w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 font-bold text-amber-600 dark:text-amber-400 text-sm>
+                      <div key={internship.id || i} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer group" onClick={() => internship.id && navigate('/internships/' + internship.id)}>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 font-bold text-amber-600 dark:text-amber-400 text-sm">
                             {(internship.company || '?')[0].toUpperCase()}
                           </div>
-                          <div className=min-w-0>
-                            <p className=font-semibold text-sm text-foreground truncate>{internship.company}</p>
-                            <p className=text-xs text-muted-foreground truncate>{internship.title || internship.role}</p>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-sm text-foreground truncate">{internship.company}</p>
+                            <p className="text-xs text-muted-foreground truncate">{internship.title || internship.role}</p>
                           </div>
                         </div>
-                        <div className=flex items-center gap-2 shrink-0>
-                          {internship.stipend && <span className=text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hidden sm:block>₹{typeof internship.stipend === 'number' ? internship.stipend.toLocaleString() : internship.stipend}</span>}
-                          <ExternalLink className=w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity />
+                        <div className="flex items-center gap-2 shrink-0">
+                          {internship.stipend && <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hidden sm:block">₹{typeof internship.stipend === 'number' ? internship.stipend.toLocaleString() : internship.stipend}</span>}
+                          <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"/>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <EmptyState icon={Search} title=No matches yet description=Complete your profile to get personalised recommendations. ctaLabel=Set up Profile ctaAction={() => navigate('/profile')} />
+                  <EmptyState icon={Search} title="No matches yet" description="Complete your profile to get personalised recommendations." ctaLabel="Set up Profile" ctaAction={() => navigate('/profile')} />
                 )}
               </CardContent>
             </Card>
 
             {/* Skills */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center justify-between text-base font-semibold>
-                  <div className=flex items-center gap-2><BookOpen className=w-4 h-4 text-primary />Skills on Your Profile</div>
-                  <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/profile')}>Manage →</Button>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between text-base font-semibold">
+                  <div className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary"/>Skills on Your Profile</div>
+                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => navigate('/profile')}>Manage →</Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {profileLoading ? (
-                  <div className=space-y-4>{[1,2,3].map(i => <div key={i} className=h-8 bg-muted animate-pulse rounded />)}</div>
+                  <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-8 bg-muted animate-pulse rounded"/>)}</div>
                 ) : skills.length > 0 ? (
-                  <div className=space-y-4>
+                  <div className="space-y-4">
                     {skills.map(skill => (
                       <div key={skill.name}>
-                        <div className=flex justify-between items-center mb-1.5>
-                          <span className=text-sm font-medium text-foreground>{skill.name}</span>
-                          <span className=text-xs text-muted-foreground tabular-nums>{skill.progress}%</span>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-sm font-medium text-foreground">{skill.name}</span>
+                          <span className="text-xs text-muted-foreground tabular-nums">{skill.progress}%</span>
                         </div>
-                        <Progress value={skill.progress} className=h-1.5 />
+                        <Progress value={skill.progress} className="h-1.5"/>
                       </div>
                     ))}
-                    <p className=text-xs text-muted-foreground mt-1>
+                    <p className="text-xs text-muted-foreground mt-1">
                       Skill confidence is estimated from your profile.{' '}
-                      <button className=underline text-primary onClick={() => navigate('/profile')}>Add more skills</button> for better AI matches.
+                      <button className="underline text-primary" onClick={() => navigate('/profile')}>Add more skills</button> for better AI matches.
                     </p>
                   </div>
                 ) : (
-                  <EmptyState icon={BookOpen} title=No skills added yet description=Adding skills unlocks AI-powered internship matching. ctaLabel=Add Skills ctaAction={() => navigate('/profile')} />
+                  <EmptyState icon={BookOpen} title="No skills added yet" description="Adding skills unlocks AI-powered internship matching." ctaLabel="Add Skills" ctaAction={() => navigate('/profile')} />
                 )}
               </CardContent>
             </Card>
@@ -355,34 +355,34 @@ const StudentDashboard = () => {
           </div>
 
           {/* ── Right sidebar ── */}
-          <div className=space-y-6>
+          <div className="space-y-6">
 
             {/* Points & Badges */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center gap-2 text-base font-semibold>
-                  <Award className=w-4 h-4 text-amber-500 />Points & Badges
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                  <Award className="w-4 h-4 text-amber-500"/>Points & Badges
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {profileLoading ? <div className=h-20 bg-muted animate-pulse rounded /> : (
-                  <div className=space-y-3>
-                    <div className=flex items-center justify-between>
+                {profileLoading ? <div className="h-20 bg-muted animate-pulse rounded"/> : (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
                       <div>
-                        <p className=text-2xl font-bold text-foreground>{points.toLocaleString()}</p>
-                        <p className=text-xs text-muted-foreground>Total Points</p>
+                        <p className="text-2xl font-bold text-foreground">{points.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">Total Points</p>
                       </div>
-                      <div className=w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center>
-                        <Star className=w-6 h-6 text-amber-500 />
+                      <div className="w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center">
+                        <Star className="w-6 h-6 text-amber-500"/>
                       </div>
                     </div>
                     {badges.length > 0 && (
-                      <div className=flex flex-wrap gap-1.5 pt-1>
-                        {badges.map(b => <Badge key={b} variant=secondary className=text-[10px]>{b}</Badge>)}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {badges.map(b => <Badge key={b} variant="secondary" className="text-[10px]">{b}</Badge>)}
                       </div>
                     )}
-                    <Button variant=outline size=sm className=w-full text-xs onClick={() => navigate('/referrals')}>
-                      View Leaderboard <ChevronRight className=w-3 h-3 ml-1 />
+                    <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => navigate('/referrals')}>
+                      View Leaderboard <ChevronRight className="w-3 h-3 ml-1"/>
                     </Button>
                   </div>
                 )}
@@ -391,71 +391,71 @@ const StudentDashboard = () => {
 
             {/* Saved Internships */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center justify-between text-base font-semibold>
-                  <div className=flex items-center gap-2>
-                    <Heart className=w-4 h-4 text-rose-500 />Saved Internships
-                    {wishlist.length > 0 && <Badge variant=secondary className=text-[10px] ml-1>{wishlist.length}</Badge>}
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between text-base font-semibold">
+                  <div className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-rose-500"/>Saved Internships
+                    {wishlist.length > 0 && <Badge variant="secondary" className="text-[10px] ml-1">{wishlist.length}</Badge>}
                   </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {savedInternships.length > 0 ? (
-                  <div className=space-y-2>
+                  <div className="space-y-2">
                     {savedInternships.map((item: any) => (
-                      <div key={item.id} className=flex items-center gap-2 p-2.5 bg-muted/40 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors onClick={() => navigate('/internships/' + item.id)}>
-                        <div className=w-7 h-7 rounded bg-rose-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-rose-500>
+                      <div key={item.id} className="flex items-center gap-2 p-2.5 bg-muted/40 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors" onClick={() => navigate('/internships/' + item.id)}>
+                        <div className="w-7 h-7 rounded bg-rose-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-rose-500">
                           {(item.company || '?')[0].toUpperCase()}
                         </div>
-                        <div className=min-w-0>
-                          <p className=text-sm font-medium text-foreground truncate>{item.company}</p>
-                          <p className=text-xs text-muted-foreground truncate>{item.title || item.role}</p>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{item.company}</p>
+                          <p className="text-xs text-muted-foreground truncate">{item.title || item.role}</p>
                         </div>
                       </div>
                     ))}
-                    <Button variant=ghost size=sm className=w-full mt-1 text-xs text-muted-foreground onClick={() => navigate('/wishlist')}>
-                      View all saved <ArrowRight className=w-3 h-3 ml-1 />
+                    <Button variant="ghost" size="sm" className="w-full mt-1 text-xs text-muted-foreground" onClick={() => navigate('/wishlist')}>
+                      View all saved <ArrowRight className="w-3 h-3 ml-1"/>
                     </Button>
                   </div>
                 ) : (
-                  <EmptyState icon={Heart} title=Nothing saved yet description=Heart an internship to save it here for later. ctaLabel=Browse Internships ctaAction={() => navigate('/')} />
+                  <EmptyState icon={Heart} title="Nothing saved yet" description="Heart an internship to save it here for later." ctaLabel="Browse Internships" ctaAction={() => navigate('/')} />
                 )}
               </CardContent>
             </Card>
 
             {/* Market Trends */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=flex items-center gap-2 text-base font-semibold>
-                  <TrendingUp className=w-4 h-4 text-emerald-500 />Skill Demand Trends
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base font-semibold">
+                  <TrendingUp className="w-4 h-4 text-emerald-500"/>Skill Demand Trends
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className=space-y-2>
+                <div className="space-y-2">
                   {marketTrends.map((item, i) => (
-                    <div key={i} className=flex items-center justify-between p-2 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer onClick={() => navigate('/?skill=' + encodeURIComponent(item.skill))}>
-                      <span className=text-sm font-medium text-foreground>{item.skill}</span>
-                      <div className=flex items-center gap-1>
-                        <TrendingUp className=w-3.5 h-3.5 text-emerald-500 />
-                        <span className=text-sm font-semibold text-emerald-600 dark:text-emerald-400>+{item.trend}%</span>
+                    <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer" onClick={() => navigate('/?skill=' + encodeURIComponent(item.skill))}>
+                      <span className="text-sm font-medium text-foreground">{item.skill}</span>
+                      <div className="flex items-center gap-1">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-500"/>
+                        <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">+{item.trend}%</span>
                       </div>
                     </div>
                   ))}
                 </div>
-                <p className=text-[10px] text-muted-foreground mt-3>
+                <p className="text-[10px] text-muted-foreground mt-3">
                   Trends reflect your listed skills.{' '}
-                  <button className=underline text-primary onClick={() => navigate('/profile')}>Update skills</button> to personalise.
+                  <button className="underline text-primary" onClick={() => navigate('/profile')}>Update skills</button> to personalise.
                 </p>
               </CardContent>
             </Card>
 
             {/* Quick Actions */}
             <Card>
-              <CardHeader className=pb-3>
-                <CardTitle className=text-base font-semibold>Quick Actions</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className=grid grid-cols-2 gap-2>
+                <div className="grid grid-cols-2 gap-2">
                   {[
                     { icon: FileText,  label: 'My Resume',    action: () => navigate('/resume') },
                     { icon: Briefcase, label: 'Applications', action: () => navigate('/application-dashboard') },
@@ -464,9 +464,9 @@ const StudentDashboard = () => {
                     { icon: Heart,     label: 'Wishlist',     action: () => navigate('/wishlist') },
                     { icon: Activity,  label: 'AI Matches',   action: () => navigate('/') },
                   ].map((a, i) => (
-                    <Button key={i} variant=outline className=flex flex-col h-14 gap-1 text-muted-foreground hover:text-foreground onClick={a.action}>
-                      <a.icon className=w-4 h-4 />
-                      <span className=text-[11px]>{a.label}</span>
+                    <Button key={i} variant="outline" className="flex flex-col h-14 gap-1 text-muted-foreground hover:text-foreground" onClick={a.action}>
+                      <a.icon className="w-4 h-4"/>
+                      <span className="text-[11px]">{a.label}</span>
                     </Button>
                   ))}
                 </div>

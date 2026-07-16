@@ -93,7 +93,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                   onClick={() => {
                     const subject = encodeURIComponent('Bug Report: Application Error');
                     const body = encodeURIComponent(`Error: ${this.state.error?.message}\nURL: ${window.location.href}\nStack: ${this.state.error?.stack}`);
-                    window.open(`mailto:support@sakshami.com?subject=${subject}&body=${body}`);
+                    window.open(`mailto:support@upskillers.com?subject=${subject}&body=${body}`);
                   }}
                   variant="outline" 
                   size="sm"

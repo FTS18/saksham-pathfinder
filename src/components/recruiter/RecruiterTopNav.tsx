@@ -33,9 +33,9 @@ export const RecruiterTopNav: React.FC = () => {
       <nav className="hidden md:flex fixed top-0 left-0 right-0 h-16 bg-background border-b border-border z-50 items-center px-6 gap-8">
         {/* Logo */}
         <Link to="/recruiter/dashboard" className="flex items-center gap-2 min-w-fit">
-          <img src="/logo.webp" alt="Saksham AI" className="h-8 w-auto" />
+          <img src="/logo.webp" alt="UpSkillers" className="h-8 w-auto" />
           <span className="text-lg font-bold text-gray-900 dark:text-white hidden lg:block">
-            Saksham AI
+            UpSkillers
           </span>
         </Link>
 
@@ -89,7 +89,7 @@ export const RecruiterTopNav: React.FC = () => {
       {/* Mobile Navigation */}
       <nav className="md:hidden fixed top-0 left-0 right-0 h-14 bg-background border-b border-border z-50 flex items-center px-4 gap-3">
         <Link to="/recruiter/dashboard" className="flex items-center gap-2">
-          <img src="/logo.webp" alt="Saksham AI" className="h-8 w-auto" />
+          <img src="/logo.webp" alt="UpSkillers" className="h-8 w-auto" />
         </Link>
 
         <button

@@ -256,7 +256,7 @@ export const Chatbot = () => {
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Saksham AI</h3>
+              <h3 className="font-semibold text-lg">UpSkillers</h3>
               <p className="text-sm text-muted-foreground">Your Career Assistant</p>
             </div>
           </div>

@@ -9,13 +9,13 @@ interface SEOHeadProps {
 }
 
 export const SEOHead = ({ 
-  title = "Saksham AI - Intelligent Internship Platform",
+  title = "UpSkillers - Intelligent Internship Platform",
   description = "AI-powered internship discovery and career guidance platform for students in India. Find your perfect internship match with smart recommendations.",
   image = "/logo512.png",
   url
 }: SEOHeadProps) => {
   const location = useLocation();
-  const currentUrl = url || `https://saksham-ai.netlify.app${location.pathname}`;
+  const currentUrl = url || `https://UpSkillers.netlify.app${location.pathname}`;
 
   useEffect(() => {
     // Update document title
@@ -54,7 +54,7 @@ export const SEOHead = ({
     updateProperty('og:image', image);
     updateProperty('og:url', currentUrl);
     updateProperty('og:type', 'website');
-    updateProperty('og:site_name', 'Saksham AI');
+    updateProperty('og:site_name', 'UpSkillers');
 
     // Twitter Card tags
     updateMeta('twitter:card', 'summary_large_image');

@@ -25,14 +25,15 @@ export const apiClient = {
    */
   async request<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
     // 1. Determine backend URL
-    // If it starts with /api/, route to Netlify Functions (or other endpoint)
-    // For now, most legacy endpoints were mapped to /.netlify/functions/recruiter-api
-    const isNetlify = endpoint.startsWith("/netlify/") || endpoint.startsWith("/recruiter-api");
-    const baseUrl = isNetlify ? "/.netlify/functions" : "https://us-central1-saksham-ai-81c3a.cloudfunctions.net";
+    // All serverless API endpoints (/netlify/ or /recruiter-api/ or /api/) route to /api on Vercel
+    const isServerless = endpoint.startsWith("/netlify/") || endpoint.startsWith("/recruiter-api") || endpoint.startsWith("/api/");
+    const baseUrl = isServerless ? "/api" : "https://us-central1-UpSkillers-ai-81c3a.cloudfunctions.net";
     
     // Format the URL properly
     const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-    const url = isNetlify ? `${baseUrl}${path.replace("/netlify", "").replace("/recruiter-api", "/recruiter-api")}` : `${baseUrl}${path}`;
+    // Replace "/netlify" with empty string so "/netlify/admin-api" becomes "/admin-api" (accessible via "/api/admin-api")
+    const cleanPath = path.replace("/netlify", "");
+    const url = isServerless ? `${baseUrl}${cleanPath}` : `${baseUrl}${path}`;
 
     // 2. Prepare headers with Auth
     const headers: Record<string, string> = {

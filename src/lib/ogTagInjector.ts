@@ -47,7 +47,7 @@ export const injectOGTags = (config: OGTagConfig) => {
     { property: "og:image", content: image },
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
-    { property: "og:site_name", content: "Saksham AI" },
+    { property: "og:site_name", content: "UpSkillers" },
 
     // Twitter
     { property: "twitter:card", content: "summary_large_image" },
@@ -122,7 +122,7 @@ export const generateInternshipOGTags = (internship: any) => {
     typeof internship.location === "string"
       ? internship.location
       : internship.location?.city || "India";
-  const description = `${internship.title} • ${location} • ${internship.stipend} • Saksham AI`;
+  const description = `${internship.title} • ${location} • ${internship.stipend} • UpSkillers`;
   const url = `https://hexaforces.netlify.app/internship/${internship.id}`;
 
   return {
@@ -155,7 +155,7 @@ export const generateComparisonOGTags = (
   const title = customTitle || `Compare ${companies} Internships`;
   const description = `Compare ${count} internship opportunity${
     count > 1 ? "ies" : ""
-  } on Saksham AI`;
+  } on UpSkillers`;
   const ids = internships.map((i) => i.id).join(",");
   const url = `https://hexaforces.netlify.app/shared-comparison?ids=${ids}`;
 

@@ -10,7 +10,7 @@ export const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="font-racing font-bold text-lg text-foreground">Saksham AI</h3>
+            <h3 className="font-racing font-bold text-lg text-foreground">UpSkillers</h3>
             <p className="text-sm text-muted-foreground">
               Your gateway to amazing internship opportunities and career growth.
             </p>

@@ -7,7 +7,7 @@ export default function EmailNotification() {
       <Mail className="h-4 w-4" />
       <AlertDescription>
          <strong>Important:</strong> Check your <strong>spam/junk folder</strong> if you don't receive emails from us. 
-        Add <strong>noreply@saksham-ai.com</strong> to your contacts to ensure delivery.
+        Add <strong>noreply@upskillers.com</strong> to your contacts to ensure delivery.
       </AlertDescription>
     </Alert>
   );

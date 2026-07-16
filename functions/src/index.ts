@@ -6,8 +6,8 @@ admin.initializeApp();
 
 // Whitelist only known production domains
 const ALLOWED_ORIGINS = [
-  "https://saksham-ai-81c3a.web.app",
-  "https://saksham-pathfinder.netlify.app",
+  "https://UpSkillers-ai-81c3a.web.app",
+  "https://UpSkillers-pathfinder.netlify.app",
   "http://localhost:8080",
   "http://localhost:5173",
 ];
@@ -1316,7 +1316,7 @@ export const getInternshipForOG = functions.https.onRequest(
 
 /**
  * Scheduled function to export Firestore data to Cloud Storage daily.
- * Requires setting up a Google Cloud Storage bucket: gs://saksham-ai-81c3a-backups
+ * Requires setting up a Google Cloud Storage bucket: gs://UpSkillers-ai-81c3a-backups
  * Requires assigning the default App Engine service account `roles/datastore.importExportAdmin`
  */
 export const scheduledFirestoreBackup = functions.pubsub

@@ -114,7 +114,7 @@ const Login = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="font-racing font-bold text-xl text-foreground">Saksham AI</span>
+            <span className="font-racing font-bold text-xl text-foreground">UpSkillers</span>
           </div>
           <CardTitle className="text-2xl font-racing">Welcome Back</CardTitle>
           <p className="text-muted-foreground">Sign in to your account</p>

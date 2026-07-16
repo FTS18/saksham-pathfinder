@@ -19,7 +19,7 @@ import { NotificationSystem } from './NotificationSystem';
 import GoogleTranslate from './GoogleTranslate';
 
 const translations = {
-  en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'Saksham AI', wishlist: 'Wishlist' }
+  en: { home: 'Home', dashboard: 'Dashboard', about: 'About', contact: 'Contact', brand: 'UpSkillers', wishlist: 'Wishlist' }
 };
 
 export const Navbar = () => {
@@ -110,7 +110,7 @@ export const Navbar = () => {
           <div className="flex justify-between items-center h-16 sm:h-16">
             <Link to="/" className="flex items-center space-x-2">
               <span className="font-racing font-bold text-xl text-foreground">
-                Saksham AI
+                UpSkillers
               </span>
             </Link>
 

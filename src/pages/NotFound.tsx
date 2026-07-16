@@ -59,7 +59,7 @@ const NotFound = () => {
 
         {/* Brand */}
         <p className="mt-10 text-xs text-muted-foreground/60">
-          Saksham AI — India's AI-Powered Internship Platform
+          UpSkillers — India's AI-Powered Internship Platform
         </p>
       </div>
     </div>

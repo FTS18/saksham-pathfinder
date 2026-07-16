@@ -120,7 +120,7 @@ export const EmailVerification = ({ user, onVerified }: EmailVerificationProps) 
           
           <div className="text-xs text-muted-foreground text-center space-y-2">
             <p> <strong>Check your spam/junk folder</strong> if you don't see the email</p>
-            <p>Add <strong>noreply@saksham-ai.com</strong> to your contacts</p>
+            <p>Add <strong>noreply@upskillers.com</strong> to your contacts</p>
           </div>
         </CardContent>
       </Card>

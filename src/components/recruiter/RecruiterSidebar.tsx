@@ -68,9 +68,9 @@ export const RecruiterSidebar = () => {
         {/* Mobile header with hamburger on TOP-RIGHT */}
         <div className="fixed top-0 left-0 right-0 z-40 bg-background border-b border-border h-16 flex items-center px-4 md:hidden">
           <div className="flex-1 flex items-center justify-start">
-            <img src="/logo.webp" alt="Saksham AI" className="h-8 w-auto" onError={(e) => {
+            <img src="/logo.webp" alt="UpSkillers" className="h-8 w-auto" onError={(e) => {
               e.currentTarget.style.display = 'none';
-              e.currentTarget.parentElement!.innerHTML = '<span class="font-bold">Saksham AI</span>';
+              e.currentTarget.parentElement!.innerHTML = '<span class="font-bold">UpSkillers</span>';
             }} />
           </div>
           <Button
@@ -132,8 +132,8 @@ export const RecruiterSidebar = () => {
         <div className="flex items-center justify-between">
           {isExpanded && (
             <Link to="/recruiter/dashboard" className="flex items-center space-x-2 hover:opacity-80">
-              <img src="/logo.webp" alt="Saksham AI" className="h-6 w-6" />
-              <span className="font-bold text-lg">Saksham AI</span>
+              <img src="/logo.webp" alt="UpSkillers" className="h-6 w-6" />
+              <span className="font-bold text-lg">UpSkillers</span>
             </Link>
           )}
           <Button

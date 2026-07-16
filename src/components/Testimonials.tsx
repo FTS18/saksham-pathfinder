@@ -7,13 +7,13 @@ export function Testimonials() {
     {
       name: "Ravi Kumar",
       location: "Delhi",
-      story: "Saksham AI helped me find my first internship at a startup. The personalized recommendations were spot on!",
+      story: "UpSkillers helped me find my first internship at a startup. The personalized recommendations were spot on!",
       avatar: "https://i.pravatar.cc/150?u=ravi"
     },
     {
       name: "Priya Singh",
       location: "Mumbai",
-      story: "As a first-generation college student, I was lost. Saksham AI guided me through the process and I landed a great finance internship.",
+      story: "As a first-generation college student, I was lost. UpSkillers guided me through the process and I landed a great finance internship.",
       avatar: "https://i.pravatar.cc/150?u=priya"
     },
     {
@@ -25,7 +25,7 @@ export function Testimonials() {
     {
       name: "Sneha Sharma",
       location: "Pune",
-      story: "Got my dream design internship through Saksham AI. The AI matching was incredibly accurate!",
+      story: "Got my dream design internship through UpSkillers. The AI matching was incredibly accurate!",
       avatar: "https://i.pravatar.cc/150?u=sneha"
     },
     {

@@ -66,7 +66,7 @@ export const useApplicationStatusWatcher = () => {
               "Notification" in window &&
               Notification.permission === "granted"
             ) {
-              new Notification("Saksham AI", {
+              new Notification("UpSkillers", {
                 body: message,
                 icon: "/favicon.ico",
                 badge: "/favicon.ico",

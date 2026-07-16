@@ -393,7 +393,7 @@ const Index = () => {
   
   // SEO for homepage
   const seoProps = {
-    title: 'Saksham AI - AI-Powered Internship Discovery Platform',
+    title: 'UpSkillers - AI-Powered Internship Discovery Platform',
     description: 'Find the perfect internship with AI-powered recommendations. Discover meaningful career opportunities tailored to your skills and aspirations in India.',
     keywords: 'internship, AI, career, jobs, students, recommendations, machine learning, India, PM internship scheme'
   };

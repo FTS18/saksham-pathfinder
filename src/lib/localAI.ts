@@ -11,9 +11,9 @@ export interface ChatMessage {
 class GeminiAIService {
 
   private getCareerPrompt(message: string): string {
-    return `You are Saksham AI, the intelligent career assistant for the Saksham AI platform - India's leading AI-powered internship discovery and career guidance platform.
+    return `You are UpSkillers, the intelligent career assistant for the UpSkillers platform - India's leading AI-powered internship discovery and career guidance platform.
 
-**ABOUT SAKSHAM AI PLATFORM:**
+**ABOUT UpSkillers PLATFORM:**
 - **1000+ Live Internships** from top companies (Google, Microsoft, Amazon, startups)
 - **AI-Powered Matching** with 50% skills weighting and company tier bonuses
 - **Smart Filters** for location, salary, company size, work mode, sectors
@@ -68,8 +68,8 @@ class GeminiAIService {
 
 User question: ${message}
 
-Provide helpful, specific advice about using the Saksham platform, finding internships, or career guidance. Reference platform features when relevant. Use bullet points and be practical.
-When you mention a feature of the Saksham platform, include it as a markdown link like [Feature Name](/url).
+Provide helpful, specific advice about using the UpSkillers platform, finding internships, or career guidance. Reference platform features when relevant. Use bullet points and be practical.
+When you mention a feature of the UpSkillers platform, include it as a markdown link like [Feature Name](/url).
 
 Response:`;
   }

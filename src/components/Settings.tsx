@@ -140,7 +140,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                         if (navigator.share) {
                           navigator.share({
                             title: `${dashboardProfile?.username || 'User'}'s Profile`,
-                            text: 'Check out my profile on Saksham AI',
+                            text: 'Check out my profile on UpSkillers',
                             url: profileUrl
                           });
                         } else {
