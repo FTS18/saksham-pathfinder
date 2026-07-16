@@ -92,7 +92,7 @@ export const getAllInternships = async (): Promise<any[]> => {
       // 2. Fetch from Netlify Serverless Function (replaces localhost:3001)
       let localLiveData: any[] = [];
       try {
-        const response = await fetch("/.netlify/functions/internships-api");
+        const response = await fetch("/api/internships-api");
         if (response.ok) {
           const json = await response.json();
           localLiveData = json.data || [];
@@ -187,7 +187,7 @@ export const getInternshipById = async (id: string): Promise<any | null> => {
 
   // Fallback to Live Scraper API (Netlify Function)
   try {
-    const response = await fetch("/.netlify/functions/internships-api");
+    const response = await fetch("/api/internships-api");
     if (!response.ok) throw new Error("Failed to fetch live internships API");
     const data = await response.json();
     const internships = data.data || [];

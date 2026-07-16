@@ -353,7 +353,7 @@ const RecruiterDashboard = () => {
     
     try {
       const token = await currentUser.getIdToken();
-      const response = await fetch('/.netlify/functions/recruiter-api/update-application-status', {
+      const response = await fetch('/api/recruiter-api/update-application-status', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

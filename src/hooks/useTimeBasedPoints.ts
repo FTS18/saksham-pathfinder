@@ -34,7 +34,7 @@ export const useTimeBasedPoints = () => {
                 return;
               }
               const token = await currentUser.getIdToken();
-              const response = await fetch('/.netlify/functions/gamification-api', {
+              const response = await fetch('/api/gamification-api', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

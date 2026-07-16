@@ -1,4 +1,4 @@
-// FIX #15: All Gemini requests now go through /.netlify/functions/ai-proxy.
+// FIX #15: All Gemini requests now go through /api/ai-proxy.
 // The API key is stored server-side as GEMINI_API_KEY env var.
 // VITE_GEMINI_API_KEY is no longer needed on the client side.
 
@@ -18,7 +18,7 @@ class AIQueueService {
   private readonly CACHE_DURATION = 1000 * 60 * 30; // 30 minutes
   private readonly MAX_RETRIES = 3;
   private readonly RETRY_DELAY = 2000; // 2 seconds
-  private readonly AI_PROXY_URL = "/.netlify/functions/ai-proxy";
+  private readonly AI_PROXY_URL = "/api/ai-proxy";
 
   private getCacheKey(prompt: string): string {
     return btoa(encodeURIComponent(prompt)).slice(0, 50);

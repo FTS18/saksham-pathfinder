@@ -32,7 +32,7 @@ export const ResumeUploader = ({ onDataExtracted }: ResumeUploaderProps) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch('/.netlify/functions/parse-resume', {
+        const response = await fetch('/api/parse-resume', {
           method: 'POST',
           body: formData,
         });

@@ -115,7 +115,7 @@ const OnboardingPreferences = () => {
               try {
                 if (import.meta.env.PROD) {
                   const token = await currentUser.getIdToken();
-                  await fetch('/.netlify/functions/gamification-api', {
+                  await fetch('/api/gamification-api', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -163,7 +163,7 @@ const OnboardingPreferences = () => {
       if (import.meta.env.PROD) {
         try {
           const token = await currentUser.getIdToken();
-          await fetch('/.netlify/functions/gamification-api', {
+          await fetch('/api/gamification-api', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
