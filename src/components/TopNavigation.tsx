@@ -125,7 +125,7 @@ export const TopNavigation = () => {
   }, []);
 
   return (
-    <div className="sticky top-0 left-0 right-0 bg-background/50 backdrop-blur-xl border-b border-border/40 dark:border-border/10 z-40 h-16 shrink-0 shadow-sm">
+    <div className="sticky top-0 left-0 right-0 bg-background/50 backdrop-blur-xl border-b border-border/40 dark:border-border/10 z-40 h-16 shrink-0 shadow-sm animate-page-entry">
       <div className="w-full px-6 md:px-12 h-full">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full gap-6">
           <div className="hidden md:flex items-center text-sm font-medium text-muted-foreground/80">

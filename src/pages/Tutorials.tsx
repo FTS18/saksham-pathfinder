@@ -56,7 +56,7 @@ export default function Tutorials() {
                     className="flex-1"
                   >
                     <a href={video.hindi} target="_blank" rel="noopener noreferrer">
-                       🇮🇳 Watch in Hindi
+                       Watch in Hindi
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
@@ -66,7 +66,7 @@ export default function Tutorials() {
                     className="flex-1"
                   >
                     <a href={video.english} target="_blank" rel="noopener noreferrer">
-                       🇬🇧 Watch in English
+                       Watch in English
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
                   </Button>

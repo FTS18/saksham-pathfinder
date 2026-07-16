@@ -155,7 +155,7 @@ const StudentDashboard = () => {
         ? <div className="flex gap-2 mt-1 flex-wrap text-[11px]">
             <span className="text-amber-600 dark:text-amber-400">Pending: {appStats.pending}</span>
             <span className="text-violet-600 dark:text-violet-400">Review: {appStats.inReview}</span>
-            {appStats.accepted > 0 && <span className="text-emerald-600 dark:text-emerald-400">✓ {appStats.accepted}</span>}
+            {appStats.accepted > 0 && <span className="text-emerald-600 dark:text-emerald-400">{appStats.accepted} Accepted</span>}
           </div>
         : <Button variant="link" className="p-0 h-auto mt-1 text-xs text-muted-foreground" onClick={() => navigate('/')}>Browse →</Button>,
     },
@@ -168,7 +168,7 @@ const StudentDashboard = () => {
   return (
     <div className="bg-background">
       <PageHeader
-        title={getGreeting() + ', ' + (currentUser?.displayName?.split(' ')[0] || 'there') + ' 👋'}
+        title={getGreeting() + ', ' + (currentUser?.displayName?.split(' ')[0] || 'there')}
         subtitle="Your internship journey at a glance."
       />
 
@@ -450,7 +450,7 @@ const StudentDashboard = () => {
             </Card>
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="animate-staggered stagger-6">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold">Quick Actions</CardTitle>
               </CardHeader>

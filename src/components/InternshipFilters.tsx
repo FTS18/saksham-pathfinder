@@ -246,7 +246,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
                       className="w-full justify-start text-left"
                       onClick={() => applySmartFilters('skill-focused')}
                     >
-                      🛠️ Skill-Based
+                      Skill-Based
                     </Button>
                   </div>
                 </PopoverContent>

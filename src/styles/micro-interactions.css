@@ -247,7 +247,7 @@
 }
 
 .animate-page-entry {
-  animation: fadeInUpSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUpSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity;
 }
 
@@ -268,8 +268,8 @@
 
 /* Entry Animation Staggering for lists */
 .animate-staggered {
-  opacity: 0;
-  animation: fadeInUpSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUpSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
 }
 
 .stagger-1 { animation-delay: 50ms; }
@@ -277,6 +277,11 @@
 .stagger-3 { animation-delay: 150ms; }
 .stagger-4 { animation-delay: 200ms; }
 .stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+.stagger-7 { animation-delay: 350ms; }
+.stagger-8 { animation-delay: 400ms; }
+.stagger-9 { animation-delay: 450ms; }
+.stagger-10 { animation-delay: 500ms; }
 
 /* Reduced Motion Compliance */
 @media (prefers-reduced-motion: reduce) {
@@ -293,5 +298,6 @@
     transition: none !important;
     transform: none !important;
     box-shadow: none !important;
+    opacity: 1 !important;
   }
 }

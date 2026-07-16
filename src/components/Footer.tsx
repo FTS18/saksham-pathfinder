@@ -68,7 +68,7 @@ export const Footer = () => {
               </p>
             </div>
             <div className="text-xs text-muted-foreground text-center md:text-right">
-              <p>Made with ❤️ for students</p>
+              <p>Made with passion for students</p>
               <p className="mt-1">v2.0.1</p>
             </div>
           </div>

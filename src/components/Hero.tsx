@@ -42,19 +42,19 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
 
 
         {/* Heading */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-5 leading-tight mt-8" style={{ textWrap: 'balance' } as React.CSSProperties}>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-5 leading-tight mt-8 animate-staggered stagger-1" style={{ textWrap: 'balance' } as React.CSSProperties}>
           Find the Right{' '}
           <span className="text-primary">Internship</span>{' '}
           for You
         </h1>
 
         {/* Subtitle */}
-        <p className="text-sm sm:text-base text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed animate-staggered stagger-2">
           Discover opportunities tailored to your skills and career aspirations.
         </p>
 
         {/* Primary CTA */}
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-10 animate-staggered stagger-3">
           <Button
             onClick={onGetStartedClick}
             size="lg"
@@ -66,9 +66,9 @@ export const Hero = ({ onGetStartedClick }: HeroProps) => {
         </div>
 
         {/* Social proof stats */}
-        <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 mt-12 pt-8 border-t border-border/40 max-w-2xl mx-auto">
+        <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 mt-12 pt-8 border-t border-border/40 max-w-2xl mx-auto animate-staggered stagger-4">
           {socialProof.map(({ stat, text }) => (
-            <div key={text} className="flex flex-col items-center">
+            <div key={text} className="flex flex-col items-center hover:-translate-y-1 transition-transform cursor-default">
               <span className="text-3xl font-bold text-foreground mb-1">{stat}</span>
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{text}</span>
             </div>

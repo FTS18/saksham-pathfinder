@@ -445,7 +445,7 @@ export const Chatbot = () => {
                     >
                       {getActionIcon(action.id)}
                       <span className="text-xs font-medium text-foreground tracking-tight select-none">
-                        {action.label.replace(/[❤️⚖️]/g, '').trim()}
+                        {action.label}
                       </span>
                       <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 ml-auto shrink-0" />
                     </button>
@@ -467,15 +467,15 @@ export const Chatbot = () => {
                         <SelectValue placeholder="Select topic & start practice..." />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
-                        <SelectItem value="Software Developer|easy">💻 Software Dev (Easy)</SelectItem>
-                        <SelectItem value="Software Developer|medium">💻 Software Dev (Medium)</SelectItem>
-                        <SelectItem value="Software Developer|hard">💻 Software Dev (Hard)</SelectItem>
-                        <SelectItem value="Data Analyst|easy">📊 Data Analyst (Easy)</SelectItem>
-                        <SelectItem value="Data Analyst|medium">📊 Data Analyst (Medium)</SelectItem>
-                        <SelectItem value="Marketing|easy">📈 Marketing (Easy)</SelectItem>
-                        <SelectItem value="Marketing|medium">📈 Marketing (Medium)</SelectItem>
-                        <SelectItem value="Design|easy">🎨 Design (Easy)</SelectItem>
-                        <SelectItem value="Design|medium">🎨 Design (Medium)</SelectItem>
+                        <SelectItem value="Software Developer|easy">Software Dev (Easy)</SelectItem>
+                        <SelectItem value="Software Developer|medium">Software Dev (Medium)</SelectItem>
+                        <SelectItem value="Software Developer|hard">Software Dev (Hard)</SelectItem>
+                        <SelectItem value="Data Analyst|easy">Data Analyst (Easy)</SelectItem>
+                        <SelectItem value="Data Analyst|medium">Data Analyst (Medium)</SelectItem>
+                        <SelectItem value="Marketing|easy">Marketing (Easy)</SelectItem>
+                        <SelectItem value="Marketing|medium">Marketing (Medium)</SelectItem>
+                        <SelectItem value="Design|easy">Design (Easy)</SelectItem>
+                        <SelectItem value="Design|medium">Design (Medium)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

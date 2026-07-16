@@ -78,7 +78,7 @@ if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true") {
     connectAuthEmulator(auth, "http://localhost:9099", {
       disableWarnings: true,
     });
-    console.log("✓ Auth Emulator connected on localhost:9099");
+    console.log("Auth Emulator connected on localhost:9099");
   } catch (error) {
     // Already connected, ignore error
   }
@@ -86,7 +86,7 @@ if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true") {
   // Connect Storage Emulator
   try {
     connectStorageEmulator(storage, "localhost", 9199);
-    console.log("✓ Storage Emulator connected on localhost:9199");
+    console.log("Storage Emulator connected on localhost:9199");
   } catch (error) {
     // Already connected, ignore error
   }

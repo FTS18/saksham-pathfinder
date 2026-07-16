@@ -45,7 +45,7 @@ export const AccountSettings = () => {
   const handleAccountDeletion = async () => {
     const confirmText = 'DELETE MY ACCOUNT';
     const userInput = prompt(
-      `⚠️ This will permanently delete your account and all data!\n\nType "${confirmText}" to confirm:`
+      `Warning: This will permanently delete your account and all data!\n\nType "${confirmText}" to confirm:`
     );
 
     if (userInput !== confirmText) {
@@ -78,10 +78,10 @@ export const AccountSettings = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-page-entry">
       
       {/* Change Password */}
-      <Card>
+      <Card className="animate-staggered stagger-1">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Key className="w-5 h-5" />
@@ -161,7 +161,7 @@ export const AccountSettings = () => {
       </Card>
 
       {/* Delete Account */}
-      <Card className="border-red-200">
+      <Card className="border-red-200 animate-staggered stagger-2">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-red-600">
             <Trash2 className="w-5 h-5" />

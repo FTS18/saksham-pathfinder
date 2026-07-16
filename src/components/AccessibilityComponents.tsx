@@ -241,7 +241,7 @@ export const AccessibleFormField: React.FC<AccessibleFormFieldProps> = ({
           className="text-xs text-red-500 mt-1"
           role="alert"
         >
-          ⚠️ {error}
+          Error: {error}
         </p>
       )}
     </div>

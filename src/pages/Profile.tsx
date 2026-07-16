@@ -694,7 +694,7 @@ const Profile = () => {
                   </Button>
                 </div>
                 {usernameChecking && <p className="text-xs text-muted-foreground mt-1">Checking availability...</p>}
-                {usernameAvailable === true && <p className="text-xs text-green-600 mt-1">✓ Available</p>}
+                {usernameAvailable === true && <p className="text-xs text-green-600 mt-1">Available</p>}
                 {usernameAvailable === false && <p className="text-xs text-red-600 mt-1">✗ Already taken</p>}
                 <p className="text-xs text-muted-foreground mt-1">
                   Your profile will be at: {window.location.origin}/u/{profile.username || 'username'}

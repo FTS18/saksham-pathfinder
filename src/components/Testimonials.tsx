@@ -46,10 +46,10 @@ export function Testimonials() {
   }, [testimonials.length]);
 
   return (
-    <section className="bg-secondary/50 py-16 sm:py-20">
+    <section className="bg-secondary/50 py-16 sm:py-20 animate-page-entry">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-foreground mb-12">Success Stories</h2>
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden animate-staggered stagger-1">
                 <div 
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{ transform: `translateX(-${currentIndex * 100}%)` }}

@@ -73,8 +73,8 @@ export const Layout = ({ children }: LayoutProps) => {
       <MobileSidebar />
       
       {/* App Shell Wrapper — fixed-positioned to exactly fill viewport with margins */}
-      <div className={`fixed top-0 bottom-0 flex flex-col md:top-3 md:bottom-3 md:rounded-3xl bg-background dark:bg-background/80 dark:supports-[backdrop-filter]:bg-background/60 dark:backdrop-blur-3xl z-10 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_50px_rgba(0,0,0,0.8),_0_0_30px_rgba(99,102,241,0.12)] transition-all duration-300 border border-black/10 dark:border-primary/30 ${
-        sidebarExpanded ? 'left-0 md:left-[292px]' : 'left-0 md:left-[92px]'
+      <div className={`fixed top-0 bottom-0 flex flex-col md:top-3 md:bottom-3 md:rounded-3xl bg-background dark:bg-background/80 dark:supports-[backdrop-filter]:bg-background/60 dark:backdrop-blur-3xl z-10 overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_50px_rgba(0,0,0,0.8),_0_0_30px_rgba(99,102,241,0.12)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] border border-black/10 dark:border-primary/30 transform-gpu origin-right ${
+        sidebarExpanded ? 'left-0 md:left-[292px] md:scale-[0.97] md:rounded-[2.5rem]' : 'left-0 md:left-[92px] md:scale-100'
       } ${
         chatbotActive ? 'right-0 md:right-[432px]' : 'right-0 md:right-3'
       }`}>

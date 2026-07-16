@@ -932,18 +932,19 @@ const Index = () => {
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8 internship-cards-container">
                             {currentItems.map((item, index) => (
-                                <InternshipCard 
-                                    key={item.internship.id}
-                                    internship={item.internship}
-                                    matchExplanation={item.explanation}
-                                    aiTags={item.aiTags}
-                                    userProfile={profileData}
-                                    aiScore={item.score}
-                                    onNext={() => handlePageChange(currentPage + 1)}
-                                    onPrev={() => handlePageChange(currentPage - 1)}
-                                    currentIndex={startIndex + index + 1}
-                                    totalCount={displayItems.length}
-                                />
+                                <div key={item.internship.id} className={`animate-staggered stagger-${(index % 5) + 1} h-full`}>
+                                    <InternshipCard 
+                                        internship={item.internship}
+                                        matchExplanation={item.explanation}
+                                        aiTags={item.aiTags}
+                                        userProfile={profileData}
+                                        aiScore={item.score}
+                                        onNext={() => handlePageChange(currentPage + 1)}
+                                        onPrev={() => handlePageChange(currentPage - 1)}
+                                        currentIndex={startIndex + index + 1}
+                                        totalCount={displayItems.length}
+                                    />
+                                </div>
                             ))}
                         </div>
                         {displayItems.length > itemsPerPage && (
@@ -1083,18 +1084,19 @@ const Index = () => {
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8 internship-cards-container">
                             {currentItems.map((item, index) => (
-                                <InternshipCard 
-                                    key={item.internship.id}
-                                    internship={item.internship}
-                                    matchExplanation={item.explanation}
-                                    aiTags={item.aiTags}
-                                    userProfile={profileData}
-                                    aiScore={item.score}
-                                    onNext={() => handlePageChange(currentPage + 1)}
-                                    onPrev={() => handlePageChange(currentPage - 1)}
-                                    currentIndex={startIndex + index + 1}
-                                    totalCount={displayItems.length}
-                                />
+                                <div key={item.internship.id} className={`animate-staggered stagger-${(index % 5) + 1} h-full`}>
+                                    <InternshipCard 
+                                        internship={item.internship}
+                                        matchExplanation={item.explanation}
+                                        aiTags={item.aiTags}
+                                        userProfile={profileData}
+                                        aiScore={item.score}
+                                        onNext={() => handlePageChange(currentPage + 1)}
+                                        onPrev={() => handlePageChange(currentPage - 1)}
+                                        currentIndex={startIndex + index + 1}
+                                        totalCount={displayItems.length}
+                                    />
+                                </div>
                             ))}
                         </div>
                         

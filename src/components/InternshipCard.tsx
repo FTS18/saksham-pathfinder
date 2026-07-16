@@ -326,7 +326,7 @@ export const InternshipCard = ({
                   : 'bg-primary hover:bg-primary/90 text-primary-foreground'
               }`}
             >
-              {applied ? '✓ Applied' : isApplying ? 'Applying…' : 'Quick Apply'}
+              {applied ? 'Applied' : isApplying ? 'Applying…' : 'Quick Apply'}
             </Button>
             <Button
               size="sm"

@@ -1,4 +1,4 @@
-import { Share2, Copy, Check } from "lucide-react";
+import { Share2, Copy, Check, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
@@ -85,7 +85,7 @@ export const ShareInternship = ({ internship }: ShareInternshipProps) => {
           Facebook
         </DropdownMenuItem>
         <DropdownMenuItem onClick={shareViaEmail}>
-          <span className="h-4 w-4 mr-2">✉️</span>
+          <Mail className="h-4 w-4 mr-2" />
           Email
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -80,7 +80,7 @@ export const PublicFeaturesShowcase = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-20">
-      <div className="text-center mb-16 relative">
+      <div className="text-center mb-16 relative animate-page-entry">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-32 bg-primary/10 blur-[100px] rounded-full -z-10"></div>
         <h2 className="text-5xl font-black mb-6 tracking-tight">
           <span className="bg-gradient-to-r from-primary via-violet-400 to-primary bg-[length:200%_auto] animate-gradient bg-clip-text text-transparent">
@@ -96,7 +96,7 @@ export const PublicFeaturesShowcase = () => {
         {features.map((feature, i) => (
           <div 
             key={i} 
-            className={`group relative flex flex-col justify-between p-8 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 ${feature.glowColor} ${feature.borderGlow}`}
+            className={`group relative flex flex-col justify-between p-8 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/5 dark:border-white/10 overflow-hidden transition-all duration-500 hover:-translate-y-2 animate-staggered stagger-${(i % 5) + 1} ${feature.glowColor} ${feature.borderGlow}`}
           >
             {/* Subtle background glow effect inside card */}
             <div className={`absolute top-0 right-0 w-32 h-32 -translate-y-12 translate-x-12 rounded-full blur-[50px] opacity-20 transition-opacity duration-500 group-hover:opacity-40 ${feature.iconBg}`}></div>
@@ -143,7 +143,7 @@ export const PublicFeaturesShowcase = () => {
       </div>
 
       {/* Premium Call to Action */}
-      <div className="mt-16 sm:mt-24 relative overflow-hidden bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent border border-white/10 backdrop-blur-md rounded-3xl sm:rounded-[3rem] p-6 sm:p-16 text-center shadow-2xl">
+      <div className="mt-16 sm:mt-24 relative overflow-hidden bg-gradient-to-br from-primary/20 via-violet-500/10 to-transparent border border-white/10 backdrop-blur-md rounded-3xl sm:rounded-[3rem] p-6 sm:p-16 text-center shadow-2xl animate-staggered stagger-3">
         <div className="relative z-10">
           <h3 className="text-2xl sm:text-4xl font-black mb-3 sm:mb-4">Ready to Launch Your Career?</h3>
           <p className="text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto text-base sm:text-xl leading-relaxed">

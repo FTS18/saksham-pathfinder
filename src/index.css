@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Rajdhani:wght@400;500;600&display=swap');
-@import './styles/micro-interactions.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

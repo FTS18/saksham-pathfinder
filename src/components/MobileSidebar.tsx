@@ -85,10 +85,17 @@ export const MobileSidebar = () => {
           onClick={() => setIsOpen(false)} 
         />
         <div className={cn(
-          "absolute left-0 top-0 h-full w-72 bg-background border-r border-border shadow-xl transform transition-transform duration-300 ease-out",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "absolute right-0 top-0 h-full w-full bg-background border-l border-border shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          isOpen ? "translate-x-0" : "translate-x-full"
         )}>
           <div className="flex flex-col h-full pt-16 overflow-hidden">
+            {/* Close Button for Mobile */}
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 p-2 bg-muted/50 hover:bg-muted rounded-full transition-colors z-50"
+            >
+              <X className="w-6 h-6" />
+            </button>
             {/* User Profile */}
             {currentUser && (
               <div className="p-4 border-b border-border">

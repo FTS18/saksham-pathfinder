@@ -493,7 +493,7 @@ export const quickActions = [
   },
   {
     id: "wishlist",
-    label: "❤️ My Wishlist",
+    label: "My Wishlist",
     action: (navigate: any) => navigate("/wishlist"),
   },
   {
@@ -503,7 +503,7 @@ export const quickActions = [
   },
   {
     id: "compare",
-    label: "⚖️ Compare Internships",
+    label: "Compare Internships",
     prompt: "How do I compare different internship opportunities?",
   },
 ];

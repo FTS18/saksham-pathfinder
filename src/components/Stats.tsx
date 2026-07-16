@@ -14,7 +14,8 @@ export const Stats = () => {
         <h2 className="text-4xl sm:text-5xl font-racing font-extrabold text-center mb-12 text-foreground">Stats</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, index) => (
-            <Card key={index} className="text-center minimal-card">
+            <div key={index} className={`animate-staggered stagger-${(index % 5) + 1}`}>
+              <Card className="text-center minimal-card premium-card-hover h-full">
               <CardHeader>
                 <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <stat.icon className="w-8 h-8 text-primary" />
@@ -25,6 +26,7 @@ export const Stats = () => {
                 <p className="text-base sm:text-lg font-racing font-medium text-foreground">{stat.label}</p>
               </CardContent>
             </Card>
+            </div>
           ))}
         </div>
       </div>

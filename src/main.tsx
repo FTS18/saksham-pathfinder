@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import "./styles/card-grid.css";
+import "./styles/micro-interactions.css";
 import "./utils/themeInitializer";
 import * as Sentry from "@sentry/react";
 
