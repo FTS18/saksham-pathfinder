@@ -1,12 +1,12 @@
-# Saksham Pathfinder - Full-Stack Backend Implementation
+# UpSkillers - Full-Stack Backend Implementation
 
-## 📋 Overview
+##  Overview
 
-This document outlines the complete full-stack implementation of the Saksham Pathfinder platform with a focus on the recruiter role, GDPR compliance, and real-time data management.
+This document outlines the complete full-stack implementation of the UpSkillers platform with a focus on the recruiter role, GDPR compliance, and real-time data management.
 
 ---
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ### Backend Stack
 - **Firebase Cloud Functions** - Serverless backend for business logic
@@ -22,7 +22,7 @@ This document outlines the complete full-stack implementation of the Saksham Pat
 
 ---
 
-## 🔐 Backend Infrastructure
+##  Backend Infrastructure
 
 ### 1. Firebase Cloud Functions (`functions/src/index.ts`)
 
@@ -70,7 +70,7 @@ This document outlines the complete full-stack implementation of the Saksham Pat
 
 ---
 
-## 📊 Database Schema
+##  Database Schema
 
 ### Collections
 
@@ -210,7 +210,7 @@ This document outlines the complete full-stack implementation of the Saksham Pat
 
 ---
 
-## 🔒 Security Rules (firestore.rules)
+##  Security Rules (firestore.rules)
 
 ### Key Rules
 
@@ -242,7 +242,7 @@ This document outlines the complete full-stack implementation of the Saksham Pat
 
 ---
 
-## 📱 Frontend Services
+##  Frontend Services
 
 ### RecruiterService (`src/services/recruiterService.ts`)
 
@@ -276,7 +276,7 @@ Handles all recruiter-related API calls:
 
 ---
 
-## 🎨 Frontend Components
+##  Frontend Components
 
 ### Recruiter Components
 
@@ -342,7 +342,7 @@ interface PrivacySettingsProps {
 
 ---
 
-## 🔄 Data Flow
+##  Data Flow
 
 ### Internship Creation Flow
 1. User clicks "Create Internship"
@@ -378,7 +378,7 @@ interface PrivacySettingsProps {
 
 ---
 
-## 📊 Firestore Indexes
+##  Firestore Indexes
 
 Required indexes for optimal performance:
 
@@ -419,7 +419,7 @@ Required indexes for optimal performance:
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 ### 1. Deploy Cloud Functions
 ```bash
@@ -444,7 +444,7 @@ firebase deploy --only hosting
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Test Cloud Functions Locally
 ```bash
@@ -458,7 +458,7 @@ npm run test:firestore:rules
 
 ---
 
-## 📈 Performance Optimization
+##  Performance Optimization
 
 ### 1. Pagination
 - Applications table uses pagination (default 50 per page)
@@ -478,7 +478,7 @@ npm run test:firestore:rules
 
 ---
 
-## 🔐 GDPR Compliance
+##  GDPR Compliance
 
 ### 1. Data Download (Article 20)
 - `exportUserData()` collects all user data
@@ -503,7 +503,7 @@ npm run test:firestore:rules
 
 ---
 
-## ❌ Error Handling
+##  Error Handling
 
 ### Cloud Functions Error Codes
 ```typescript
@@ -522,7 +522,7 @@ npm run test:firestore:rules
 
 ---
 
-## 📚 Usage Examples
+##  Usage Examples
 
 ### Create Internship
 ```typescript
@@ -573,7 +573,7 @@ const { data } = await RecruiterService.downloadUserData();
 
 ---
 
-## 🎯 Next Steps
+##  Next Steps
 
 1. **Admin Dashboard** - Review and approve recruiter verifications
 2. **Email Notifications** - Send real-time alerts to recruiters
@@ -588,7 +588,7 @@ const { data } = await RecruiterService.downloadUserData();
 
 ---
 
-## 📞 Support
+##  Support
 
 For issues or questions:
 1. Check the error messages and logs
@@ -599,9 +599,9 @@ For issues or questions:
 
 ---
 
-## 📝 License
+##  License
 
-This implementation is part of Saksham Pathfinder.
+This implementation is part of UpSkillers.
 
 ---
 

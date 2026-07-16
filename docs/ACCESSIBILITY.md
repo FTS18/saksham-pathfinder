@@ -1,14 +1,14 @@
-# Saksham AI - Complete Accessibility Guide
+# UpSkillers - Complete Accessibility Guide
 
 ## Overview
 
-This document outlines the comprehensive accessibility improvements implemented in **Saksham AI** to achieve **WCAG 2.1 AA compliance** across the entire application. The app is now fully accessible to users with disabilities, including those using screen readers, keyboard-only navigation, and assistive technologies.
+This document outlines the comprehensive accessibility improvements implemented in **UpSkillers** to achieve **WCAG 2.1 AA compliance** across the entire application. The app is now fully accessible to users with disabilities, including those using screen readers, keyboard-only navigation, and assistive technologies.
 
 ---
 
-## ✅ Branding Updates
+##  Branding Updates
 
-All instances of "Saksham Pathfinder" have been replaced with "Saksham AI" throughout the application including:
+All instances of "UpSkillers" have been replaced with "UpSkillers" throughout the application including:
 - Page titles and metadata
 - OG tags for social sharing
 - Email notifications (noreply@saksham-ai.com)
@@ -18,27 +18,27 @@ All instances of "Saksham Pathfinder" have been replaced with "Saksham AI" throu
 
 ---
 
-## 🔓 Read-Only Access Without Login
+##  Read-Only Access Without Login
 
 ### Who Can Access Without Logging In?
 
 Unauthenticated users can now freely browse and view:
-- ✅ Home page and landing pages (About, FAQ, Tutorials, News & Events)
-- ✅ Internship listings and search results
-- ✅ Individual internship detail pages
-- ✅ Browse by Company, Skill, Sector, City, Job Title
-- ✅ Shared comparison pages
-- ✅ Public user profiles
-- ✅ Wishlist page (view recommendations)
+-  Home page and landing pages (About, FAQ, Tutorials, News & Events)
+-  Internship listings and search results
+-  Individual internship detail pages
+-  Browse by Company, Skill, Sector, City, Job Title
+-  Shared comparison pages
+-  Public user profiles
+-  Wishlist page (view recommendations)
 
 ### What Requires Login?
 
 Users must authenticate to:
-- 🔐 Save internships to wishlist
-- 🔐 Apply to internships
-- 🔐 Access personal dashboard
-- 🔐 Manage profile and settings
-- 🔐 View application history
+-  Save internships to wishlist
+-  Apply to internships
+-  Access personal dashboard
+-  Manage profile and settings
+-  View application history
 
 ### Guest User Experience
 
@@ -50,9 +50,9 @@ When viewing the Wishlist page without logging in:
 
 ---
 
-## 🔊 Accessibility Improvements
+##  Accessibility Improvements
 
-## 🔊 Accessibility Improvements
+##  Accessibility Improvements
 
 ### Screen Reader Optimization
 
@@ -78,14 +78,14 @@ When viewing the Wishlist page without logging in:
 ### WCAG 2.1 AA Compliance
 
 Complete compliance across all guideline categories:
-- ✅ **Perceivable**: Text alternatives, distinguishable content
-- ✅ **Operable**: Keyboard navigable, no traps, clear focus
-- ✅ **Understandable**: Clear language, predictable patterns
-- ✅ **Robust**: Valid markup, semantic HTML
+-  **Perceivable**: Text alternatives, distinguishable content
+-  **Operable**: Keyboard navigable, no traps, clear focus
+-  **Understandable**: Clear language, predictable patterns
+-  **Robust**: Valid markup, semantic HTML
 
 ---
 
-## 🔧 Copy Link Feature - Fixed!
+##  Copy Link Feature - Fixed!
 
 ### The Problem
 
@@ -96,12 +96,12 @@ Previously, the "Copy Link" feature would occasionally fail with "Failed to copy
 New robust clipboard utilities (`src/utils/clipboardUtils.ts`):
 
 **Features:**
-- ✅ Works on HTTP and HTTPS contexts
-- ✅ Works on older browsers
-- ✅ Works on all mobile platforms
-- ✅ Automatic fallback if modern API fails
-- ✅ Clear error messages when it fails
-- ✅ Announced to screen readers
+-  Works on HTTP and HTTPS contexts
+-  Works on older browsers
+-  Works on all mobile platforms
+-  Automatic fallback if modern API fails
+-  Clear error messages when it fails
+-  Announced to screen readers
 
 **How It Works:**
 ```typescript
@@ -338,27 +338,27 @@ Test with NVDA, JAWS, or VoiceOver:
 ## WCAG 2.1 Level AA Compliance
 
 ### Principle 1: Perceivable
-- ✅ 1.1.1 Non-text Content (A)
-- ✅ 1.3.1 Info and Relationships (A)
-- ✅ 1.4.3 Contrast (Minimum) (AA)
+-  1.1.1 Non-text Content (A)
+-  1.3.1 Info and Relationships (A)
+-  1.4.3 Contrast (Minimum) (AA)
 
 ### Principle 2: Operable
-- ✅ 2.1.1 Keyboard (A)
-- ✅ 2.1.2 No Keyboard Trap (A)
-- ✅ 2.1.3 Keyboard (No Exception) (AAA) *Partial*
-- ✅ 2.4.1 Bypass Blocks (A)
-- ✅ 2.4.3 Focus Order (A)
-- ✅ 2.4.7 Focus Visible (AA)
+-  2.1.1 Keyboard (A)
+-  2.1.2 No Keyboard Trap (A)
+-  2.1.3 Keyboard (No Exception) (AAA) *Partial*
+-  2.4.1 Bypass Blocks (A)
+-  2.4.3 Focus Order (A)
+-  2.4.7 Focus Visible (AA)
 
 ### Principle 3: Understandable
-- ✅ 3.1.1 Language of Page (A)
-- ✅ 3.2.4 Consistent Navigation (AA)
-- ✅ 3.3.1 Error Identification (A)
-- ✅ 3.3.4 Error Prevention (AA) *Partial*
+-  3.1.1 Language of Page (A)
+-  3.2.4 Consistent Navigation (AA)
+-  3.3.1 Error Identification (A)
+-  3.3.4 Error Prevention (AA) *Partial*
 
 ### Principle 4: Robust
-- ✅ 4.1.2 Name, Role, Value (A)
-- ✅ 4.1.3 Status Messages (AA)
+-  4.1.2 Name, Role, Value (A)
+-  4.1.3 Status Messages (AA)
 
 ## Browser and AT Support
 

@@ -1,6 +1,6 @@
 # Backend Setup & Deployment Guide
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - Node.js 16+ and npm
 - Firebase CLI installed (`npm install -g firebase-tools`)
@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Local Development Setup
+##  Local Development Setup
 
 ### 1. Install Dependencies
 
@@ -61,7 +61,7 @@ Functions will be accessible at: `http://localhost:5001/your-project-id/us-centr
 
 ---
 
-## 🔧 Setting Up Cloud Functions
+##  Setting Up Cloud Functions
 
 ### 1. Update `functions/package.json`
 
@@ -103,7 +103,7 @@ firebase functions:log
 
 ---
 
-## 🔐 Setting Up Firestore Security Rules
+##  Setting Up Firestore Security Rules
 
 ### 1. Review Current Rules
 
@@ -133,7 +133,7 @@ firebase firestore:rules:test --file=scripts/firestore-rules.test.ts
 
 ---
 
-## 📊 Creating Firestore Indexes
+##  Creating Firestore Indexes
 
 ### 1. Manually Create Indexes (via Console)
 
@@ -166,7 +166,7 @@ firebase deploy --only firestore:indexes
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### 1. Test Cloud Functions Locally
 
@@ -205,7 +205,7 @@ try {
 
 ---
 
-## 📱 Frontend Integration
+##  Frontend Integration
 
 ### 1. Update Firebase Config
 
@@ -281,7 +281,7 @@ const stats = await RecruiterService.getRecruiterAnalytics();
 
 ---
 
-## 🚀 Full Deployment Pipeline
+##  Full Deployment Pipeline
 
 ### 1. Build Frontend
 
@@ -328,7 +328,7 @@ firebase functions:log --follow
 
 ---
 
-## 🔄 CI/CD Integration
+##  CI/CD Integration
 
 ### GitHub Actions Example
 
@@ -372,7 +372,7 @@ jobs:
 
 ---
 
-## 📊 Monitoring & Debugging
+##  Monitoring & Debugging
 
 ### 1. Firebase Console
 
@@ -420,7 +420,7 @@ firebase functions:log
 
 ---
 
-## 🔒 Security Checklist
+##  Security Checklist
 
 - [ ] API keys restricted in Firebase Console
 - [ ] CORS configured correctly
@@ -435,7 +435,7 @@ firebase functions:log
 
 ---
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Issue: "Permission denied" errors
 
@@ -471,18 +471,18 @@ firebase functions:log
 
 ---
 
-## 📈 Performance Optimization
+##  Performance Optimization
 
 ### 1. Database Optimization
 
 ```typescript
-// ✅ Good: Use indexes for queries
+//  Good: Use indexes for queries
 db.collection("internships")
   .where("recruiterId", "==", userId)
   .where("status", "==", "published")
   .orderBy("createdAt", "desc")
 
-// ❌ Bad: Inefficient queries without indexes
+//  Bad: Inefficient queries without indexes
 db.collection("internships")
   .where("description", "contains", "search")
 ```
@@ -490,13 +490,13 @@ db.collection("internships")
 ### 2. Function Optimization
 
 ```typescript
-// ✅ Good: Batch operations
+//  Good: Batch operations
 const batch = db.batch();
 batch.update(ref1, data1);
 batch.update(ref2, data2);
 await batch.commit();
 
-// ❌ Bad: Sequential writes
+//  Bad: Sequential writes
 await ref1.update(data1);
 await ref2.update(data2);
 ```
@@ -504,19 +504,19 @@ await ref2.update(data2);
 ### 3. Frontend Optimization
 
 ```typescript
-// ✅ Good: Pagination
+//  Good: Pagination
 const result = await RecruiterService.getApplications({
   limit: 50,
   offset: 0
 });
 
-// ❌ Bad: Load all data at once
+//  Bad: Load all data at once
 const allApplications = await db.collection("applications").get();
 ```
 
 ---
 
-## 📝 Maintenance
+##  Maintenance
 
 ### Daily
 - Monitor error rates
@@ -535,7 +535,7 @@ const allApplications = await db.collection("applications").get();
 
 ---
 
-## 🆘 Getting Help
+##  Getting Help
 
 1. **Firebase Documentation**: https://firebase.google.com/docs
 2. **Cloud Functions**: https://firebase.google.com/docs/functions

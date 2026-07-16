@@ -1,6 +1,6 @@
 # Firebase Auth Emulator - Troubleshooting Guide
 
-## ❌ Why Auth Might Not Be Working
+##  Why Auth Might Not Be Working
 
 ### Issue 1: Auth Emulator Port Not Running
 The Firebase Emulator Suite needs the **Auth Emulator** running on port **9099**.
@@ -9,7 +9,7 @@ The Firebase Emulator Suite needs the **Auth Emulator** running on port **9099**
 ```bash
 # The emulator should show this:
 # ┌─────────────────────────────────────────────────────────────┐
-# │ ✔  All emulators ready! It is now safe to connect your app. │
+# │   All emulators ready! It is now safe to connect your app. │
 # └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -40,7 +40,7 @@ connectAuthEmulator(auth, 'http://localhost:9099', {
 
 ---
 
-## ✅ How to Fix Auth
+##  How to Fix Auth
 
 ### Step 1: Verify Emulator is Running
 ```bash
@@ -51,7 +51,7 @@ firebase emulators:start
 
 You should see:
 ```
-✔ All emulators ready!
+ All emulators ready!
 Firestore │ 127.0.0.1:8080
 Auth      │ 127.0.0.1:9099
 Storage   │ 127.0.0.1:9199
@@ -99,19 +99,19 @@ Now test login in app with those credentials.
 
 ---
 
-## 🔍 Debug Console Errors
+##  Debug Console Errors
 
 **Open browser console (F12)** and look for:
 
-### ✅ Success Logs
+###  Success Logs
 ```
-🔥 Using Firebase Emulator Suite for local development
+ Using Firebase Emulator Suite for local development
 ✓ Firestore Emulator connected on localhost:8080
 ✓ Auth Emulator connected on localhost:9099
 ✓ Storage Emulator connected on localhost:9199
 ```
 
-### ❌ Error Logs
+###  Error Logs
 ```
 // Auth not initializing
 Error: connectAuthEmulator() called twice
@@ -126,7 +126,7 @@ Error: EADDRINUSE: address already in use :::9099
 
 ---
 
-## 🧪 Test Authentication Flow
+##  Test Authentication Flow
 
 ### 1. Create Test User in Emulator UI
 - Go to: http://localhost:4000/authentication
@@ -139,17 +139,17 @@ Error: EADDRINUSE: address already in use :::9099
 - Click "Sign In"
 
 ### 3. Expected Behavior
-- ✅ Login succeeds without hitting production database
-- ✅ User profile created in local Firestore
-- ✅ Redirected to dashboard
-- ✅ "Logged in as: test@example.com" shown
+-  Login succeeds without hitting production database
+-  User profile created in local Firestore
+-  Redirected to dashboard
+-  "Logged in as: test@example.com" shown
 
 ### 4. Create More Test Users
 Repeat steps 1-2 with different emails
 
 ---
 
-## 🚀 For Production Testing
+##  For Production Testing
 
 **Switch to production Firebase:**
 
@@ -165,7 +165,7 @@ Then:
 
 ---
 
-## 📋 Firebase Emulator Setup Checklist
+##  Firebase Emulator Setup Checklist
 
 - [ ] Java 11+ installed and in PATH
 - [ ] Firebase CLI installed (`npm install -g firebase-tools`)
@@ -178,7 +178,7 @@ Then:
 
 ---
 
-## 🔗 Related Resources
+##  Related Resources
 
 - [Firebase Emulator Suite Docs](https://firebase.google.com/docs/emulator-suite)
 - [Firebase Auth Emulator Docs](https://firebase.google.com/docs/emulator-suite/connect_auth)

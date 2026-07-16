@@ -18,7 +18,7 @@ const firebaseConfig = {
 };
 
 if (!firebaseConfig.projectId) {
-  console.error('❌ Firebase configuration missing. Please check your .env file.');
+  console.error(' Firebase configuration missing. Please check your .env file.');
   process.exit(1);
 }
 
@@ -28,7 +28,7 @@ const db = getFirestore(app);
 
 async function migrateInternships() {
   try {
-    console.log('🚀 Starting internship migration...');
+    console.log(' Starting internship migration...');
     
     const ADMIN_USER_ID = 'admin@gmail.com';
     
@@ -41,13 +41,13 @@ async function migrateInternships() {
       createdAt: new Date(),
       updatedAt: new Date()
     }, { merge: true });
-    console.log('✅ Admin user document ensured');
+    console.log(' Admin user document ensured');
     
     // Read the JSON file
     const jsonPath = path.join(__dirname, '../public/internships.json');
     const internshipsData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
     
-    console.log(`📊 Found ${internshipsData.length} internships to migrate`);
+    console.log(` Found ${internshipsData.length} internships to migrate`);
     
     const batch = writeBatch(db);
     let batchCount = 0;
@@ -93,7 +93,7 @@ async function migrateInternships() {
       // Commit batch when it reaches the limit
       if (batchCount >= BATCH_SIZE) {
         await batch.commit();
-        console.log(`✅ Migrated batch: ${i + 1}/${internshipsData.length}`);
+        console.log(` Migrated batch: ${i + 1}/${internshipsData.length}`);
         batchCount = 0;
       }
     }
@@ -103,11 +103,11 @@ async function migrateInternships() {
       await batch.commit();
     }
     
-    console.log('🎉 Migration completed successfully!');
-    console.log(`📈 Total internships migrated: ${internshipsData.length}`);
+    console.log(' Migration completed successfully!');
+    console.log(` Total internships migrated: ${internshipsData.length}`);
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error(' Migration failed:', error);
     process.exit(1);
   }
 }

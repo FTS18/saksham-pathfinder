@@ -1,4 +1,4 @@
-# Saksham AI - Intelligent Internship Platform
+# UpSkillers - Intelligent Internship Platform
 
 **AI-Powered Internship Discovery & Career Guidance Platform**
 
@@ -89,10 +89,10 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/saksham-pathfinder.git
+git clone https://github.com/yourusername/upskillers.git
 
 # Navigate to project directory
-cd saksham-pathfinder
+cd upskillers
 
 # Install dependencies
 npm install --legacy-peer-deps
@@ -160,7 +160,7 @@ npm run preview
 
 ## Contributing
 
-We welcome contributions to Saksham AI. Please refer to our [Contributing Guidelines](docs/CONTRIBUTING.md) for detailed workflows.
+We welcome contributions to UpSkillers. Please refer to our [Contributing Guidelines](docs/CONTRIBUTING.md) for detailed workflows.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/YourFeature`)

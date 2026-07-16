@@ -15,12 +15,12 @@
   const db = getFirestore();
   
   if (!auth.currentUser) {
-    console.log('❌ Not logged in. Please log in first.');
+    console.log(' Not logged in. Please log in first.');
     return;
   }
 
   const userId = auth.currentUser.uid;
-  console.log('🔍 Cleaning up theme for user:', userId);
+  console.log(' Cleaning up theme for user:', userId);
 
   try {
     // Fix userPreferences
@@ -30,7 +30,7 @@
       colorTheme: 'blue'
     };
     await updateDoc(userPrefsRef, updatedPrefs);
-    console.log('✅ Fixed userPreferences');
+    console.log(' Fixed userPreferences');
 
     // Fix profile
     const profileRef = doc(db, 'profiles', userId);
@@ -39,17 +39,17 @@
       colorTheme: 'blue'
     };
     await updateDoc(profileRef, updatedProfile);
-    console.log('✅ Fixed profile');
+    console.log(' Fixed profile');
 
     // Clear corrupted localStorage
     localStorage.removeItem('theme');
     localStorage.removeItem('colorTheme');
-    console.log('✅ Cleared localStorage');
+    console.log(' Cleared localStorage');
 
-    console.log('\n✨ Cleanup complete! Reloading page...');
+    console.log('\n Cleanup complete! Reloading page...');
     setTimeout(() => window.location.reload(), 1000);
 
   } catch (error) {
-    console.error('❌ Error during cleanup:', error);
+    console.error(' Error during cleanup:', error);
   }
 })();

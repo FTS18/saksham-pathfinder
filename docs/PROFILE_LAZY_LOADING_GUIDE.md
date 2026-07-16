@@ -6,7 +6,7 @@ This guide helps integrate the newly created profile section components into the
 
 ## Current State
 
-✅ Created Components:
+ Created Components:
 - `ProfileBasicInfo.tsx` - Basic info with edit mode
 - `ProfileEducation.tsx` - Multi-education management
 - `ProfileExperience.tsx` - Multi-experience management

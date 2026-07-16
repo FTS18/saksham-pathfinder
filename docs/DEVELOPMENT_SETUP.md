@@ -1,4 +1,4 @@
-# Development Setup Guide - Saksham AI
+# Development Setup Guide - UpSkillers
 
 This guide covers setting up the project locally for development, including Firebase configuration and emulator setup.
 
@@ -13,8 +13,8 @@ This guide covers setting up the project locally for development, including Fire
 ### 2. Clone and Install
 
 ```bash
-git clone https://github.com/FTS18/saksham-pathfinder.git
-cd saksham-pathfinder
+git clone https://github.com/FTS18/upskillers.git
+cd upskillers
 npm install
 ```
 
@@ -152,11 +152,11 @@ firebase deploy
 - Each operation counts against quota
 
 ### Emulator Benefits
-✅ **Unlimited** reads/writes
-✅ No costs
-✅ Instant feedback in Emulator UI
-✅ Offline development
-✅ Reset data easily
+ **Unlimited** reads/writes
+ No costs
+ Instant feedback in Emulator UI
+ Offline development
+ Reset data easily
 
 ## Common Issues
 
@@ -266,12 +266,12 @@ firebase emulators:start --import ./emulator-backup
 
 ## Next Steps
 
-1. ✅ Install dependencies: `npm install`
-2. ✅ Create `.env.local`
-3. ✅ Start Firebase Emulator: `firebase emulators:start`
-4. ✅ Start dev server: `npm run dev`
-5. ✅ Visit http://localhost:5173
-6. ✅ Create test data in Emulator UI
-7. ✅ Test internship detail page
+1.  Install dependencies: `npm install`
+2.  Create `.env.local`
+3.  Start Firebase Emulator: `firebase emulators:start`
+4.  Start dev server: `npm run dev`
+5.  Visit http://localhost:5173
+6.  Create test data in Emulator UI
+7.  Test internship detail page
 
-Happy coding! 🚀
+Happy coding! 

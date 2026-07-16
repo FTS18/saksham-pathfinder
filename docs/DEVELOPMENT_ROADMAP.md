@@ -1,10 +1,10 @@
-# Saksham AI - Future Development Roadmap
+# UpSkillers - Future Development Roadmap
 
-## 🎯 Vision
+##  Vision
 
-Saksham AI is an AI-powered internship discovery platform helping students find meaningful career opportunities through intelligent recommendations. This document outlines the roadmap for upcoming enhancements.
+UpSkillers is an AI-powered internship discovery platform helping students find meaningful career opportunities through intelligent recommendations. This document outlines the roadmap for upcoming enhancements.
 
-## 📦 Current Architecture
+##  Current Architecture
 
 ### Main Technologies
 - **Frontend:** React 18.3.1 + TypeScript 5.8.3
@@ -26,7 +26,7 @@ src/
 └── utils/              # Utility functions
 ```
 
-## 🚀 Phase 1: Profile Optimization (Next 1-2 weeks)
+##  Phase 1: Profile Optimization (Next 1-2 weeks)
 
 ### Goal: Reduce Profile.js bundle from 1.1 MB to <600 KB
 
@@ -57,7 +57,7 @@ src/
 - FCP improvement: 2.5s → 2.0s (20% faster)
 - User experience: Smoother loading
 
-## 🔄 Phase 2: Query Optimization (Weeks 2-3)
+##  Phase 2: Query Optimization (Weeks 2-3)
 
 ### Goal: Reduce Firebase reads by 80%
 
@@ -87,7 +87,7 @@ src/
 - Monthly cost reduction: ~70%
 - Faster search and filtering
 
-## 📊 Phase 3: Analytics & Tracking (Weeks 3-4)
+##  Phase 3: Analytics & Tracking (Weeks 3-4)
 
 ### Goal: Understand user behavior and improve engagement
 
@@ -122,7 +122,7 @@ src/
 - Improved user engagement
 - Better conversion rates
 
-## 🎨 Phase 4: UI/UX Enhancements (Weeks 4-5)
+##  Phase 4: UI/UX Enhancements (Weeks 4-5)
 
 ### Goal: Improve user experience and visual appeal
 
@@ -154,7 +154,7 @@ src/
 - Improved accessibility score
 - Enhanced mobile web experience
 
-## 🔐 Phase 5: Security & Performance (Weeks 5-6)
+##  Phase 5: Security & Performance (Weeks 5-6)
 
 ### Goal: Ensure data security and optimize performance
 
@@ -189,7 +189,7 @@ src/
 - Better error handling
 - Comprehensive monitoring
 
-## 🚀 Phase 6: Advanced Features (Weeks 6-8)
+##  Phase 6: Advanced Features (Weeks 6-8)
 
 ### Goal: Add powerful new features
 
@@ -225,9 +225,9 @@ src/
 
 ---
 
-## 📱 Mobile App Status
+##  Mobile App Status
 
-**Current Status:** ⏸️ **PAUSED** (Indefinite)
+**Current Status:** ️ **PAUSED** (Indefinite)
 
 The React Native mobile app (`c:\Web\saksham-mobile`) is **NOT** active in current development cycle.
 
@@ -240,7 +240,7 @@ The React Native mobile app (`c:\Web\saksham-mobile`) is **NOT** active in curre
 
 **Note:** Mobile development is paused until web app optimization is 100% complete and production metrics are verified.
 
-## 🛠️ Development Guidelines
+## ️ Development Guidelines
 
 ### Code Quality
 - Use TypeScript strict mode
@@ -298,20 +298,20 @@ export default Component;
 - CLS: <0.1
 - Bundle size: <200 KB per page
 
-## 📚 Documentation Files
+##  Documentation Files
 
 | File | Purpose | Status |
 |------|---------|--------|
-| LAZY_LOADING_IMPLEMENTATION_GUIDE.md | Complete lazy loading guide with code examples | ✅ Ready |
-| DEPLOYMENT_SUMMARY.md | Latest deployment info | ✅ Updated |
-| OPTIMIZATION_SESSION_SUMMARY.md | Complete optimization overview | ✅ Updated |
-| FIREBASE_QUOTA_OPTIMIZATION.md | Query caching reference | ✅ Ready |
-| CONTRIBUTING.md | Contribution guidelines | ✅ Active |
-| ONBOARDING_IMPROVEMENTS.md | Onboarding enhancements | ✅ Active |
+| LAZY_LOADING_IMPLEMENTATION_GUIDE.md | Complete lazy loading guide with code examples |  Ready |
+| DEPLOYMENT_SUMMARY.md | Latest deployment info |  Updated |
+| OPTIMIZATION_SESSION_SUMMARY.md | Complete optimization overview |  Updated |
+| FIREBASE_QUOTA_OPTIMIZATION.md | Query caching reference |  Ready |
+| CONTRIBUTING.md | Contribution guidelines |  Active |
+| ONBOARDING_IMPROVEMENTS.md | Onboarding enhancements |  Active |
 
-## 🤝 Contributing
+##  Contributing
 
-To contribute to Saksham AI:
+To contribute to UpSkillers:
 
 1. **Create a feature branch**
    ```bash
@@ -338,7 +338,7 @@ To contribute to Saksham AI:
    - Link relevant issues
    - Include screenshots if applicable
 
-## 🐛 Reporting Issues
+##  Reporting Issues
 
 Found a bug? Report it:
 
@@ -348,14 +348,14 @@ Found a bug? Report it:
 4. **Specify browser/device**
 5. **Attach screenshots/videos if helpful**
 
-## 📞 Support
+##  Support
 
 - **Questions:** Create an issue on GitHub
 - **Security issues:** Email security@saksham.ai
 - **Feedback:** Use in-app feedback form
 - **Feature requests:** Create discussion thread
 
-## 🎯 Success Metrics
+##  Success Metrics
 
 Track these metrics to measure success:
 
@@ -372,7 +372,7 @@ Track these metrics to measure success:
 | Uptime | 99.9% | 99.9% ✓ |
 | Error Rate | <0.1% | <0.01% ✓ |
 
-## 🚀 Deployment Process
+##  Deployment Process
 
 ### Pre-deployment Checklist
 - [ ] All tests pass
@@ -401,7 +401,7 @@ firebase deploy --only hosting
 # Check Firebase Console
 ```
 
-## 📅 Timeline
+##  Timeline
 
 ```
 Current Phase:  Lazy Loading & Performance
@@ -414,7 +414,7 @@ Week 6-8:       Advanced Features (AI, Social, Filters)
 Week 8+:        Mobile App Resume (Optional, when web is 100% complete)
 ```
 
-## 🎓 Learning Resources
+##  Learning Resources
 
 - **React:** https://react.dev
 - **TypeScript:** https://www.typescriptlang.org/docs/
@@ -422,7 +422,7 @@ Week 8+:        Mobile App Resume (Optional, when web is 100% complete)
 - **TailwindCSS:** https://tailwindcss.com/docs
 - **Vite:** https://vitejs.dev/guide/
 
-## 📞 Contact
+##  Contact
 
 - **Lead Developer:** TBD
 - **Project Manager:** TBD
@@ -432,6 +432,6 @@ Week 8+:        Mobile App Resume (Optional, when web is 100% complete)
 ---
 
 **Last Updated:** [Current Date]  
-**Status:** 🟢 ACTIVE DEVELOPMENT  
+**Status:**  ACTIVE DEVELOPMENT  
 **Next Phase:** Profile Optimization  
-**Repository:** https://github.com/saksham-ai/saksham-pathfinder
+**Repository:** https://github.com/saksham-ai/upskillers

@@ -1,16 +1,16 @@
 // Test script to verify onboarding completion
 const testOnboardingCompletion = () => {
-  console.log('🧪 Testing Onboarding System...');
+  console.log(' Testing Onboarding System...');
   
   // Test localStorage functionality
   try {
     const testData = { test: 'data' };
     localStorage.setItem('test_onboarding', JSON.stringify(testData));
     const retrieved = JSON.parse(localStorage.getItem('test_onboarding'));
-    console.log('✅ localStorage working:', retrieved);
+    console.log(' localStorage working:', retrieved);
     localStorage.removeItem('test_onboarding');
   } catch (error) {
-    console.error('❌ localStorage failed:', error);
+    console.error(' localStorage failed:', error);
   }
   
   // Test form validation
@@ -23,7 +23,7 @@ const testOnboardingCompletion = () => {
     education: { level: 'bachelors', field: 'Computer Science', year: '2024' }
   };
   
-  console.log('✅ Test form data valid:', testFormData);
+  console.log(' Test form data valid:', testFormData);
   
   // Test API timeout simulation
   const testTimeout = async () => {
@@ -36,14 +36,14 @@ const testOnboardingCompletion = () => {
       });
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.log('✅ Timeout handling working');
+        console.log(' Timeout handling working');
       }
     }
   };
   
   testTimeout();
   
-  console.log('🎉 All tests completed!');
+  console.log(' All tests completed!');
 };
 
 // Run if in browser

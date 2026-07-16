@@ -79,12 +79,12 @@ Once the emulator is running:
 
 ### Benefits of Using Emulator
 
-✅ **No Database Limits** - Unlimited reads/writes for testing
-✅ **Instant Feedback** - See data changes immediately in Emulator UI
-✅ **Offline Development** - Works without internet connection
-✅ **Data Persistence** - Data saved between emulator restarts (by default)
-✅ **No Production Impact** - Testing doesn't affect production data
-✅ **Cost Savings** - No Firebase costs during development
+ **No Database Limits** - Unlimited reads/writes for testing
+ **Instant Feedback** - See data changes immediately in Emulator UI
+ **Offline Development** - Works without internet connection
+ **Data Persistence** - Data saved between emulator restarts (by default)
+ **No Production Impact** - Testing doesn't affect production data
+ **Cost Savings** - No Firebase costs during development
 
 ### Emulator UI Features
 

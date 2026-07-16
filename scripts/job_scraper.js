@@ -120,10 +120,10 @@ async function scrapeInternshala() {
     });
     
     const validJobs = internships.filter(j => j !== null);
-    console.log(`✅ Internshala: Found ${validJobs.length} valid jobs`);
+    console.log(` Internshala: Found ${validJobs.length} valid jobs`);
     return validJobs;
   } catch (error) {
-    console.error('❌ Internshala Scraping failed completely:', error.message);
+    console.error(' Internshala Scraping failed completely:', error.message);
     throw error; // Let Promise.allSettled catch it
   }
 }
@@ -154,10 +154,10 @@ async function fetchArbeitnow() {
     }));
     
     const validJobs = jobs.filter(j => j !== null);
-    console.log(`✅ Arbeitnow: Fetched ${validJobs.length} valid jobs`);
+    console.log(` Arbeitnow: Fetched ${validJobs.length} valid jobs`);
     return validJobs;
   } catch (error) {
-    console.error('❌ Arbeitnow Fetch failed completely:', error.message);
+    console.error(' Arbeitnow Fetch failed completely:', error.message);
     throw error;
   }
 }
@@ -166,7 +166,7 @@ async function fetchArbeitnow() {
 async function fetchJSearch() {
   const apiKey = process.env.RAPIDAPI_KEY;
   if (!apiKey) {
-    console.log('⏭️ Skipping JSearch: RAPIDAPI_KEY not provided in .env');
+    console.log('️ Skipping JSearch: RAPIDAPI_KEY not provided in .env');
     return [];
   }
 
@@ -201,10 +201,10 @@ async function fetchJSearch() {
     }));
 
     const validJobs = jobs.filter(j => j !== null);
-    console.log(`✅ JSearch: Fetched ${validJobs.length} valid jobs`);
+    console.log(` JSearch: Fetched ${validJobs.length} valid jobs`);
     return validJobs;
   } catch (error) {
-    console.error('❌ JSearch Fetch failed completely:', error.message);
+    console.error(' JSearch Fetch failed completely:', error.message);
     throw error;
   }
 }
@@ -217,7 +217,7 @@ async function fetchAdzuna() {
   const appKey = process.env.ADZUNA_APP_KEY;
   
   if (!appId || !appKey) {
-    console.log('⏭️ Skipping Adzuna: ADZUNA_APP_ID or ADZUNA_APP_KEY not provided in .env');
+    console.log('️ Skipping Adzuna: ADZUNA_APP_ID or ADZUNA_APP_KEY not provided in .env');
     return [];
   }
 
@@ -245,10 +245,10 @@ async function fetchAdzuna() {
     }));
 
     const validJobs = jobs.filter(j => j !== null);
-    console.log(`✅ Adzuna: Fetched ${validJobs.length} valid jobs`);
+    console.log(` Adzuna: Fetched ${validJobs.length} valid jobs`);
     return validJobs;
   } catch (error) {
-    console.error('❌ Adzuna Fetch failed completely:', error.message);
+    console.error(' Adzuna Fetch failed completely:', error.message);
     throw error;
   }
 }
@@ -259,7 +259,7 @@ async function fetchAdzuna() {
 
 async function runSync() {
   try {
-    console.log('🚀 Starting Bulletproof Job Sync Pipeline...');
+    console.log(' Starting Bulletproof Job Sync Pipeline...');
     
     // Use allSettled so if one scraper fails, the others still proceed
     const results = await Promise.allSettled([
@@ -278,11 +278,11 @@ async function runSync() {
     });
     
     if (allJobs.length === 0) {
-      console.log('⚠️ No jobs found from any source to sync. Exiting.');
+      console.log('️ No jobs found from any source to sync. Exiting.');
       process.exit(0);
     }
     
-    console.log(`📦 Syncing ${allJobs.length} total robust jobs to Firestore...`);
+    console.log(` Syncing ${allJobs.length} total robust jobs to Firestore...`);
     
     // Write in batches of 500 (Firestore limit)
     const batch = db.batch();
@@ -294,11 +294,11 @@ async function runSync() {
     });
     
     await batch.commit();
-    console.log('✅ Successfully committed robust batch to Firestore!');
+    console.log(' Successfully committed robust batch to Firestore!');
     process.exit(0);
     
   } catch (error) {
-    console.error('🔥 CRITICAL PIPELINE FAILURE:', error);
+    console.error(' CRITICAL PIPELINE FAILURE:', error);
     process.exit(1);
   }
 }

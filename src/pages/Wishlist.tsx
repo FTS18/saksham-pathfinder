@@ -232,7 +232,7 @@ export default function Wishlist() {
                     aria-live="polite"
                   >
                     <p className="text-sm text-muted-foreground">
-                      ℹ️ Showing {recommendations.length} recommendation{recommendations.length !== 1 ? 's' : ''} based on sectors, skills, locations, and companies from your wishlist.
+                      ️ Showing {recommendations.length} recommendation{recommendations.length !== 1 ? 's' : ''} based on sectors, skills, locations, and companies from your wishlist.
                     </p>
                   </div>
                 </section>

@@ -1,6 +1,6 @@
 {
-  "name": "saksham-pathfinder-functions",
-  "description": "Cloud Functions for Saksham Pathfinder",
+  "name": "upskillers-functions",
+  "description": "Cloud Functions for UpSkillers",
   "scripts": {
     "build": "tsc",
     "serve": "firebase emulators:start --only functions",

@@ -1,6 +1,6 @@
 # Quick Reference Guide - Recruiter Backend APIs
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Import the Service
 ```typescript
@@ -9,7 +9,7 @@ import { RecruiterService } from "@/services/recruiterService";
 
 ---
 
-## 📝 API Reference
+##  API Reference
 
 ### Authentication & Verification
 
@@ -46,7 +46,7 @@ const status = await RecruiterService.getRecruiterStatus();
 
 ---
 
-### 💼 Internship Management
+###  Internship Management
 
 #### Create Internship
 ```typescript
@@ -121,7 +121,7 @@ const result = await RecruiterService.saveDraft("intern_123", {
 
 ---
 
-### 📨 Application Management
+###  Application Management
 
 #### Get Applications
 ```typescript
@@ -193,7 +193,7 @@ const jsonBlob = await RecruiterService.exportApplicationsToCSV("intern_123");
 
 ---
 
-### 📊 Analytics
+###  Analytics
 
 #### Track View
 ```typescript
@@ -226,7 +226,7 @@ const stats = await RecruiterService.getRecruiterAnalytics();
 
 ---
 
-### 🔐 GDPR Compliance
+###  GDPR Compliance
 
 #### Download Data
 ```typescript
@@ -291,7 +291,7 @@ const result = await RecruiterService.updatePrivacySettings({
 
 ---
 
-## 🎨 Component Usage Examples
+##  Component Usage Examples
 
 ### Using EnhancedInternshipForm
 ```typescript
@@ -366,7 +366,7 @@ export function SettingsView() {
 
 ---
 
-## ⚠️ Error Handling
+## ️ Error Handling
 
 ```typescript
 import { RecruiterService } from "@/services/recruiterService";
@@ -394,7 +394,7 @@ try {
 
 ---
 
-## 🔄 Common Workflows
+##  Common Workflows
 
 ### Complete Recruiter Workflow
 ```typescript
@@ -458,7 +458,7 @@ await RecruiterService.deactivateAccount("No longer hiring");
 
 ---
 
-## 📋 Status Values
+##  Status Values
 
 ### Internship Status
 - `draft` - Not yet published
@@ -489,7 +489,7 @@ await RecruiterService.deactivateAccount("No longer hiring");
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **Full Documentation**: See `FULL_STACK_IMPLEMENTATION.md`
 - **Deployment Guide**: See `BACKEND_SETUP_AND_DEPLOYMENT.md`
@@ -497,7 +497,7 @@ await RecruiterService.deactivateAccount("No longer hiring");
 
 ---
 
-## 💡 Tips & Best Practices
+##  Tips & Best Practices
 
 1. **Always use try-catch** when calling RecruiterService
 2. **Paginate large datasets** - use limit and offset
@@ -510,7 +510,7 @@ await RecruiterService.deactivateAccount("No longer hiring");
 
 ---
 
-## 📞 Support
+##  Support
 
 For issues:
 1. Check error code and message

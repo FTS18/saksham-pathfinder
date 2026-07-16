@@ -1,10 +1,10 @@
-# React Native Migration Guide - Saksham AI
+# React Native Migration Guide - UpSkillers
 
-Complete guide to convert the Saksham AI web app to React Native (using Expo).
+Complete guide to convert the UpSkillers web app to React Native (using Expo).
 
 ---
 
-## 📋 Overview
+##  Overview
 
 ### Current Stack (Web)
 - React 18 + TypeScript
@@ -24,7 +24,7 @@ Complete guide to convert the Saksham AI web app to React Native (using Expo).
 
 ---
 
-## 🚀 Phase 1: Project Setup
+##  Phase 1: Project Setup
 
 ### Step 1: Create New Expo Project
 
@@ -123,7 +123,7 @@ saksham-mobile/
 
 ---
 
-## 🔧 Phase 2: Core Setup
+##  Phase 2: Core Setup
 
 ### Step 1: Configure Firebase
 
@@ -283,7 +283,7 @@ export default {
 
 ---
 
-## 📱 Phase 3: Core Components
+##  Phase 3: Core Components
 
 ### Component 1: InternshipCard (Mobile)
 
@@ -365,7 +365,7 @@ export default function LoginScreen() {
   return (
     <ScrollView className="flex-1 bg-white">
       <View className="p-6">
-        <Text className="text-3xl font-bold mb-2">Welcome to Saksham AI</Text>
+        <Text className="text-3xl font-bold mb-2">Welcome to UpSkillers</Text>
         <Text className="text-gray-600 mb-8">Find your perfect internship</Text>
 
         <TextInput
@@ -471,7 +471,7 @@ export default function HomeScreen() {
 
 ---
 
-## 🎨 Phase 4: Navigation Setup
+##  Phase 4: Navigation Setup
 
 **File: `app/_layout.tsx`**
 
@@ -530,7 +530,7 @@ export default function RootLayout() {
 
 ---
 
-## 📦 Phase 5: Build & Deploy
+##  Phase 5: Build & Deploy
 
 ### Step 1: Setup EAS (Expo Application Services)
 
@@ -573,16 +573,16 @@ eas submit --platform android
 
 ---
 
-## 🔄 Phase 6: Code Reusability
+##  Phase 6: Code Reusability
 
 ### Services (Can be 100% Reused)
 
 ```
-✅ src/services/internshipService.ts
-✅ src/services/userService.ts
-✅ src/lib/firebase.ts (mostly same)
-✅ src/utils/validators.ts
-✅ src/types/index.ts
+ src/services/internshipService.ts
+ src/services/userService.ts
+ src/lib/firebase.ts (mostly same)
+ src/utils/validators.ts
+ src/types/index.ts
 ```
 
 ### Contexts (Mostly Reusable)
@@ -596,7 +596,7 @@ eas submit --platform android
 ### Components (Need Adaptation)
 
 ```
-🔧 20% Code reuse - Need React Native components:
+ 20% Code reuse - Need React Native components:
   - InternshipCard → React Native version
   - SearchBar → React Native SearchBox
   - Modal → React Native Modal
@@ -606,16 +606,16 @@ eas submit --platform android
 ### Styling (Similar but Different)
 
 ```
-❌ Tailwind CSS → ✅ NativeWind
-❌ Custom CSS → ✅ StyleSheet
-❌ Tailwind plugins → ✅ NativeWind plugins
+ Tailwind CSS →  NativeWind
+ Custom CSS →  StyleSheet
+ Tailwind plugins →  NativeWind plugins
 
 Code structure similar (~85% compatible)
 ```
 
 ---
 
-## 📊 Code Reuse Summary
+##  Code Reuse Summary
 
 | Layer | Reusability | Effort |
 |-------|-------------|--------|
@@ -630,7 +630,7 @@ Code structure similar (~85% compatible)
 
 ---
 
-## 🚀 Migration Steps
+##  Migration Steps
 
 ### Week 1: Setup
 - [ ] Create Expo project
@@ -658,7 +658,7 @@ Code structure similar (~85% compatible)
 
 ---
 
-## 💡 Key Differences from Web
+##  Key Differences from Web
 
 ### 1. Navigation
 ```
@@ -698,7 +698,7 @@ Mobile: React Native components + react-native-ui-lib
 
 ---
 
-## 📚 Recommended Packages
+##  Recommended Packages
 
 ```json
 {
@@ -727,7 +727,7 @@ Mobile: React Native components + react-native-ui-lib
 
 ---
 
-## 🔗 Resources
+##  Resources
 
 - [Expo Documentation](https://docs.expo.dev)
 - [React Navigation](https://reactnavigation.org)

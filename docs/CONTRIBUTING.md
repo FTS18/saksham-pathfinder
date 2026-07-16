@@ -1,6 +1,6 @@
-# Contributing to Saksham AI
+# Contributing to UpSkillers
 
-Thank you for your interest in contributing to Saksham AI! We welcome contributions from the community.
+Thank you for your interest in contributing to UpSkillers! We welcome contributions from the community.
 
 ## How to Contribute
 
@@ -91,4 +91,4 @@ Feel free to create an issue for any questions or reach out to the team.
 
 ---
 
-**Thank you for contributing to Saksham AI!** 🚀
+**Thank you for contributing to UpSkillers!** 

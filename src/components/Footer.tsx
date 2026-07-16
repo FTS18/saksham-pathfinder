@@ -61,7 +61,7 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-center md:text-left">
               <p className="text-sm text-muted-foreground">
-                © 2025 PM-INTERNSHIP, All Rights Reserved.
+                 2025 PM-INTERNSHIP, All Rights Reserved.
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Technical collaboration with Team HexaForces, PEC Chandigarh
