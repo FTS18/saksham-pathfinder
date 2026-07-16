@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWishlistStore as useWishlist } from '@/store/useWishlistStore';
 import { useAuth } from '@/contexts/AuthContext';
+import { cn } from '@/lib/utils';
 
 export const MobileSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
