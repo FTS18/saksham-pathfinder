@@ -1,5 +1,8 @@
+import * as functionsV1 from "firebase-functions/v1";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 import cors from "cors";
 
 admin.initializeApp();
@@ -20,7 +23,7 @@ const corsHandler = cors({
     }
   },
 });
-const db = admin.firestore();
+const db = getFirestore();
 
 /**
  * ============================================================================
@@ -33,7 +36,7 @@ const db = admin.firestore();
  * FIX #1: Actually verifies the JWT instead of trusting a client-supplied header.
  */
 async function getAuthenticatedUserId(
-  req: functions.https.Request
+  req: functionsV1.https.Request
 ): Promise<string | null> {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
@@ -42,7 +45,7 @@ async function getAuthenticatedUserId(
 
   const token = authHeader.substring(7);
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = await getAuth().verifyIdToken(token);
     return decoded.uid;
   } catch (error) {
     console.error("[Auth] Token verification failed:", error);
@@ -107,7 +110,7 @@ async function checkRateLimit(
       recent.push(now);
       tx.set(docRef, {
         requests: recent,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
       return true;
     });
@@ -155,16 +158,16 @@ async function verifyInternshipOwnership(
 /**
  * FIX #4: Set admin custom claim on a user.
  * Call this from Firebase Admin SDK console or a secure script to bootstrap:
- *   admin.auth().setCustomUserClaims(uid, { admin: true })
+ *   getAuth().setCustomUserClaims(uid, { admin: true })
  * 
  * Only existing admins can grant admin to others.
  * Usage: call this Firebase Function with { targetUid: "uid-to-promote" }
  */
-export const setAdminClaim = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const setAdminClaim = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     // Require caller to be authenticated
     if (!context.auth?.uid) {
-      throw new functions.https.HttpsError("unauthenticated", "Authentication required");
+      throw new functionsV1.https.HttpsError("unauthenticated", "Authentication required");
     }
 
     // Verify caller is already an admin via custom claim
@@ -174,21 +177,21 @@ export const setAdminClaim = functions.https.onCall(
       (await db.collection("admins").doc(context.auth.uid).get()).exists;
 
     if (!isCallerAdmin) {
-      throw new functions.https.HttpsError("permission-denied", "Only admins can grant admin privileges");
+      throw new functionsV1.https.HttpsError("permission-denied", "Only admins can grant admin privileges");
     }
 
     const { targetUid } = data;
     if (!targetUid || typeof targetUid !== "string") {
-      throw new functions.https.HttpsError("invalid-argument", "targetUid is required");
+      throw new functionsV1.https.HttpsError("invalid-argument", "targetUid is required");
     }
 
     // Set admin custom claim
-    await admin.auth().setCustomUserClaims(targetUid, { admin: true });
+    await getAuth().setCustomUserClaims(targetUid, { admin: true });
 
     // Also add to admins collection for Firestore rule backwards compatibility
     await db.collection("admins").doc(targetUid).set({
       grantedBy: context.auth.uid,
-      grantedAt: admin.firestore.FieldValue.serverTimestamp(),
+      grantedAt: FieldValue.serverTimestamp(),
     });
 
     return { success: true, message: `Admin claim set for user ${targetUid}` };
@@ -198,10 +201,10 @@ export const setAdminClaim = functions.https.onCall(
 /**
  * Revoke admin claim from a user.
  */
-export const revokeAdminClaim = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const revokeAdminClaim = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     if (!context.auth?.uid) {
-      throw new functions.https.HttpsError("unauthenticated", "Authentication required");
+      throw new functionsV1.https.HttpsError("unauthenticated", "Authentication required");
     }
 
     const callerToken = context.auth?.token;
@@ -210,13 +213,13 @@ export const revokeAdminClaim = functions.https.onCall(
       (await db.collection("admins").doc(context.auth.uid).get()).exists;
 
     if (!isCallerAdmin) {
-      throw new functions.https.HttpsError("permission-denied", "Only admins can revoke admin privileges");
+      throw new functionsV1.https.HttpsError("permission-denied", "Only admins can revoke admin privileges");
     }
 
     const { targetUid } = data;
-    if (!targetUid) throw new functions.https.HttpsError("invalid-argument", "targetUid is required");
+    if (!targetUid) throw new functionsV1.https.HttpsError("invalid-argument", "targetUid is required");
 
-    await admin.auth().setCustomUserClaims(targetUid, { admin: false });
+    await getAuth().setCustomUserClaims(targetUid, { admin: false });
     await db.collection("admins").doc(targetUid).delete();
 
     return { success: true };
@@ -242,7 +245,7 @@ export const revokeAdminClaim = functions.https.onCall(
  * - recruiters/{userId} (if recruiter)
  * - internships (where recruiterId == uid, if recruiter)
  */
-export const deleteUserData = functions.auth.user().onDelete(async (user) => {
+export const deleteUserData = functionsV1.auth.user().onDelete(async (user) => {
   const uid = user.uid;
   const batch = db.batch();
   const MAX_BATCH_SIZE = 400; // Firestore batch limit is 500
@@ -325,16 +328,16 @@ export const deleteUserData = functions.auth.user().onDelete(async (user) => {
 /**
  * Manual GDPR data deletion (callable by authenticated user themselves)
  */
-export const requestDataDeletion = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const requestDataDeletion = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     if (!context.auth?.uid) {
-      throw new functions.https.HttpsError("unauthenticated", "Authentication required");
+      throw new functionsV1.https.HttpsError("unauthenticated", "Authentication required");
     }
 
     // Mark the account for deletion — actual deletion happens in deleteUserData trigger
     await db.collection("profiles").doc(context.auth.uid).update({
       deletionRequested: true,
-      deletionRequestedAt: admin.firestore.FieldValue.serverTimestamp(),
+      deletionRequestedAt: FieldValue.serverTimestamp(),
     });
 
     return {
@@ -353,11 +356,11 @@ export const requestDataDeletion = functions.https.onCall(
 /**
  * Initialize recruiter profile with company verification
  */
-export const initializeRecruiterProfile = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const initializeRecruiterProfile = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -366,7 +369,7 @@ export const initializeRecruiterProfile = functions.https.onCall(
       // FIX #3: Rate limit — max 5 recruiter profile submissions per hour
       const allowed = await checkRateLimit(context.auth.uid, "init-recruiter-profile", 5, 3_600_000);
       if (!allowed) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "resource-exhausted",
           "Too many submissions. Please try again in an hour."
         );
@@ -376,7 +379,7 @@ export const initializeRecruiterProfile = functions.https.onCall(
         data;
 
       if (!companyName || !companyEmail || !gstNumber) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "Missing required fields: companyName, companyEmail, gstNumber"
         );
@@ -398,8 +401,8 @@ export const initializeRecruiterProfile = functions.https.onCall(
         incorporationCertificateUrl: incorporationCertificate || null,
         isVerified: false,
         status: "pending",
-        submittedAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        submittedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
         internshipsCreated: 0,
         applicationsReceived: 0,
       };
@@ -414,8 +417,8 @@ export const initializeRecruiterProfile = functions.https.onCall(
         companyEmail,
         gstNumber,
         status: "pending",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       return {
@@ -433,11 +436,11 @@ export const initializeRecruiterProfile = functions.https.onCall(
 /**
  * Get recruiter verification status
  */
-export const getRecruiterStatus = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const getRecruiterStatus = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -479,11 +482,11 @@ export const getRecruiterStatus = functions.https.onCall(
 /**
  * Create internship (recruiter only)
  */
-export const createInternship = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const createInternship = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -491,7 +494,7 @@ export const createInternship = functions.https.onCall(
 
       const isRecruiter = await verifyRecruiterRole(context.auth.uid);
       if (!isRecruiter) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "User is not a verified recruiter"
         );
@@ -513,7 +516,7 @@ export const createInternship = functions.https.onCall(
 
       // Validate required fields
       if (!title || !description || !location || !sector) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "Missing required fields: title, description, location, sector"
         );
@@ -545,8 +548,8 @@ export const createInternship = functions.https.onCall(
         status: "draft",
         views: 0,
         applications: 0,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
         publishedAt: null,
       };
 
@@ -557,7 +560,7 @@ export const createInternship = functions.https.onCall(
         .collection("recruiters")
         .doc(context.auth.uid)
         .update({
-          internshipsCreated: admin.firestore.FieldValue.increment(1),
+          internshipsCreated: FieldValue.increment(1),
         });
 
       return {
@@ -575,11 +578,11 @@ export const createInternship = functions.https.onCall(
 /**
  * Update internship (recruiter only, must own internship)
  */
-export const updateInternship = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const updateInternship = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -587,7 +590,7 @@ export const updateInternship = functions.https.onCall(
 
       const isRecruiter = await verifyRecruiterRole(context.auth.uid);
       if (!isRecruiter) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "User is not a verified recruiter"
         );
@@ -596,7 +599,7 @@ export const updateInternship = functions.https.onCall(
       const { internshipId, updates } = data;
 
       if (!internshipId) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "internshipId is required"
         );
@@ -607,7 +610,7 @@ export const updateInternship = functions.https.onCall(
         context.auth.uid
       );
       if (!ownsInternship) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "You do not own this internship"
         );
@@ -620,7 +623,7 @@ export const updateInternship = functions.https.onCall(
       delete safeUpdates.applications;
       delete safeUpdates.views;
 
-      safeUpdates.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+      safeUpdates.updatedAt = FieldValue.serverTimestamp();
 
       await db.collection("internships").doc(internshipId).update(safeUpdates);
 
@@ -638,11 +641,11 @@ export const updateInternship = functions.https.onCall(
 /**
  * Delete internship (recruiter only, must own internship)
  */
-export const deleteInternship = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const deleteInternship = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -650,7 +653,7 @@ export const deleteInternship = functions.https.onCall(
 
       const isRecruiter = await verifyRecruiterRole(context.auth.uid);
       if (!isRecruiter) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "User is not a verified recruiter"
         );
@@ -659,7 +662,7 @@ export const deleteInternship = functions.https.onCall(
       const { internshipId } = data;
 
       if (!internshipId) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "internshipId is required"
         );
@@ -670,7 +673,7 @@ export const deleteInternship = functions.https.onCall(
         context.auth.uid
       );
       if (!ownsInternship) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "You do not own this internship"
         );
@@ -699,7 +702,7 @@ export const deleteInternship = functions.https.onCall(
         .collection("recruiters")
         .doc(context.auth.uid)
         .update({
-          internshipsCreated: admin.firestore.FieldValue.increment(-1),
+          internshipsCreated: FieldValue.increment(-1),
         });
 
       return {
@@ -716,11 +719,11 @@ export const deleteInternship = functions.https.onCall(
 /**
  * Publish internship (make it visible to students)
  */
-export const publishInternship = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const publishInternship = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -733,7 +736,7 @@ export const publishInternship = functions.https.onCall(
         context.auth.uid
       );
       if (!ownsInternship) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "You do not own this internship"
         );
@@ -741,8 +744,8 @@ export const publishInternship = functions.https.onCall(
 
       await db.collection("internships").doc(internshipId).update({
         status: "published",
-        publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        publishedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       return {
@@ -765,11 +768,11 @@ export const publishInternship = functions.https.onCall(
 /**
  * Get applications for recruiter's internships
  */
-export const getApplications = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const getApplications = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -777,7 +780,7 @@ export const getApplications = functions.https.onCall(
 
       const isRecruiter = await verifyRecruiterRole(context.auth.uid);
       if (!isRecruiter) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "User is not a verified recruiter"
         );
@@ -823,11 +826,11 @@ export const getApplications = functions.https.onCall(
 /**
  * Update application status
  */
-export const updateApplicationStatus = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const updateApplicationStatus = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -836,7 +839,7 @@ export const updateApplicationStatus = functions.https.onCall(
       const { applicationId, status, notes } = data;
 
       if (!applicationId || !status) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "applicationId and status are required"
         );
@@ -848,7 +851,7 @@ export const updateApplicationStatus = functions.https.onCall(
         .get();
 
       if (!applicationDoc.exists) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "not-found",
           "Application not found"
         );
@@ -856,7 +859,7 @@ export const updateApplicationStatus = functions.https.onCall(
 
       const appData = applicationDoc.data();
       if (appData?.recruiterId !== context.auth.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "You do not have permission to update this application"
         );
@@ -864,7 +867,7 @@ export const updateApplicationStatus = functions.https.onCall(
 
       const updateData: any = {
         status,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       };
 
       if (notes) {
@@ -882,7 +885,7 @@ export const updateApplicationStatus = functions.https.onCall(
         message: `Your application status has been updated to: ${status}`,
         applicationId,
         read: false,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
       });
 
       return {
@@ -899,11 +902,11 @@ export const updateApplicationStatus = functions.https.onCall(
 /**
  * Bulk update application statuses
  */
-export const bulkUpdateApplicationStatus = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const bulkUpdateApplicationStatus = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -912,7 +915,7 @@ export const bulkUpdateApplicationStatus = functions.https.onCall(
       const { applicationIds, status } = data;
 
       if (!applicationIds || !Array.isArray(applicationIds) || !status) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "applicationIds array and status are required"
         );
@@ -932,7 +935,7 @@ export const bulkUpdateApplicationStatus = functions.https.onCall(
 
         batch.update(appRef, {
           status,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
         });
 
         // Create notification
@@ -944,7 +947,7 @@ export const bulkUpdateApplicationStatus = functions.https.onCall(
           message: `Your application status has been updated to: ${status}`,
           applicationId: appId,
           read: false,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          createdAt: FieldValue.serverTimestamp(),
         });
       }
 
@@ -972,13 +975,13 @@ export const bulkUpdateApplicationStatus = functions.https.onCall(
 /**
  * Track internship view
  */
-export const trackInternshipView = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const trackInternshipView = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       const { internshipId } = data;
 
       if (!internshipId) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "internshipId is required"
         );
@@ -989,7 +992,7 @@ export const trackInternshipView = functions.https.onCall(
         .collection("internships")
         .doc(internshipId)
         .update({
-          views: admin.firestore.FieldValue.increment(1),
+          views: FieldValue.increment(1),
         });
 
       // Track analytics
@@ -998,7 +1001,7 @@ export const trackInternshipView = functions.https.onCall(
         internshipId,
         userId: context.auth?.uid || "anonymous",
         eventType: "view",
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        timestamp: FieldValue.serverTimestamp(),
       });
 
       return { success: true };
@@ -1012,11 +1015,11 @@ export const trackInternshipView = functions.https.onCall(
 /**
  * Get recruiter dashboard analytics
  */
-export const getRecruiterAnalytics = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const getRecruiterAnalytics = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -1024,7 +1027,7 @@ export const getRecruiterAnalytics = functions.https.onCall(
 
       const isRecruiter = await verifyRecruiterRole(context.auth.uid);
       if (!isRecruiter) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "User is not a verified recruiter"
         );
@@ -1084,11 +1087,11 @@ export const getRecruiterAnalytics = functions.https.onCall(
 /**
  * Export user data (GDPR compliance)
  */
-export const exportUserData = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const exportUserData = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -1149,11 +1152,11 @@ export const exportUserData = functions.https.onCall(
 /**
  * Deactivate user account
  */
-export const deactivateAccount = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const deactivateAccount = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -1168,7 +1171,7 @@ export const deactivateAccount = functions.https.onCall(
         .doc(userId)
         .update({
           isActive: false,
-          deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          deactivatedAt: FieldValue.serverTimestamp(),
           deactivationReason: reason || null,
         });
 
@@ -1177,7 +1180,7 @@ export const deactivateAccount = functions.https.onCall(
       if (recruiterDoc.exists) {
         await db.collection("recruiters").doc(userId).update({
           status: "deactivated",
-          deactivatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          deactivatedAt: FieldValue.serverTimestamp(),
         });
       }
 
@@ -1196,11 +1199,11 @@ export const deactivateAccount = functions.https.onCall(
 /**
  * Reactivate user account
  */
-export const reactivateAccount = functions.https.onCall(
-  async (data: any, context: functions.https.CallableContext) => {
+export const reactivateAccount = functionsV1.https.onCall(
+  async (data: any, context: any) => {
     try {
       if (!context.auth?.uid) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "unauthenticated",
           "User not authenticated"
         );
@@ -1211,7 +1214,7 @@ export const reactivateAccount = functions.https.onCall(
       // Check if deactivated recently
       const profileDoc = await db.collection("profiles").doc(userId).get();
       if (!profileDoc.exists) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "not-found",
           "User profile not found"
         );
@@ -1220,7 +1223,7 @@ export const reactivateAccount = functions.https.onCall(
       const deactivatedAt =
         profileDoc.data()?.deactivatedAt?.toDate?.() || null;
       if (!deactivatedAt) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "invalid-argument",
           "Account is not deactivated"
         );
@@ -1230,7 +1233,7 @@ export const reactivateAccount = functions.https.onCall(
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
       if (deactivatedAt < thirtyDaysAgo) {
-        throw new functions.https.HttpsError(
+        throw new functionsV1.https.HttpsError(
           "permission-denied",
           "Account reactivation window has expired"
         );
@@ -1266,7 +1269,7 @@ export const reactivateAccount = functions.https.onCall(
   }
 );
 
-export const getInternshipForOG = functions.https.onRequest(
+export const getInternshipForOG = functionsV1.https.onRequest(
   (req: any, res: any) => {
     corsHandler(req, res, async () => {
       try {
@@ -1319,7 +1322,7 @@ export const getInternshipForOG = functions.https.onRequest(
  * Requires setting up a Google Cloud Storage bucket: gs://saksham-ai-81c3a-backups
  * Requires assigning the default App Engine service account `roles/datastore.importExportAdmin`
  */
-export const scheduledFirestoreBackup = functions.pubsub
+export const scheduledFirestoreBackup = functionsV1.pubsub
   .schedule("every 24 hours")
   .onRun(async (context) => {
     const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;

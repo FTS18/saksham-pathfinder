@@ -33,7 +33,7 @@ const calcProfileCompletion = (profile: Record<string, any>) => {
   };
 };
 
-/** Shared hook — caches Firestore profile for 5 min, used across all dashboard pages. */
+/** Shared hook ï¿½ caches Firestore profile for 5 min, used across all dashboard pages. */
 export const useProfileData = () => {
   const { currentUser } = useAuth();
   const queryClient = useQueryClient();

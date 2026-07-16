@@ -64,10 +64,12 @@ export default defineConfig({
         chunkFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash].[ext]",
         // Manual chunk splitting to avoid megabyte-sized bundles
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          firebase: ["firebase/app", "firebase/auth", "firebase/firestore", "firebase/storage"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('firebase')) return 'firebase';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor';
+            if (id.includes('@radix-ui')) return 'ui';
+          }
         },
       },
     },
