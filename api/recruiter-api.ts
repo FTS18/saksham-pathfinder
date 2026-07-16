@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { db, auth, FieldValue } from "./_utils/firebase";
+import { db, auth, FieldValue } from "./_utils/firebase.js";
 import { DecodedIdToken } from "firebase-admin/auth";
 
 const CORS = {

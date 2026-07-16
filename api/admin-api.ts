@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { auth } from "./_utils/firebase";
+import { auth } from "./_utils/firebase.js";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",

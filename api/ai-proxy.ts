@@ -1,6 +1,6 @@
 // Keeps GEMINI_API_KEY server-side. Frontend calls /api/ai-proxy instead of Gemini directly.
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { auth } from "./_utils/firebase";
+import { auth } from "./_utils/firebase.js";
 
 // Simple in-memory rate limiter (resets on cold-start)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
