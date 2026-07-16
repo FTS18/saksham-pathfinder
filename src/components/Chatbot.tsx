@@ -167,7 +167,7 @@ export const Chatbot = () => {
         const confirmationMessage = {
           id: Date.now().toString(),
           role: 'assistant' as const,
-          content: `🚀 **Navigating to ${type} page**\n\nTaking you to ${type === 'city' ? 'internships in' : type === 'company' ? 'internships at' : type === 'skill' ? 'internships requiring' : type === 'sector' ? 'internships in' : ''} **${rawValue}**...\n\n*You'll be redirected in a moment!*`,
+          content: ` **Navigating to ${type} page**\n\nTaking you to ${type === 'city' ? 'internships in' : type === 'company' ? 'internships at' : type === 'skill' ? 'internships requiring' : type === 'sector' ? 'internships in' : ''} **${rawValue}**...\n\n*You'll be redirected in a moment!*`,
           timestamp: new Date(),
           suggestions: [
             'Show me more filters',
@@ -218,12 +218,7 @@ export const Chatbot = () => {
     }
   };
 
-  // Hide floating button on desktop
   if (!isOpen) {
-    if (!isMobile) {
-      return null;
-    }
-    
     return (
       <TooltipProvider>
         <Tooltip>
@@ -337,7 +332,7 @@ export const Chatbot = () => {
                   {message.role === 'assistant' && message.suggestions && (
                     <div className="mt-3 pt-3 border-t border-border/30">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="text-xs text-muted-foreground">💡 Follow-up questions:</div>
+                        <div className="text-xs text-muted-foreground"> Follow-up questions:</div>
                         <button
                           onClick={() => setShowQuickActions(true)}
                           className="text-xs text-primary hover:text-primary/80 transition-colors"
@@ -422,15 +417,15 @@ export const Chatbot = () => {
                         <SelectValue placeholder="Generate interview questions" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Software Developer|easy">💻 Software Dev (Easy)</SelectItem>
-                        <SelectItem value="Software Developer|medium">💻 Software Dev (Medium)</SelectItem>
-                        <SelectItem value="Software Developer|hard">💻 Software Dev (Hard)</SelectItem>
-                        <SelectItem value="Data Analyst|easy">📊 Data Analyst (Easy)</SelectItem>
-                        <SelectItem value="Data Analyst|medium">📊 Data Analyst (Medium)</SelectItem>
-                        <SelectItem value="Marketing|easy">📈 Marketing (Easy)</SelectItem>
-                        <SelectItem value="Marketing|medium">📈 Marketing (Medium)</SelectItem>
-                        <SelectItem value="Design|easy">🎨 Design (Easy)</SelectItem>
-                        <SelectItem value="Design|medium">🎨 Design (Medium)</SelectItem>
+                        <SelectItem value="Software Developer|easy"> Software Dev (Easy)</SelectItem>
+                        <SelectItem value="Software Developer|medium"> Software Dev (Medium)</SelectItem>
+                        <SelectItem value="Software Developer|hard"> Software Dev (Hard)</SelectItem>
+                        <SelectItem value="Data Analyst|easy"> Data Analyst (Easy)</SelectItem>
+                        <SelectItem value="Data Analyst|medium"> Data Analyst (Medium)</SelectItem>
+                        <SelectItem value="Marketing|easy"> Marketing (Easy)</SelectItem>
+                        <SelectItem value="Marketing|medium"> Marketing (Medium)</SelectItem>
+                        <SelectItem value="Design|easy"> Design (Easy)</SelectItem>
+                        <SelectItem value="Design|medium"> Design (Medium)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

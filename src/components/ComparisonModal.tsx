@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { X, Sparkles, Building2, MapPin, IndianRupee, Loader2, Download, Share2, Copy, Check } from 'lucide-react';
-import { useComparison } from '@/contexts/ComparisonContext';
+import { useComparisonStore as useComparison } from '@/store/useComparisonStore';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { localAIService } from '@/lib/localAI';
 import { exportComparisonAsPDF } from '@/lib/pdfExporter';
@@ -81,7 +81,7 @@ export const ComparisonModal = ({ isOpen, onClose, userProfile }: ComparisonModa
 ${userProfile ? `• **Skills:** ${userProfile.skills?.join(', ') || 'Not specified'}\n• **Preferred Location:** ${userProfile.desiredLocation?.city || userProfile.location || 'Any location'}\n• **Interests:** ${userProfile.interests?.join(', ') || 'Open to opportunities'}` : '• Profile being analyzed'}
 
 **Internships to Compare:**
-${internshipsWithScores.map((internship, index) => `**${index + 1}. ${internship.title}** at **${internship.company}**\n   📍 ${typeof internship.location === 'string' ? internship.location : internship.location.city} | 💰 ${internship.stipend} | 🤖 **AI Score: ${internship.calculatedScore}%**`).join('\n\n')}
+${internshipsWithScores.map((internship, index) => `**${index + 1}. ${internship.title}** at **${internship.company}**\n    ${typeof internship.location === 'string' ? internship.location : internship.location.city} |  ${internship.stipend} |  **AI Score: ${internship.calculatedScore}%**`).join('\n\n')}
 
 **AI Scoring Breakdown:**
 • **Skills Match:** 50% weight - How well your skills align with requirements
@@ -91,13 +91,13 @@ ${internshipsWithScores.map((internship, index) => `**${index + 1}. ${internship
 
 **Format your response with:**
 
-## 🏆 **Personalized Ranking**
+##  **Personalized Ranking**
 Explain why each scored what it did based on YOUR profile
 
-## ⭐ **My Recommendation for You**
+##  **My Recommendation for You**
 Which internship YOU should choose and why it's perfect for YOUR goals
 
-## 🤖 **How I Calculated Your Scores**
+##  **How I Calculated Your Scores**
 Brief explanation of the algorithm used for YOUR comparison
 
 Use **bold text**, bullet points, and make it feel personal to the student.`;
@@ -111,9 +111,9 @@ Use **bold text**, bullet points, and make it feel personal to the student.`;
       
       // Fallback to error message only if completely offline
       if (!navigator.onLine) {
-        setAnalysis('**❌ Unable to generate AI analysis**\n\nPlease check your internet connection and try again.');
+        setAnalysis('** Unable to generate AI analysis**\n\nPlease check your internet connection and try again.');
       } else {
-        setAnalysis('**❌ Analysis Failed**\n\nUnable to generate AI comparison. Please try again or check your connection.');
+        setAnalysis('** Analysis Failed**\n\nUnable to generate AI comparison. Please try again or check your connection.');
       }
     } finally {
       setLoading(false);

@@ -1,60 +1,16 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Building2, ExternalLink, IndianRupee, Tag, Lightbulb, ChevronRight, Bookmark, ThumbsUp, ThumbsDown, Volume2, GitCompare, Briefcase, CheckCircle } from 'lucide-react';
+import { MapPin, Building2, IndianRupee, Bookmark, GitCompare, Wifi, Monitor, Users } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShareInternship } from './ShareInternship';
-import { useTheme } from '@/contexts/ThemeContext';
 import { Badge } from '@/components/ui/badge';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { Button } from '@/components/ui/button';
+import { useWishlistStore as useWishlist } from '@/store/useWishlistStore';
 import { useApplication } from '@/contexts/ApplicationContext';
+import { useComparisonStore as useComparison } from '@/store/useComparisonStore';
 import { SectorIcon } from './SectorIcons';
-import { useAudioSupport } from '@/hooks/useAudioSupport';
-import { useComparison } from '@/contexts/ComparisonContext';
-import { useState, useContext, createContext, useEffect } from 'react';
-
-// Context for sharing internship data across modals
-const InternshipNavigationContext = createContext<{
-  allInternships: any[];
-  setAllInternships: (internships: any[]) => void;
-}>({ allInternships: [], setAllInternships: () => {} });
-
+import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip';
-
-// Create stable hash function for consistent scoring
-const createStableHash = (str: string) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-};
-
-
-
-
-interface Internship {
-  id: string;
-  pmis_id?: string;
-  title: string;
-  role?: string;
-  company: string;
-  location: { city: string; lat?: number; lng?: number; } | string;
-  eligibility_text?: string;
-  stipend: string;
-  sector_tags: string[];
-  required_skills: string[];
-  apply_link?: string;
-  description?: string;
-  responsibilities?: string[];
-  perks?: string[];
-  work_mode?: string;
-  openings?: number;
-  application_deadline?: string;
-  logo?: string;
-  featured?: boolean;
-}
+import { Internship } from '@/types';
 
 interface InternshipCardProps {
   internship: Internship;
@@ -69,405 +25,321 @@ interface InternshipCardProps {
   aiScore?: number;
 }
 
-export const InternshipCard = ({ internship, matchExplanation, aiTags, userProfile, onNext, onPrev, currentIndex, totalCount, matchScore, aiScore }: InternshipCardProps) => {
+// Stable hash for consistent per-card values
+const stableHash = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+};
+
+const WorkModeIcon = ({ mode }: { mode?: string }) => {
+  if (!mode) return null;
+  if (mode === 'Remote') return <Wifi className="w-3 h-3" />;
+  if (mode === 'Hybrid') return <Monitor className="w-3 h-3" />;
+  return <Building2 className="w-3 h-3" />;
+};
+
+export const InternshipCard = ({
+  internship,
+  aiTags,
+  userProfile,
+  matchScore,
+  aiScore,
+}: InternshipCardProps) => {
   const navigate = useNavigate();
   const {
     id,
-    pmis_id,
     title,
     role,
     company,
     location,
-    eligibility_text,
     stipend,
     sector_tags,
     required_skills,
-    apply_link,
-    description,
-    responsibilities,
-    perks,
     work_mode,
+    workMode,
     openings,
     application_deadline,
-    logo,
+    applicationDeadline,
     featured = false,
+    logo,
   } = internship;
 
   const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
   const { applyToInternship, hasApplied } = useApplication();
-  const { isSupported: audioSupported, speak, isSpeaking } = useAudioSupport();
   const { addToComparison, removeFromComparison, isInComparison, selectedInternships, maxComparisons } = useComparison();
-  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
-  
-  // Listen for internship data response with proper cleanup
-  useEffect(() => {
-    const controller = new AbortController();
-    return () => {
-      controller.abort();
-    };
-  }, []);
+  const [isApplying, setIsApplying] = useState(false);
 
-  const locationText = typeof location === 'string' ? location : location.city;
-  
+  const locationText = typeof location === 'string' ? location : location?.city ?? 'India';
+  const displayTitle = title || role || 'Internship';
+  const displayCompany = company || 'Company';
+  const effectiveWorkMode = work_mode || workMode;
+  const deadline = application_deadline || applicationDeadline;
+  const primarySector = sector_tags?.[0];
+
+  // Stable AI match score — same every render for same internship
+  const computedScore = aiScore
+    ?? matchScore
+    ?? (userProfile
+      ? Math.max(45, Math.min(95, 60 + stableHash(String(id) + (userProfile.email ?? '')) % 36))
+      : null);
+
+  // Company initials avatar
+  const initials = displayCompany
+    .split(' ')
+    .map((w: string) => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
+  const avatarColors = [
+    'bg-blue-600',
+    'bg-emerald-600',
+    'bg-purple-600',
+    'bg-rose-600',
+    'bg-amber-600',
+    'bg-cyan-600',
+    'bg-indigo-600',
+    'bg-pink-600',
+    'bg-teal-600',
+    'bg-orange-600'
+  ];
+  const avatarColor = avatarColors[stableHash(displayCompany) % avatarColors.length];
+
   const handleApply = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (hasApplied(id)) return;
-    
+    if (hasApplied(id ?? '') || isApplying) return;
+    setIsApplying(true);
     await applyToInternship(internship);
-  }
+    setIsApplying(false);
+  };
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
+  const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isWishlisted(id)) {
-        removeFromWishlist(id);
-    } else {
-        addToWishlist(id);
-    }
-  }
+    isWishlisted(id ?? '') ? removeFromWishlist(id ?? '') : addToWishlist(id ?? '');
+  };
 
-  const handleCompareToggle = (e: React.MouseEvent) => {
+  const handleCompare = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isInComparison(id)) {
-      removeFromComparison(id);
-    } else {
-      addToComparison(internship);
-    }
-  }
-
-  const handleFeedback = (type: 'up' | 'down') => {
-    setFeedback(type);
-    // Store feedback in localStorage for future ML improvements
-    const feedbackData = {
-      internshipId: id,
-      feedback: type,
-      timestamp: new Date().toISOString(),
-      userProfile
-    };
-    const existingFeedback = JSON.parse(localStorage.getItem('internshipFeedback') || '[]');
-    existingFeedback.push(feedbackData);
-    localStorage.setItem('internshipFeedback', JSON.stringify(existingFeedback));
-  }
-
-  const handleListen = () => {
-    const text = `${role} at ${company}. Location: ${locationText}. Stipend: ${stipend}. ${eligibility_text}`;
-    speak(text, 'en');
-  }
-
-  const getSectorColor = (sector: string) => {
-    const sectorColors: { [key: string]: string } = {
-      'Technology': '#3b82f6', // blue
-      'Healthcare': '#10b981', // green
-      'Finance': '#f59e0b', // yellow
-      'Education': '#8b5cf6', // purple
-      'Marketing': '#ef4444', // red
-      'E-commerce': '#06b6d4', // cyan
-      'Manufacturing': '#6b7280', // gray
-      'Media': '#ec4899', // pink
-      'Gaming': '#84cc16', // lime
-      'Consulting': '#f97316', // orange
-      'Banking': '#eab308', // yellow
-      'Automotive': '#64748b', // slate
-      'Construction': '#a3a3a3', // neutral
-      'Hospitality': '#f43f5e', // rose
-      'Travel': '#06b6d4', // cyan
-      'NGO': '#22c55e', // green
-      'Research': '#6366f1', // indigo
-      'Sales': '#f59e0b', // amber
-      'Operations': '#71717a', // zinc
-      'Electronics': '#3b82f6', // blue
-      'Infrastructure': '#78716c' // stone
-    };
-    return sectorColors[sector] || '#3b82f6';
+    isInComparison(id ?? '') ? removeFromComparison(id ?? '') : addToComparison(internship);
   };
 
-  const getCompanyTheme = (companyName: string) => {
-    const themes: { [key: string]: string } = {
-      'Google': 'border-l-4 border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/20',
-      'Microsoft': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Amazon': 'border-l-4 border-l-orange-500 bg-orange-50/70 dark:bg-orange-950/20',
-      'Meta': 'border-l-4 border-l-blue-600 bg-blue-50/70 dark:bg-blue-950/20',
-      'Apple': 'border-l-4 border-l-gray-800 bg-gray-50/70 dark:bg-gray-950/20',
-      'Flipkart': 'border-l-4 border-l-yellow-500 bg-yellow-50/70 dark:bg-yellow-950/20',
-      'TCS': 'border-l-4 border-l-blue-700 bg-blue-50/70 dark:bg-blue-950/20',
-      'Infosys': 'border-l-4 border-l-cyan-500 bg-cyan-50/70 dark:bg-cyan-950/20'
-    };
-    return themes[companyName] || '';
-  };
+  const applied = hasApplied(id ?? '');
+  const wishlisted = isWishlisted(id ?? '');
+  const inComparison = isInComparison(id ?? '');
+  const compareDisabled = !inComparison && selectedInternships.length >= maxComparisons;
 
-  const generateMatchExplanation = () => {
-    if (matchExplanation) return matchExplanation;
-    if (!userProfile) return null;
-    
-    const matchedSkills = required_skills?.filter(skill => 
-      userProfile.skills?.some((userSkill: string) => 
-        userSkill.toLowerCase() === skill.toLowerCase()
-      )
-    ) || [];
-    
-    const matchedSectors = sector_tags?.filter(sector => 
-      userProfile.interests?.includes(sector)
-    ) || [];
-    
-    if (matchedSkills.length > 0 || matchedSectors.length > 0) {
-      let explanation = 'This internship matches your ';
-      const parts = [];
-      if (matchedSectors.length > 0) {
-        parts.push(`interest in ${matchedSectors.join(', ')}`);
-      }
-      if (matchedSkills.length > 0) {
-        parts.push(`skills in ${matchedSkills.join(', ')}`);
-      }
-      return explanation + parts.join(' and ');
-    }
-    return null;
-  };
+  const deadlineStr = deadline
+    ? new Date(deadline).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+    : null;
 
   return (
     <TooltipProvider>
-    <Card className={`relative minimal-card flex flex-col h-full rounded-lg border shadow-md hover:shadow-lg transition-all duration-300 internship-card ${
-        featured ? 'ring-2 ring-primary/50 bg-primary/5' : ''
-      } ${getCompanyTheme(company)}`}
-    >
-      {/* Share Button - Top Right Corner */}
-      <div className="absolute top-3 right-3 z-10">
-        <ShareInternship internship={{ id, title, company }} />
-      </div>
-      {aiTags && aiTags.includes('AI Recommended') && (
-        <div className="absolute -top-2 left-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg transform -rotate-3">
-          Recommended
-        </div>
-      )}
+      <Card
+        className={`group relative flex flex-col h-full bg-card border border-border/40 dark:border-border/60 rounded-xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md dark:hover:border-primary/30 hover:-translate-y-1 cursor-pointer ${
+          featured ? 'ring-1 ring-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.1)] dark:shadow-[0_0_15px_rgba(var(--primary),0.2)]' : ''
+        }`}
+        onClick={() => navigate(`/internships/${id}`)}
+      >
+        <CardContent className="p-3 flex flex-col gap-2 flex-1">
 
+          {/* Row 1: Company avatar + name + actions */}
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              {/* Company avatar */}
+              <div
+                className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-white text-[10px] font-bold overflow-hidden ${
+                  logo ? 'bg-white border border-border' : avatarColor
+                }`}
+              >
+                {logo ? (
+                  <img src={logo} alt={displayCompany} className="w-full h-full object-contain p-1" />
+                ) : primarySector ? (
+                  <SectorIcon sector={primarySector} className="w-4 h-4 text-white" />
+                ) : (
+                  initials
+                )}
+              </div>
+              <div className="min-w-0">
+                <a
+                  href={`/company/${displayCompany.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="notranslate text-xs font-medium text-muted-foreground hover:text-foreground truncate block max-w-[140px] transition-colors"
+                  onClick={e => e.stopPropagation()}
+                >
+                  {displayCompany}
+                </a>
+                {primarySector && (
+                  <span className="text-[10px] text-muted-foreground/70 truncate block">{primarySector}</span>
+                )}
+              </div>
+            </div>
 
-      <CardContent className="p-4 flex flex-col h-full card-content">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center space-x-2 pr-6">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
-              {sector_tags && sector_tags.length > 0 ? (
-                <SectorIcon sector={sector_tags[0]} className="w-7 h-7" style={{ color: getSectorColor(sector_tags[0]) }} />
-              ) : (
-                <Building2 className="w-7 h-7 text-primary" />
+            {/* Wishlist + compare icons — top right */}
+            <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleWishlist}
+                    className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-colors ${
+                      wishlisted
+                        ? 'bg-primary/10 border-primary/30 text-primary'
+                        : 'bg-muted/50 border-border text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <Bookmark className={`w-3 h-3 ${wishlisted ? 'fill-current' : ''}`} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>{wishlisted ? 'Remove from wishlist' : 'Save'}</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleCompare}
+                    disabled={compareDisabled}
+                    className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-colors ${
+                      inComparison
+                        ? 'bg-primary/10 border-primary/30 text-primary'
+                        : compareDisabled
+                        ? 'opacity-40 cursor-not-allowed bg-muted/50 border-border text-muted-foreground'
+                        : 'bg-muted/50 border-border text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <GitCompare className="w-3 h-3" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>{inComparison ? 'Remove from compare' : 'Compare'}</TooltipContent>
+              </Tooltip>
+
+              <div className="w-7 h-7" onClick={e => e.stopPropagation()}>
+                <ShareInternship internship={{ id: id ?? '', title: displayTitle, company: displayCompany }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2: Title */}
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {aiTags?.includes('AI Recommended') && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider bg-primary text-primary-foreground uppercase">
+                  AI Pick
+                </span>
+              )}
+              {featured && (
+                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wider bg-primary/10 text-primary border border-primary/20 uppercase">
+                  Featured
+                </span>
               )}
             </div>
-            
-            <div className="ml-3 flex flex-col">
-              <Link 
-                to={`/internships/${id}`}
-                className="font-grotesk font-semibold text-base text-foreground mb-1.5 text-left notranslate leading-tight hover:text-primary hover:underline cursor-pointer transition-colors block"
-              >
-                {title}
-              </Link>
-              <p className="text-muted-foreground text-sm flex items-center leading-tight">
-                <Building2 className="w-3 h-3 mr-1" />
-                <a 
-                  href={`/company/${company.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="notranslate hover:text-primary hover:underline cursor-pointer transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {company}
-                </a>
-              </p>
-
-            </div>
+            <Link
+              to={`/internships/${id}`}
+              onClick={e => e.stopPropagation()}
+              className="font-semibold text-[13px] leading-tight text-foreground hover:text-primary line-clamp-2 transition-colors font-racing"
+            >
+              {displayTitle}
+            </Link>
           </div>
-          
-          <div className="flex flex-col gap-1">
-            {featured && (
-              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 shrink-0">
-                Featured
-              </Badge>
+
+          {/* Row 3: Meta pills */}
+          <div className="flex flex-wrap gap-1 text-[10px]">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+              <MapPin className="w-2.5 h-2.5" />
+              {locationText}
+            </span>
+            {effectiveWorkMode && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                <WorkModeIcon mode={effectiveWorkMode} />
+                {effectiveWorkMode}
+              </span>
+            )}
+            {openings && openings > 0 && (
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                <Users className="w-2.5 h-2.5" />
+                {openings} open
+              </span>
             )}
           </div>
-        </div>
 
-        <div className="flex items-center justify-between text-sm mb-3">
-          <div className="flex items-center text-muted-foreground">
-            <MapPin className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
-            <a 
-              href={`/city/${locationText.toLowerCase().replace(/\s+/g, '-')}`}
-              className="text-xs hover:text-primary hover:underline cursor-pointer transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {locationText}
-            </a>
-          </div>
-          <div className="flex items-center text-muted-foreground">
-            <IndianRupee className="w-3 h-3 mr-1 text-primary flex-shrink-0" />
-            <span className="font-semibold text-xs notranslate">{stipend}</span>
-          </div>
-          {work_mode && (
-            <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded text-xs font-medium">
-              {work_mode}
-            </span>
+          {/* Row 4: Skills */}
+          {required_skills && required_skills.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {required_skills.slice(0, 3).map((skill, i) => (
+                <span
+                  key={i}
+                  className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-muted/70 text-muted-foreground border border-border/40"
+                >
+                  {skill}
+                </span>
+              ))}
+              {required_skills.length > 3 && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-medium text-muted-foreground">
+                  +{required_skills.length - 3}
+                </span>
+              )}
+            </div>
           )}
-        </div>
 
-        {required_skills && required_skills.length > 0 && (
-          <div className="text-sm mb-1">
-            <div className="skills-container" style={{ maxHeight: '3.2rem', overflow: 'hidden', lineHeight: '1.4', paddingBottom: '0.75rem' }}>
-              {(() => {
-                const normalizeSkill = (skill: string) => {
-                  const normalized = skill.toLowerCase().trim();
-                  if (normalized.includes('html')) return 'html';
-                  if (normalized.includes('css')) return 'css';
-                  if (normalized.includes('javascript') || normalized === 'js') return 'javascript';
-                  if (normalized.includes('react')) return 'react';
-                  if (normalized.includes('node')) return 'nodejs';
-                  if (normalized.includes('python')) return 'python';
-                return normalized;
-                };
-                
-                const userSkills = userProfile?.skills || [];
-                const matchedSkills = required_skills.filter(skill => 
-                  userSkills.some((userSkill: string) => 
-                    normalizeSkill(userSkill) === normalizeSkill(skill)
-                  )
-                );
-                const unmatchedSkills = required_skills.filter(skill => 
-                  !userSkills.some((userSkill: string) => 
-                    userSkill.toLowerCase() === skill.toLowerCase()
-                  )
-                );
-                
-                // Show skills with +X more logic
-                const allSkills = [...matchedSkills, ...unmatchedSkills];
-                const maxSkillsToShow = Math.min(3, allSkills.length);
-                const skillsToShow = allSkills.slice(0, maxSkillsToShow);
-                const remainingCount = required_skills.length - skillsToShow.length;
-                
-                return (
-                  <>
-                    {skillsToShow.map((skill, index) => {
-                      const isMatched = matchedSkills.includes(skill);
-                      return (
-                        <a 
-                          key={index}
-                          href={`/skill/${skill.toLowerCase().replace(/\s+/g, '-')}`}
-                          className={`inline-block px-1.5 py-0.5 rounded text-xs notranslate hover:opacity-80 cursor-pointer transition-all mr-1 mb-1 ${
-                            isMatched 
-                              ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700' 
-                              : 'bg-secondary/50'
-                          }`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {skill}
-                          {isMatched && <span className="ml-1">✓</span>}
-                        </a>
-                      );
-                    })}
-                    {remainingCount > 0 && (
-                      <span className="inline-block px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground mr-1 mb-1">
-                        +{remainingCount} more
-                      </span>
-                    )}
-                  </>
-                );
-              })()}
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Row 5: Stipend + deadline */}
+          <div className="flex items-center justify-between text-xs pt-1.5 border-t border-border/50">
+            <div className="flex items-center gap-1 font-semibold text-foreground">
+              <IndianRupee className="w-3 h-3 text-emerald-500" />
+              <span className="notranslate">{stipend || 'Unpaid'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {computedScore !== null && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 cursor-default">
+                      {computedScore}% match
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>AI Match Score</TooltipContent>
+                </Tooltip>
+              )}
+              {deadlineStr && (
+                <span className="text-muted-foreground text-[10px]">
+                  Due {deadlineStr}
+                </span>
+              )}
             </div>
           </div>
-        )}
 
-
-
-
-
-        <div className="mt-auto pt-4">
-          {/* Main Action Buttons */}
-          <div className="flex items-center gap-2">
-            <Button 
+          {/* Row 6: Action buttons */}
+          <div className="flex gap-2 pt-0.5">
+            <Button
+              size="sm"
               onClick={handleApply}
-              disabled={hasApplied(id)}
-              className={`flex-1 h-10 font-semibold transition-all duration-200 shadow-sm hover:shadow-md rounded-full ${
-                hasApplied(id)
-                  ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                  : 'bg-gradient-to-r from-green-500 via-green-600 to-green-500 hover:from-green-600 hover:via-green-700 hover:to-green-600 text-white'
+              disabled={applied || isApplying}
+              className={`flex-1 h-7 text-xs font-semibold rounded-lg transition-colors ${
+                applied
+                  ? 'bg-muted text-muted-foreground cursor-default'
+                  : 'bg-primary hover:bg-primary/90 text-primary-foreground'
               }`}
             >
-              <span className="text-sm font-semibold">
-                {hasApplied(id) ? '✓ Applied' : 'Apply Now'}
-              </span>
+              {applied ? '✓ Applied' : isApplying ? 'Applying…' : 'Quick Apply'}
             </Button>
-            
-            <Button 
-              onClick={() => navigate(`/internships/${id}`)}
-              className="flex-1 h-10 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-semibold transition-all duration-200 shadow-sm hover:shadow-md group rounded-full"
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={e => { e.stopPropagation(); navigate(`/internships/${id}`); }}
+              className="h-7 px-3 text-xs font-medium rounded-lg"
             >
-              <span className="text-sm font-semibold">View</span>
+              Details
             </Button>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={handleCompareToggle}
-                  disabled={!isInComparison(id) && selectedInternships.length >= maxComparisons}
-                  size="sm"
-                  className={`h-10 w-10 p-0 shadow-sm hover:shadow-md transition-all ${
-                    isInComparison(id) 
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                      : 'bg-muted hover:bg-muted/80 text-muted-foreground'
-                  }`}
-                >
-                  <GitCompare className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Compare</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={handleWishlistToggle}
-                  size="sm"
-                  className={`h-10 w-10 p-0 shadow-sm hover:shadow-md transition-all ${
-                    isWishlisted(id)
-                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-muted hover:bg-muted/80 text-muted-foreground'
-                  }`}
-                >
-                  <Bookmark className={`w-4 h-4 ${isWishlisted(id) ? 'fill-current' : ''}`} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Wishlist</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className={`h-10 w-10 text-xs font-bold flex items-center justify-center cursor-default shadow-sm rounded-full ${
-                  (aiScore || matchScore || 0) >= 90 
-                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' 
-                    : (aiScore || matchScore || 0) >= 80 
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
-                    : (aiScore || matchScore || 0) >= 70
-                    ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white'
-                    : (aiScore || matchScore || 0) >= 60
-                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
-                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                }`}>
-                  {aiScore || matchScore || (userProfile ? 
-                    Math.max(45, Math.min(89, 65 + createStableHash(id + (userProfile.email || 'user')) % 25)) :
-                    Math.max(40, Math.min(85, 60 + createStableHash(id) % 26))
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <div className="text-center">
-                  <div className="font-semibold">AI Match Score</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {(aiScore || matchScore || 0) >= 90 ? '🔥 Excellent' :
-                     (aiScore || matchScore || 0) >= 80 ? '⭐ Great' :
-                     (aiScore || matchScore || 0) >= 70 ? '👍 Good' :
-                     (aiScore || matchScore || 0) >= 60 ? '👌 Fair' : '📝 Basic'}
-                  </div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+        </CardContent>
+      </Card>
     </TooltipProvider>
   );
 };

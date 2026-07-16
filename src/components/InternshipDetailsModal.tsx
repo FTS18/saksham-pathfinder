@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Building2, ExternalLink, IndianRupee, Calendar, Users, Clock, Briefcase, BookOpen, Loader2, Bookmark, Volume2, X, BookmarkCheck, ChevronLeft, ChevronRight, Sparkles, Share2 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlistStore as useWishlist } from '@/store/useWishlistStore';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { ReadingAssistant } from './ReadingAssistant';
@@ -154,7 +154,7 @@ export const InternshipDetailsModal = ({
     setLoadingPrep(true);
     
     // Generate local preparation guide
-    const guide = `**1. Interview Process Overview** 🎯
+    const guide = `**1. Interview Process Overview** 
 
 Typical interview rounds for ${internship.title} at ${internship.company}:
 - Online Assessment (coding/aptitude)
@@ -162,7 +162,7 @@ Typical interview rounds for ${internship.title} at ${internship.company}:
 - Onsite/Virtual Technical Rounds
 - HR/Behavioral Round
 
-**2. Technical Questions for ${internship.title}** 💻
+**2. Technical Questions for ${internship.title}** 
 
 Common questions for this role:
 - **Programming Fundamentals**: "Explain OOP concepts", "What is polymorphism?"
@@ -171,7 +171,7 @@ Common questions for this role:
 - **Problem Solving**: "How would you debug a slow application?"
 - **Role-Specific**: Questions about ${internship.required_skills?.slice(0, 3).join(', ') || 'core skills'}
 
-**3. Algorithm Problems by Difficulty** 🧩
+**3. Algorithm Problems by Difficulty** 
 
 **Easy Level (Start Here)**:
 - Two Sum, Reverse String, Valid Parentheses
@@ -183,7 +183,7 @@ Common questions for this role:
 - Dynamic Programming basics
 - Graph traversal (BFS/DFS)
 
-**4. Company-Specific Insights** 🏢
+**4. Company-Specific Insights** 
 
 **${internship.company} Interview Culture**:
 - Focus on problem-solving approach
@@ -196,7 +196,7 @@ Common questions for this role:
 - "How do you handle tight deadlines?"
 - "Describe a challenging project you worked on"
 
-**5. Preparation Timeline** ⏰
+**5. Preparation Timeline** 
 
 **Week 1-2: Foundation Building**
 - Review basic data structures and algorithms
@@ -213,12 +213,12 @@ Common questions for this role:
 - Practice coding on whiteboard/paper
 - Prepare thoughtful questions to ask
 
-**6. Key Skills to Focus On** 🎯
+**6. Key Skills to Focus On** 
 
 Based on the role requirements:
 ${internship.required_skills?.map(skill => `- **${skill}**: Practice problems and build projects`).join('\n') || '- Focus on core programming skills'}
 
-**7. Success Tips** ✨
+**7. Success Tips** 
 
 - Practice explaining your code out loud
 - Focus on understanding patterns, not memorizing

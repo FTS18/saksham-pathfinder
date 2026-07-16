@@ -1,16 +1,4 @@
-// Free Resume Scanning Options:
-
-// 1. PDF.js for PDF text extraction (Free)
-import * as pdfjsLib from 'pdfjs-dist';
-
-// 2. Tesseract.js for OCR (Free)
-import Tesseract from 'tesseract.js';
-
-// 3. Regular expressions for parsing
-const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
-const PHONE_REGEX = /(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
-const LINKEDIN_REGEX = /linkedin\.com\/in\/([a-zA-Z0-9-]+)/g;
-const GITHUB_REGEX = /github\.com\/([a-zA-Z0-9-]+)/g;
+// Free APIs for profile enhancement:
 
 export interface ResumeData {
   name?: string;
@@ -24,39 +12,10 @@ export interface ResumeData {
   rawText: string;
 }
 
-export const extractTextFromPDF = async (file: File): Promise<string> => {
-  try {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let fullText = '';
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      fullText += pageText + '\n';
-    }
-    
-    return fullText;
-  } catch (error) {
-    console.error('PDF extraction failed:', error);
-    throw new Error('Failed to extract text from PDF');
-  }
-};
-
-export const extractTextFromImage = async (file: File): Promise<string> => {
-  try {
-    const result = await Tesseract.recognize(file, 'eng', {
-      logger: m => console.log(m)
-    });
-    return result.data.text;
-  } catch (error) {
-    console.error('OCR extraction failed:', error);
-    throw new Error('Failed to extract text from image');
-  }
-};
+const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+const PHONE_REGEX = /(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/g;
+const LINKEDIN_REGEX = /linkedin\.com\/in\/([a-zA-Z0-9-]+)/g;
+const GITHUB_REGEX = /github\.com\/([a-zA-Z0-9-]+)/g;
 
 export const parseResumeText = (text: string): ResumeData => {
   const lines = text.split('\n').map(line => line.trim()).filter(line => line);

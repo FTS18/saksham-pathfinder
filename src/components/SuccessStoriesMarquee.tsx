@@ -45,7 +45,7 @@ export const SuccessStoriesMarquee = () => {
     const generatedStories = shuffledInternships.slice(0, 12).map((internship, idx) => {
       const name = shuffledNames[idx % shuffledNames.length];
       const city = shuffledCities[idx % shuffledCities.length];
-      const emoji = idx % 2 === 0 ? '🎉' : '🚀';
+      const emoji = idx % 2 === 0 ? '' : '';
       return `${emoji} ${name.toUpperCase()} FROM ${city.toUpperCase()} SECURED ${internship.company.toUpperCase()} INTERNSHIP WITH ${internship.stipend} STIPEND!`;
     });
     
@@ -59,7 +59,7 @@ export const SuccessStoriesMarquee = () => {
       const newStories = newShuffledInternships.slice(0, 12).map((internship, idx) => {
         const name = newShuffledNames[idx % newShuffledNames.length];
         const city = newShuffledCities[idx % newShuffledCities.length];
-        const emoji = idx % 2 === 0 ? '🎉' : '🚀';
+        const emoji = idx % 2 === 0 ? '' : '';
         return `${emoji} ${name.toUpperCase()} FROM ${city.toUpperCase()} SECURED ${internship.company.toUpperCase()} INTERNSHIP WITH ${internship.stipend} STIPEND!`;
       });
       

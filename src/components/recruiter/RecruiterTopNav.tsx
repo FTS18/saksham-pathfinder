@@ -30,7 +30,7 @@ export const RecruiterTopNav: React.FC = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex fixed top-0 left-0 right-0 h-16 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 z-50 items-center px-6 gap-8">
+      <nav className="hidden md:flex fixed top-0 left-0 right-0 h-16 bg-background border-b border-border z-50 items-center px-6 gap-8">
         {/* Logo */}
         <Link to="/recruiter/dashboard" className="flex items-center gap-2 min-w-fit">
           <img src="/logo.webp" alt="Saksham AI" className="h-8 w-auto" />
@@ -47,7 +47,7 @@ export const RecruiterTopNav: React.FC = () => {
               placeholder="Search jobs, skills, candidates..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-gray-100 dark:bg-slate-800 border-0 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="pl-10 pr-4 py-2 bg-muted border-0 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
             <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           </div>
@@ -64,7 +64,7 @@ export const RecruiterTopNav: React.FC = () => {
           </Link>
 
           {/* User Menu */}
-          <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-slate-700">
+          <div className="flex items-center gap-3 pl-4 border-l border-border">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {currentUser?.displayName || 'Recruiter'}
@@ -77,7 +77,7 @@ export const RecruiterTopNav: React.FC = () => {
             {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
               title="Logout"
             >
               <LogOut className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -87,7 +87,7 @@ export const RecruiterTopNav: React.FC = () => {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="md:hidden fixed top-0 left-0 right-0 h-14 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 z-50 flex items-center px-4 gap-3">
+      <nav className="md:hidden fixed top-0 left-0 right-0 h-14 bg-background border-b border-border z-50 flex items-center px-4 gap-3">
         <Link to="/recruiter/dashboard" className="flex items-center gap-2">
           <img src="/logo.webp" alt="Saksham AI" className="h-8 w-auto" />
         </Link>
@@ -105,7 +105,7 @@ export const RecruiterTopNav: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-14 left-0 right-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-700 p-4 space-y-3">
+          <div className="absolute top-14 left-0 right-0 bg-background border-b border-border p-4 space-y-3">
             <form onSubmit={handleSearch}>
               <Input
                 type="text"
@@ -122,7 +122,7 @@ export const RecruiterTopNav: React.FC = () => {
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg"
+              className="w-full p-2 text-left hover:bg-muted rounded-lg"
             >
               Logout
             </button>

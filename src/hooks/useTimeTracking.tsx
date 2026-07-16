@@ -21,12 +21,35 @@ export const useTimeTracking = () => {
         
         if (docSnap.exists()) {
           const currentData = docSnap.data();
-          const newPoints = (currentData.points || 0) + 100;
           
-          await updateDoc(docRef, {
-            points: newPoints,
-            lastActiveTime: new Date().toISOString()
-          });
+          try {
+            const isProduction = import.meta.env.PROD;
+            if (!isProduction) {
+              // Skip Netlify function calls in local dev
+              await updateDoc(docRef, { lastActiveTime: new Date().toISOString() });
+              return;
+            }
+            const token = await currentUser.getIdToken();
+            const response = await fetch('/.netlify/functions/gamification-api', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                action: 'time_tracking',
+                idempotencyKey: `track_${Date.now()}`
+              })
+            });
+
+            if (response.ok) {
+              await updateDoc(docRef, {
+                lastActiveTime: new Date().toISOString()
+              });
+            }
+          } catch (apiError) {
+            console.error('Failed to update points via API:', apiError);
+          }
         } else {
           // Create initial profile
           await setDoc(docRef, {

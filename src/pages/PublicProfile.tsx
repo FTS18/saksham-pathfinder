@@ -112,7 +112,7 @@ const PublicProfile = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl pt-20">
+      <div className="container mx-auto p-6 max-w-4xl pt-8">
         <div className="space-y-6">
           <Card>
             <CardContent className="p-6">
@@ -137,7 +137,7 @@ const PublicProfile = () => {
 
   if (notFound || !profile) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl pt-20">
+      <div className="container mx-auto p-6 max-w-4xl pt-8">
         <div className="text-center py-12">
           <User className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
           <h1 className="text-2xl font-bold mb-2">Profile Not Found</h1>
@@ -150,7 +150,7 @@ const PublicProfile = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl pt-20">
+    <div className="container mx-auto p-6 max-w-4xl pt-8">
       <div className="space-y-6">
         {/* Header */}
         <Card>

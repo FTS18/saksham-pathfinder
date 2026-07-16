@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { GitCompare } from 'lucide-react';
-import { useComparison } from '@/contexts/ComparisonContext';
+import { useComparisonStore as useComparison } from '@/store/useComparisonStore';
 import { ComparisonModal } from './ComparisonModal';
 
 interface ComparisonButtonProps {

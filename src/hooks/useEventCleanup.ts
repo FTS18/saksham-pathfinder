@@ -1,19 +1,19 @@
 import { useEffect, useRef } from 'react';
 
-interface EventListener {
+interface TrackedEventListener {
   element: EventTarget;
   event: string;
-  handler: EventListener;
+  handler: EventListenerOrEventListenerObject;
   options?: boolean | AddEventListenerOptions;
 }
 
 export const useEventCleanup = () => {
-  const listenersRef = useRef<EventListener[]>([]);
+  const listenersRef = useRef<TrackedEventListener[]>([]);
 
   const addEventListener = (
     element: EventTarget,
     event: string,
-    handler: EventListener,
+    handler: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
   ) => {
     element.addEventListener(event, handler, options);
@@ -23,7 +23,7 @@ export const useEventCleanup = () => {
   const removeEventListener = (
     element: EventTarget,
     event: string,
-    handler: EventListener
+    handler: EventListenerOrEventListenerObject
   ) => {
     element.removeEventListener(event, handler);
     listenersRef.current = listenersRef.current.filter(

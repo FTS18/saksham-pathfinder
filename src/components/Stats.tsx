@@ -9,7 +9,7 @@ export const Stats = () => {
   ];
 
   return (
-    <section className="bg-background py-16 sm:py-20">
+    <section className="bg-background pt-4 pb-16 sm:pt-6 sm:pb-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl sm:text-5xl font-racing font-extrabold text-center mb-12 text-foreground">Stats</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -2,27 +2,27 @@
 import { lazy, Suspense } from 'react';
 
 export const ProfileBasicInfo = lazy(() => 
-  import('./BasicInfoSection').then(m => ({ default: m.BasicInfoSection }))
+  import('../ProfileSections/BasicInfoSection').then(m => ({ default: m.BasicInfoSection }))
 );
 
 export const ProfileEducation = lazy(() => 
-  import('./EducationSection').then(m => ({ default: m.EducationSection }))
+  import('../ProfileSections/EducationSection').then(m => ({ default: m.EducationSection }))
 );
 
 export const ProfileExperience = lazy(() => 
-  import('./ExperienceSection').then(m => ({ default: m.ExperienceSection }))
+  import('../ProfileSections/ExperienceSection').then(m => ({ default: m.ExperienceSection }))
 );
 
 export const ProfileSkills = lazy(() => 
-  import('./SkillsSection').then(m => ({ default: m.SkillsSection }))
+  import('../ProfileSections/SkillsSection').then(m => ({ default: m.SkillsSection }))
 );
 
 export const ProfileSecurity = lazy(() => 
-  import('./SecuritySection').then(m => ({ default: m.SecuritySection }))
+  import('../ProfileSections/SecuritySection').then(m => ({ default: m.SecuritySection }))
 );
 
 export const ProfileSettings = lazy(() => 
-  import('./SettingsSection').then(m => ({ default: m.SettingsSection }))
+  import('../ProfileSections/SettingsSection').then(m => ({ default: m.SettingsSection }))
 );
 
 export const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (

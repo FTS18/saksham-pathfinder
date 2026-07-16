@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -148,20 +149,25 @@ export default function ManageInternships() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Manage Internships</h1>
-        <div className="flex gap-2">
-          <Button onClick={() => setIsTrackerOpen(true)} variant="outline">
-            <Eye className="w-4 h-4 mr-2" />
-            Application Tracker
-          </Button>
-          <Button onClick={handleAdd}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Internship
-          </Button>
+    <div className="bg-background">
+      <PageHeader
+        title="Manage Internships"
+        subtitle="Manage your posted internships and track applications"
+      />
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="flex-grow" />
+          <div className="flex gap-2">
+            <Button onClick={() => setIsTrackerOpen(true)} variant="outline">
+              <Eye className="w-4 h-4 mr-2" />
+              Application Tracker
+            </Button>
+            <Button onClick={handleAdd}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Internship
+            </Button>
+          </div>
         </div>
-      </div>
 
       {/* Search and Filter */}
       <div className="flex gap-4">
@@ -215,8 +221,8 @@ export default function ManageInternships() {
       {/* Internships List with Pagination */}
       <div className="grid gap-4">
         {paginatedInternships.map((internship) => (
-          <Card key={internship.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
+          <Card key={internship.id} className="hover:shadow-md hover:-translate-y-0.5">
+            <CardContent className="pt-4">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -334,6 +340,7 @@ export default function ManageInternships() {
           <ApplicationTracker />
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

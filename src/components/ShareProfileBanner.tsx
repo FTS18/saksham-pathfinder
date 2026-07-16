@@ -105,10 +105,10 @@ export const ShareProfileBanner = ({ profile, onClose }: ShareProfileBannerProps
             
             <div className="space-y-2">
               {profile.location && (
-                <p className="text-xs text-muted-foreground">📍 {profile.location}</p>
+                <p className="text-xs text-muted-foreground"> {profile.location}</p>
               )}
               {profile.age && (
-                <p className="text-xs text-muted-foreground">🎂 {profile.age} years old</p>
+                <p className="text-xs text-muted-foreground"> {profile.age} years old</p>
               )}
               {profile.bio && (
                 <p className="text-sm text-muted-foreground">{profile.bio}</p>

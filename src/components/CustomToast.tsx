@@ -60,7 +60,7 @@ export const CustomToast = ({ type, title, message, onClose, duration = 5000 }: 
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
       }`}
     >
-      <div className="relative w-80 h-20 rounded-lg bg-white dark:bg-gray-800 shadow-lg overflow-hidden flex items-center justify-around gap-4 p-4">
+      <div className="relative w-80 h-20 rounded-lg bg-card shadow-lg overflow-hidden flex items-center justify-around gap-4 p-4">
         {/* Wave SVG */}
         <svg 
           className="absolute transform rotate-90 -left-8 top-8 w-20" 

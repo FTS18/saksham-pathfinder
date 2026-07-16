@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -37,16 +37,16 @@ interface GamificationContextType {
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
 
 const ACHIEVEMENTS: Achievement[] = [
-  { id: 'profile_complete', title: 'Profile Master', description: 'Complete your profile', icon: '👤', points: 50 },
-  { id: 'first_application', title: 'First Step', description: 'Apply to your first internship', icon: '📝', points: 25 },
-  { id: 'five_applications', title: 'Go Getter', description: 'Apply to 5 internships', icon: '🎯', points: 100 },
-  { id: 'first_referral', title: 'Team Player', description: 'Refer your first friend', icon: '🤝', points: 100 },
-  { id: 'skill_master', title: 'Skill Collector', description: 'Add 10+ skills to profile', icon: '⭐', points: 75 },
+  { id: 'profile_complete', title: 'Profile Master', description: 'Complete your profile', icon: '', points: 50 },
+  { id: 'first_application', title: 'First Step', description: 'Apply to your first internship', icon: '', points: 25 },
+  { id: 'five_applications', title: 'Go Getter', description: 'Apply to 5 internships', icon: '', points: 100 },
+  { id: 'first_referral', title: 'Team Player', description: 'Refer your first friend', icon: '', points: 100 },
+  { id: 'skill_master', title: 'Skill Collector', description: 'Add 10+ skills to profile', icon: '', points: 75 },
 ];
 
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const authContext = useAuth();
-  const user = authContext?.user;
+  const user = authContext?.currentUser;
   const [data, setData] = useState<GamificationData>({
     totalPoints: 0,
     level: 1,
@@ -90,7 +90,7 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   };
 
-  const addPoints = async (points: number, reason: string) => {
+  const addPoints = useCallback(async (points: number, reason: string) => {
     if (!user) return;
     
     const newTotalPoints = data.totalPoints + points;
@@ -113,9 +113,9 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (error) {
       console.error('Error updating points:', error);
     }
-  };
+  }, [user, data]);
 
-  const unlockAchievement = async (achievementId: string) => {
+  const unlockAchievement = useCallback(async (achievementId: string) => {
     if (!user) return;
     
     const achievement = ACHIEVEMENTS.find(a => a.id === achievementId);
@@ -142,11 +142,18 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (error) {
       console.error('Error unlocking achievement:', error);
     }
-  };
+  }, [user, data]);
+
+  const value = useMemo(() => ({
+    data,
+    addPoints,
+    unlockAchievement,
+    loading
+  }), [data, addPoints, unlockAchievement, loading]);
 
   try {
     return (
-      <GamificationContext.Provider value={{ data, addPoints, unlockAchievement, loading }}>
+      <GamificationContext.Provider value={value}>
         {children}
       </GamificationContext.Provider>
     );

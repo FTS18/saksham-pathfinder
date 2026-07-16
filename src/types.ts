@@ -22,11 +22,16 @@ export interface Internship {
   workMode?: "Remote" | "On-site" | "Hybrid";
   recruiterId?: string;
   status?: "draft" | "published" | "archived";
+  pmis_id?: string;
+  eligibility_text?: string;
+  openings?: number;
+  logo?: string;
+  featured?: boolean;
   views?: number;
   applications?: number;
-  createdAt?: any;
-  updatedAt?: any;
-  publishedAt?: any;
+  createdAt?: string | Date | { seconds: number; nanoseconds: number };
+  updatedAt?: string | Date | { seconds: number; nanoseconds: number };
+  publishedAt?: string | Date | { seconds: number; nanoseconds: number };
   companyLogoUrl?: string;
   maxApplications?: number;
 }
@@ -35,19 +40,42 @@ export interface ProfileData {
   name?: string;
   email?: string;
   phone?: string;
+  photoURL?: string;
+  displayUsername?: string;
+  studentId?: string;
+  uniqueUserId?: string;
+  dateOfBirth?: string;
   location: string | { city: string; state?: string };
   desiredLocation?: string | { city: string; state?: string };
-  education: string;
+  education: string | { degree: string; institution: string; year: string }[];
+  experience?: { title: string; company: string; duration: string }[];
   skills: string[];
-  interests: string[];
+  sectors?: string[];
+  interests?: string[];
   minStipend?: number;
   maxStipend?: number;
   preferredWorkMode?: string;
   searchRadius?: number;
   bio?: string;
+  resumeURL?: string;
+  resumeTitle?: string;
+  resumeUrl?: string;
+  resumeDescription?: string;
+  socialLinks?: {
+    portfolio?: string;
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+    codechef?: string;
+    leetcode?: string;
+  };
+  linkedAccounts?: { google?: boolean };
+  theme?: string;
+  colorTheme?: string;
+  wishlist?: string[];
   isPublic?: boolean;
   isActive?: boolean;
-  deactivatedAt?: any;
+  deactivatedAt?: string | Date | { seconds: number; nanoseconds: number };
 }
 
 export interface FilterState {
@@ -86,11 +114,11 @@ export interface RecruiterProfile {
   incorporationCertificateUrl?: string;
   isVerified: boolean;
   status: "pending" | "verified" | "rejected" | "active" | "deactivated";
-  submittedAt?: any;
-  updatedAt?: any;
+  submittedAt?: string | Date | { seconds: number; nanoseconds: number };
+  updatedAt?: string | Date | { seconds: number; nanoseconds: number };
   internshipsCreated: number;
   applicationsReceived: number;
-  deactivatedAt?: any;
+  deactivatedAt?: string | Date | { seconds: number; nanoseconds: number };
   verificationNotes?: string;
 }
 
@@ -101,9 +129,9 @@ export interface VerificationRequest {
   companyEmail: string;
   gstNumber: string;
   status: "pending" | "approved" | "rejected";
-  createdAt?: any;
-  updatedAt?: any;
-  reviewedAt?: any;
+  createdAt?: string | Date | { seconds: number; nanoseconds: number };
+  updatedAt?: string | Date | { seconds: number; nanoseconds: number };
+  reviewedAt?: string | Date | { seconds: number; nanoseconds: number };
   reviewedBy?: string;
   rejectionReason?: string;
 }
@@ -126,14 +154,14 @@ export interface Application {
     | "accepted"
     | "rejected"
     | "withdrawn";
-  appliedAt?: any;
-  updatedAt?: any;
+  appliedAt?: string | Date | { seconds: number; nanoseconds: number };
+  updatedAt?: string | Date | { seconds: number; nanoseconds: number };
   notes?: string;
   resumeURL?: string;
   coverLetter?: string;
   priority?: "low" | "medium" | "high";
   source?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Analytics {
@@ -142,8 +170,8 @@ export interface Analytics {
   userId?: string;
   recruiterId?: string;
   eventType: "view" | "click" | "apply" | "save";
-  timestamp?: any;
-  metadata?: any;
+  timestamp?: string | Date | { seconds: number; nanoseconds: number };
+  metadata?: Record<string, unknown>;
 }
 
 export interface Message {
@@ -154,9 +182,9 @@ export interface Message {
   subject?: string;
   content: string;
   isRead: boolean;
-  createdAt?: any;
-  updatedAt?: any;
-  metadata?: any;
+  createdAt?: string | Date | { seconds: number; nanoseconds: number };
+  updatedAt?: string | Date | { seconds: number; nanoseconds: number };
+  metadata?: Record<string, unknown>;
 }
 
 export interface RecruiterDashboardStats {

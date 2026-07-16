@@ -22,10 +22,10 @@ export const geminiService = new GeminiService();
 
 // Redirect to new service
 export const quickActions = [
-  { id: 'search', label: '🔍 Find Internships', prompt: 'How can I search for internships on this platform?' },
-  { id: 'resume', label: '📄 Resume Tips', prompt: 'Give me tips to improve my resume for internship applications' },
-  { id: 'interview', label: '💼 Interview Prep', prompt: 'Help me prepare for internship interviews' },
-  { id: 'skills', label: '🎯 Skill Gap', prompt: 'How can I identify and fill skill gaps for my target role?' },
-  { id: 'profile', label: '👤 Profile Setup', prompt: 'Guide me through setting up my profile on this platform' },
-  { id: 'filters', label: '⚙️ Advanced Filters', prompt: 'Explain how to use advanced filters to find relevant internships' }
+  { id: 'search', label: 'Find Internships', prompt: 'How can I search for internships on this platform?' },
+  { id: 'resume', label: 'Resume Tips', prompt: 'Give me tips to improve my resume for internship applications' },
+  { id: 'interview', label: 'Interview Prep', prompt: 'Help me prepare for internship interviews' },
+  { id: 'skills', label: 'Skill Gap', prompt: 'How can I identify and fill skill gaps for my target role?' },
+  { id: 'profile', label: 'Profile Setup', prompt: 'Guide me through setting up my profile on this platform' },
+  { id: 'filters', label: 'Advanced Filters', prompt: 'Explain how to use advanced filters to find relevant internships' }
 ];

@@ -348,13 +348,13 @@ const RecruiterOnboarding = () => {
               <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-4" />
             </div>
             <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              🎉 Welcome to Saksham AI! 🎉
+               Welcome to Saksham AI! 
             </h2>
             <p className="text-lg text-muted-foreground mb-6">
               Your recruiter profile is now set up. Start posting internships and find the best talent!
             </p>
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-6 rounded-lg border border-primary/20">
-              <p className="font-bold text-lg text-primary mb-2">🚀 Ready to Hire!</p>
+              <p className="font-bold text-lg text-primary mb-2"> Ready to Hire!</p>
               <p className="font-medium">Your profile is under review for verification</p>
               <p className="text-sm text-muted-foreground mt-2">You can start posting internships immediately</p>
             </div>
@@ -364,7 +364,7 @@ const RecruiterOnboarding = () => {
                 size="lg"
                 className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold px-8 py-3"
               >
-                Go to Dashboard 🎯
+                Go to Dashboard 
               </Button>
             </div>
           </div>
@@ -376,70 +376,72 @@ const RecruiterOnboarding = () => {
   };
 
   return (
-    <div className="min-h-screen hero-gradient flex items-center justify-center px-4 py-8">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
-            </div>
-            <span className="font-racing font-bold text-xl text-foreground">Saksham AI</span>
-          </div>
-          
-          {currentStep < 4 && (
-            <>
-              <div className="flex justify-center mb-4">
-                <div className="flex space-x-2">
-                  {[1, 2, 3].map((step) => (
-                    <div
-                      key={step}
-                      className={`w-3 h-3 rounded-full ${
-                        step <= currentStep ? 'bg-primary' : 'bg-muted'
-                      }`}
-                    />
-                  ))}
-                </div>
+    <div className="h-screen w-screen overflow-y-auto hero-gradient">
+      <div className="min-h-full flex items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-2xl">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+                <span className="text-white font-bold text-sm">S</span>
               </div>
-              <CardTitle className="text-xl">Step {currentStep} of 3</CardTitle>
-            </>
-          )}
-        </CardHeader>
-        <CardContent>
-          {renderStep()}
-          
-          {currentStep < 4 && (
-            <div className="flex gap-4 pt-6">
-              {currentStep > 1 && (
-                <Button 
-                  variant="outline" 
-                  onClick={() => setCurrentStep(prev => prev - 1)}
-                  className="flex-1"
-                >
-                  Back
-                </Button>
-              )}
-              
-              {currentStep < 3 ? (
-                <Button 
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                  className="flex-1"
-                >
-                  Next
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleComplete}
-                  disabled={loading || !canProceed()}
-                  className="flex-1"
-                >
-                  {loading ? 'Setting up...' : 'Complete Setup'}
-                </Button>
-              )}
+              <span className="font-racing font-bold text-xl text-foreground">Saksham AI</span>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            
+            {currentStep < 4 && (
+              <>
+                <div className="flex justify-center mb-4">
+                  <div className="flex space-x-2">
+                    {[1, 2, 3].map((step) => (
+                      <div
+                        key={step}
+                        className={`w-3 h-3 rounded-full ${
+                          step <= currentStep ? 'bg-primary' : 'bg-muted'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <CardTitle className="text-xl">Step {currentStep} of 3</CardTitle>
+              </>
+            )}
+          </CardHeader>
+          <CardContent>
+            {renderStep()}
+            
+            {currentStep < 4 && (
+              <div className="flex gap-4 pt-6">
+                {currentStep > 1 && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setCurrentStep(prev => prev - 1)}
+                    className="flex-1"
+                  >
+                    Back
+                  </Button>
+                )}
+                
+                {currentStep < 3 ? (
+                  <Button 
+                    onClick={handleNext}
+                    disabled={!canProceed()}
+                    className="flex-1"
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={handleComplete}
+                    disabled={loading || !canProceed()}
+                    className="flex-1"
+                  >
+                    {loading ? 'Setting up...' : 'Complete Setup'}
+                  </Button>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 

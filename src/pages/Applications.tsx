@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useApplication } from '@/contexts/ApplicationContext';
+import { fetchInternships } from '@/lib/dataExtractor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, Building, Calendar, AlertCircle, CheckCircle, Clock, X, RefreshCw, MapPin, DollarSign, Users, Eye, Briefcase, Download } from 'lucide-react';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useAuth } from '@/contexts/AuthContext';
 import { InternshipDetailsModal } from '@/components/InternshipDetailsModal';
 import { useInternships } from '@/hooks/useInternships';
 import { exportToCSV, exportToPDF } from '@/utils/exportApplications';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 
 const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColor }: any) => {
   const [selectedInternship, setSelectedInternship] = useState<any>(null);
@@ -32,8 +33,7 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
       // If not found, try fetching from JSON
       if (!details && application.internshipId) {
         try {
-          const response = await fetch('/internships.json');
-          const allInternships = await response.json();
+          const allInternships = await fetchInternships();
           details = allInternships.find((i: any) => i.id === application.internshipId);
         } catch (error) {
           // Silent error handling
@@ -90,7 +90,7 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3 flex-1">
-              <div className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center ring-2 ring-primary/10 group-hover:ring-primary/20 transition-all">
+              <div className="relative w-12 h-12 rounded-sm bg-muted flex items-center justify-center border border-border">
                 <Building className="w-7 h-7 text-primary" />
                 <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-background flex items-center justify-center ${
                   application.status === 'accepted' ? 'bg-green-500' :
@@ -120,7 +120,7 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
         
         <CardContent className="pt-0 space-y-4">
           <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/10 border border-border/50 rounded-sm p-2">
               <MapPin className="w-4 h-4 text-primary" />
               <span className="font-medium">
                 {loading ? 'Loading...' : (cardInternshipDetails?.location || 'Location not available')}
@@ -128,14 +128,14 @@ const ApplicationCard = ({ application, onWithdraw, getStatusIcon, getStatusColo
             </div>
             
             <div className="grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-green-50 dark:bg-green-900/20 rounded-lg p-2">
-                <DollarSign className="w-4 h-4 text-green-600" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/10 border border-border/50 rounded-sm p-2">
+                <DollarSign className="w-4 h-4 text-muted-foreground" />
                 <span className="font-medium">
                   {loading ? 'Loading...' : (cardInternshipDetails?.stipend ? `₹${cardInternshipDetails.stipend}/mo` : 'Not specified')}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2">
-                <Users className="w-4 h-4 text-blue-600" />
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/10 border border-border/50 rounded-sm p-2">
+                <Users className="w-4 h-4 text-muted-foreground" />
                 <span className="font-medium">
                   {loading ? 'Loading...' : (cardInternshipDetails?.duration || '3-6 months')}
                 </span>
@@ -228,19 +228,44 @@ const Applications = () => {
   };
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="bg-background">
+        <PageHeader title="My Applications" subtitle="Track and manage your internship applications" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 animate-pulse">
+          <div className="flex justify-between items-center mb-6">
+            <div className="h-10 w-64 bg-muted rounded" />
+            <div className="h-10 w-24 bg-muted rounded" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="p-6 border rounded-lg bg-card space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="h-6 w-32 bg-muted rounded" />
+                  <div className="h-6 w-24 bg-muted rounded-full" />
+                </div>
+                <div className="h-4 w-48 bg-muted rounded" />
+                <div className="h-12 w-full bg-muted/50 rounded" />
+                <div className="flex justify-between items-center pt-4">
+                  <div className="h-4 w-24 bg-muted rounded" />
+                  <div className="h-8 w-24 bg-muted rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-background pt-6 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-background">
+      <PageHeader
+        title="My Applications"
+        subtitle="Track and manage your internship applications"
+      />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">My Applications</h1>
-              <p className="text-muted-foreground">Track and manage your internship applications</p>
-            </div>
-            <div className="flex gap-2">
+          <div className="flex items-center justify-end gap-2">
               {applications.length > 0 && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -251,10 +276,9 @@ const Applications = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem onClick={async () => {
-                      const enrichedApps = await Promise.all(filteredApplications.map(async (app) => {
+                      const allInternships = await fetchInternships();
+                      const enrichedApps = filteredApplications.map((app) => {
                         try {
-                          const response = await fetch('/internships.json');
-                          const allInternships = await response.json();
                           const details = allInternships.find((i: any) => i.id === app.internshipId || i.title === app.internshipTitle);
                           return {
                             ...app,
@@ -264,16 +288,15 @@ const Applications = () => {
                         } catch {
                           return app as any;
                         }
-                      }));
+                      });
                       exportToCSV(enrichedApps as any);
                     }}>
                       Export as CSV
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={async () => {
-                      const enrichedApps = await Promise.all(filteredApplications.map(async (app) => {
+                      const allInternships = await fetchInternships();
+                      const enrichedApps = filteredApplications.map((app) => {
                         try {
-                          const response = await fetch('/internships.json');
-                          const allInternships = await response.json();
                           const details = allInternships.find((i: any) => i.id === app.internshipId || i.title === app.internshipTitle);
                           return {
                             ...app,
@@ -283,7 +306,7 @@ const Applications = () => {
                         } catch {
                           return app as any;
                         }
-                      }));
+                      });
                       exportToPDF(enrichedApps as any);
                     }}>
                       Export as PDF
@@ -316,11 +339,10 @@ const Applications = () => {
                   Withdraw All
                 </Button>
               )}
-            </div>
           </div>
           {error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive">
+              <p className="text-destructive text-sm">{error}</p>
             </div>
           )}
         </div>

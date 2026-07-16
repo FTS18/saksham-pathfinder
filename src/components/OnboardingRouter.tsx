@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
 
 interface OnboardingRouterProps {
   children: React.ReactNode;
@@ -54,9 +53,6 @@ export const OnboardingRouter = ({ children }: OnboardingRouterProps) => {
     }
   }, [currentUser, userType, needsOnboarding, loading, navigate]);
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
+  // Don't block render while auth loads — show children immediately
   return <>{children}</>;
 };

@@ -135,7 +135,7 @@ export const NotificationSystem = () => {
 
       {showPanel && (
         <div className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto z-50">
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold">Notifications</h3>

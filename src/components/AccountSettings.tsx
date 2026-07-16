@@ -26,16 +26,16 @@ export const AccountSettings = () => {
 
     try {
       await updateUserPassword(newPassword, isGoogleUser ? undefined : currentPassword);
-      setMessage('✅ Password updated successfully!');
+      setMessage(' Password updated successfully!');
       setNewPassword('');
       setCurrentPassword('');
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
-        setError('❌ Current password is incorrect');
+        setError(' Current password is incorrect');
       } else if (error.code === 'auth/weak-password') {
-        setError('❌ Password should be at least 6 characters');
+        setError(' Password should be at least 6 characters');
       } else {
-        setError('❌ Error updating password: ' + error.message);
+        setError(' Error updating password: ' + error.message);
       }
     } finally {
       setLoading(false);
@@ -49,13 +49,13 @@ export const AccountSettings = () => {
     );
 
     if (userInput !== confirmText) {
-      alert('❌ Account deletion cancelled');
+      alert(' Account deletion cancelled');
       return;
     }
 
     const password = isGoogleUser ? undefined : prompt('Enter your current password:');
     if (!isGoogleUser && !password) {
-      alert('❌ Password required for account deletion');
+      alert(' Password required for account deletion');
       return;
     }
 
@@ -64,13 +64,13 @@ export const AccountSettings = () => {
 
     try {
       await deleteUserAccount(password || undefined);
-      alert('✅ Account deleted successfully');
+      alert(' Account deleted successfully');
       window.location.href = '/';
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
-        setError('❌ Current password is incorrect');
+        setError(' Current password is incorrect');
       } else {
-        setError('❌ Error deleting account: ' + error.message);
+        setError(' Error deleting account: ' + error.message);
       }
     } finally {
       setLoading(false);

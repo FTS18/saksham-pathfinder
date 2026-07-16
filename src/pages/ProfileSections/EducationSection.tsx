@@ -1,3 +1,4 @@
+import { ProfileData } from '@/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,8 +15,8 @@ interface Education {
 }
 
 interface EducationSectionProps {
-  profile: any;
-  onUpdate: (key: string, value: any) => Promise<void>;
+  profile: ProfileData;
+  onUpdate: (key: string, value: unknown) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -63,7 +64,7 @@ export const EducationSection = ({ profile, onUpdate, isLoading }: EducationSect
   };
 
   return (
-    <Card className="rounded-lg">
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <GraduationCap className="w-5 h-5" />
@@ -158,3 +159,4 @@ export const EducationSection = ({ profile, onUpdate, isLoading }: EducationSect
 };
 
 export default EducationSection;
+

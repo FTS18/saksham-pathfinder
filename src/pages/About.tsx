@@ -71,10 +71,10 @@ const About = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="mb-8">
-          <Breadcrumbs />
+          
         </div>
         <div id="about-content" className="relative pb-16">
           <div className="w-full">
@@ -97,7 +97,7 @@ const About = () => {
               </div>
             </div>
 
-            <Card id="problem-statement" className="glass-card mb-16">
+            <Card id="problem-statement" className="shadow-sm border-border/40 mb-16">
               <CardHeader>
                 <CardTitle className="text-2xl font-sans font-bold italic">
                   Problem Statement
@@ -133,7 +133,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="why-project" className="glass-card mb-16">
+            <Card id="why-project" className="shadow-sm border-border/40 mb-16">
               <CardHeader>
                 <CardTitle className="text-2xl font-sans font-bold">
                   Why We Chose This Project
@@ -185,7 +185,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="ai-special" className="glass-card mb-12">
+            <Card id="ai-special" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="w-5 h-5 text-primary" />
@@ -225,7 +225,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="team" className="glass-card mb-12">
+            <Card id="team" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Users className="w-6 h-6 text-primary" />
@@ -271,7 +271,7 @@ const About = () => {
             </Card>
 
             <div id="mission-vision" className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <Card className="glass-card">
+              <Card className="shadow-sm border-border/40">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="w-5 h-5 text-primary" />
@@ -287,7 +287,7 @@ const About = () => {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card">
+              <Card className="shadow-sm border-border/40">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Lightbulb className="w-5 h-5 text-primary" />
@@ -303,7 +303,7 @@ const About = () => {
               </Card>
             </div>
 
-            <Card id="tech-stack" className="glass-card mb-12">
+            <Card id="tech-stack" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Code className="w-5 h-5 text-primary" />
@@ -353,7 +353,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="platform-features" className="glass-card mb-12">
+            <Card id="platform-features" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Heart className="w-6 h-6 text-primary" />
@@ -396,7 +396,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="current-features" className="glass-card mb-12">
+            <Card id="current-features" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Brain className="w-6 h-6 text-primary" />
@@ -454,7 +454,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="why-choose" className="glass-card mb-12">
+            <Card id="why-choose" className="shadow-sm border-border/40 mb-12">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Target className="w-6 h-6 text-primary" />
@@ -503,7 +503,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="contact" className="glass-card mb-16">
+            <Card id="contact" className="shadow-sm border-border/40 mb-16">
               <CardHeader>
                 <CardTitle className="text-2xl font-sans font-bold text-center">
                   Get in Touch
@@ -557,7 +557,7 @@ const About = () => {
               </CardContent>
             </Card>
 
-            <Card id="research" className="glass-card mb-20">
+            <Card id="research" className="shadow-sm border-border/40 mb-20">
               <CardHeader>
                 <CardTitle className="text-2xl font-sans font-bold text-center italic">
                   Research & References
@@ -676,7 +676,7 @@ const About = () => {
           {/* TOC Navigation - Commented out */}
           {/*
           <div className="toc-navigation hidden xl:block sticky z-30" style={{ top: '6rem', width: '20rem', maxHeight: 'calc(100vh - 8rem)' }}>
-            <div className="glass-card border-primary/30 p-3 shadow-2xl h-full flex flex-col">
+            <div className="shadow-sm border-border/40 border-primary/30 p-3 shadow-2xl h-full flex flex-col">
               <h3 className="font-bold mb-3 text-sm uppercase tracking-wider text-primary flex items-center gap-2 flex-shrink-0">
                 <Play className="w-4 h-4" />
                 On This Page

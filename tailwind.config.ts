@@ -14,9 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        inter: ['Inter', 'system-ui', 'sans-serif'],
-        poppins: ['Poppins', 'system-ui', 'sans-serif'],
-        racing: ['"Racing Sans One"', 'sans-serif'],
+        sans: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+        inter: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+        poppins: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+        racing: ['"Bricolage Grotesque"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -95,10 +96,15 @@ export default {
             height: "0",
           },
         },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        marquee: "marquee 35s linear infinite",
       },
     },
   },

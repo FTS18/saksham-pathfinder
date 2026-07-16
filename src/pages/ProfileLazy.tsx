@@ -157,7 +157,7 @@ export const ProfileLazy = () => {
   return (
     <div className="container py-8 space-y-6">
       {/* Breadcrumbs */}
-      <Breadcrumbs />
+      
 
       {/* Page Header */}
       <div>
@@ -169,7 +169,7 @@ export const ProfileLazy = () => {
 
       {/* Horizontal Tabs */}
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:flex glass-card">
+        <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:flex shadow-sm border-border/40">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="w-4 h-4" />
             <span className="hidden sm:inline">Profile</span>

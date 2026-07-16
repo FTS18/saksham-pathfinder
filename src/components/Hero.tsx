@@ -1,87 +1,81 @@
 import { Button } from './ui/button';
-import { ArrowRight, Sparkles, Brain, Target, Users } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useState, useEffect } from 'react';
-
-const translations = {
-  en: {
-    headline: 'Find the Right Internship for You with AI',
-    subtext: 'Empowering students to discover meaningful career opportunities with intelligent recommendations tailored to your skills and aspirations.',
-    cta: 'Get Started',
-    features: ['AI-Powered Matching', 'Personalized Recommendations', 'Student-Friendly Interface']
-  },
-  hi: {
-    headline: 'AI के साथ अपने लिए सही इंटर्नशिप खोजें',
-    subtext: 'आपके कौशल और आकांक्षाओं के अनुरूप बुद्धिमान सिफारिशों के साथ छात्रों को सार्थक करियर के अवसर खोजने में सशक्त बनाना।',
-    cta: 'शुरू करें',
-    features: ['AI-संचालित मैचिंग', 'व्यक्तिगत सिफारिशें', 'छात्र-अनुकूल इंटरफेस']
-  }
-};
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   onGetStartedClick: () => void;
 }
 
-
 export const Hero = ({ onGetStartedClick }: HeroProps) => {
   const { language } = useTheme();
-  const t = translations[language];
-  const [showCards, setShowCards] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const threshold = window.innerHeight * 0.3;
-      setShowCards(scrollY > threshold);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const socialProof = [
+    { stat: '10,000+', text: 'Internships' },
+    { stat: '500+', text: 'Companies' },
+    { stat: '50,000+', text: 'Students' },
+  ];
 
   return (
-    <>
     <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background" />
+      {/* Base Background Image */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url('/hero-bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+      {/* Contrast Overlay: Light layer in light mode, Dark layer in dark mode */}
+      <div className="absolute inset-0 z-0 bg-white/75 dark:bg-black/80 pointer-events-none" />
       
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full animate-float blur-xl" />
-        <div className="absolute top-40 right-20 w-32 h-32 bg-accent/30 rounded-full animate-float blur-2xl" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-primary/25 rounded-full animate-float blur-xl" style={{ animationDelay: '4s' }} />
-      </div>
+      {/* Purply Accent Overlay */}
+      <div className="absolute inset-0 z-0 bg-primary/20 dark:bg-primary/30 mix-blend-color pointer-events-none" />
       
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 shadow-lg hover:bg-primary/20 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-            <Sparkles className="w-3 h-3 text-primary mr-2 animate-pulse" />
-            <span className="text-xs font-medium text-primary">
-              Powered by AI Technology
-            </span>
-          </div>
-        </div>
+      {/* Gradient fade to seamlessly blend into the main page background at the bottom */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-background/60 to-background pointer-events-none" />
+      
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-12">
 
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-6 leading-tight hero-title-mobile">
-          Find the Right <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Internship</span> for You with AI
+
+
+        {/* Heading */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-racing font-bold text-foreground mb-4 sm:mb-5 leading-tight mt-8" style={{ textWrap: 'balance' } as React.CSSProperties}>
+          Find the Right{' '}
+          <span className="text-primary">Internship</span>{' '}
+          for You
         </h1>
 
-        <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed hero-subtitle-mobile">
-          Empowering students to discover meaningful career opportunities with intelligent recommendations tailored to your skills and aspirations.
+        {/* Subtitle */}
+        <p className="text-sm sm:text-base text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed">
+          Discover opportunities tailored to your skills and career aspirations.
         </p>
 
-        <div className="mb-8 sm:mb-8">
-          <Button 
-            size="lg" 
+        {/* Primary CTA */}
+        <div className="flex justify-center mb-10">
+          <Button
             onClick={onGetStartedClick}
-            className="bg-foreground hover:bg-foreground/90 active:bg-foreground/80 text-background px-8 sm:px-12 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200 group"
+            size="lg"
+            className="h-12 px-8 text-base font-semibold rounded-lg shrink-0 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5"
           >
-            Get Started
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+            Explore Internships
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
+
+        {/* Social proof stats */}
+        <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 mt-12 pt-8 border-t border-border/40 max-w-2xl mx-auto">
+          {socialProof.map(({ stat, text }) => (
+            <div key={text} className="flex flex-col items-center">
+              <span className="text-3xl font-bold text-foreground mb-1">{stat}</span>
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">{text}</span>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
-
-
-    </>
   );
 };

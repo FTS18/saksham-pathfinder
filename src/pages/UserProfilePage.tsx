@@ -73,7 +73,7 @@ const UserProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
@@ -81,7 +81,7 @@ const UserProfilePage = () => {
 
   if (!userProfile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-2">User not found</h1>
           <Button onClick={() => navigate('/')}>Go back home</Button>
@@ -99,7 +99,7 @@ const UserProfilePage = () => {
   const isOwnProfile = currentUser?.uid === userProfile.uid;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-accent/5 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header Card */}
         <Card className="mb-6 border-primary/20">

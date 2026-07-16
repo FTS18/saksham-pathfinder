@@ -223,13 +223,13 @@ const ImprovedOnboarding = () => {
   // Student Flow
   if (isStudent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-8">
+      <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-accent/5 py-8">
         <Confetti active={showConfetti} />
         
         <div className="max-w-2xl mx-auto px-4">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-3">
-              <h1 className="text-3xl font-bold">Let's Get Started 🚀</h1>
+              <h1 className="text-3xl font-bold">Let's Get Started </h1>
               <span className="text-sm text-muted-foreground">
                 Step {currentStep} of {totalSteps}
               </span>
@@ -240,13 +240,13 @@ const ImprovedOnboarding = () => {
           <Card className="border-primary/20">
             <CardHeader>
               <CardTitle>
-                {currentStep === 1 && '🎯 What sector interests you?'}
-                {currentStep === 2 && '💡 Select your skills'}
-                {currentStep === 3 && '🎓 Education Details'}
-                {currentStep === 4 && '📍 Where are you located?'}
-                {currentStep === 5 && '💰 Stipend Expectations'}
-                {currentStep === 6 && '🏢 Work Mode Preference'}
-                {currentStep === 7 && '📅 Preferred Start Date'}
+                {currentStep === 1 && ' What sector interests you?'}
+                {currentStep === 2 && ' Select your skills'}
+                {currentStep === 3 && ' Education Details'}
+                {currentStep === 4 && ' Where are you located?'}
+                {currentStep === 5 && ' Stipend Expectations'}
+                {currentStep === 6 && ' Work Mode Preference'}
+                {currentStep === 7 && ' Preferred Start Date'}
               </CardTitle>
               <CardDescription>
                 {currentStep === 1 && 'Choose the industry that excites you most'}
@@ -527,13 +527,13 @@ const ImprovedOnboarding = () => {
 
   // Recruiter Flow
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-br from-background via-background to-accent/5 py-8">
       <Confetti active={showConfetti} />
 
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-3xl font-bold">Welcome 👋</h1>
+            <h1 className="text-3xl font-bold">Welcome </h1>
             <span className="text-sm text-muted-foreground">
               Step {currentStep} of {totalSteps}
             </span>
@@ -544,9 +544,9 @@ const ImprovedOnboarding = () => {
         <Card className="border-primary/20">
           <CardHeader>
             <CardTitle>
-              {currentStep === 1 && '🏢 Company Information'}
-              {currentStep === 2 && '👤 Your Role'}
-              {currentStep === 3 && '🏭 Industry'}
+              {currentStep === 1 && ' Company Information'}
+              {currentStep === 2 && ' Your Role'}
+              {currentStep === 3 && ' Industry'}
             </CardTitle>
           </CardHeader>
 

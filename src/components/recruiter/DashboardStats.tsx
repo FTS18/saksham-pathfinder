@@ -9,7 +9,7 @@ interface StatCardProps {
 }
 
 const StatCard = ({ title, value, change, icon, trend = 'neutral' }: StatCardProps) => (
-  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+  <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
     <div className="flex items-center justify-between">
       <div>
         <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>

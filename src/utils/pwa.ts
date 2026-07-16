@@ -57,10 +57,16 @@ export const requestNotificationPermission = async () => {
   }
 };
 
+declare global {
+  interface Navigator {
+    standalone?: boolean;
+  }
+}
+
 // Check if app is running as PWA
 export const isPWA = () => {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as any).standalone === true
+    window.navigator.standalone === true
   );
 };

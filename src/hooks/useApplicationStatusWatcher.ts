@@ -32,12 +32,12 @@ export const useApplicationStatusWatcher = () => {
           if (lastStatus && lastStatus !== app.status) {
             // Status has changed!
             const statusMessages: { [key: string]: string } = {
-              shortlisted: `🎉 Great news! You've been shortlisted for ${app.companyName}`,
-              interview: `📅 Interview scheduled for your application at ${app.companyName}`,
-              interview_scheduled: `📅 Interview scheduled for your application at ${app.companyName}`,
-              accepted: `🏆 Congratulations! You've been accepted by ${app.companyName}`,
+              shortlisted: ` Great news! You've been shortlisted for ${app.companyName}`,
+              interview: ` Interview scheduled for your application at ${app.companyName}`,
+              interview_scheduled: ` Interview scheduled for your application at ${app.companyName}`,
+              accepted: ` Congratulations! You've been accepted by ${app.companyName}`,
               rejected: `Your application to ${app.companyName} was not selected this time`,
-              under_review: `👀 Your application to ${app.companyName} is under review`,
+              under_review: ` Your application to ${app.companyName} is under review`,
             };
 
             const message =

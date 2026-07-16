@@ -63,9 +63,9 @@ export const SkillPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pt-6 px-4">
-        <div className="max-w-6xl mx-auto">
-          <Breadcrumbs />
+      <div className="bg-background px-4">
+        <div className="max-w-6xl mx-auto pt-8">
+          
           <div className="flex flex-col items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
             <p className="text-muted-foreground animate-pulse">Loading {displaySkill} internships...</p>
@@ -81,8 +81,8 @@ export const SkillPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-6 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-background px-4">
+      <div className="max-w-6xl mx-auto pt-8">
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
@@ -92,7 +92,7 @@ export const SkillPage = () => {
           Back to Home
         </Button>
         
-        <Breadcrumbs />
+        
         
         <div className="flex items-center gap-3 mb-2 mt-4">
           <Code className="w-8 h-8 text-primary" />
@@ -135,10 +135,11 @@ export const SkillPage = () => {
         ) : internships.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {internships.map((internship, index) => (
-              <div key={internship.id || index} className="animate-in fade-in-50 duration-300" style={{ animationDelay: `${index * 50}ms` }}>
+              <div key={internship.id || index} className="animate-in fade-in-50 duration-300 h-full" style={{ animationDelay: `${index * 50}ms` }}>
                 <LazyComponent 
                   fallback={<SkeletonCard />}
                   rootMargin="200px"
+                  className="h-full"
                 >
                   <InternshipCard 
                     internship={internship}

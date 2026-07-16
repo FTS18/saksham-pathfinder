@@ -349,10 +349,26 @@ const RecruiterDashboard = () => {
   };
 
   const updateApplicationStatus = async (applicationId: string, status: 'pending' | 'reviewed' | 'shortlisted' | 'rejected') => {
+    if (!currentUser) return;
+    
     try {
-      const docRef = doc(db, 'applications', applicationId);
-      await updateDoc(docRef, { status, updatedAt: new Date() });
-      
+      const token = await currentUser.getIdToken();
+      const response = await fetch('/.netlify/functions/recruiter-api/update-application-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          applicationId,
+          status
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update status on server');
+      }
+
       setApplications(prev => prev.map(app => 
         app.id === applicationId ? { ...app, status } : app
       ) as Application[]);
@@ -372,9 +388,9 @@ const RecruiterDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-[calc(100vh-4rem)] bg-background p-6">
       <div className="container mx-auto space-y-8">
-        <Breadcrumbs />
+        
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Recruiter Dashboard</h1>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

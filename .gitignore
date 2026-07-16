@@ -7,16 +7,23 @@ build
 
 # Environment files
 .env
-.env.local
-.env.*.local
-.env.production
-.env.development
+.env*
+!.env.example
 
-# Logs
+# Logs & Debug
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Firebase & Netlify
+.firebase/
+.netlify
 
 # Coverage
 coverage
@@ -25,14 +32,18 @@ coverage
 .DS_Store
 Thumbs.db
 
-# IDE files
+# IDE & Tooling
 .vscode
 .idea
+.amazonq
+.idx
+.gemini
 *.swp
 *.swo
 
-# Temporary files
+# Temporary & Backup files
 *.tmp
 *.temp
-# Local Netlify folder
-.netlify
+*.bak
+*.sav
+*.orig

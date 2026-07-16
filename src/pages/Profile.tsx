@@ -25,6 +25,7 @@ import { DeleteAccountButton } from '@/components/DeleteAccountButton';
 import { ResumeUploader } from '@/components/ResumeUploader';
 import { SocialLinksInput } from '@/components/SocialLinksInput';
 import { checkUsernameAvailability, reserveUsername, generateUniqueUsername } from '@/lib/username';
+import { sanitizeProfileData } from '@/lib/sanitize';
 import sectorsSkillsData from '@/data/sectors-skills.json';
 const SecuritySection = lazy(() => import('./ProfileSections/SecuritySection'));
 const ResumeSection = lazy(() => import('./ProfileSections/ResumeSection'));
@@ -92,8 +93,8 @@ const Profile = () => {
     education: [],
     experience: [],
     bio: '',
-    location: '',
-    desiredLocation: '',
+    location: { state: '', city: '' },
+    desiredLocation: { state: '', city: '' },
     minStipend: 0,
     socialLinks: {
       portfolio: '',
@@ -213,16 +214,16 @@ const Profile = () => {
           const uniqueUsername = await generateUniqueUsername();
           profileData.username = uniqueUsername;
           // Save the updated profile with username
-          await setDoc(docRef, profileData, { merge: true });
+          await setDoc(docRef, sanitizeProfileData(profileData), { merge: true });
         }
         
-        setProfile(profileData);
+        setProfile(sanitizeProfileData(profileData));
       } else {
         // Generate username for new users
         const uniqueUsername = await generateUniqueUsername();
         const newProfile = { ...initialProfile, username: uniqueUsername };
-        await setDoc(docRef, newProfile, { merge: true });
-        setProfile(newProfile);
+        await setDoc(docRef, sanitizeProfileData(newProfile), { merge: true });
+        setProfile(sanitizeProfileData(newProfile));
       }
     } catch (error) {
       console.error('Firestore not available:', error);
@@ -271,8 +272,12 @@ const Profile = () => {
         wishlist: JSON.parse(localStorage.getItem('wishlist') || '[]')
       };
       
+      const sanitizedProfile = sanitizeProfileData(profileWithTheme);
+      
       const docRef = doc(db, 'profiles', currentUser.uid);
-      await setDoc(docRef, profileWithTheme, { merge: true });
+      await setDoc(docRef, sanitizedProfile, { merge: true });
+      
+      setProfile(sanitizedProfile);
       toast({ title: 'Success', description: 'Profile saved successfully' });
     } catch (error) {
       console.error('Firestore not available:', error);
@@ -532,10 +537,10 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="min-h-[calc(100vh-4rem)] bg-background">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           <div className="mb-8">
-            <Breadcrumbs />
+            
           </div>
           <div className="space-y-4">
             <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
@@ -548,15 +553,15 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="mb-8">
-          <Breadcrumbs />
+          
         </div>
         <div className="space-y-6">
-        {/* Fixed Header with Navigation */}
-        <div className="fixed top-16 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-b">
-          <div className="max-w-3xl mx-auto px-6">
+        {/* Sticky Header with Navigation */}
+        <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-2">
+          <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between py-4">
               <div className="flex items-center gap-4">
                 {profile.username && (
@@ -631,14 +636,14 @@ const Profile = () => {
           </div>
         </div>
         
-        {/* Content with top padding for fixed header */}
-        <div className="pt-32 space-y-6">
+        {/* Content with top padding for sticky header */}
+        <div className="pt-6 space-y-6">
 
         {/* Personal Info Tab Content */}
         {activeTab === 'personal' && (
           <>
         {/* Basic Info */}
-        <Card className="glass-card">
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <User className="w-5 h-5 text-primary" />
@@ -794,7 +799,7 @@ const Profile = () => {
         </Card>
 
         {/* Sectors - Now comes first */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="text-center">Sectors</CardTitle>
           </CardHeader>
@@ -832,7 +837,7 @@ const Profile = () => {
         </Card>
 
         {/* Skills - Now comes after sectors */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="text-center">Skills</CardTitle>
           </CardHeader>
@@ -889,7 +894,7 @@ const Profile = () => {
         </Card>
 
         {/* Education */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <GraduationCap className="w-5 h-5 text-primary" />
@@ -937,7 +942,7 @@ const Profile = () => {
         </Card>
 
         {/* Experience */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <Briefcase className="w-5 h-5 text-primary" />
@@ -989,7 +994,7 @@ const Profile = () => {
         </Card>
 
         {/* Social Links */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <LinkIcon className="w-5 h-5 text-primary" />
@@ -1055,7 +1060,7 @@ const Profile = () => {
         {activeTab === 'account' && (
           <>
         {/* Basic Account Info */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <User className="w-5 h-5 text-primary" />
@@ -1089,7 +1094,7 @@ const Profile = () => {
         </Card>
 
         {/* Email Verification */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="text-center">Email Verification</CardTitle>
           </CardHeader>
@@ -1121,7 +1126,7 @@ const Profile = () => {
         </Card>
 
         {/* Password Management */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="text-center">Password Management</CardTitle>
           </CardHeader>
@@ -1210,7 +1215,7 @@ const Profile = () => {
         </Card>
 
         {/* Linked Accounts */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-center justify-center">
               <LinkIcon className="w-5 h-5 text-primary" />
@@ -1255,7 +1260,7 @@ const Profile = () => {
         </Card>
 
         {/* Delete Account */}
-        <Card className="glass-card border-red-200 dark:border-red-800">
+        <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="text-red-600 dark:text-red-400 text-center">Danger Zone</CardTitle>
           </CardHeader>
@@ -1280,7 +1285,7 @@ const Profile = () => {
         {activeTab === 'resume' && (
           <>
             {/* Resume Upload & Scanning */}
-            <Card className="glass-card">
+            <Card className="shadow-sm border-border/40">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-center justify-center">
                   <Upload className="w-5 h-5 text-primary" />
@@ -1326,39 +1331,11 @@ const Profile = () => {
         {activeTab === 'preferences' && (
           <>
             {/* Theme Settings */}
-            <Card className="glass-card">
+            <Card className="shadow-sm border-border/40">
               <CardHeader>
                 <CardTitle className="text-center">Theme & Appearance</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div>
-                  <Label className="text-base font-medium mb-3 block">Color Theme</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {[
-                      { name: 'Blue', value: 'blue', color: 'bg-blue-500' },
-                      { name: 'Grey', value: 'grey', color: 'bg-gray-500' },
-                      { name: 'Red', value: 'red', color: 'bg-red-500' },
-                      { name: 'Yellow', value: 'yellow', color: 'bg-yellow-500' },
-                      { name: 'Green', value: 'green', color: 'bg-green-500' }
-                    ].map((themeOption) => (
-                      <button
-                        key={themeOption.value}
-                        onClick={() => setColorTheme(themeOption.value as any)}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          colorTheme === themeOption.value
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-4 h-4 rounded-full ${themeOption.color}`} />
-                          <span className="font-medium">{themeOption.name}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
                 <div>
                   <Label className="text-base font-medium mb-3 block">Display Mode</Label>
                   <div className="grid grid-cols-2 gap-3">
@@ -1388,41 +1365,6 @@ const Profile = () => {
                         <span className="font-medium">Dark</span>
                       </div>
                     </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Language Settings */}
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle className="text-center">Language & Region</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-base font-medium mb-3 block">Language</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {[
-                      { name: 'English', value: 'en', flag: '🇺🇸' },
-                      { name: 'हिंदी', value: 'hi', flag: '🇮🇳' },
-                      { name: 'ਪੰਜਾਬੀ', value: 'pa', flag: '🇮🇳' },
-                      { name: 'اردو', value: 'ur', flag: '🇵🇰' }
-                    ].map((lang) => (
-                      <button
-                        key={lang.value}
-                        onClick={() => setLanguage(lang.value as any)}
-                        className={`p-3 rounded-lg border-2 transition-all ${
-                          language === lang.value
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">{lang.flag}</span>
-                          <span className="font-medium">{lang.name}</span>
-                        </div>
-                      </button>
-                    ))}
                   </div>
                 </div>
               </CardContent>

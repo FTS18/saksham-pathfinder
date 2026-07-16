@@ -65,8 +65,8 @@ export const SectorPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pt-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="bg-background px-4">
+        <div className="max-w-6xl mx-auto pt-8">
           <div className="flex flex-col items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
             <p className="text-muted-foreground animate-pulse">Loading {displaySector} internships...</p>
@@ -82,8 +82,8 @@ export const SectorPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-background px-4">
+      <div className="max-w-6xl mx-auto pt-8">
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}

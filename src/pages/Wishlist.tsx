@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Slider } from '../components/ui/slider';
-import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee, Filter, AlertCircle } from 'lucide-react';
-import { useWishlist } from '../contexts/WishlistContext';
+import { Heart, Calendar, Building2, Sparkles, MapPin, IndianRupee, Filter, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useWishlistStore as useWishlist } from '../store/useWishlistStore';
 import { useAuth } from '../contexts/AuthContext';
+import { useApplication } from '@/contexts/ApplicationContext';
+import { useNavigate } from 'react-router-dom';
 import { InternshipCard } from '../components/InternshipCard';
 import { PageHeader } from '../components/StickyBreadcrumbHeader';
 import { InternshipCarousel } from '../components/InternshipCarousel';
@@ -13,11 +15,19 @@ import { InternshipCarousel } from '../components/InternshipCarousel';
 export default function Wishlist() {
   const { wishlist, removeFromWishlist } = useWishlist();
   const { currentUser } = useAuth();
+  const { applications } = useApplication();
+  const navigate = useNavigate();
   const [allInternships, setAllInternships] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
   const [minMatchScore, setMinMatchScore] = useState([70]);
   const [loading, setLoading] = useState(true);
+
+  // Real applied internship IDs from ApplicationContext
+  const appliedInternshipIds = useMemo(
+    () => new Set(applications.map((a: any) => a.internshipId)),
+    [applications]
+  );
 
   useEffect(() => {
     const loadData = async () => {
@@ -96,17 +106,20 @@ export default function Wishlist() {
     wishlist.includes(internship.id)
   );
 
+  // Count how many wishlisted internships are already applied to
+  const appliedWishlistCount = wishlistedInternships.filter(i => appliedInternshipIds.has(i.id)).length;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <PageHeader
         title={`My Wishlist (${wishlistedInternships.length})`}
         subtitle="Your saved internships and personalized recommendations"
       />
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <main className="w-full" role="main" aria-label="Wishlist page">
           {!currentUser && (
-            <Card className="mb-8 bg-blue-50 border-blue-200">
-              <CardContent className="pt-6">
+            <Card className="mb-8 bg-blue-500/10 border-blue-500/20">
+              <CardContent className="pt-4">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
@@ -121,6 +134,16 @@ export default function Wishlist() {
           )}
           {wishlistedInternships.length > 0 ? (
             <>
+              {/* Applied status banner */}
+              {appliedWishlistCount > 0 && (
+                <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <p className="text-sm text-foreground">
+                    You've applied to <strong>{appliedWishlistCount}</strong> of your {wishlistedInternships.length} saved internships.
+                    {' '}<button className="text-primary underline text-sm" onClick={() => navigate('/application-dashboard')}>Track applications →</button>
+                  </p>
+                </div>
+              )}
               {/* Wishlisted Items Section */}
               <section
                 className="mb-12"
@@ -133,7 +156,6 @@ export default function Wishlist() {
                       key={internship.id}
                       internship={internship}
                       userProfile={profileData}
-                      matchScore={Math.floor(Math.random() * 15) + 85}
                       aria-label={`Saved internship ${index + 1} of ${wishlistedInternships.length}`}
                     />
                   ))}
@@ -217,7 +239,7 @@ export default function Wishlist() {
               )}
             </>
           ) : (
-            <Card className="glass-card">
+            <Card>
               <CardContent className="p-12 text-center">
                 <Heart
                   className="w-16 h-16 text-muted-foreground mx-auto mb-4"

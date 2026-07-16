@@ -80,10 +80,10 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         throw new Error('Failed to create application');
       }
 
-      console.log('✅ Application Submitted!', `Successfully applied to ${internship.title} at ${internship.company}`);
+      console.log(' Application Submitted!', `Successfully applied to ${internship.title} at ${internship.company}`);
 
       toast({
-        title: '✨ Application Submitted',
+        title: ' Application Submitted',
         description: `Your application for ${internship.title} at ${internship.company} has been submitted successfully!`,
         variant: 'default'
       });
@@ -93,7 +93,7 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       console.error('Application error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit application. Please try again.';
       toast({
-        title: '❌ Application Failed',
+        title: ' Application Failed',
         description: errorMessage,
         variant: 'destructive'
       });
@@ -107,10 +107,10 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setLoading(true);
       await ApplicationService.withdrawApplication(applicationId);
       
-      console.log("✅ Application Withdrawn", "Your application has been withdrawn successfully.");
+      console.log(" Application Withdrawn", "Your application has been withdrawn successfully.");
 
       toast({
-        title: '✅ Application Withdrawn',
+        title: ' Application Withdrawn',
         description: 'Your application has been withdrawn successfully.',
         variant: 'default'
       });
@@ -120,7 +120,7 @@ export const ApplicationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       console.error("Failed to withdraw application", error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to withdraw application. Please try again.';
       toast({
-        title: '❌ Withdrawal Failed',
+        title: ' Withdrawal Failed',
         description: errorMessage,
         variant: 'destructive'
       });

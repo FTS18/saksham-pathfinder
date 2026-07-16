@@ -4,7 +4,9 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
-import { GraduationCap, Lightbulb, Building, MapPin, HelpCircle, X, ChevronDown } from 'lucide-react';
+import { GraduationCap, Lightbulb, Building, MapPin, HelpCircle, X, ChevronDown, Sparkles, Upload, Loader2, FileText } from 'lucide-react';
+import { extractTextFromPdf } from '@/lib/pdfExtractor';
+import aiQueueService from '@/services/aiQueueService';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -87,6 +89,58 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
     minStipend: 0
   });
   const [isMobile, setIsMobile] = useState(false);
+  const [isParsingResume, setIsParsingResume] = useState(false);
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsParsingResume(true);
+      
+      // 1. Extract text from PDF
+      const text = await extractTextFromPdf(file);
+      
+      // 2. Ask Gemini to parse the resume text into a structured JSON profile
+      const prompt = `You are an AI resume parser. Extract the following information from this resume text and return a STRICT JSON object. DO NOT wrap it in markdown block quotes like \`\`\`json. Return ONLY raw JSON.
+
+Format Required:
+{
+  "education": "string (Pick ONE: 'Undergraduate' or 'Postgraduate'. Default to 'Undergraduate' if unknown)",
+  "location": "string (The city where they live, e.g. 'Mumbai' or 'Delhi' or 'Remote')",
+  "skills": ["string", "string"] (Array of their top technical or soft skills/keywords),
+  "interests": ["string", "string"] (Array of broad sectors/industries they might be interested in based on their resume)
+}
+
+Resume Text:
+${text}`;
+
+      const aiResponse = await aiQueueService.generateResponse(prompt);
+      
+      // Clean up the response in case Gemini wrapped it in markdown
+      const cleanedResponse = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsedData = JSON.parse(cleanedResponse);
+      
+      // 3. Update the form data with extracted details
+      setFormData(prev => ({
+        ...prev,
+        education: parsedData.education || prev.education,
+        location: parsedData.location || prev.location,
+        // Merge AI skills with existing ones, removing duplicates
+        skills: Array.from(new Set([...prev.skills, ...(parsedData.skills || [])])),
+        // Merge AI interests with existing ones, removing duplicates
+        interests: Array.from(new Set([...prev.interests, ...(parsedData.interests || [])]))
+      }));
+      
+    } catch (error) {
+      console.error('Error parsing resume with AI:', error);
+      alert('Failed to parse resume. Please ensure it is a valid PDF and try again.');
+    } finally {
+      setIsParsingResume(false);
+      // Clear the input so the same file can be uploaded again if needed
+      e.target.value = '';
+    }
+  };
   
   // Load real data from Firebase or JSON fallback
   useEffect(() => {
@@ -234,19 +288,52 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             />
             <p className="text-xs text-muted-foreground">{profileStrength}% complete</p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold">Autofill with AI</h4>
+                <p className="text-xs text-muted-foreground">Upload your resume to automatically fill your profile.</p>
+              </div>
+            </div>
+            <div className="relative">
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handleResumeUpload}
+                disabled={isParsingResume}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full sm:w-auto bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 transition-all pointer-events-none"
+                disabled={isParsingResume}
+              >
+                {isParsingResume ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Scanning Resume...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload PDF Resume
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
              <div className="space-y-2">
               <Label htmlFor="education" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-primary" />
                 Education
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">We ask for your education to match you with internships that fit your academic level!</p>
-                  </TooltipContent>
-                </Tooltip>
               </Label>
               <Select onValueChange={(value) => setFormData(p => ({...p, education: value}))} value={formData.education}>
                 <SelectTrigger className="w-full">
@@ -265,23 +352,14 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
             <div className="space-y-2">
                <Label htmlFor="interests" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Building className="w-4 h-4 text-primary" />
-                Sector Interests
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">Tell us your interests so we can find internships in fields you're passionate about!</p>
-                  </TooltipContent>
-                </Tooltip>
+                Keywords & Interests
               </Label>
-              
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between">
+                  <Button variant="outline" className="w-full justify-between rounded-xl">
                     {formData.interests.length > 0 
-                      ? `${formData.interests.length} sector${formData.interests.length > 1 ? 's' : ''} selected`
-                      : "Select sectors"
+                      ? `${formData.interests.length} keyword${formData.interests.length > 1 ? 's' : ''} selected`
+                      : "Select keywords"
                     }
                     <ChevronDown className="h-4 w-4 opacity-50" />
                   </Button>
@@ -313,7 +391,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                     <Badge 
                       key={sector} 
                       variant="default" 
-                      className="rounded-none cursor-pointer"
+                      className="rounded-full cursor-pointer"
                       onClick={() => handleMultiSelectChange('interests', sector)}
                     >
                       {sector}
@@ -324,126 +402,11 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
               )}
             </div>
           
-            <div className="space-y-2">
-               <Label htmlFor="skills" className="text-sm font-medium text-foreground flex items-center gap-2">
-                <Lightbulb className="w-4 h-4 text-primary" />
-                Skills
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">We ask for your skills to find internships that match what you're good at!</p>
-                  </TooltipContent>
-                </Tooltip>
-              </Label>
-              
-              {formData.interests.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p className="text-sm">Please select sector interests first to see available skills</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" className="w-full justify-between" disabled={formData.interests.length === 0}>
-                        {formData.skills.length > 0 
-                          ? `${formData.skills.length} skill${formData.skills.length > 1 ? 's' : ''} selected`
-                          : "Select skills"
-                        }
-                        <ChevronDown className="h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
-                      <div className="max-h-60 overflow-y-auto p-4">
-                        {formData.interests.map(sector => {
-                          const sectorSkills = skillsBySector[sector] || [];
-                          const allSectorSkillsSelected = sectorSkills.length > 0 && sectorSkills.every(skill => formData.skills.includes(skill));
-                          
-                          return (
-                            <div key={sector} className="mb-4 last:mb-0">
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="text-sm font-semibold text-primary">{sector}</h4>
-                                {sectorSkills.length > 0 && (
-                                  <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id={`select-all-${sector}`}
-                                      checked={allSectorSkillsSelected}
-                                      onCheckedChange={() => {
-                                        if (allSectorSkillsSelected) {
-                                          // Remove all sector skills
-                                          setFormData(prev => ({
-                                            ...prev,
-                                            skills: prev.skills.filter(skill => !sectorSkills.includes(skill))
-                                          }));
-                                        } else {
-                                          // Add all sector skills
-                                          setFormData(prev => ({
-                                            ...prev,
-                                            skills: [...new Set([...prev.skills, ...sectorSkills])]
-                                          }));
-                                        }
-                                      }}
-                                    />
-                                    <Label htmlFor={`select-all-${sector}`} className="text-xs text-muted-foreground cursor-pointer">
-                                      Select All
-                                    </Label>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="grid grid-cols-1 gap-2">
-                                {sectorSkills.map((skill: string) => (
-                                  <div key={skill} className="flex items-center space-x-2">
-                                    <Checkbox
-                                      id={`skill-${skill}`}
-                                      checked={formData.skills.includes(skill)}
-                                      onCheckedChange={() => handleMultiSelectChange('skills', skill)}
-                                    />
-                                    <Label htmlFor={`skill-${skill}`} className="text-sm font-normal cursor-pointer">
-                                      {skill}
-                                    </Label>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  
-                  {/* Selected Skills Tags */}
-                  {formData.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {formData.skills.map(skill => (
-                        <Badge 
-                          key={skill} 
-                          variant="secondary" 
-                          className="rounded-none cursor-pointer"
-                          onClick={() => handleMultiSelectChange('skills', skill)}
-                        >
-                          {skill}
-                          <X className="w-3 h-3 ml-1" />
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
           
             <div className="space-y-2">
               <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary" />
                 Preferred Location
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">We use your location to find nearby internships and save your travel time!</p>
-                  </TooltipContent>
-                </Tooltip>
               </Label>
               <Input
                 id="location"
@@ -468,14 +431,6 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                 <Label className="text-sm font-medium text-foreground flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-primary" />
                   Search Radius (km): {formData.searchRadius} km
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="w-4 h-4 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="max-w-xs">How far are you willing to travel for an internship?</p>
-                    </TooltipContent>
-                  </Tooltip>
                 </Label>
                 <Slider
                   value={[formData.searchRadius]}
@@ -486,6 +441,7 @@ export const ProfileForm = ({ initialData, onProfileSubmit, showTitle = true }: 
                   className="w-full"
                 />
               </div>
+            </div>
           
           <Button 
             type="submit"

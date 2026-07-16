@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -124,12 +125,12 @@ export default function RecruiterApplications() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Applications</h1>
-        <p className="text-muted-foreground">Manage applications for your internships</p>
-      </div>
+    <div className="bg-background">
+      <PageHeader
+        title="Applications"
+        subtitle="Manage applications for your internships"
+      />
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -206,8 +207,8 @@ export default function RecruiterApplications() {
           </Card>
         ) : (
           filteredApplications.map((application) => (
-            <Card key={application.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-6">
+            <Card key={application.id} className="hover:shadow-md hover:-translate-y-0.5">
+              <CardContent className="pt-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -257,6 +258,7 @@ export default function RecruiterApplications() {
             </Card>
           ))
         )}
+      </div>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ const AdminDemo = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -85,7 +85,7 @@ const AdminDemo = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-16">
+    <div className="min-h-[calc(100vh-4rem)] bg-background pt-16">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">

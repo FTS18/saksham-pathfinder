@@ -1,124 +1,93 @@
-// Migration script to move internships from JSON to Firebase
-// Run this script: node scripts/migrate-internships.mjs
-
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, writeBatch, doc, setDoc } from 'firebase/firestore';
+﻿import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
+// Instructions for the user
+console.log('--- INTERNSHIPS.JSON MIGRATION SCRIPT ---');
+console.log('To run this script, you must have a service account key.');
+console.log('1. Go to Firebase Console > Project Settings > Service Accounts');
+console.log('2. Click "Generate new private key"');
+console.log('3. Save it as "serviceAccountKey.json" in the root directory.');
+console.log('4. Run: node scripts/migrate-internships.mjs');
+console.log('-----------------------------------------');
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID
-};
+const serviceAccountPath = path.resolve(__dirname, '../serviceAccountKey.json');
 
-if (!firebaseConfig.projectId) {
-  console.error('❌ Firebase configuration missing. Please check your .env file.');
+if (!fs.existsSync(serviceAccountPath)) {
+  console.error('\n[ERROR] serviceAccountKey.json not found!');
   process.exit(1);
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
 
-async function migrateInternships() {
-  try {
-    console.log('🚀 Starting internship migration...');
-    
-    const ADMIN_USER_ID = 'admin@gmail.com';
-    
-    // Ensure admin user document exists
-    const adminUserRef = doc(db, 'users', ADMIN_USER_ID);
-    await setDoc(adminUserRef, {
-      email: ADMIN_USER_ID,
-      displayName: 'Admin User',
-      role: 'admin',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }, { merge: true });
-    console.log('✅ Admin user document ensured');
-    
-    // Read the JSON file
-    const jsonPath = path.join(__dirname, '../public/internships.json');
-    const internshipsData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-    
-    console.log(`📊 Found ${internshipsData.length} internships to migrate`);
-    
-    const batch = writeBatch(db);
-    let batchCount = 0;
-    const BATCH_SIZE = 500;
-    
-    for (let i = 0; i < internshipsData.length; i++) {
-      const internship = internshipsData[i];
-      
-      // Transform data for Firebase
-      const firestoreInternship = {
-        pmis_id: internship.pmis_id,
-        title: internship.title,
-        role: internship.role,
-        company: internship.company,
-        location: internship.location,
-        stipend: internship.stipend,
-        duration: internship.duration,
-        sector_tags: internship.sector_tags || [],
-        required_skills: internship.required_skills || [],
-        preferred_education_levels: internship.preferred_education_levels || [],
-        work_mode: internship.work_mode,
-        type: internship.type || 'Internship',
-        openings: internship.openings || 1,
-        featured: internship.featured || false,
-        status: 'active',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        applicationCount: 0,
-        viewCount: 0
-      };
+initializeApp({
+  credential: cert(serviceAccount)
+});
 
-      // Only add fields that are not undefined
-      if (internship.description) firestoreInternship.description = internship.description;
-      if (internship.responsibilities) firestoreInternship.responsibilities = internship.responsibilities;
-      if (internship.perks) firestoreInternship.perks = internship.perks;
-      if (internship.application_deadline) firestoreInternship.application_deadline = internship.application_deadline;
-      if (internship.posted_date) firestoreInternship.posted_date = internship.posted_date;
-      if (internship.apply_link) firestoreInternship.apply_link = internship.apply_link;
-      if (internship.logo) firestoreInternship.logo = internship.logo;
-      
-      const docRef = doc(collection(db, 'users', ADMIN_USER_ID, 'internships'));
-      batch.set(docRef, firestoreInternship);
-      batchCount++;
-      
-      // Commit batch when it reaches the limit
-      if (batchCount >= BATCH_SIZE) {
-        await batch.commit();
-        console.log(`✅ Migrated batch: ${i + 1}/${internshipsData.length}`);
-        batchCount = 0;
-      }
-    }
-    
-    // Commit remaining items
-    if (batchCount > 0) {
-      await batch.commit();
-    }
-    
-    console.log('🎉 Migration completed successfully!');
-    console.log(`📈 Total internships migrated: ${internshipsData.length}`);
-    
-  } catch (error) {
-    console.error('❌ Migration failed:', error);
+const db = getFirestore();
+const internshipsPath = path.resolve(__dirname, '../src/data/internships.json');
+
+async function migrate() {
+  if (!fs.existsSync(internshipsPath)) {
+    console.error('[ERROR] internships.json not found at', internshipsPath);
     process.exit(1);
   }
+
+  const data = JSON.parse(fs.readFileSync(internshipsPath, 'utf8'));
+  const internships = Array.isArray(data) ? data : data.internships || [];
+  
+  console.log(Found  internships to migrate.);
+
+  let successCount = 0;
+  let errorCount = 0;
+  
+  const batchSize = 400; // Firestore limit is 500
+  let batch = db.batch();
+  let currentBatchCount = 0;
+
+  for (const item of internships) {
+    try {
+      // Create a reference with a new auto-ID or use existing ID if present
+      const docRef = item.id ? db.collection('internships').doc(item.id.toString()) : db.collection('internships').doc();
+      
+      const internshipData = {
+        ...item,
+        status: item.status || 'active',
+        createdAt: FieldValue.serverTimestamp(),
+        migratedAt: FieldValue.serverTimestamp(),
+        source: 'legacy_json_migration',
+      };
+      
+      batch.set(docRef, internshipData, { merge: true });
+      currentBatchCount++;
+      successCount++;
+
+      if (currentBatchCount >= batchSize) {
+        console.log(Committing batch of ...);
+        await batch.commit();
+        batch = db.batch();
+        currentBatchCount = 0;
+      }
+    } catch (e) {
+      console.error('Error preparing document:', e);
+      errorCount++;
+    }
+  }
+
+  if (currentBatchCount > 0) {
+    console.log(Committing final batch of ...);
+    await batch.commit();
+  }
+
+  console.log('Migration complete!');
+  console.log(Successfully migrated: );
+  console.log(Failed: );
+  process.exit(0);
 }
 
-// Run the migration
-migrateInternships();
+migrate().catch(console.error);

@@ -95,8 +95,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hasInitialized, setHasInitialized] = useState(false);
-  const [pendingSaveTheme, setPendingSaveTheme] = useState<Theme | null>(null);
-  const [pendingSaveColor, setPendingSaveColor] = useState<ColorTheme | null>(null);
 
   // Helper to convert hex to HSL
   const hexToHSL = (hex: string): string => {
@@ -176,7 +174,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const savedPreset = getInitialPreset();
     const savedUseSystemTheme = getInitialUseSystemTheme();
     
-    console.log('🎨 Theme initialization:', { 
+    console.log(' Theme initialization:', { 
       savedTheme, 
       savedColorTheme, 
       savedPreset, 
@@ -187,7 +185,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     // Use system theme if enabled
     const themeToUse = savedUseSystemTheme ? getSystemTheme() : savedTheme;
     
-    console.log('📝 Applying theme to DOM:', { themeToUse, colorTheme: savedColorTheme });
+    console.log(' Applying theme to DOM:', { themeToUse, colorTheme: savedColorTheme });
     applyThemeToDOM(themeToUse, savedColorTheme, savedPreset);
     setThemeState(themeToUse);
     setColorThemeState(savedColorTheme);
@@ -226,24 +224,21 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   // Theme setters that update both state and DOM
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    setPendingSaveTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     applyThemeToDOM(newTheme, colorTheme, currentPreset);
     
     // Save to profile document immediately if user is authenticated
     if (user) {
       saveThemeToProfile(user.uid, newTheme, colorTheme).then(() => {
-        setPendingSaveTheme(null);
+        // Success
       }).catch(error => {
-        console.error('❌ Failed to save theme to Firestore:', error);
-        // Pending save will retry when user loads
+        console.error(' Failed to save theme to Firestore:', error);
       });
     }
   };
 
   const setColorTheme = (newColorTheme: ColorTheme) => {
     setColorThemeState(newColorTheme);
-    setPendingSaveColor(newColorTheme);
     localStorage.setItem('colorTheme', newColorTheme);
     applyThemeToDOM(theme, newColorTheme, currentPreset);
     
@@ -252,7 +247,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       saveThemeToProfile(user.uid, theme, newColorTheme).then(() => {
         setPendingSaveColor(null);
       }).catch(error => {
-        console.error('❌ Failed to save color theme to Firestore:', error);
+        // Silently ignore permission errors (guest users) to prevent console spam
+        if (!error?.message?.includes('Missing or insufficient permissions')) {
+          console.error(' Failed to save color theme to Firestore:', error);
+        }
         // Pending save will retry when user loads
       });
     }
@@ -267,7 +265,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       const validatedTheme = validThemes.includes(theme) ? theme : 'dark';
       const validatedColor = validColors.includes(colorTheme) ? colorTheme : 'blue';
       
-      console.log('💾 Saving theme to Firestore...', { theme: validatedTheme, colorTheme: validatedColor, userId });
+      console.log(' Saving theme to Firestore...', { theme: validatedTheme, colorTheme: validatedColor, userId });
       
       // Save to profiles collection (single source of truth)
       const profileRef = doc(db, 'profiles', userId);
@@ -282,7 +280,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           colorTheme: validatedColor,
           updatedAt: new Date().toISOString()
         });
-        console.log('✅ Theme saved to Firestore (updated existing)', { theme: validatedTheme, colorTheme: validatedColor });
+        console.log(' Theme saved to Firestore (updated existing)', { theme: validatedTheme, colorTheme: validatedColor });
       } else {
         // Document doesn't exist, create it with merge
         await setDoc(profileRef, { 
@@ -290,14 +288,14 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
           colorTheme: validatedColor,
           updatedAt: new Date().toISOString()
         }, { merge: true });
-        console.log('✅ Theme saved to Firestore (created new)', { theme: validatedTheme, colorTheme: validatedColor });
+        console.log(' Theme saved to Firestore (created new)', { theme: validatedTheme, colorTheme: validatedColor });
       }
       
       // Ensure localStorage is in sync
       localStorage.setItem('theme', validatedTheme);
       localStorage.setItem('colorTheme', validatedColor);
     } catch (error) {
-      console.error('❌ Error in saveThemeToProfile:', error);
+      console.error(' Error in saveThemeToProfile:', error);
       throw error; // Re-throw so caller can handle
     }
   };
@@ -321,19 +319,8 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   useEffect(() => {
     if (!user) return;
     
-    // If there are pending saves (user wasn't available earlier), retry them
-    if (pendingSaveTheme !== null || pendingSaveColor !== null) {
-      const saveThemeVal = pendingSaveTheme !== null ? pendingSaveTheme : theme;
-      const saveColorVal = pendingSaveColor !== null ? pendingSaveColor : colorTheme;
-      
-      saveThemeToProfile(user.uid, saveThemeVal, saveColorVal).then(() => {
-        setPendingSaveTheme(null);
-        setPendingSaveColor(null);
-      }).catch(error => {
-        console.error('Error retrying pending saves:', error);
-      });
-    } else if (theme && colorTheme) {
-      // No pending saves, just sync current values
+    if (theme && colorTheme) {
+      // Sync current values
       saveThemeToProfile(user.uid, theme, colorTheme).catch(error => {
         console.error('Error syncing theme after user loaded:', error);
       });
@@ -355,17 +342,12 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   const toggleTheme = () => {
     if (useSystemTheme) {
-      // If system theme is enabled, toggle it off and set manual theme
       setUseSystemTheme(false);
       const newTheme: Theme = theme === 'light' ? 'dark' : 'light';
       setTheme(newTheme);
     } else {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        const newTheme: Theme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        setTimeout(() => setIsTransitioning(false), 800);
-      }, 400);
+      const newTheme: Theme = theme === 'light' ? 'dark' : 'light';
+      setTheme(newTheme);
     }
   };
 
@@ -478,16 +460,6 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   return (
     <ThemeContext.Provider value={{ theme, colorTheme, language, fontSize, isTransitioning, currentPreset, useSystemTheme, toggleTheme, setTheme, setColorTheme, setLanguage, increaseFontSize, decreaseFontSize, getColorThemeName, setPreset, setUseSystemTheme, getAvailablePresets }}>
       {children}
-      {isTransitioning && (
-        <div className="fixed inset-0 z-[9999] pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-black opacity-0 animate-[fadeIn_0.4s_ease-in-out_forwards]" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400 shadow-2xl animate-[moonTransition_0.8s_ease-in-out_forwards] relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-600 rounded-full transform translate-x-full animate-[moonSlide_0.8s_ease-in-out_forwards]" />
-            </div>
-          </div>
-        </div>
-      )}
     </ThemeContext.Provider>
   );
 };

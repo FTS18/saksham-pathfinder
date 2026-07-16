@@ -141,14 +141,21 @@ class UserPreferencesService {
       const docRef = this.getPreferencesRef(userId);
       const preferences = await this.getUserPreferences(userId);
 
+      // FIX #14: Sanitize user input before writing to Firestore
+      // Prevents XSS via stored data rendered in other users' browsers
+      const { sanitizeText } = await import("@/lib/sanitize");
+      const sanitizedQuery = sanitizeText(query).slice(0, 200); // cap at 200 chars
+
+      if (!sanitizedQuery) return; // Don't save empty/malformed queries
+
       // Remove existing entry if it exists
       const filteredHistory = preferences.searchHistory.filter(
-        (item) => item.query !== query
+        (item) => item.query !== sanitizedQuery
       );
 
       // Add new entry at the beginning
       const newHistory = [
-        { query, timestamp: Timestamp.now() },
+        { query: sanitizedQuery, timestamp: Timestamp.now() },
         ...filteredHistory,
       ].slice(0, 10); // Keep only 10 items
 

@@ -70,3 +70,31 @@ export const sanitizeInternshipData = (internships: any[]): any[] => {
       );
     });
 };
+
+export const sanitizeProfileData = (profile: any): any => {
+  if (!profile || typeof profile !== "object") return profile;
+
+  const sanitized: any = { ...profile };
+
+  if (typeof sanitized.bio === "string") sanitized.bio = sanitizeText(sanitized.bio);
+  if (typeof sanitized.username === "string") sanitized.username = sanitizeText(sanitized.username);
+  if (typeof sanitized.displayUsername === "string") sanitized.displayUsername = sanitizeText(sanitized.displayUsername);
+  if (typeof sanitized.studentId === "string") sanitized.studentId = sanitizeText(sanitized.studentId);
+  
+  if (Array.isArray(sanitized.skills)) {
+    sanitized.skills = sanitized.skills.map((s: string) => sanitizeText(s));
+  }
+  if (Array.isArray(sanitized.sectors)) {
+    sanitized.sectors = sanitized.sectors.map((s: string) => sanitizeText(s));
+  }
+  
+  if (sanitized.socialLinks) {
+    for (const key of Object.keys(sanitized.socialLinks)) {
+      if (typeof sanitized.socialLinks[key] === "string") {
+        sanitized.socialLinks[key] = sanitizeUrl(sanitized.socialLinks[key]);
+      }
+    }
+  }
+
+  return sanitized;
+};

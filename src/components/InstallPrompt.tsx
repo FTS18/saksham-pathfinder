@@ -44,7 +44,7 @@ export const InstallPrompt = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm">
-      <Card className="glass-card">
+      <Card className="shadow-sm border-border/40">
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">

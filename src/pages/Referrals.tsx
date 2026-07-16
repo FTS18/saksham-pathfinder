@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { Users, Trophy, Star, Gift, Copy, Share2, Crown, Medal, Award } from 'lucide-react';
+import { Users, Trophy, Star, Gift, Copy, Share2, Crown, Medal, Award, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { PageHeader } from '../components/StickyBreadcrumbHeader';
+import { useProfileData } from '../hooks/useProfileData';
 
 interface LeaderboardUser {
   id: string;
@@ -20,6 +22,9 @@ interface LeaderboardUser {
 export default function Referrals() {
   const { currentUser } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  // Use shared cached profile — no extra Firestore read needed
+  const { profile: sharedProfile, profileLoading, points, badges } = useProfileData();
   const [userProfile, setUserProfile] = useState<any>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +35,14 @@ export default function Referrals() {
       loadLeaderboard();
     }
   }, [currentUser]);
+
+  // Merge shared profile data into local userProfile when it loads
+  useEffect(() => {
+    if (!profileLoading && sharedProfile && Object.keys(sharedProfile).length > 0) {
+      setUserProfile(prev => ({ ...sharedProfile, ...prev }));
+      setLoading(false);
+    }
+  }, [sharedProfile, profileLoading]);
 
   const loadUserProfile = async () => {
     if (!currentUser) return;
@@ -98,7 +111,18 @@ export default function Referrals() {
       
       setLeaderboard(users);
     } catch (error) {
-      console.error('Error loading leaderboard:', error);
+      // Firestore rules may restrict reading other users' profiles.
+      // Fall back to showing only the current user if available.
+      if (userProfile) {
+        setLeaderboard([{
+          id: currentUser?.uid || '',
+          username: userProfile.username || 'You',
+          points: userProfile.points || 0,
+          referrals: userProfile.referrals || 0,
+          photoURL: userProfile.photoURL
+        }]);
+      }
+      // Silently ignore — leaderboard is a non-critical feature
     }
   };
 
@@ -129,7 +153,7 @@ export default function Referrals() {
   };
 
   const shareReferral = async () => {
-    const shareText = `🚀 Join Saksham AI - India's #1 AI-powered internship platform!\n\n✅ Find perfect internships with AI matching\n✅ Get personalized career guidance\n✅ Access exclusive opportunities\n\nUse my referral code: ${userProfile?.referralCode}\n\n🔗 Sign up now: ${window.location.origin}?ref=${userProfile?.referralCode}`;
+    const shareText = ` Join Saksham AI - India's #1 AI-powered internship platform!\n\n Find perfect internships with AI matching\n Get personalized career guidance\n Access exclusive opportunities\n\nUse my referral code: ${userProfile?.referralCode}\n\n Sign up now: ${window.location.origin}?ref=${userProfile?.referralCode}`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -171,36 +195,65 @@ export default function Referrals() {
 
   const getRankBadge = (rank: number) => {
     switch (rank) {
-      case 1: return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
-      case 2: return 'bg-gradient-to-r from-gray-300 to-gray-500 text-white';
-      case 3: return 'bg-gradient-to-r from-amber-400 to-amber-600 text-white';
+      case 1: return 'bg-yellow-500 text-white shadow-sm';
+      case 2: return 'bg-slate-400 text-white shadow-sm';
+      case 3: return 'bg-amber-600 text-white shadow-sm';
       default: return 'bg-muted text-muted-foreground';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <PageHeader title="Referral Program" />
-        <div className="max-w-3xl mx-auto px-4 pt-8">
-          <div className="text-center">Loading...</div>
+      <div className="bg-background">
+        <PageHeader title="Referral Program" subtitle="Invite friends and earn rewards together!" />
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="lg:col-span-1">
+              <div className="p-6 border rounded-lg bg-card space-y-6 animate-pulse">
+                <div className="w-16 h-16 rounded-full bg-muted mx-auto" />
+                <div className="h-6 w-32 bg-muted mx-auto rounded" />
+                <div className="flex justify-center gap-4">
+                  <div className="h-10 w-16 bg-muted rounded" />
+                  <div className="h-10 w-16 bg-muted rounded" />
+                </div>
+                <div className="h-16 w-full bg-muted rounded mt-6" />
+                <div className="h-10 w-full bg-muted rounded" />
+              </div>
+            </div>
+            <div className="lg:col-span-2">
+              <div className="p-6 border rounded-lg bg-card space-y-4 animate-pulse">
+                <div className="h-6 w-48 bg-muted rounded mb-6" />
+                {[1, 2, 3, 4, 5].map(i => (
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-lg border bg-muted/20">
+                    <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+                    <div className="w-10 h-10 rounded-full bg-muted shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-32 bg-muted rounded" />
+                      <div className="h-3 w-20 bg-muted rounded" />
+                    </div>
+                    <div className="h-6 w-16 bg-muted rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <PageHeader
         title="Referral Program"
         subtitle="Invite friends and earn rewards together!"
       />
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Your Referral Stats */}
           <div className="lg:col-span-1">
-            <Card className="glass-card">
+            <Card className="shadow-sm border-border/40">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" />
@@ -248,13 +301,16 @@ export default function Referrals() {
                   Share Referral Code
                 </Button>
 
-                <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">How it works:</h4>
-                  <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
-                    <li>• Share your referral code</li>
-                    <li>• Friend signs up using your code</li>
-                    <li>• You both earn 100 points!</li>
-                    <li>• Redeem points for rewards</li>
+                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20">
+                  <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    How it works
+                  </h4>
+                  <ul className="text-sm text-muted-foreground space-y-2">
+                    <li className="flex items-start gap-2"><span className="text-primary mt-0.5">•</span> Share your referral code</li>
+                    <li className="flex items-start gap-2"><span className="text-primary mt-0.5">•</span> Friend signs up using your code</li>
+                    <li className="flex items-start gap-2"><span className="text-primary mt-0.5">•</span> You both earn 100 points!</li>
+                    <li className="flex items-start gap-2"><span className="text-primary mt-0.5">•</span> Redeem points for rewards</li>
                   </ul>
                 </div>
               </CardContent>
@@ -263,7 +319,7 @@ export default function Referrals() {
 
           {/* Leaderboard */}
           <div className="lg:col-span-2">
-            <Card className="glass-card">
+            <Card className="shadow-sm border-border/40">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-primary" />
@@ -333,7 +389,7 @@ export default function Referrals() {
             </Card>
 
             {/* Rewards Section */}
-            <Card className="glass-card mt-6">
+            <Card className="shadow-sm border-border/40 mt-6 lg:mt-8">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Gift className="w-5 h-5 text-primary" />

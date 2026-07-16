@@ -12,6 +12,10 @@ import {
   writeBatch,
   arrayUnion,
   getDoc,
+  orderBy,
+  limit,
+  startAfter,
+  DocumentSnapshot,
 } from "firebase/firestore";
 
 export interface Application {
@@ -124,7 +128,7 @@ export class ApplicationService {
       // Commit all operations in single batch
       await batch.commit();
       console.log(
-        "💾 Application saved to Firestore and added to profile:",
+        " Application saved to Firestore and added to profile:",
         appRef.id
       );
       return appRef.id;
@@ -159,63 +163,57 @@ export class ApplicationService {
     try {
       const constraints: QueryConstraint[] = [
         where("userId", "==", userId),
-        // orderBy("appliedAt", "desc") // Removed - requires composite index
+        orderBy("appliedAt", "desc"),  // FIX #6: real orderBy with composite index
       ];
+      if (limitCount) constraints.push(limit(limitCount));
 
       const q = query(collection(db, this.COLLECTION), ...constraints);
       const snapshot = await getDocs(q);
 
-      const apps = snapshot.docs.map(
+      return snapshot.docs.map(
         (doc) => ({ id: doc.id, ...doc.data() } as Application)
       );
-
-      // Sort in memory to avoid index requirement
-      apps.sort((a, b) => {
-        const aTime = a.appliedAt?.toMillis?.() || 0;
-        const bTime = b.appliedAt?.toMillis?.() || 0;
-        return bTime - aTime;
-      });
-
-      return limitCount ? apps.slice(0, limitCount) : apps;
     } catch (error) {
       console.error("Error fetching applications:", error);
       return [];
     }
   }
 
+  // FIX #6: Real cursor-based pagination using Firestore startAfter().
+  // Previous impl fetched ALL documents then sliced in memory — O(n) cost.
   static async getUserApplicationsPaginated(
     userId: string,
-    limit: number = 12,
-    lastDoc?: any
+    pageLimit: number = 12,
+    lastDoc?: DocumentSnapshot
   ): Promise<{
     applications: Application[];
-    lastDoc: any;
+    lastDoc: DocumentSnapshot | null;
     hasMore: boolean;
   }> {
     try {
-      const constraints: QueryConstraint[] = [where("userId", "==", userId)];
+      const constraints: QueryConstraint[] = [
+        where("userId", "==", userId),
+        orderBy("appliedAt", "desc"),
+        limit(pageLimit + 1),  // Fetch one extra to detect if there's a next page
+      ];
+
+      if (lastDoc) {
+        constraints.push(startAfter(lastDoc));
+      }
 
       const q = query(collection(db, this.COLLECTION), ...constraints);
       const snapshot = await getDocs(q);
 
-      const apps = snapshot.docs.map(
+      const hasMore = snapshot.docs.length > pageLimit;
+      const docs = hasMore ? snapshot.docs.slice(0, pageLimit) : snapshot.docs;
+
+      const applications = docs.map(
         (doc) => ({ id: doc.id, ...doc.data() } as Application)
       );
 
-      // Sort in memory
-      apps.sort((a, b) => {
-        const aTime = a.appliedAt?.toMillis?.() || 0;
-        const bTime = b.appliedAt?.toMillis?.() || 0;
-        return bTime - aTime;
-      });
-
-      // Pagination: get one extra to check if there are more
-      const paginatedApps = apps.slice(0, limit);
-      const hasMore = apps.length > limit;
-
       return {
-        applications: paginatedApps,
-        lastDoc: paginatedApps[paginatedApps.length - 1] || null,
+        applications,
+        lastDoc: docs[docs.length - 1] ?? null,
         hasMore,
       };
     } catch (error) {
@@ -340,46 +338,45 @@ export class ApplicationService {
     }
   }
 
+  // FIX #6: Real cursor-based pagination for recruiter applications.
   static async getRecruiterApplicationsPaginated(
     recruiterId: string,
-    limit: number = 12,
-    lastDoc?: any
+    pageLimit: number = 12,
+    lastDoc?: DocumentSnapshot
   ): Promise<{
     applications: Application[];
-    lastDoc: any;
+    lastDoc: DocumentSnapshot | null;
     hasMore: boolean;
   }> {
     try {
-      const q = query(
-        collection(db, this.COLLECTION),
-        where("recruiterId", "==", recruiterId)
-      );
+      const constraints: QueryConstraint[] = [
+        where("recruiterId", "==", recruiterId),
+        orderBy("appliedAt", "desc"),
+        limit(pageLimit + 1),
+      ];
+
+      if (lastDoc) {
+        constraints.push(startAfter(lastDoc));
+      }
+
+      const q = query(collection(db, this.COLLECTION), ...constraints);
       const snapshot = await getDocs(q);
 
-      const apps = snapshot.docs.map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-            appliedAt: doc.data().appliedAt?.toDate(),
-            updatedAt: doc.data().updatedAt?.toDate(),
-          } as Application)
+      const hasMore = snapshot.docs.length > pageLimit;
+      const docs = hasMore ? snapshot.docs.slice(0, pageLimit) : snapshot.docs;
+
+      const applications = docs.map(
+        (doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          appliedAt: doc.data().appliedAt?.toDate(),
+          updatedAt: doc.data().updatedAt?.toDate(),
+        } as Application)
       );
 
-      // Sort by appliedAt descending
-      apps.sort((a, b) => {
-        const aTime = a.appliedAt?.getTime?.() || 0;
-        const bTime = b.appliedAt?.getTime?.() || 0;
-        return bTime - aTime;
-      });
-
-      // Pagination: get one extra to check if there are more
-      const paginatedApps = apps.slice(0, limit);
-      const hasMore = apps.length > limit;
-
       return {
-        applications: paginatedApps,
-        lastDoc: paginatedApps[paginatedApps.length - 1] || null,
+        applications,
+        lastDoc: docs[docs.length - 1] ?? null,
         hasMore,
       };
     } catch (error) {

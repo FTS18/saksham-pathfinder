@@ -32,15 +32,15 @@ export default function Tutorials() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[calc(100vh-4rem)] bg-background">
       <PageHeader
         title="Tutorials & Guidance"
         subtitle="Step-by-step video guides to help you navigate the internship application process"
       />
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid gap-6">
           {tutorialVideos.map((video, index) => (
-            <Card key={index} className="glass-card">
+            <Card key={index}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Play className="w-5 h-5 text-primary" />
@@ -53,20 +53,20 @@ export default function Tutorials() {
                   <Button 
                     asChild 
                     variant="outline" 
-                    className="flex-1 bg-orange-50 hover:bg-orange-100 border-orange-200 text-orange-700"
+                    className="flex-1"
                   >
                     <a href={video.hindi} target="_blank" rel="noopener noreferrer">
-                      🇮🇳 Watch in Hindi
+                       🇮🇳 Watch in Hindi
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
                   <Button 
                     asChild 
-                    variant="outline" 
-                    className="flex-1 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700"
+                    variant="secondary" 
+                    className="flex-1"
                   >
                     <a href={video.english} target="_blank" rel="noopener noreferrer">
-                      🇬🇧 Watch in English
+                       🇬🇧 Watch in English
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
@@ -76,7 +76,7 @@ export default function Tutorials() {
           ))}
         </div>
         
-        <Card className="glass-card bg-primary/5 border-primary/20 mt-8">
+        <Card className="mt-8 bg-primary/5 border-primary/20">
           <CardContent className="p-6 text-center">
             <Play className="w-12 h-12 text-primary mx-auto mb-4" />
             <h3 className="font-semibold mb-2">Need More Help?</h3>
@@ -92,7 +92,7 @@ export default function Tutorials() {
               </Button>
               <Button asChild variant="outline" size="sm">
                 <a href="tel:18001160900">
-                  📞 Call Helpline: 1800 11 6090
+                   Call Helpline: 1800 11 6090
                 </a>
               </Button>
             </div>

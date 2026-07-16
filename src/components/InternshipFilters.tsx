@@ -173,14 +173,14 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="flex flex-wrap items-center justify-start gap-4">
           {/* Sort */}
-          <div className="relative">
+          <div className="relative flex-none min-w-[200px] max-w-xs">
             <SortAsc className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
             <select
               value={filters.sortBy}
               onChange={(e) => updateFilter('sortBy', e.target.value)}
-              className="w-full h-11 pl-10 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              className="w-full h-9 pl-9 pr-8 py-1 text-sm bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
               aria-label="Sort internships by"
             >
               <option value="ai-recommended">AI Score (High to Low)</option>
@@ -220,7 +220,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
                       onClick={() => applySmartFilters()}
                     >
                       <div className="flex flex-col items-start">
-                        <span>🎯 My Profile Match</span>
+                        <span> My Profile Match</span>
                         <span className="text-xs text-muted-foreground">Based on your skills & interests</span>
                       </div>
                     </Button>
@@ -230,7 +230,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
                       className="w-full justify-start text-left"
                       onClick={() => applySmartFilters('high-paying')}
                     >
-                      💰 High-Paying (₹15k+)
+                       High-Paying (₹15k+)
                     </Button>
                     <Button 
                       variant="ghost" 
@@ -238,7 +238,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
                       className="w-full justify-start text-left"
                       onClick={() => applySmartFilters('remote-friendly')}
                     >
-                      🏠 Remote Work
+                       Remote Work
                     </Button>
                     <Button 
                       variant="ghost" 
@@ -262,18 +262,24 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
               <X className="w-4 h-4" />
               Clear
             </Button>
+            <Button 
+              className="flex items-center gap-2"
+              size="sm"
+            >
+              Apply Filters
+            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 mt-3">
-          {/* Multi-Select Sectors */}
-          <div className="sm:col-span-2 lg:col-span-1">
+        <div className="flex flex-wrap items-center gap-2 mt-3">
+          {/* Multi-Select Keywords */}
+          <div className="w-full sm:w-auto min-w-[140px]">
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal h-10">
+                <Button variant="outline" className="w-full justify-between text-left font-normal h-9 text-xs rounded-xl">
                   {(filters.selectedSectors?.length || 0) > 0 
-                    ? `${filters.selectedSectors?.length} Sectors` 
-                    : 'All Sectors'
+                    ? `${filters.selectedSectors?.length} Keywords` 
+                    : 'All Keywords'
                   }
                   <ChevronDown className="ml-auto w-4 h-4" />
                 </Button>
@@ -299,96 +305,12 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
             </Popover>
           </div>
 
-          {/* Multi-Select Skills */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start text-left font-normal h-10">
-                  {(filters.selectedSkills?.length || 0) > 0 
-                    ? `${filters.selectedSkills?.length} Skills` 
-                    : 'All Skills'
-                  }
-                  <ChevronDown className="ml-auto w-4 h-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-96 p-0" align="start">
-                <div className="p-4 max-h-80 overflow-y-auto">
-                  {filters.selectedSectors && filters.selectedSectors.length > 0 ? (
-                    filters.selectedSectors.map(sector => {
-                      const sectorSkills = skillsBySector[sector] || [];
-                      const allSectorSkillsSelected = sectorSkills.length > 0 && sectorSkills.every(skill => (filters.selectedSkills || []).includes(skill));
-                      
-                      return (
-                        <div key={sector} className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-sm font-semibold text-primary">{sector}</h4>
-                            {sectorSkills.length > 0 && (
-                              <div className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`select-all-filter-${sector}`}
-                                  checked={allSectorSkillsSelected}
-                                  onCheckedChange={() => {
-                                    if (allSectorSkillsSelected) {
-                                      // Remove all sector skills
-                                      const newSkills = (filters.selectedSkills || []).filter(skill => !sectorSkills.includes(skill));
-                                      onFiltersChange({ ...filters, selectedSkills: newSkills });
-                                    } else {
-                                      // Add all sector skills
-                                      const newSkills = [...new Set([...(filters.selectedSkills || []), ...sectorSkills])];
-                                      onFiltersChange({ ...filters, selectedSkills: newSkills });
-                                    }
-                                  }}
-                                />
-                                <Label htmlFor={`select-all-filter-${sector}`} className="text-xs text-muted-foreground cursor-pointer">
-                                  Select All
-                                </Label>
-                              </div>
-                            )}
-                          </div>
-                          <div className="grid grid-cols-1 gap-2">
-                            {sectorSkills.map((skill: string) => (
-                              <div key={skill} className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`filter-skill-${skill}`}
-                                  checked={(filters.selectedSkills || []).includes(skill)}
-                                  onCheckedChange={() => handleMultiSelectToggle('selectedSkills', skill)}
-                                />
-                                <Label htmlFor={`filter-skill-${skill}`} className="text-sm font-normal cursor-pointer">
-                                  {skill}
-                                </Label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="grid grid-cols-1 gap-2">
-                      {availableSkills.map((skill: string) => (
-                        <div key={skill} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`filter-skill-all-${skill}`}
-                            checked={(filters.selectedSkills || []).includes(skill)}
-                            onCheckedChange={() => handleMultiSelectToggle('selectedSkills', skill)}
-                          />
-                          <Label htmlFor={`filter-skill-all-${skill}`} className="text-sm font-normal cursor-pointer">
-                            {skill}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-
           {/* Work Mode */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto min-w-[130px]">
             <select
               value={filters.workMode}
               onChange={(e) => updateFilter('workMode', e.target.value)}
-              className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              className="w-full h-9 px-3 pr-8 py-1 text-xs bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
               aria-label="Filter by work mode"
             >
               <option value="all">All Modes</option>
@@ -400,11 +322,11 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </div>
 
           {/* Education */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto min-w-[130px]">
             <select
               value={filters.education}
               onChange={(e) => updateFilter('education', e.target.value)}
-              className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              className="w-full h-9 px-3 pr-8 py-1 text-xs bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
               aria-label="Filter by education level"
             >
               <option value="all">All Levels</option>
@@ -415,11 +337,11 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </div>
 
           {/* Min Stipend */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto min-w-[130px]">
             <select
               value={filters.minStipend}
               onChange={(e) => updateFilter('minStipend', e.target.value)}
-              className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              className="w-full h-9 px-3 pr-8 py-1 text-xs bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
               aria-label="Filter by minimum stipend"
             >
               <option value="all">Any Stipend</option>
@@ -435,11 +357,11 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
           </div>
 
           {/* AI Score Filter */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto min-w-[130px]">
             <select
               value={filters.minAiScore || 'all'}
               onChange={(e) => updateFilter('minAiScore', e.target.value)}
-              className="w-full h-11 px-3 pr-10 py-2 text-sm bg-background border-2 border-input rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+              className="w-full h-9 px-3 pr-8 py-1 text-xs bg-background border border-input rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
               aria-label="Filter by AI match score"
             >
               <option value="all">Any AI Score</option>
@@ -472,7 +394,7 @@ export const InternshipFilters = ({ filters, onFiltersChange, sectors, locations
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                    🎯 Smart Filters Active
+                     Smart Filters Active
                   </p>
                 </div>
                 <p className="text-xs text-green-600 dark:text-green-400">

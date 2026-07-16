@@ -26,11 +26,35 @@ export const useTimeBasedPoints = () => {
           const pointsToAdd = Math.floor(newTimeSpent / 1800000) * 100;
           
           if (pointsToAdd > 0) {
-            await updateDoc(profileRef, {
-              points: points + pointsToAdd,
-              timeSpent: newTimeSpent % 1800000, // Reset counter
-              lastActive: now
-            });
+            try {
+              const isProduction = import.meta.env.PROD;
+              if (!isProduction) {
+                // Skip Netlify function calls in local dev — they're only available in production
+                await updateDoc(profileRef, { timeSpent: newTimeSpent % 1800000, lastActive: now });
+                return;
+              }
+              const token = await currentUser.getIdToken();
+              const response = await fetch('/.netlify/functions/gamification-api', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  action: 'time_tracking',
+                  idempotencyKey: `time_${now}`
+                })
+              });
+              
+              if (response.ok) {
+                await updateDoc(profileRef, {
+                  timeSpent: newTimeSpent % 1800000, // Reset counter
+                  lastActive: now
+                });
+              }
+            } catch (apiError) {
+              console.error('Failed to award time tracking points via API', apiError);
+            }
           } else {
             await updateDoc(profileRef, {
               timeSpent: newTimeSpent,

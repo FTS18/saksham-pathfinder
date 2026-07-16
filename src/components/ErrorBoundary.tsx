@@ -59,7 +59,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
       return (
         <div className="min-h-screen hero-gradient flex items-center justify-center p-4 animate-fade-in">
-          <Card className="glass-card max-w-md mx-auto">
+          <Card className="shadow-sm border-border/40 max-w-md mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-destructive">
                 <AlertTriangle className="w-5 h-5" />

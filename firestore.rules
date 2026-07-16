@@ -1,215 +1,68 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
     
+    function isRecruiter() {
+      return isAuthenticated() && request.auth.token.recruiter == true;
+    }
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
-    
-    function isAdmin() {
-      return isAuthenticated() && 
-        (request.auth.token.email == 'spacify1807@gmail.com' || 
-         exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
-    }
 
-    function isVerifiedRecruiter() {
-      return isAuthenticated() &&
-        exists(/databases/$(database)/documents/recruiters/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/recruiters/$(request.auth.uid)).data.isVerified == true &&
-        get(/databases/$(database)/documents/recruiters/$(request.auth.uid)).data.status == 'active';
-    }
-
-    function isRecruiterOwner(recruiterId) {
-      return isAuthenticated() && request.auth.uid == recruiterId;
-    }
-
-    function canApplyToInternship(userId, internshipId) {
-      return isAuthenticated() && userId == request.auth.uid;
-    }
-
-    function hasNotAppliedBefore(userId, internshipId) {
-      return !exists(/databases/$(database)/documents/applications/$(userId + '_' + internshipId));
-    }
-
-    function isPublicInternship() {
-      return resource != null &&
-        resource.data.get('status', 'draft') in ['published', 'active'];
-    }
-    
-    match /profiles/{userId} {
-      allow read: if isOwner(userId) || isAdmin() || (resource != null && resource.data.get('isPublic', false) == true);
-      allow create: if isOwner(userId);
-      allow write, update: if isOwner(userId) || isAdmin();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
+    // Users Collection
     match /users/{userId} {
-      allow read, write, update: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated();
-      allow delete: if isOwner(userId) || isAdmin();
-    }
-    
-    match /usernames/{username} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow write, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
-    }
-    
-    match /userProfiles/{userId} {
-      allow read: if true;
-      allow write, create: if isOwner(userId) || isAdmin();
-      allow delete: if isOwner(userId) || isAdmin();
+      allow read: if isAuthenticated(); // For displaying public profiles/names
+      allow write: if isOwner(userId); // Users can update their own profile
     }
 
-    /**
-     * Recruiters Collection
-     * Contains company information and verification status
-     */
-    match /recruiters/{recruiterId} {
-      allow read: if isOwner(recruiterId) || isAdmin();
-      allow create: if isOwner(recruiterId);
-      allow update: if isOwner(recruiterId) || isAdmin();
-      allow delete: if isAdmin();
-    }
-
-    /**
-     * Verification Requests Collection
-     * Admin only for managing recruiter verification
-     */
-    match /verificationRequests/{requestId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated();
-      allow update, delete: if isAdmin();
-    }
-    
+    // Internships Collection
     match /internships/{internshipId} {
-      allow read: if isPublicInternship() || 
-                    (isAuthenticated() && 
-                      (resource.data.get('recruiterId', '') == request.auth.uid || isAdmin()));
-      // Allow any authenticated user to create internships (recruiters)
-      allow create: if isAuthenticated();
-      allow update: if isAdmin() || 
-                    (isAuthenticated() && 
-                     resource.data.get('recruiterId', '') == request.auth.uid);
-      allow delete: if isAdmin() || 
-                    (isAuthenticated() && 
-                     resource.data.get('recruiterId', '') == request.auth.uid);
-    }
-    
-    match /companies/{companyId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.createdBy == request.auth.uid || isAdmin());
-    }
-    
-    match /jobs/{jobId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.createdBy == request.auth.uid || isAdmin());
+      allow read: if true; // Anyone can read internships
+      allow create: if isRecruiter(); 
+      allow update, delete: if isRecruiter() && resource.data.recruiterId == request.auth.uid;
     }
 
-    /**
-     * Applications Collection
-     * Students apply, recruiters review, only one application per student per internship
-     */
+    // Applications Collection
     match /applications/{applicationId} {
-      allow read: if isAuthenticated() && 
-        (request.auth.uid == resource.data.userId || 
-         request.auth.uid == resource.data.recruiterId ||
-         isAdmin());
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.userId;
-      allow update: if isAuthenticated() && 
-        (request.auth.uid == resource.data.userId || 
-         request.auth.uid == resource.data.recruiterId ||
-         isAdmin());
-      allow delete: if isAuthenticated() && 
-        (request.auth.uid == resource.data.userId || isAdmin());
+      // Students can read their own, recruiters can read applications for their jobs
+      allow read: if isOwner(resource.data.candidateId) || (isRecruiter() && resource.data.recruiterId == request.auth.uid);
+      
+      // Students can apply (create)
+      allow create: if isAuthenticated() && request.resource.data.candidateId == request.auth.uid;
+      
+      // Only recruiters can update (e.g. status) via backend (but backend bypasses rules). 
+      // If we allow client-side updates by recruiters:
+      allow update: if isRecruiter() && resource.data.recruiterId == request.auth.uid;
+      
+      // Allow students to withdraw their own application
+      allow delete: if isOwner(resource.data.candidateId);
     }
-    
+
+    // Notifications Collection
     match /notifications/{notificationId} {
-      allow read: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
+      allow read: if isOwner(resource.data.userId);
+      // Students can mark as read/delete their own
+      allow update, delete: if isOwner(resource.data.userId);
+      // System/Recruiter can create (usually via backend, but in case client-side is needed)
+      allow create: if isAuthenticated(); 
     }
 
-    /**
-     * Analytics Collection
-     * Tracks views, clicks, conversions
-     */
-    match /analytics/{analyticsId} {
-      allow read: if isAuthenticated() && 
-        (isAdmin() || 
-         request.auth.uid == resource.data.recruiterId);
-      allow create: if true;
-      allow update, delete: if isAdmin();
-    }
-
-    /**
-     * Messages Collection
-     * Recruiter-student chat
-     */
-    match /messages/{messageId} {
-      allow read: if isAuthenticated() && 
-        (request.auth.uid == resource.data.senderId || 
-         request.auth.uid == resource.data.recipientId);
-      allow create: if isAuthenticated() && 
-        request.auth.uid == request.resource.data.senderId;
-      allow update: if isAdmin();
-      allow delete: if isAuthenticated() && 
-        request.auth.uid == resource.data.senderId;
+    // Wishlist Collection
+    match /wishlist/{wishlistId} {
+      allow read, write: if isOwner(resource.data.userId) || (request.resource.data.userId == request.auth.uid);
     }
     
-    match /referrals/{referralCode} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (request.auth.uid == resource.data.referrerId || isAdmin());
-    }
-    
-    match /reviews/{reviewId} {
-      allow read: if true;
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        request.auth.uid == resource.data.userId;
-    }
-    
-    match /feedback/{ticketId} {
-      allow read: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
-    }
-    
-    match /admins/{userId} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-    
-    match /systemSettings/{document} {
-      allow read: if isAuthenticated();
-      allow write: if isAdmin();
-    }
-    
-    match /reports/{document} {
-      allow read, write: if isAdmin();
-    }
-    
-    match /emailQueue/{emailId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated();
-    }
-    
-    match /{document=**} {
-      allow read, write: if false;
+    // Points Transactions
+    match /points_transactions/{transactionId} {
+      allow read: if isOwner(resource.data.userId);
+      // Creation should technically only happen via backend, but if client does it temporarily:
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
     }
   }
 }

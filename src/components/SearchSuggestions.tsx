@@ -166,7 +166,7 @@ export const SearchSuggestions = ({ query, onSelect, onSearch, isVisible }: Sear
   return (
     <div 
       ref={suggestionsRef}
-      className="fixed md:absolute top-16 md:top-full left-0 right-0 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-none shadow-lg z-50 mt-0 md:mt-1 max-h-80 overflow-y-auto w-screen md:w-auto"
+      className="fixed md:absolute top-16 md:top-full left-0 right-0 bg-popover border border-border rounded-none shadow-lg z-50 mt-0 md:mt-1 max-h-80 overflow-y-auto w-screen md:w-auto"
     >
       {filteredSuggestions.map((suggestion, index) => {
         const getTypeStyles = () => {

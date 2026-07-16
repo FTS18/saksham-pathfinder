@@ -23,10 +23,10 @@ const colorThemes = [
 ];
 
 const languages = [
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'hi', label: 'हिंदी', flag: '🇮🇳' },
-  { code: 'bn', label: 'বাংলা', flag: '🇧🇩' },
-  { code: 'ta', label: 'தமிழ்', flag: '🇮🇳' }
+  { code: 'en', label: 'English', flag: '' },
+  { code: 'hi', label: 'हिंदी', flag: '' },
+  { code: 'bn', label: 'বাংলা', flag: '' },
+  { code: 'ta', label: 'தமிழ்', flag: '' }
 ];
 
 interface SettingsProps {
@@ -96,7 +96,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 glass-card">
+        <TabsList className="grid w-full grid-cols-4 shadow-sm border-border/40">
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <User className="w-4 h-4" />
             <span className="hidden sm:inline">Profile</span>
@@ -104,10 +104,6 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
           <TabsTrigger value="theme" className="flex items-center gap-2">
             <Palette className="w-4 h-4" />
             <span className="hidden sm:inline">Theme</span>
-          </TabsTrigger>
-          <TabsTrigger value="language" className="flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <span className="hidden sm:inline">Language</span>
           </TabsTrigger>
           <TabsTrigger value="referral" className="flex items-center gap-2">
             <Share2 className="w-4 h-4" />
@@ -117,7 +113,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-4">
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
@@ -249,7 +245,7 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
 
         {/* Theme Tab */}
         <TabsContent value="theme" className="space-y-4">
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Palette className="w-5 h-5 text-primary" />
@@ -286,62 +282,13 @@ export const Settings = ({ dashboardProfile, onProfileUpdate }: SettingsProps) =
                 </div>
               </div>
               
-              {/* Color Themes */}
-              <div>
-                <Label className="text-sm font-medium mb-3 block">Colors</Label>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                  {colorThemes.map((colorThemeOption) => (
-                    <button
-                      key={colorThemeOption.id}
-                      onClick={() => setColorTheme(colorThemeOption.id)}
-                      className={`p-3 rounded-lg border-2 transition-all ${
-                        colorTheme === colorThemeOption.id 
-                          ? 'border-primary ring-2 ring-primary/20' 
-                          : 'border-border hover:border-primary/50'
-                      } bg-card`}
-                    >
-                      <div className={`h-8 rounded mb-2 ${colorThemeOption.color}`}></div>
-                      <p className="text-xs font-medium text-center">{colorThemeOption.name}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Language Tab */}
-        <TabsContent value="language" className="space-y-4">
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-primary" />
-                Language
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-full md:w-64">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {languages.map((lang) => (
-                    <SelectItem key={lang.code} value={lang.code}>
-                      <div className="flex items-center gap-2">
-                        <span>{lang.flag}</span>
-                        <span>{lang.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* Referral Tab */}
         <TabsContent value="referral" className="space-y-4">
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Share2 className="w-5 h-5 text-primary" />

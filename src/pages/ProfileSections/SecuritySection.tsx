@@ -1,3 +1,4 @@
+import { ProfileData } from '@/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 interface SecuritySectionProps {
-  profile: any;
+  profile: ProfileData;
   isLoading: boolean;
 }
 
@@ -70,7 +71,7 @@ export const SecuritySection = ({ profile, isLoading }: SecuritySectionProps) =>
   };
 
   return (
-    <Card className="rounded-lg">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lock className="w-5 h-5" />
@@ -173,3 +174,4 @@ export const SecuritySection = ({ profile, isLoading }: SecuritySectionProps) =>
 };
 
 export default SecuritySection;
+

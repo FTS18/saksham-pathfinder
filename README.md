@@ -1,104 +1,89 @@
-# 🚀 Saksham AI - Intelligent Internship Platform
+# Saksham AI - Intelligent Internship Platform
 
-> **AI-Powered Internship Discovery & Career Guidance Platform**
+**AI-Powered Internship Discovery & Career Guidance Platform**
 
 [![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
 [![Firebase](https://img.shields.io/badge/Firebase-12.2.1-orange.svg)](https://firebase.google.com/)
 [![Vite](https://img.shields.io/badge/Vite-5.4.19-purple.svg)](https://vitejs.dev/)
 
-## ✨ Features
+## Features
 
-### 🤖 AI-Powered Matching
-- **Smart Algorithm**: Multi-dimensional compatibility analysis with 50% skills weighting
-- **Company Tier System**: Tier 1 (Google, Microsoft) get 12% bonus, Tier 2 get 8%, Tier 3 get 5%
-- **Semantic Matching**: Advanced skill-to-internship correlation
-- **Real-time Scoring**: Dynamic AI scores based on profile compatibility
+### AI-Powered Matching
+- **Smart Algorithm**: Multi-dimensional compatibility analysis with 50% skills weighting.
+- **Company Tier System**: Tier 1 (Google, Microsoft) receives a 12% bonus, Tier 2 receives 8%, Tier 3 receives 5%.
+- **Semantic Matching**: Advanced skill-to-internship correlation.
+- **Real-time Scoring**: Dynamic AI scores based on profile compatibility.
 
-### 🎯 Personalized Experience
-- **Simplified Onboarding**: 4-step guided setup with real location API
-- **Profile Photo Upload**: Professional profile pictures with Firebase Storage
-- **Smart Filters**: Location, stipend, sector, and skill-based filtering
-- **Wishlist System**: Save and track favorite internships
-- **Application Tracking**: Complete lifecycle management with status updates
-- **Progress Tracking**: Application status and career milestone tracking
+### Personalized Experience
+- **Simplified Onboarding**: 4-step guided setup integrating location APIs.
+- **Profile Management**: Profile picture upload support via Firebase Storage.
+- **Smart Filters**: Advanced filtering by location, stipend, sector, and specific skills.
+- **Wishlist System**: Save and track favorite internships with cross-session persistence.
+- **Application Tracking**: Complete lifecycle management with real-time status updates.
 
-### 🌐 Multi-Language Support
-- **Google Translate Integration**: English ⇄ Hindi translation
-- **Responsive UI**: Mobile-first design with language toggle buttons
-- **Cultural Adaptation**: India-focused content and opportunities
+### Multi-Language Support
+- **Translation Integration**: Support for English and Hindi.
+- **Responsive UI**: Mobile-first design with accessible language toggles.
+- **Cultural Adaptation**: India-focused content and localized opportunities.
 
-### 🔐 Authentication & Security
-- **Firebase Auth**: Google OAuth integration
-- **Secure Data**: XSS protection, input sanitization, SSRF prevention
-- **Profile Management**: Comprehensive user data handling
+### Authentication & Security
+- **Firebase Auth**: Secure Google OAuth integration.
+- **Secure Data Handling**: Implemented protections against XSS and SSRF.
+- **Profile Data Protection**: Comprehensive user data management with strict access control.
 
-### 🎨 Modern UI/UX
-- **Theme System**: 5 color themes (blue, grey, red, yellow, green) + light/dark mode
-- **Responsive Design**: Mobile, tablet, and desktop optimized
-- **Smooth Animations**: Framer Motion powered transitions
-- **Glass Morphism**: Modern glassmorphism design elements
+### Modern UI/UX
+- **Theme System**: Dynamic theming with light/dark modes and multiple accent colors (blue, grey, red, yellow, green).
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop environments.
+- **Smooth Animations**: Integrated Framer Motion for hardware-accelerated transitions.
+- **Advanced Styling**: Persistent layout components preventing unnecessary unmounting across route transitions.
 
-### 📊 Analytics & Insights
-- **Skill Gap Analysis**: AI-powered career guidance
-- **Market Trends**: Real-time internship market insights
-- **Success Stories**: Animated testimonials and achievements
-- **Performance Metrics**: Application success tracking
+### Analytics & Insights
+- **Skill Gap Analysis**: AI-powered career progression guidance.
+- **Market Trends**: Real-time insights into the current internship market.
+- **Performance Metrics**: Application success rate and engagement tracking.
 
-### 🎁 Gamification
-- **Points System**: Earn points for profile completion, applications, referrals
-- **Referral Program**: 100 points for successful referrals
-- **Badges & Achievements**: Milestone-based reward system
-- **Leaderboards**: Community engagement features
+### Gamification
+- **Points System**: Users earn points for profile completion, applications, and referrals.
+- **Referral Program**: Reward system for successful network referrals.
+- **Badges & Achievements**: Milestone-based engagement rewards.
 
-### 📱 PWA Support
-- **Installable App**: Progressive Web App with offline capabilities
-- **Push Notifications**: Real-time updates and alerts
-- **Native Feel**: App-like experience on mobile devices
-- **Offline Mode**: Service worker caching for offline access
-- **App Shortcuts**: Quick access to key features
+### PWA Support
+- **Installable App**: Progressive Web App capabilities for offline and native-like usage.
+- **Caching**: Service worker implementation for optimal performance and offline access.
 
-### 🚀 New Features (v2.0)
-- **4-Step Onboarding**: Reduced from 6 to 4 steps (2-3 min completion)
-- **Real Location API**: All Indian cities via countrystatecity.in
-- **Profile Photos**: Upload with drag-and-drop, preview, and Firebase Storage
-- **Application System**: Apply, track, and manage internship applications
-- **AI Rate Limiting**: Queue system with exponential backoff and caching
-- **Layout Optimization**: Common elements don't re-render on navigation
-- **Auto-save**: Onboarding progress saved to localStorage
+### Recent Structural Updates (v2.1)
+- **Persistent Routing Architecture**: Refactored the core routing in `App.tsx` to utilize nested routes, preventing UI state loss (e.g., sidebar collapse state) during navigation.
+- **Layout Stability Enhancements**: Resolved critical CSS flexbox overflow issues causing layout squishing and horizontal scrollbars on desktop viewports.
+- **Sidebar UX Improvements**: Implemented persistent pin functionality with transparent state management to align with the core glassmorphic design philosophy.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
-- **React 18.3.1** - Modern React with hooks and concurrent features
-- **TypeScript** - Type-safe development
-- **Vite** - Lightning-fast build tool
+- **React 18.3.1** - Modern React utilizing hooks and concurrent features
+- **TypeScript** - Strict type-safe development
+- **Vite** - High-performance build tooling
 - **Tailwind CSS** - Utility-first CSS framework
-- **Shadcn/ui** - High-quality component library
-- **Framer Motion** - Smooth animations and transitions
+- **Shadcn/ui** - Accessible component library
+- **Framer Motion** - Animation library
 
 ### Backend & Services
-- **Firebase** - Authentication, Firestore database, hosting
+- **Firebase** - Authentication, Firestore database, storage, and hosting
 - **Google Gemini AI** - Advanced AI processing and recommendations
 - **RapidAPI** - Job data aggregation (JSearch API)
-- **Adzuna API** - Additional job listings
+- **Adzuna API** - Supplemental job listings
 
 ### State Management
-- **React Context** - Global state management
-- **React Query** - Server state management
-- **Local Storage** - Client-side data persistence
+- **React Context** - Global state management for Theme, Auth, and Application contexts
+- **React Query** - Server state synchronization
+- **Local Storage** - Client-side persistence fallbacks
 
-### Development Tools
-- **ESLint** - Code linting and quality
-- **Prettier** - Code formatting
-- **Husky** - Git hooks for quality control
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Firebase project setup
-- API keys for Gemini AI and job APIs
+- Firebase project configuration
+- Active API keys for Gemini AI and job aggregators
 
 ### Installation
 
@@ -114,101 +99,78 @@ npm install --legacy-peer-deps
 
 # Set up environment variables
 cp .env.example .env
-# Add your API keys to .env file
+# Populate your API keys in the .env file
 
 # Start development server
 npm run dev
 ```
 
-### Environment Variables
+### Detailed Environment Configuration
 
-```env
-# Gemini AI
-VITE_GEMINI_API_KEY=your_gemini_api_key
+The application requires several third-party services to function correctly. Create a `.env` file in the root directory and populate it according to this table:
 
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
+| Variable Name | Required | Provider | Description |
+|---|---|---|---|
+| `VITE_GEMINI_API_KEY` | **Yes** | Google AI Studio | Generative AI key for matching algorithms and profile scoring. [Get it here](https://aistudio.google.com/). |
+| `VITE_FIREBASE_API_KEY` | **Yes** | Firebase Console | Firebase project Web API Key. Used for Auth & Firestore. |
+| `VITE_FIREBASE_AUTH_DOMAIN` | **Yes** | Firebase Console | e.g., `your-project.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | **Yes** | Firebase Console | Your unique Firebase project identifier. |
+| `VITE_FIREBASE_STORAGE_BUCKET` | **Yes** | Firebase Console | e.g., `your-project.appspot.com` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | **Yes** | Firebase Console | Cloud Messaging Sender ID. |
+| `VITE_FIREBASE_APP_ID` | **Yes** | Firebase Console | Firebase Web App ID. |
+| `VITE_RAPIDAPI_KEY` | *Optional* | RapidAPI (JSearch) | Used to fetch live internship data from Google Jobs. Subscribe to the [JSearch API](https://rapidapi.com/letscrape-6bRBa3Q3O/api/jsearch) to obtain this. |
+| `VITE_ADZUNA_APP_ID` | *Optional* | Adzuna Developer | App ID for the Adzuna Job Search API. [Register here](https://developer.adzuna.com/). |
+| `VITE_ADZUNA_APP_KEY` | *Optional* | Adzuna Developer | App Key for the Adzuna Job Search API. |
 
-# Job APIs
-VITE_RAPIDAPI_KEY=your_rapidapi_key
-VITE_ADZUNA_APP_ID=your_adzuna_app_id
-VITE_ADZUNA_APP_KEY=your_adzuna_app_key
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
 ├── components/          # Reusable UI components
 │   ├── ui/             # Shadcn/ui base components
-│   └── Layout.tsx      # Common layout wrapper
-├── pages/              # Main application pages
-│   ├── SimplifiedOnboarding.tsx  # New 4-step onboarding
-│   └── Applications.tsx          # Application tracking
-├── contexts/           # React context providers
+│   └── Layout.tsx      # Main application shell wrapper
+├── pages/              # Primary route components
+├── contexts/           # Global state providers
 ├── hooks/              # Custom React hooks
-├── lib/                # Utility libraries and configurations
-├── services/           # API services and integrations
-│   ├── applicationService.ts     # Application management
-│   ├── aiQueueService.ts         # AI rate limiting
-│   └── locationService.ts        # Real location API
-└── data/              # Static data and configurations
+├── lib/                # Utility modules and configurations
+├── services/           # Backend API integration layers
+└── data/              # Static configurations
 ```
 
-## 🎯 Key Components
+## Build & Deploy (Netlify)
 
-- **AI Matching Engine** - Multi-factor internship recommendation system
-- **Profile System** - Comprehensive user profile with skills and preferences
-- **Filter System** - Advanced filtering with sector-skill dependencies
-- **Notification System** - Real-time updates and alerts
-- **Theme Engine** - Dynamic theming with color and mode controls
-
-## 🔧 Build & Deploy
+This project is configured for automated deployments via **Netlify**, not Firebase Hosting. The `netlify.toml` file at the root handles the build configuration and redirect rules for React Router.
 
 ```bash
-# Build for production
+# 1. Build for production locally
 npm run build
 
-# Preview production build
+# 2. Preview the production build locally
 npm run preview
-
-# Deploy to Firebase (if configured)
-firebase deploy
 ```
 
-## 📚 Documentation
+### Deployment Strategy
+- **Automated CI/CD**: Pushing code to the `main` branch automatically triggers a Netlify production build.
+- **Manual CLI Deployment**: You can also use the included shell script for manual deployment:
+  ```bash
+  # Ensure the Netlify CLI is installed (npm i -g netlify-cli)
+  ./deploy-netlify.sh
+  ```
+- **Routing Note**: Netlify handles Single Page Application (SPA) routing automatically via the `[[redirects]]` rule in `netlify.toml`.
 
-- [Contributing Guidelines](docs/CONTRIBUTING.md) - How to contribute to the project
+## Contributing
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBUTING.md) for details.
+We welcome contributions to Saksham AI. Please refer to our [Contributing Guidelines](docs/CONTRIBUTING.md) for detailed workflows.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -m 'Add: Detailed description of feature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- **Team HexaForces** - Development team
-- **Google Gemini AI** - AI processing capabilities
-- **Firebase** - Backend infrastructure
-- **Shadcn/ui** - Component library
-- **Lucide React** - Icon library
-
 ---
-
-**Made with ❤️ by Team HexaForces**
-
-*Empowering students to find their perfect internship match through AI-driven recommendations.*
+*Developed by Team HexaForces*

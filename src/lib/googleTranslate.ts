@@ -31,6 +31,8 @@ export const getCachedTranslation = async (text: string, targetLang: string): Pr
   return translation;
 };
 
+
+
 export const initGoogleTranslate = () => {
   const existingScript = document.getElementById('google-translate-script');
   if (existingScript) existingScript.remove();
@@ -39,12 +41,12 @@ export const initGoogleTranslate = () => {
   script.id = 'google-translate-script';
   script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
   
-  (window as any).googleTranslateElementInit = () => {
-    if ((window as any).google?.translate) {
-      new (window as any).google.translate.TranslateElement({
+  window.googleTranslateElementInit = () => {
+    if (window.google?.translate) {
+      new window.google.translate.TranslateElement({
         pageLanguage: 'en',
         includedLanguages: 'en,hi,pa,ur,bn,ta,te,ml,kn,gu,mr',
-        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
         multilanguagePage: true
       }, 'google_translate_element');

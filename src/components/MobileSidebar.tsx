@@ -1,32 +1,49 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { LogIn, LogOut, User, Menu, X, ChevronDown, Home, Info, Heart, Newspaper, Play, Users, Settings as SettingsIcon, LayoutDashboard, FileText } from 'lucide-react';
+import { LogIn, LogOut, User, Menu, X, Home, Heart, Newspaper, Play, Users, Settings as SettingsIcon, LayoutDashboard, FileText, Bell, Plus, Calendar, Briefcase, BarChart3 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlistStore as useWishlist } from '@/store/useWishlistStore';
 import { useAuth } from '@/contexts/AuthContext';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import GoogleTranslate from './GoogleTranslate';
-import { GoogleTranslateErrorBoundary } from './GoogleTranslateErrorBoundary';
 
 export const MobileSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [notificationsCount, setNotificationsCount] = useState(0);
   const { theme, toggleTheme, increaseFontSize, decreaseFontSize } = useTheme();
   const { wishlist } = useWishlist();
   const { currentUser, userType, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navLinks = [
+  useEffect(() => {
+    if (currentUser) {
+      const notifs = JSON.parse(localStorage.getItem('notifications') || '[]');
+      const unread = notifs.filter((n: any) => !n.read).length;
+      setNotificationsCount(unread);
+    }
+  }, [currentUser]);
+
+  const isRecruiter = userType === 'recruiter';
+  const navLinks = isRecruiter ? [
+    { href: '/recruiter/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/recruiter/post-job', label: 'Post Job', icon: Plus },
+    { href: '/recruiter/manage-internships', label: 'Manage Internships', icon: Briefcase },
+    { href: '/recruiter/candidates', label: 'Candidates', icon: Users },
+    { href: '/recruiter/applications', label: 'Applications', icon: FileText },
+    { href: '/recruiter/interviews', label: 'Interviews', icon: Calendar },
+    { href: '/recruiter/analytics', label: 'Analytics', icon: BarChart3 },
+    { href: '/recruiter/settings', label: 'Settings', icon: SettingsIcon }
+  ] : [
     { href: '/', label: 'Home', icon: Home },
     ...(currentUser ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }] : []),
-    { href: '/about', label: 'About', icon: Info },
-    ...(currentUser ? [{ href: '/wishlist', label: `Wishlist (${wishlist.length})`, icon: Heart }] : []),
+    { href: '/resume', label: 'Resume', icon: FileText },
+    ...(currentUser ? [{ href: '/wishlist', label: 'Wishlist', icon: Heart, badge: wishlist.length > 0 ? wishlist.length : undefined }] : []),
     ...(currentUser ? [{ href: '/applications', label: 'Applications', icon: FileText }] : []),
+    ...(currentUser ? [{ href: '/notifications', label: 'Notifications', icon: Bell, badge: notificationsCount > 0 ? notificationsCount : undefined }] : []),
     { href: '/news-events', label: 'News & Events', icon: Newspaper },
     { href: '/tutorials', label: 'Tutorials', icon: Play },
-    ...(currentUser ? [{ href: '/referrals', label: 'Refer', icon: Users }] : []),
-    ...(currentUser ? [{ href: '/profile', label: 'Settings', icon: SettingsIcon }] : [])
+    ...(currentUser ? [{ href: '/referrals', label: 'Referrals', icon: Users }] : []),
+    ...(currentUser ? [{ href: '/profile', label: 'Profile & Settings', icon: SettingsIcon }] : [])
   ];
 
   useEffect(() => {
@@ -49,17 +66,6 @@ export const MobileSidebar = () => {
     navigate(path);
   };
 
-  const toggleLanguage = () => {
-    const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    const currentLang = localStorage.getItem('selectedLanguage') || 'en';
-    const newLang = currentLang === 'en' ? 'hi' : 'en';
-    
-    if (combo) {
-      combo.value = newLang;
-      combo.dispatchEvent(new Event('change'));
-      localStorage.setItem('selectedLanguage', newLang);
-    }
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -104,15 +110,22 @@ export const MobileSidebar = () => {
                 {navLinks.map((link) => {
                   const IconComponent = link.icon;
                   return (
-                    <button
+                  <button
                       key={link.href}
                       onClick={() => handleNavClick(link.href)}
-                      className={`w-full flex items-center gap-3 px-3 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors ${
+                      className={`w-full flex items-center justify-between gap-3 px-3 py-3 text-sm font-medium hover:bg-muted rounded-lg transition-colors ${
                         isActive(link.href) ? 'text-primary bg-primary/10' : 'text-foreground'
                       }`}
                     >
-                      <IconComponent className="w-5 h-5" />
-                      {link.label}
+                      <div className="flex items-center gap-3">
+                        <IconComponent className="w-5 h-5" />
+                        {link.label}
+                      </div>
+                      {(link as any).badge && (
+                        <span className="bg-primary text-primary-foreground text-xs rounded-full min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center font-bold">
+                          {(link as any).badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -134,19 +147,13 @@ export const MobileSidebar = () => {
                   <Button variant="outline" size="sm" onClick={decreaseFontSize}>
                     A-
                   </Button>
-                  <Button variant="outline" size="sm" onClick={toggleLanguage}>
-                    <span className="text-sm">
-                      {localStorage.getItem('selectedLanguage') === 'hi' ? 'EN' : 'हि'}
-                    </span>
-                  </Button>
                 </div>
               </div>
 
               {/* Auth */}
               {!currentUser ? (
                 <div className="space-y-2">
-                  <Button onClick={() => handleNavClick('/login')} className="w-full">Login</Button>
-                  <Button variant="outline" onClick={() => handleNavClick('/register')} className="w-full">Sign Up</Button>
+                <Button onClick={() => handleNavClick('/login')} className="w-full">Login</Button>
                 </div>
               ) : (
                 <Button
@@ -162,12 +169,6 @@ export const MobileSidebar = () => {
         </div>
       </div>
 
-      {/* Hidden Google Translate */}
-      <div className="hidden">
-        <GoogleTranslateErrorBoundary>
-          <GoogleTranslate />
-        </GoogleTranslateErrorBoundary>
-      </div>
     </>
   );
 };

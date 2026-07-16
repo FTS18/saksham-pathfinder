@@ -16,7 +16,7 @@ const db = admin.firestore();
  */
 async function verifyAuth(
   headers: Record<string, string | string[] | undefined>
-): Promise<string | null> {
+): Promise<admin.auth.DecodedIdToken | null> {
   const authHeader = headers.authorization;
   if (
     !authHeader ||
@@ -29,19 +29,21 @@ async function verifyAuth(
   const token = authHeader.substring(7);
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
-    return decodedToken.uid;
+    return decodedToken;
   } catch (error) {
     console.error("Token verification failed:", error);
     return null;
   }
 }
 
-/**
- * Verify recruiter role
- */
-async function verifyRecruiterRole(userId: string): Promise<boolean> {
+async function verifyRecruiterRole(decodedToken: admin.auth.DecodedIdToken): Promise<boolean> {
   try {
-    const recruiterDoc = await db.collection("recruiters").doc(userId).get();
+    if (decodedToken.admin === true || decodedToken.recruiter === true) {
+      return true;
+    }
+    
+    // Fallback to database check for backwards compatibility if claims aren't fully migrated yet
+    const recruiterDoc = await db.collection("recruiters").doc(decodedToken.uid).get();
     if (!recruiterDoc.exists) return false;
 
     const data = recruiterDoc.data();
@@ -78,28 +80,37 @@ async function verifyInternshipOwnership(
  * Main API handler for recruiter operations
  */
 export const handler: Handler = async (event, context) => {
-  // Enable CORS
+  // CORS headers
   const headers = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
   };
 
-  // Handle preflight
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 200, headers, body: "" };
   }
 
+  // FIX #31: Health Check endpoint
+  if (event.httpMethod === "GET" && event.path.endsWith("/health")) {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ status: "ok", timestamp: new Date().toISOString() }),
+    };
+  }
+
   try {
-    const userId = await verifyAuth(event.headers);
-    if (!userId) {
+    const decodedToken = await verifyAuth(event.headers);
+    if (!decodedToken) {
       return {
         statusCode: 401,
         headers,
         body: JSON.stringify({ error: "Unauthorized" }),
       };
     }
+    const userId = decodedToken.uid;
 
     const body = event.body ? JSON.parse(event.body) : {};
 
@@ -117,7 +128,7 @@ export const handler: Handler = async (event, context) => {
     if (path === "/initialize-recruiter" && method === "POST") {
       return handleInitializeRecruiter(userId, body, headers);
     } else if (path === "/create-internship" && method === "POST") {
-      return handleCreateInternship(userId, body, headers);
+      return handleCreateInternship(userId, body, headers, decodedToken);
     } else if (path === "/update-internship" && method === "PUT") {
       return handleUpdateInternship(userId, body, headers);
     } else if (path === "/delete-internship" && method === "DELETE") {
@@ -127,9 +138,9 @@ export const handler: Handler = async (event, context) => {
     } else if (path === "/get-applications" && method === "GET") {
       return handleGetApplications(userId, headers);
     } else if (path === "/update-application-status" && method === "PUT") {
-      return handleUpdateApplicationStatus(userId, body, headers);
+      return handleUpdateApplicationStatus(userId, body, headers, decodedToken);
     } else if (path === "/bulk-update-applications" && method === "PUT") {
-      return handleBulkUpdateApplications(userId, body, headers);
+      return handleBulkUpdateApplications(userId, body, headers, decodedToken);
     } else if (path === "/track-view" && method === "POST") {
       return handleTrackView(body, headers);
     } else if (path === "/get-analytics" && method === "GET") {
@@ -213,10 +224,11 @@ async function handleInitializeRecruiter(
 async function handleCreateInternship(
   userId: string,
   data: any,
-  headers: Record<string, string>
+  headers: Record<string, string>,
+  decodedToken?: admin.auth.DecodedIdToken
 ) {
   try {
-    const isRecruiter = await verifyRecruiterRole(userId);
+    const isRecruiter = decodedToken ? await verifyRecruiterRole(decodedToken) : false;
     if (!isRecruiter) {
       return {
         statusCode: 403,
@@ -461,7 +473,8 @@ async function handleGetApplications(
 async function handleUpdateApplicationStatus(
   userId: string,
   data: any,
-  headers: Record<string, string>
+  headers: Record<string, string>,
+  decodedToken?: admin.auth.DecodedIdToken
 ) {
   try {
     const { applicationId, status } = data;
@@ -471,6 +484,25 @@ async function handleUpdateApplicationStatus(
         statusCode: 400,
         headers,
         body: JSON.stringify({ error: "Missing required fields" }),
+      };
+    }
+
+    const isRecruiter = decodedToken ? await verifyRecruiterRole(decodedToken) : false;
+    if (!isRecruiter) {
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({ error: "Not authorized as recruiter" }),
+      };
+    }
+
+    // Verify application belongs to this recruiter's job
+    const appDoc = await db.collection("applications").doc(applicationId).get();
+    if (!appDoc.exists || appDoc.data()?.recruiterId !== userId) {
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({ error: "You are not authorized to update this application" }),
       };
     }
 
@@ -500,7 +532,8 @@ async function handleUpdateApplicationStatus(
 async function handleBulkUpdateApplications(
   userId: string,
   data: any,
-  headers: Record<string, string>
+  headers: Record<string, string>,
+  decodedToken?: admin.auth.DecodedIdToken
 ) {
   try {
     const { applicationIds, status } = data;
@@ -513,12 +546,25 @@ async function handleBulkUpdateApplications(
       };
     }
 
+    const isRecruiter = decodedToken ? await verifyRecruiterRole(decodedToken) : false;
+    if (!isRecruiter) {
+      return {
+        statusCode: 403,
+        headers,
+        body: JSON.stringify({ error: "Not authorized as recruiter" }),
+      };
+    }
+
     const batch = db.batch();
     for (const appId of applicationIds) {
-      batch.update(db.collection("applications").doc(appId), {
-        status,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      // In a real app we should verify each app belongs to this recruiter to prevent IDOR
+      const appDoc = await db.collection("applications").doc(appId).get();
+      if (appDoc.exists && appDoc.data()?.recruiterId === userId) {
+        batch.update(db.collection("applications").doc(appId), {
+          status,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
     }
 
     await batch.commit();

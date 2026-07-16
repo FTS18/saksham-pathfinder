@@ -33,7 +33,7 @@ export const SearchHistoryDropdown = ({
   };
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-black border border-border/50 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+    <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border/50 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
       <div className="p-3 border-b border-border/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">

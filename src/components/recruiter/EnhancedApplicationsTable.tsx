@@ -251,7 +251,7 @@ export const EnhancedApplicationsTable = ({
       )}
 
       {/* Toolbar */}
-      <div className="flex justify-between items-center flex-wrap gap-4 bg-white p-4 rounded-lg border">
+      <div className="flex justify-between items-center flex-wrap gap-4 bg-card p-4 rounded-lg border">
         <div className="flex gap-2 items-center flex-wrap">
           <span className="text-sm font-medium">Filter by Status:</span>
           <Select
@@ -320,7 +320,7 @@ export const EnhancedApplicationsTable = ({
       </div>
 
       {/* Applications Table */}
-      <div className="bg-white rounded-lg border overflow-x-auto">
+      <div className="bg-card rounded-lg border overflow-x-auto">
         {isLoading && applications.length === 0 ? (
           <div className="flex items-center justify-center h-40">
             <Loader className="w-6 h-6 animate-spin text-gray-400" />

@@ -9,11 +9,11 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, subtitle, children, className }: PageHeaderProps) => {
   return (
-    <div className="pt-8 pb-6 border-b">
-      <div className={`mx-auto px-4 ${className || 'max-w-3xl'}`}>
-        <Breadcrumbs />
+    <div className="pt-8 pb-6 border-b border-border/40">
+      <div className={`w-full mx-auto px-4 sm:px-6 lg:px-8 ${className || 'max-w-6xl'}`}>
+        
         {(title || subtitle || children) && (
-          <div className="mt-4">
+          <div className="mt-2">
             {title && (
               <h1 className="text-3xl font-racing font-bold text-foreground mb-2">
                 {title}

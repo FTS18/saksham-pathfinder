@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -146,18 +147,18 @@ export default function Candidates() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Candidates</h1>
-          <p className="text-muted-foreground">Manage candidates who have applied to your internships</p>
+    <div className="bg-background">
+      <PageHeader
+        title="Candidates"
+        subtitle="Manage candidates who have applied to your internships"
+      />
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="flex items-center justify-end">
+          <Button className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            Export
+          </Button>
         </div>
-        <Button className="flex items-center gap-2">
-          <Download className="w-4 h-4" />
-          Export
-        </Button>
-      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -248,8 +249,8 @@ export default function Candidates() {
           </Card>
         ) : (
           filteredCandidates.map((candidate) => (
-            <Card key={candidate.userId} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-6">
+            <Card key={candidate.userId} className="hover:shadow-md hover:-translate-y-0.5">
+              <CardContent className="pt-4">
                 <div className="flex items-start justify-between">
                   <div className="flex gap-4 flex-1">
                     <Avatar className="w-12 h-12 mt-1">
@@ -333,6 +334,7 @@ export default function Candidates() {
             </Card>
           ))
         )}
+      </div>
       </div>
     </div>
   );

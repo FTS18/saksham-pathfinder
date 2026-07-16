@@ -5,15 +5,15 @@ import { PageHeader } from '../components/StickyBreadcrumbHeader';
 
 export default function NewsEvents() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <PageHeader
         title="News & Events"
         subtitle="Stay updated with the latest internship opportunities and career events"
       />
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="space-y-6">
           {/* PM Internship Scheme News */}
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardHeader>
               <CardTitle className="text-xl font-bold text-primary flex items-center gap-2">
                 <Bell className="w-5 h-5" />
@@ -83,7 +83,7 @@ export default function NewsEvents() {
           </Card>
 
           {/* Upcoming Events */}
-          <Card className="glass-card">
+          <Card className="shadow-sm border-border/40">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />

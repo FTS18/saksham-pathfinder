@@ -1,47 +1,31 @@
-// Helper function to fetch internships from Firebase or JSON fallback
-export const fetchInternships = async (): Promise<any[]> => {
-  try {
-    // Try Firebase first
-    let firebaseError: any = null;
+let cachedInternshipsPromise: Promise<any[]> | null = null;
+let lastFetchTime = 0;
+const CACHE_TTL = 60000; // 1 minute cache
+
+// Helper function to fetch internships from Firebase
+export const fetchInternships = async (forceRefresh = false): Promise<any[]> => {
+  const now = Date.now();
+  if (!forceRefresh && cachedInternshipsPromise && (now - lastFetchTime < CACHE_TTL)) {
+    return cachedInternshipsPromise;
+  }
+
+  cachedInternshipsPromise = (async () => {
     try {
-      const { getAllInternships } = await import(
-        "@/services/internshipService"
-      );
+      // Try Firebase
+      const { getAllInternships } = await import("@/services/internshipService");
       const data = await getAllInternships();
       if (Array.isArray(data) && data.length > 0) {
         return data;
       }
-    } catch (err) {
-      firebaseError = err;
-      console.warn("Firebase unavailable or returned empty data:", err);
+      return [];
+    } catch (error) {
+      console.error("Critical error fetching internships:", error);
+      return [];
     }
+  })();
 
-    // Fallback to static JSON files
-    const fallbackPaths = ["/extended-internships.json", "/internships.json"];
-
-    for (const path of fallbackPaths) {
-      try {
-        const response = await fetch(path);
-        if (!response.ok) continue;
-        const data = await response.json();
-        if (Array.isArray(data) && data.length > 0) {
-          return data;
-        }
-      } catch (jsonError) {
-        console.warn(`JSON fallback failed for ${path}:`, jsonError);
-      }
-    }
-
-    // If we get here, data loading failed - but don't return empty, let caller know
-    if (firebaseError) {
-      // Firebase quota or error - this is expected during optimization
-      console.warn("Data unavailable (Firebase quota likely exceeded)");
-    }
-    return [];
-  } catch (error) {
-    console.error("Critical error fetching internships:", error);
-    return [];
-  }
+  lastFetchTime = now;
+  return cachedInternshipsPromise;
 };
 
 // Extract skills, sectors, and cities from internships.json

@@ -32,7 +32,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   ocean: {
     id: "ocean",
     name: "Ocean",
-    label: "🌊 Ocean",
+    label: " Ocean",
     description: "Cool blues and teals - fresh and professional",
     lightMode: {
       primary: "#0ea5e9",
@@ -72,7 +72,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   forest: {
     id: "forest",
     name: "Forest",
-    label: "🌲 Forest",
+    label: " Forest",
     description: "Natural greens - calm and grounded",
     lightMode: {
       primary: "#16a34a",
@@ -112,7 +112,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   sunset: {
     id: "sunset",
     name: "Sunset",
-    label: "🌅 Sunset",
+    label: " Sunset",
     description: "Warm oranges and pinks - energetic and friendly",
     lightMode: {
       primary: "#f97316",
@@ -152,7 +152,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   cyberpunk: {
     id: "cyberpunk",
     name: "Cyberpunk",
-    label: "⚡ Cyberpunk",
+    label: " Cyberpunk",
     description: "Neon magenta and cyan - bold and modern",
     lightMode: {
       primary: "#d946ef",
@@ -192,7 +192,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   minimal: {
     id: "minimal",
     name: "Minimal",
-    label: "⚪ Minimal",
+    label: " Minimal",
     description: "Grayscale and neutral - clean and simple",
     lightMode: {
       primary: "#404040",

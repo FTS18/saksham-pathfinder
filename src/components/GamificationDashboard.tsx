@@ -178,17 +178,17 @@ export const GamificationDashboard: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 rounded-lg bg-primary/5">
-              <div className="text-2xl mb-2">📝</div>
+              <div className="text-2xl mb-2"></div>
               <h4 className="font-semibold text-sm">Apply to Internships</h4>
               <p className="text-xs text-muted-foreground">+25 points each</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-green-500/5">
-              <div className="text-2xl mb-2">🤝</div>
+              <div className="text-2xl mb-2"></div>
               <h4 className="font-semibold text-sm">Refer Friends</h4>
               <p className="text-xs text-muted-foreground">+100 points each</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-yellow-500/5">
-              <div className="text-2xl mb-2">⭐</div>
+              <div className="text-2xl mb-2"></div>
               <h4 className="font-semibold text-sm">Complete Profile</h4>
               <p className="text-xs text-muted-foreground">+50 points</p>
             </div>

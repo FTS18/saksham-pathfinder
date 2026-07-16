@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Upload, CloudUpload, Download, Eye, Loader2, Link } from 'lucide-react';
-import { extractTextFromPDF, extractTextFromImage, parseResumeText, fetchGitHubProfile, ResumeData } from '@/services/resumeScanner';
+import { parseResumeText, fetchGitHubProfile, ResumeData } from '@/services/resumeScanner';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
@@ -26,19 +26,31 @@ export const ResumeUploader = ({ onDataExtracted }: ResumeUploaderProps) => {
 
     setIsProcessing(true);
     try {
-      let text = '';
-      
+      let parsedData: ResumeData;
+
       if (file.type === 'application/pdf') {
-        text = await extractTextFromPDF(file);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('/.netlify/functions/parse-resume', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to parse PDF on server');
+        }
+
+        parsedData = await response.json();
       } else if (file.type.startsWith('image/')) {
-        text = await extractTextFromImage(file);
+        throw new Error('Image parsing is currently not supported. Please upload a PDF or text file.');
       } else if (file.type === 'text/plain') {
-        text = await file.text();
+        const text = await file.text();
+        parsedData = parseResumeText(text);
       } else {
         throw new Error('Unsupported file type');
       }
 
-      const parsedData = parseResumeText(text);
       setExtractedData(parsedData);
       onDataExtracted(parsedData);
       
@@ -47,6 +59,7 @@ export const ResumeUploader = ({ onDataExtracted }: ResumeUploaderProps) => {
         description: 'Successfully extracted information from your resume.',
       });
     } catch (error) {
+      console.error(error);
       toast({
         title: 'Processing Failed',
         description: 'Failed to process resume. Please try again.',

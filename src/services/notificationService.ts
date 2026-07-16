@@ -167,10 +167,10 @@ export const NotificationService = {
     status: string
   ) {
     const statusMessages = {
-      accepted: `🎉 Congratulations! Your application to ${companyName} has been accepted!`,
+      accepted: ` Congratulations! Your application to ${companyName} has been accepted!`,
       rejected: `Your application to ${companyName} was not selected this time.`,
-      interview_scheduled: `📅 Interview scheduled for your application to ${companyName}!`,
-      under_review: `👀 Your application to ${companyName} is now under review.`
+      interview_scheduled: ` Interview scheduled for your application to ${companyName}!`,
+      under_review: ` Your application to ${companyName} is now under review.`
     };
 
     return this.createNotification({

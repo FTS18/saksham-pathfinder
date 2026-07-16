@@ -271,7 +271,7 @@ const CompanyPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pt-16">
+      <div className="bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
             <div className="h-32 bg-muted rounded-lg"></div>
@@ -288,7 +288,7 @@ const CompanyPage = () => {
 
   if (!companyInfo || internships.length === 0) {
     return (
-      <div className="min-h-screen bg-background pt-16">
+      <div className="bg-background">
         <div className="container mx-auto px-4 py-8">
           <Button 
             onClick={() => navigate('/')} 
@@ -314,7 +314,7 @@ const CompanyPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-6">
+    <div className="bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <div className="flex items-center justify-between">

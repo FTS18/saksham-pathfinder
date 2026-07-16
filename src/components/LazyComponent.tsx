@@ -11,8 +11,9 @@ export const LazyComponent = ({
   children, 
   fallback = null, 
   rootMargin = '100px',
-  threshold = 0.1 
-}: LazyComponentProps) => {
+  threshold = 0.1,
+  className = ''
+}: LazyComponentProps & { className?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ export const LazyComponent = ({
   }, [rootMargin, threshold]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className={className}>
       {isVisible ? children : fallback}
     </div>
   );

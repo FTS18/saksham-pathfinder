@@ -11,6 +11,7 @@ declare global {
       };
     };
     googleTranslateElementInit: () => void;
+    addNotification?: (notification: any) => void;
   }
 }
 

@@ -1,3 +1,4 @@
+import { ProfileData } from '@/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,8 +9,8 @@ import { Code, Plus, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SkillsSectionProps {
-  profile: any;
-  onUpdate: (key: string, value: any) => Promise<void>;
+  profile: ProfileData;
+  onUpdate: (key: string, value: unknown) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -71,7 +72,7 @@ export const SkillsSection = ({ profile, onUpdate, isLoading }: SkillsSectionPro
   );
 
   return (
-    <Card className="rounded-lg">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Code className="w-5 h-5" />
@@ -160,3 +161,4 @@ export const SkillsSection = ({ profile, onUpdate, isLoading }: SkillsSectionPro
 };
 
 export default SkillsSection;
+

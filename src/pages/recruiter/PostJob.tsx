@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,11 +25,12 @@ export default function PostJob() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Post New Job</h1>
-        <p className="text-muted-foreground">Create a new internship opportunity</p>
-      </div>
+    <div className="bg-background">
+      <PageHeader
+        title="Post New Job"
+        subtitle="Create a new internship opportunity"
+      />
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <Card>
         <CardHeader>
@@ -125,6 +127,8 @@ export default function PostJob() {
           </div>
         </CardContent>
       </Card>
+      </div>
+      </div>
     </div>
   );
 }

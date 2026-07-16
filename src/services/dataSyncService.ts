@@ -15,7 +15,7 @@ class DataSyncService {
       // Restore all data to localStorage and UI
       this.restoreAllData(preferences);
     } catch (error) {
-      console.error("❌ Error syncing user data:", error);
+      console.error("[DataSync] Error syncing user data:", error);
     }
   }
 
@@ -120,7 +120,7 @@ class DataSyncService {
       );
       this.restoreAllData(preferences);
     } catch (error) {
-      console.error("❌ Error loading user data from Firebase:", error);
+      console.error("[DataSync] Error loading user data from Firebase:", error);
     }
   }
 }

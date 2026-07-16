@@ -40,7 +40,7 @@ export const CurrencyInput = ({ value, onChange, country, label, placeholder, re
     <div className="space-y-2">
       {label && <Label>{label} {required && <span className="text-red-500">*</span>}</Label>}
       <div className="flex">
-        <div className="flex items-center px-3 py-2 border border-r-0 rounded-l-md bg-muted text-sm font-medium">
+        <div className="flex items-center px-3 py-2 border border-r-0 rounded-l-xl bg-muted text-sm font-medium">
           {currencySymbol}
         </div>
         <Input

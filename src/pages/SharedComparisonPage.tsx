@@ -77,7 +77,7 @@ export const SharedComparisonPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background px-4 py-8">
+      <div className="min-h-[calc(100vh-4rem)] bg-background px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-6">
             <Button variant="ghost" onClick={() => navigate('/')}>
@@ -96,7 +96,7 @@ export const SharedComparisonPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background px-4 py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background px-4 py-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -140,7 +140,7 @@ export const SharedComparisonPage = () => {
             {/* Action Buttons */}
             <div className="mb-8 flex gap-2 flex-wrap">
               <Button onClick={handleExportPDF} variant="default">
-                📥 Download as PDF
+                 Download as PDF
               </Button>
               <Button
                 onClick={() => {
@@ -152,7 +152,7 @@ export const SharedComparisonPage = () => {
                 }}
                 variant="outline"
               >
-                🔗 Copy Link
+                 Copy Link
               </Button>
             </div>
 

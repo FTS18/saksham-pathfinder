@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   getAnalytics,
   logEvent,
@@ -43,7 +43,7 @@ export const useAnalytics = () => {
     }
   }, [currentUser, analyticsReady]);
 
-  const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+  const trackEvent = useCallback((eventName: string, parameters?: Record<string, any>) => {
     try {
       const analytics = analyticsRef.current;
       if (!analytics) return;
@@ -56,39 +56,39 @@ export const useAnalytics = () => {
     } catch (error) {
       console.error("Analytics error:", error);
     }
-  };
+  }, [currentUser]);
 
-  const trackPageView = (pageName: string) => {
+  const trackPageView = useCallback((pageName: string) => {
     trackEvent("page_view", { page_name: pageName });
-  };
+  }, [trackEvent]);
 
-  const trackInternshipView = (internshipId: string, company: string) => {
+  const trackInternshipView = useCallback((internshipId: string, company: string) => {
     trackEvent("internship_view", {
       internship_id: internshipId,
       company_name: company,
     });
-  };
+  }, [trackEvent]);
 
-  const trackApplication = (internshipId: string, company: string) => {
+  const trackApplication = useCallback((internshipId: string, company: string) => {
     trackEvent("internship_application", {
       internship_id: internshipId,
       company_name: company,
     });
-  };
+  }, [trackEvent]);
 
-  const trackSearch = (query: string, resultsCount: number) => {
+  const trackSearch = useCallback((query: string, resultsCount: number) => {
     trackEvent("search", {
       search_term: query,
       results_count: resultsCount,
     });
-  };
+  }, [trackEvent]);
 
-  const trackFilterUsage = (filterType: string, filterValue: string) => {
+  const trackFilterUsage = useCallback((filterType: string, filterValue: string) => {
     trackEvent("filter_usage", {
       filter_type: filterType,
       filter_value: filterValue,
     });
-  };
+  }, [trackEvent]);
 
   return {
     trackEvent,

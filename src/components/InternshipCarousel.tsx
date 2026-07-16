@@ -142,11 +142,11 @@ export const InternshipCarousel: React.FC<InternshipCarouselProps> = ({
           tabIndex={0}
           aria-label={`${title} - Use arrow keys to navigate`}
         >
-          <div className="flex gap-6 pb-2">
+          <div className="flex gap-6 pb-2 items-stretch">
             {internships.map((internship, index) => (
               <div
                 key={internship.id}
-                className="flex-shrink-0 w-96"
+                className="flex-shrink-0 w-96 self-stretch"
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${internships.length}: ${internship.title} at ${internship.company}`}
@@ -173,7 +173,7 @@ export const InternshipCarousel: React.FC<InternshipCarouselProps> = ({
           Showing {Math.min(currentIndex + visibleCards, internships.length)} of {internships.length}
         </span>
         <span className="text-xs text-muted-foreground" aria-label="keyboard navigation hint">
-          💡 Use arrow keys to navigate
+           Use arrow keys to navigate
         </span>
       </div>
     </section>

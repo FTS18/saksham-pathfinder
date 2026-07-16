@@ -169,7 +169,7 @@ export const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-none shadow-lg z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-none shadow-lg z-50 max-h-80 overflow-y-auto">
           {searchHistory.length > 0 && (
             <div className="p-2 border-b">
               <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">

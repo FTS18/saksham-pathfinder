@@ -5,8 +5,8 @@ export const ProfileSkeleton = () => {
   return (
     <div className="space-y-6">
       {/* Header Skeleton */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b">
-        <div className="max-w-3xl mx-auto px-6">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b -mx-6 px-6 py-2">
+        <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between py-4">
             <Skeleton className="h-9 w-16" />
             <Skeleton className="h-8 w-32" />
@@ -24,9 +24,9 @@ export const ProfileSkeleton = () => {
       </div>
 
       {/* Content Skeleton */}
-      <div className="pt-32 space-y-6">
+      <div className="pt-6 space-y-6">
         {/* Basic Info Card */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <Skeleton className="h-6 w-40 mx-auto" />
           </CardHeader>
@@ -52,7 +52,7 @@ export const ProfileSkeleton = () => {
         </Card>
 
         {/* Sectors Card */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <Skeleton className="h-6 w-20 mx-auto" />
           </CardHeader>
@@ -66,7 +66,7 @@ export const ProfileSkeleton = () => {
         </Card>
 
         {/* Skills Card */}
-        <Card className="glass-card">
+        <Card className="shadow-sm border-border/40">
           <CardHeader>
             <Skeleton className="h-6 w-16 mx-auto" />
           </CardHeader>

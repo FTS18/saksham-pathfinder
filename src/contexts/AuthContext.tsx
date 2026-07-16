@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, ReactNode } from 'react';
 import { 
   User, 
   signInWithEmailAndPassword, 
@@ -178,12 +178,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const loginAsRecruiter = async (email: string, password: string) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
     
-    // Check if user is admin or exists in recruiters collection
     try {
-      // Allow admin account - check email directly
-      if (email === 'spacify1807@gmail.com') {
+      // FIX #4: Check custom claims instead of hardcoded email
+      const tokenResult = await result.user.getIdTokenResult(true);
+      if (tokenResult.claims.admin === true || tokenResult.claims.recruiter === true) {
         setUserType('recruiter');
-        // Admin doesn't need onboarding
         setNeedsOnboarding(false);
         localStorage.setItem('onboardingCompleted', 'true');
         return;
@@ -194,12 +193,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const docSnap = await getDoc(docRef);
       
       if (!docSnap.exists()) {
-        // User is not a recruiter, show message and logout
         await signOut(auth);
         throw new Error('Account not found in recruiter database. Please register as a recruiter first or login as a student.');
       }
       
-      // User is a recruiter - check onboarding status
       await checkOnboardingStatus(result.user, 'recruiter');
     } catch (error) {
       await signOut(auth);
@@ -278,11 +275,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
       
-      // Determine user type: check admin, then recruiters, then profiles
+      // Determine user type: check custom claims, then recruiters, then profiles
       let currentUserType: 'student' | 'recruiter' = type || 'student';
       
-      // Check if admin
-      if (user.email === 'spacify1807@gmail.com') {
+      const tokenResult = await user.getIdTokenResult(true);
+      if (tokenResult.claims.admin === true || tokenResult.claims.recruiter === true) {
         currentUserType = 'recruiter';
         setUserType('recruiter');
         setNeedsOnboarding(false);
@@ -386,7 +383,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
   }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     currentUser,
     userType,
     login,
@@ -400,7 +397,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loading,
     needsOnboarding,
     needsEmailVerification
-  };
+  }), [currentUser, userType, loading, needsOnboarding, needsEmailVerification]);
 
   return (
     <AuthContext.Provider value={value}>

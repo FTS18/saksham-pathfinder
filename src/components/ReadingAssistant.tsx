@@ -81,7 +81,7 @@ export const ReadingAssistant = ({ text, isVisible }: ReadingAssistantProps) => 
 
   return (
     <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-      <span className="text-sm font-medium text-blue-700 dark:text-blue-300">🔊 Reading Assistant:</span>
+      <span className="text-sm font-medium text-blue-700 dark:text-blue-300"> Reading Assistant:</span>
       <div className="flex gap-2">
         {!isReading && !isPaused && (
           <Button

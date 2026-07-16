@@ -76,7 +76,7 @@ export const CityPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           <p className="text-muted-foreground animate-pulse">Loading internships in {displayCity}...</p>

@@ -10,8 +10,7 @@ import { ProfileForm } from '@/components/ProfileForm';
 import { InternshipFilters } from '@/components/InternshipFilters';
 import { useInternshipFilters } from '@/hooks/useInternshipFilters';
 import { InternshipCard } from '@/components/InternshipCard';
-import { SuccessStoriesMarquee } from '@/components/SuccessStoriesMarquee';
-import MagicBento from '@/components/MagicBento';
+
 import { LazyComponent } from '@/components/LazyComponent';
 import { SkeletonGrid, SkeletonCard } from '@/components/SkeletonLoaders';
 import { InternshipListSkeleton, PageLoadingSpinner } from '@/components/LoadingStates';
@@ -40,7 +39,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowUpDown, ChevronLeft, ChevronRight, Calendar, Briefcase, GraduationCap, Users, Building, Filter } from 'lucide-react';
+import { ArrowUpDown, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 
 // Helper function to calculate distance between two coordinates
 const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng: number }) => {
@@ -56,7 +55,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
   
   
   // Vector-based AI scoring with cosine similarity
-  const createProfileVector = (profile: any, allInternships: any[]) => {
+  const createProfileVector = (profile: ProfileData, allInternships: Internship[]) => {
       const allSkills = [...new Set(allInternships.flatMap(i => i.required_skills || []))];
       const allSectors = [...new Set(allInternships.flatMap(i => i.sector_tags || []))];
       const allLocations = [...new Set(allInternships.map(i => typeof i.location === 'string' ? i.location : i.location?.city).filter(Boolean))];
@@ -72,7 +71,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       return [...skillVector, ...sectorVector, ...locationVector];
   };
   
-  const createInternshipVector = (internship: any, allInternships: any[]) => {
+  const createInternshipVector = (internship: Internship, allInternships: Internship[]) => {
       const allSkills = [...new Set(allInternships.flatMap(i => i.required_skills || []))];
       const allSectors = [...new Set(allInternships.flatMap(i => i.sector_tags || []))];
       const allLocations = [...new Set(allInternships.map(i => typeof i.location === 'string' ? i.location : i.location?.city).filter(Boolean))];
@@ -108,7 +107,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       return skillMap[normalized] || normalized;
   };
 
-  const score = (profile: any, internship: any, allInternships: any[] = []) => {
+  const score = (profile: ProfileData, internship: Internship, allInternships: Internship[] = []) => {
       const parseStipend = (stipend: string) => {
           const match = stipend.match(/₹([\d,]+)/);
           return match ? parseInt(match[1].replace(/,/g, '')) : 0;
@@ -279,7 +278,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       };
   }
   
-  const recommendInternships = (profile: any, allInternships: any[]) => {
+  const recommendInternships = (profile: ProfileData, allInternships: Internship[]) => {
       if (!profile) return [];
       
       // Score all internships
@@ -297,7 +296,9 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
       const validScores = scores.filter(item => item.score > 0);
       const sorted = validScores.sort((a, b) => {
           // Get skill match ratios for primary sort
-          const getSkillRatio = (item: any) => {
+          type ScoredInternship = { internship: Internship; score: number; explanation: string; aiTags: string[]; };
+          
+          const getSkillRatio = (item: ScoredInternship) => {
               const required = item.internship.required_skills || [];
               const userSkills = profile.skills || [];
               const matched = required.filter((s: string) => 
@@ -308,7 +309,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
               return required.length > 0 ? matched.length / required.length : 0.5;
           };
           
-          const getSectorTier = (item: any) => {
+          const getSectorTier = (item: ScoredInternship) => {
               const sectorTags = item.internship.sector_tags || [];
               const greenSectors = ['AI/ML', 'Web3', 'Cloud', 'Cybersecurity', 'Data Science', 'Machine Learning'];
               const yellowSectors = ['Web Development', 'Data Analytics', 'Marketing Tech', 'Mobile Development'];
@@ -317,7 +318,7 @@ const haversine = (loc1: { lat: number; lng: number }, loc2: { lat: number; lng:
               return 1; // Red
           };
           
-          const getCompanyTier = (item: any) => {
+          const getCompanyTier = (item: ScoredInternship) => {
               const tier1 = ['Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix', 'OpenAI'];
               const tier2 = ['Uber', 'Airbnb', 'Tesla', 'Adobe', 'Salesforce', 'PayPal', 'Flipkart'];
               const tier3 = ['Paytm', 'Zomato', 'Infosys', 'TCS', 'Wipro', 'HUL', 'Reliance'];
@@ -421,8 +422,7 @@ const Index = () => {
   const { elementRef: pullToRefreshRef, isRefreshing, pullDistance } = usePullToRefresh({
     onRefresh: async () => {
       // Refresh internships data
-      const response = await fetch('/internships.json');
-      const data = await response.json();
+      const data = await fetchInternships();
       setAllInternships(sanitizeInternshipData(data));
       
       // Re-run recommendations if profile exists
@@ -463,7 +463,7 @@ const Index = () => {
       setIsPageLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
-  }, [trackPageView]);
+  }, []); // Run once on mount to prevent loader reset loops
   
   // Load internships
   useEffect(() => {
@@ -572,8 +572,7 @@ const Index = () => {
     let internships = allInternships;
     if (internships.length === 0) {
       try {
-        const response = await fetch('/internships.json');
-        internships = await response.json();
+        internships = await fetchInternships();
         setAllInternships(internships);
       } catch (error) {
         console.warn('Failed to load internships data');
@@ -699,64 +698,7 @@ const Index = () => {
   const displayItems = useMemo(() => {
     // If search is active, always search through ALL internships regardless of profile
     if (filters.search && filters.search.trim()) {
-      const searchLower = filters.search.toLowerCase().trim();
-      const allItems = allInternships.filter(internship => {
-        // Ensure internship has required properties
-        if (!internship || typeof internship !== 'object') return false;
-        
-        const title = (internship.title || '').toLowerCase();
-        const company = (internship.company || '').toLowerCase();
-        const skills = (internship.required_skills || []).map(skill => (skill || '').toLowerCase());
-        const sectors = (internship.sector_tags || []).map(sector => (sector || '').toLowerCase());
-        const location = (typeof internship.location === 'string' ? internship.location : internship.location?.city || '').toLowerCase();
-        
-        const matchesSearch = title.includes(searchLower) ||
-                            company.includes(searchLower) ||
-                            skills.some(skill => skill.includes(searchLower)) ||
-                            sectors.some(sector => sector.includes(searchLower)) ||
-                            location.includes(searchLower);
-        if (!matchesSearch) return false;
-        
-        // Apply sector filters
-        if (filters.selectedSectors && filters.selectedSectors.length > 0) {
-          const hasSectorMatch = (internship.sector_tags || []).some(tag => filters.selectedSectors!.includes(tag));
-          if (!hasSectorMatch) return false;
-        } else if (filters.sector && filters.sector !== 'all') {
-          const hasSectorMatch = (internship.sector_tags || []).includes(filters.sector);
-          if (!hasSectorMatch) return false;
-        }
-        
-        // Apply skill filters
-        if (filters.selectedSkills && filters.selectedSkills.length > 0) {
-          const hasSkillMatch = (internship.required_skills || []).some(skill => filters.selectedSkills!.includes(skill));
-          if (!hasSkillMatch) return false;
-        }
-        
-        // Apply other filters
-        if (filters.location && filters.location !== 'all') {
-          const internshipLocation = typeof internship.location === 'string' ? internship.location : internship.location?.city || '';
-          if (!internshipLocation.toLowerCase().includes(filters.location.toLowerCase())) return false;
-        }
-        
-        if (filters.workMode && filters.workMode !== 'all') {
-          if (internship.work_mode !== filters.workMode) return false;
-        }
-        
-        if (filters.education && filters.education !== 'all') {
-          const hasEducationMatch = (internship.preferred_education_levels || []).includes(filters.education);
-          if (!hasEducationMatch) return false;
-        }
-        
-        if (filters.minStipend && filters.minStipend !== 'all') {
-          const minAmount = parseInt(filters.minStipend);
-          const stipendAmount = parseInt(internship.stipend.replace(/[^\d]/g, ''));
-          if (stipendAmount < minAmount) return false;
-        }
-        
-        return true;
-      });
-      
-      return allItems.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
+      return filteredInternships.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
     }
     
     // For profile users without search, use filtered recommendations
@@ -766,24 +708,8 @@ const Index = () => {
     }
     
     // For non-profile users without search, show all internships
-    const allItems = allInternships.filter(internship => {
-      // Apply other filters but NOT sector filters for main page
-      if (filters.location && filters.location !== 'all') {
-        const internshipLocation = typeof internship.location === 'string' ? internship.location : internship.location?.city || '';
-        if (!internshipLocation.toLowerCase().includes(filters.location.toLowerCase())) return false;
-      }
-      
-      if (filters.minStipend && filters.minStipend !== 'all') {
-        const minAmount = parseInt(filters.minStipend);
-        const stipendAmount = parseInt(internship.stipend.replace(/[^\d]/g, ''));
-        if (stipendAmount < minAmount) return false;
-      }
-      
-      return true;
-    });
-    
-    return allItems.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
-  }, [profileData, filterRecommendations, recommendations, allInternships, filters]);
+    return filteredInternships.map(internship => ({ internship, score: 0, explanation: '', aiTags: [] }));
+  }, [profileData, filterRecommendations, recommendations, filteredInternships, filters.search]);
 
   // Effect for internship data requests with proper cleanup
   useEffect(() => {
@@ -832,7 +758,7 @@ const Index = () => {
     }
   };
 
-  const handleInternshipView = (internship: any) => {
+  const handleInternshipView = (internship: Internship) => {
     addToRecentlyViewed(internship);
   };
 
@@ -865,168 +791,16 @@ const Index = () => {
           </div>
         )}
 
-      <Hero onGetStartedClick={handleGetStartedClick} />
-      
-      {/* Public Features Showcase for Unauthenticated Users */}
       {!currentUser && (
-        <section className="py-12 px-4 bg-muted/50">
-          <PublicFeaturesShowcase />
-        </section>
+        <>
+          <Hero onGetStartedClick={handleGetStartedClick} />
+          {/* Public Features Showcase for Unauthenticated Users */}
+          <section className="py-12 px-4 bg-muted/50">
+            <PublicFeaturesShowcase />
+          </section>
+        </>
       )}
-      
-      {/* Success Stories Section */}
-      <section className="py-8 bg-background">
-        <h2 className="text-4xl font-racing font-bold text-center mb-4">Success Stories</h2>
-        <SuccessStoriesMarquee />
-      </section>
-      
-      {/* PM Internship Eligibility Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-racing font-bold text-foreground mb-4">
-              Are you Eligible for PM <span className="relative text-foreground">
-                Internship
-                <div className="absolute -bottom-1 left-0 w-full h-1 flex">
-                  <div className="w-1/3 h-full bg-orange-500"></div>
-                  <div className="w-1/3 h-full bg-white border border-gray-300"></div>
-                  <div className="w-1/3 h-full bg-green-500"></div>
-                </div>
-              </span> Scheme?
-            </h2>
-            <p className="text-xl text-muted-foreground">Check your eligibility for Government of India's PM Internship Scheme</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <MagicBento 
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-              className="border-2"
-            >
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Calendar className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Age</h3>
-                <p className="text-muted-foreground">21-24 Years</p>
-              </div>
-            </MagicBento>
-            
-            <MagicBento 
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-              className="border-2"
-            >
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Briefcase className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Job Status</h3>
-                <p className="text-muted-foreground">Not Employed Full Time</p>
-              </div>
-            </MagicBento>
-            
-            <MagicBento 
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-              className="border-2"
-            >
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <GraduationCap className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Education</h3>
-                <p className="text-muted-foreground">Not Enrolled Full Time</p>
-              </div>
-            </MagicBento>
-            
-            <MagicBento 
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-              className="border-2 md:col-span-2 lg:col-span-1"
-            >
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Building className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Government Job</h3>
-                <p className="text-muted-foreground">No Member has a Govt. Job</p>
-              </div>
-            </MagicBento>
-            
-            <MagicBento 
-              spotlightRadius={300}
-              particleCount={12}
-              glowColor="132, 0, 255"
-              className="border-2 md:col-span-2"
-            >
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">Family Income</h3>
-                <p className="text-muted-foreground">No one earning more than ₹8 Lakhs PA</p>
-              </div>
-            </MagicBento>
-          </div>
-          
-          {/* Core Benefits */}
-          <div className="mt-16 mb-12">
-            <h3 className="text-2xl font-racing font-bold text-center text-foreground mb-8">Core Benefits for PM Internship Scheme</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <MagicBento 
-                spotlightRadius={200}
-                glowColor="34, 197, 94"
-                className="p-4 border border-border rounded-lg"
-              >
-                <h4 className="font-semibold text-foreground mb-2">12 months real-life experience</h4>
-                <p className="text-muted-foreground text-sm">in India's top companies</p>
-              </MagicBento>
-              <MagicBento 
-                spotlightRadius={200}
-                glowColor="59, 130, 246"
-                className="p-4 border border-border rounded-lg"
-              >
-                <h4 className="font-semibold text-foreground mb-2">Monthly assistance</h4>
-                <p className="text-muted-foreground text-sm">₹4500 by Government of India and ₹500 by Industry</p>
-              </MagicBento>
-              <MagicBento 
-                spotlightRadius={200}
-                glowColor="168, 85, 247"
-                className="p-4 border border-border rounded-lg"
-              >
-                <h4 className="font-semibold text-foreground mb-2">One-time Grant</h4>
-                <p className="text-muted-foreground text-sm">₹6000 for incidentals</p>
-              </MagicBento>
-              <MagicBento 
-                spotlightRadius={200}
-                glowColor="245, 158, 11"
-                className="p-4 border border-border rounded-lg"
-              >
-                <h4 className="font-semibold text-foreground mb-2">Select from Various Sectors</h4>
-                <p className="text-muted-foreground text-sm">and from top Companies of India</p>
-              </MagicBento>
-            </div>
-          </div>
-          
-          <div className="text-center mt-12">
-            <Button 
-              size="lg" 
-              className="relative bg-background text-foreground border-4 px-8 py-3 hover:bg-muted/50 transition-colors"
-              style={{
-                borderImage: 'linear-gradient(to right, #ff9933 33.33%, #ffffff 33.33%, #ffffff 66.66%, #138808 66.66%) 1'
-              }}
-              onClick={handleGetStartedClick}
-            >
-              Check Your Eligibility
-            </Button>
-          </div>
-        </div>
-      </section>
+
 
       {showProfileForm && (
         <div ref={profileFormRef} id="profile-form" className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
@@ -1048,7 +822,7 @@ const Index = () => {
             <div className='w-full max-w-6xl mx-auto px-4'>
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
-                        🎯 AI Recommendations
+                         AI Recommendations
                     </h2>
                     <div className="flex items-center justify-between mb-6">
                         <p className="text-muted-foreground">
@@ -1058,7 +832,7 @@ const Index = () => {
                     {recentlyViewed.length > 0 && (
                         <div className="mb-8">
                             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                                <span>👀</span> Recently Viewed
+                                <span></span> Recently Viewed
                             </h3>
                             <div className="flex gap-3 overflow-x-auto pb-2">
                                 {recentlyViewed.slice(0, 5).map((item) => (
@@ -1073,7 +847,7 @@ const Index = () => {
                     <div className="bg-primary/10 rounded-lg p-4 mb-6">
                         <div className="flex items-center justify-between">
                             <p className="text-sm text-primary font-medium">
-                                📊 Personalized matches based on your profile
+                                 Personalized matches based on your profile
                             </p>
                             <Button 
                                 onClick={() => {
@@ -1112,8 +886,7 @@ const Index = () => {
                                     }
                                 }}
                                 size="sm"
-                                className={`${hasAppliedAIFilters ? 'bg-green-100 hover:bg-green-200 text-green-700 border-green-300' : 'bg-primary/20 hover:bg-primary/30 text-primary border-primary/30'}`}
-                                variant="outline"
+                                className={`${hasAppliedAIFilters ? 'bg-green-100 hover:bg-green-200 text-green-700 border-green-300' : 'bg-primary hover:bg-primary/90 text-primary-foreground border-transparent shadow-lg'}`}
                             >
                                 <Filter className="w-4 h-4 mr-1" />
                                 {hasAppliedAIFilters ? 'Reset Filters' : 'Apply My Profile'}
@@ -1157,25 +930,20 @@ const Index = () => {
 
                 {displayItems.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 internship-cards-container">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8 internship-cards-container">
                             {currentItems.map((item, index) => (
-                                <LazyComponent 
+                                <InternshipCard 
                                     key={item.internship.id}
-                                    fallback={<SkeletonCard />}
-                                    rootMargin="200px"
-                                >
-                                    <InternshipCard 
-                                        internship={item.internship}
-                                        matchExplanation={item.explanation}
-                                        aiTags={item.aiTags}
-                                        userProfile={profileData}
-                                        aiScore={item.score}
-                                        onNext={() => handlePageChange(currentPage + 1)}
-                                        onPrev={() => handlePageChange(currentPage - 1)}
-                                        currentIndex={startIndex + index + 1}
-                                        totalCount={displayItems.length}
-                                    />
-                                </LazyComponent>
+                                    internship={item.internship}
+                                    matchExplanation={item.explanation}
+                                    aiTags={item.aiTags}
+                                    userProfile={profileData}
+                                    aiScore={item.score}
+                                    onNext={() => handlePageChange(currentPage + 1)}
+                                    onPrev={() => handlePageChange(currentPage - 1)}
+                                    currentIndex={startIndex + index + 1}
+                                    totalCount={displayItems.length}
+                                />
                             ))}
                         </div>
                         {displayItems.length > itemsPerPage && (
@@ -1268,70 +1036,65 @@ const Index = () => {
       )}
       
       {!profileData && allInternships.length > 0 && (
-        <section className="bg-card py-12 sm:py-16 lg:py-20 px-2 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-16 px-2 sm:px-6 lg:px-8 border-t border-border/30">
             <div className='w-full max-w-6xl mx-auto px-4'>
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-racing font-bold text-foreground mb-4">
-                        {filters.search ? `🔍 Search Results for "${filters.search}"` : '🔍 Browse All Internships'}
-                    </h2>
-                    <div className="flex items-center justify-between mb-6">
-                        <p className="text-muted-foreground">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 mt-4">
+                    <div className="text-left">
+                        <h2 className="text-3xl font-racing font-bold text-foreground tracking-tight">
+                            {filters.search ? `Search Results for "${filters.search}"` : 'Browse All Internships'}
+                        </h2>
+                        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
                             {filters.search ? 
-                              `Found ${displayItems?.length || 0} internships matching "${filters.search}"` :
-                              `Found ${displayItems?.length || 0} internships`
+                              `Found ${displayItems?.length || 0} matching opportunities` :
+                              `Showing ${displayItems?.length || 0} available opportunities`
                             }
                         </p>
-                        <Button 
-                            onClick={() => {
-                                const presetFilters = SmartFilterService.getPresetFilters('high-paying');
-                                const smartFilters = { ...filters, ...presetFilters };
-                                setFilters(smartFilters);
-                                toast({
-                                    title: "Smart Filters Applied!",
-                                    description: "Showing high-quality internships with ₹15,000+ stipend",
-                                });
-                            }}
-                            size="sm"
-                            className="bg-primary/20 hover:bg-primary/30 text-primary border-primary/30"
-                            variant="outline"
-                        >
-                            <Filter className="w-4 h-4 mr-1" />
-                            Show Best Matches
-                        </Button>
                     </div>
                     
-                    <div className="bg-background/95 backdrop-blur-sm rounded-lg p-4 mb-6">
-                      <InternshipFilters
-                        filters={filters}
-                        onFiltersChange={setFilters}
-                        sectors={sectors}
-                        locations={locations}
-                        userProfile={profileData}
-                      />
-                    </div>
+                    <Button 
+                        onClick={() => {
+                            const presetFilters = SmartFilterService.getPresetFilters('high-paying');
+                            const smartFilters = { ...filters, ...presetFilters };
+                            setFilters(smartFilters);
+                            toast({
+                                title: "Smart Filters Applied!",
+                                description: "Showing high-quality internships with ₹15,000+ stipend",
+                            });
+                        }}
+                        size="default"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm transition-all hover:-translate-y-0.5 shrink-0"
+                    >
+                        <Filter className="w-4 h-4 mr-2" />
+                        Show Best Matches
+                    </Button>
+                </div>
+                
+                <div className="bg-card rounded-xl border border-border/40 shadow-sm p-4 sm:p-6 mb-10">
+                  <InternshipFilters
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    sectors={sectors}
+                    locations={locations}
+                    userProfile={profileData}
+                  />
                 </div>
 
                 {displayItems.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 internship-cards-container">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8 internship-cards-container">
                             {currentItems.map((item, index) => (
-                                <LazyComponent 
+                                <InternshipCard 
                                     key={item.internship.id}
-                                    fallback={<SkeletonCard />}
-                                    rootMargin="200px"
-                                >
-                                    <InternshipCard 
-                                        internship={item.internship}
-                                        matchExplanation={item.explanation}
-                                        aiTags={item.aiTags}
-                                        userProfile={profileData}
-                                        aiScore={item.score}
-                                        onNext={() => handlePageChange(currentPage + 1)}
-                                        onPrev={() => handlePageChange(currentPage - 1)}
-                                        currentIndex={startIndex + index + 1}
-                                        totalCount={displayItems.length}
-                                    />
-                                </LazyComponent>
+                                    internship={item.internship}
+                                    matchExplanation={item.explanation}
+                                    aiTags={item.aiTags}
+                                    userProfile={profileData}
+                                    aiScore={item.score}
+                                    onNext={() => handlePageChange(currentPage + 1)}
+                                    onPrev={() => handlePageChange(currentPage - 1)}
+                                    currentIndex={startIndex + index + 1}
+                                    totalCount={displayItems.length}
+                                />
                             ))}
                         </div>
                         

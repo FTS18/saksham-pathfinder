@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Globe, ZoomIn, ZoomOut, Heart, LogIn, LogOut, User, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlistStore as useWishlist } from '@/store/useWishlistStore';
 import { useApplication } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -92,10 +92,10 @@ export const Navbar = () => {
   ];
 
   const languages = [
-    { code: 'en' as const, label: 'English', flag: '🇺🇸' },
-    { code: 'hi' as const, label: 'हिंदी', flag: '🇮🇳' },
-    { code: 'pa' as const, label: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
-    { code: 'ur' as const, label: 'اردو', flag: '🇵🇰' },
+    { code: 'en' as const, label: 'English', flag: '' },
+    { code: 'hi' as const, label: 'हिंदी', flag: '' },
+    { code: 'pa' as const, label: 'ਪੰਜਾਬੀ', flag: '' },
+    { code: 'ur' as const, label: 'اردو', flag: '' },
   ];
 
   const isActive = (path: string) => {
@@ -114,47 +114,7 @@ export const Navbar = () => {
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center justify-center absolute left-1/2 transform -translate-x-1/2 space-x-6 lg:space-x-8">
-              {navLinks.map((link) => (
-                link.hasDropdown ? (
-                  <div key={link.href} className="relative group">
-                    <div
-                      className={`relative px-2 py-2 text-sm font-medium flex items-center gap-1 transition-colors cursor-pointer ${
-                        isActive(link.href)
-                          ? 'text-primary'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      {link.label}
-                      <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
-                    </div>
-                    <div className="absolute top-full left-0 mt-1 w-48 bg-background border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                      {link.dropdownItems?.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 first:rounded-t-lg last:rounded-b-lg transition-colors"
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={`relative px-3 py-2 text-sm font-medium transition-all duration-200 rounded-full ${
-                      isActive(link.href)
-                        ? 'text-white bg-green-500 shadow-md'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              ))}
-            </div>
+
 
             <div className="flex items-center space-x-1 sm:space-x-2">
                <div className="h-4 w-px bg-border mx-2 hidden md:block" />

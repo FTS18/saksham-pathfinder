@@ -1,502 +1,480 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlistStore } from '@/store/useWishlistStore';
 import { useFeaturedInternships, useTrendingInternships } from '@/hooks/useInternships';
+import { useApplications } from '@/hooks/useApplications';
+import { useProfileData } from '@/hooks/useProfileData';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  User, 
-  Target, 
-  TrendingUp, 
-  Calendar, 
-  Award, 
-  BookOpen, 
-  Briefcase,
-  Bell,
-  MapPin,
-  Star,
-  Zap,
-  Users,
-  BarChart3,
-  Plus,
-  ExternalLink,
-  Settings,
-  ArrowRight,
-  Clock,
-  CheckCircle
+import { SkeletonCard } from '@/components/SkeletonLoaders';
+import {
+  User, Target, TrendingUp, Award, BookOpen, Briefcase,
+  Heart, Zap, BarChart3, ArrowRight, CheckCircle, Search,
+  FileText, Star, Activity, ExternalLink, ChevronRight,
 } from 'lucide-react';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
+
+const stableHash = (str: string): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+};
+
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
+};
+
+const timeAgo = (dateStr?: string): string => {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  return Math.floor(hrs / 24) + 'd ago';
+};
+
+
+const EmptyState = ({ icon: Icon, title, description, ctaLabel, ctaAction }: {
+  icon: React.ElementType; title: string; description: string; ctaLabel: string; ctaAction: () => void;
+}) => (
+  <div className=flex flex-col items-center justify-center py-8 text-center gap-3>
+    <div className=w-12 h-12 rounded-full bg-muted flex items-center justify-center>
+      <Icon className=w-6 h-6 text-muted-foreground />
+    </div>
+    <div>
+      <p className=font-semibold text-foreground text-sm>{title}</p>
+      <p className=text-xs text-muted-foreground mt-1 max-w-xs mx-auto>{description}</p>
+    </div>
+    <Button size=sm onClick={ctaAction}>{ctaLabel}</Button>
+  </div>
+);
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const map: Record<string, { label: string; className: string }> = {
+    pending:      { label: 'Pending',    className: 'bg-amber-500/15 text-amber-600 dark:text-amber-400' },
+    applied:      { label: 'Applied',    className: 'bg-blue-500/15 text-blue-600 dark:text-blue-400' },
+    'in-review':  { label: 'In Review',  className: 'bg-violet-500/15 text-violet-600 dark:text-violet-400' },
+    under_review: { label: 'In Review',  className: 'bg-violet-500/15 text-violet-600 dark:text-violet-400' },
+    shortlisted:  { label: 'Shortlisted',className: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' },
+    interview:    { label: 'Interview',  className: 'bg-primary/15 text-primary' },
+    interview_scheduled: { label: 'Interview', className: 'bg-primary/15 text-primary' },
+    accepted:     { label: 'Accepted',   className: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' },
+    rejected:     { label: 'Rejected',   className: 'bg-red-500/15 text-red-500' },
+    withdrawn:    { label: 'Withdrawn',  className: 'bg-muted text-muted-foreground' },
+  };
+  const { label, className } = map[status] ?? { label: status, className: 'bg-muted text-muted-foreground' };
+  return (
+    <span className={'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ' + className}>
+      {label}
+    </span>
+  );
+};
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
-  const { wishlist } = useWishlist();
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(new Date());
-  
-  // Function to get greeting based on time of day
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
-  
-  // Use React Query hooks for caching - these will automatically cache results
+  const { wishlist } = useWishlistStore();
+
   const { data: featuredInternships, isLoading: featuredLoading } = useFeaturedInternships();
   const { data: trendingInternships, isLoading: trendingLoading } = useTrendingInternships();
-  
-  const [dashboardData, setDashboardData] = useState({
-    profileCompletion: 0,
-    aiMatchScore: 0,
-    applications: { applied: 0, pending: 0, accepted: 0 },
-    points: 0,
-    skills: [],
-    topInternships: [],
-    notifications: []
-  });
-  const [loading, setLoading] = useState(true);
+  const { data: applications = [], isLoading: appsLoading } = useApplications(currentUser?.uid ?? null);
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
+  // Use shared cached profile hook — no extra Firestore read
+  const { profile, profileLoading, profilePct, profileMissing } = useProfileData();
 
-  useEffect(() => {
-    if (currentUser) {
-      loadDashboardData();
-    }
-  }, [currentUser, featuredInternships, trendingInternships]);
+  const skills = useMemo(() => {
+    const raw: string[] = profile.skills || [];
+    return raw.slice(0, 5).map(s => ({ name: s, progress: 55 + (stableHash(s) % 35) }));
+  }, [profile.skills]);
 
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true);
-      
-      // Get user profile data
-      const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-      
-      // Calculate profile completion
-      const profileFields = ['name', 'email', 'skills', 'interests', 'location'];
-      const completedFields = profileFields.filter(field => userProfile[field] && userProfile[field].length > 0);
-      const profileCompletion = Math.round((completedFields.length / profileFields.length) * 100);
-      
-      // Use featured internships (cached) or trending (cached) - no direct Firebase query needed!
-      const topInternships = (Array.isArray(featuredInternships) && featuredInternships.length > 0) 
-        ? featuredInternships.slice(0, 3)
-        : (Array.isArray(trendingInternships) && trendingInternships.length > 0)
-        ? trendingInternships.slice(0, 3)
-        : [];
-      
-      // Mock AI score based on profile completeness and skills
-      const aiScore = Math.min(95, profileCompletion + (userProfile.skills?.length || 0) * 2);
-      
-      // Get user points from localStorage
-      const userPoints = parseInt(localStorage.getItem('userPoints') || '0');
-      
-      setDashboardData({
-        profileCompletion,
-        aiMatchScore: aiScore,
-        applications: {
-          applied: wishlist.length,
-          pending: Math.floor(wishlist.length * 0.7),
-          accepted: Math.floor(wishlist.length * 0.2)
-        },
-        points: userPoints || 1250,
-        skills: userProfile.skills?.slice(0, 3).map(skill => ({
-          name: skill,
-          progress: Math.floor(Math.random() * 30) + 60
-        })) || [],
-        topInternships,
-        notifications: [
-          { message: 'New match found!', time: '2 hours ago', icon: 'Target' },
-          { message: 'Application accepted', time: '1 day ago', icon: 'CheckCircle' }
-        ]
-      });
-      
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const aiMatchScore = useMemo(() => Math.min(98, Math.round(40 + profilePct * 0.3 + (profile.skills?.length ?? 0) * 3)), [profilePct, profile.skills]);
+
+  const appStats = useMemo(() => ({
+    total:     applications.length,
+    pending:   applications.filter((a: any) => ['pending', 'applied'].includes(a.status)).length,
+    inReview:  applications.filter((a: any) => ['in-review', 'under_review', 'shortlisted'].includes(a.status)).length,
+    interview: applications.filter((a: any) => ['interview', 'interview_scheduled'].includes(a.status)).length,
+    accepted:  applications.filter((a: any) => a.status === 'accepted').length,
+  }), [applications]);
+
+  const recentApplications = useMemo(() =>
+    [...applications]
+      .sort((a: any, b: any) => (b.appliedAt?.toDate?.()?.getTime() ?? 0) - (a.appliedAt?.toDate?.()?.getTime() ?? 0))
+      .slice(0, 3),
+    [applications]
+  );
+
+  const topInternships = useMemo(() => {
+    const pool = Array.isArray(featuredInternships) && featuredInternships.length > 0 ? featuredInternships : (Array.isArray(trendingInternships) ? trendingInternships : []);
+    return pool.slice(0, 4);
+  }, [featuredInternships, trendingInternships]);
+
+  const savedInternships = useMemo(() => {
+    const pool = [...(featuredInternships ?? []), ...(trendingInternships ?? [])];
+    return pool.filter((i: any) => wishlist.includes(i.id)).slice(0, 3);
+  }, [featuredInternships, trendingInternships, wishlist]);
+
+  const marketTrends = useMemo(() =>
+    (skills.length > 0
+      ? skills.map(s => ({ skill: s.name, trend: 5 + (stableHash(s.name + 'mkt') % 20) }))
+      : [{ skill: 'AI / ML', trend: 22 }, { skill: 'React', trend: 14 }, { skill: 'Python', trend: 18 }, { skill: 'Cloud', trend: 12 }]
+    ).slice(0, 4),
+    [skills]
+  );
+
+  const points: number = profile.points ?? 0;
+  const badges: string[] = profile.badges ?? [];
+  const isLoading = profileLoading || featuredLoading || trendingLoading || appsLoading;
+
+  const statCards = [
+    {
+      label: 'Profile Complete', value: profilePct + '%', icon: User,
+      iconColor: profilePct < 60 ? 'text-amber-500' : 'text-primary',
+      sub: profilePct < 100
+        ? <Button variant=link className=p-0 h-auto mt-1 text-xs text-primary onClick={() => navigate('/profile')}>Complete profile →</Button>
+        : <span className=flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 mt-1><CheckCircle className=w-3 h-3 /> All done!</span>,
+    },
+    {
+      label: 'AI Match Score', value: aiMatchScore + '%', icon: Target, iconColor: 'text-emerald-500',
+      sub: <Button variant=link className=p-0 h-auto mt-1 text-xs text-emerald-600 dark:text-emerald-400 onClick={() => navigate('/')}>View matches →</Button>,
+    },
+    {
+      label: 'Applications', value: appStats.total > 0 ? appStats.total : '—', icon: Briefcase, iconColor: 'text-violet-500',
+      sub: appStats.total > 0
+        ? <div className=flex gap-2 mt-1 flex-wrap text-[11px]>
+            <span className=text-amber-600 dark:text-amber-400>Pending: {appStats.pending}</span>
+            <span className=text-violet-600 dark:text-violet-400>Review: {appStats.inReview}</span>
+            {appStats.accepted > 0 && <span className=text-emerald-600 dark:text-emerald-400>✓ {appStats.accepted}</span>}
+          </div>
+        : <Button variant=link className=p-0 h-auto mt-1 text-xs text-muted-foreground onClick={() => navigate('/')}>Browse →</Button>,
+    },
+    {
+      label: 'Saved Internships', value: wishlist.length > 0 ? wishlist.length : '—', icon: Heart, iconColor: 'text-rose-500',
+      sub: <Button variant=link className=p-0 h-auto mt-1 text-xs text-rose-500 onClick={() => navigate('/wishlist')}>View wishlist →</Button>,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-background p-6 pt-24">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header Section */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">
-                {getGreeting()}, {currentUser?.displayName || 'Student'}! 👋
-              </h1>
-              <p className="text-muted-foreground">
-                Here's what's happening with your internship journey today.
-              </p>
-            </div>
+    <div className=bg-background>
+      <PageHeader
+        title={getGreeting() + ', ' + (currentUser?.displayName?.split(' ')[0] || 'there') + ' 👋'}
+        subtitle=Your internship journey at a glance.
+      />
 
-          </div>
+      <div className=w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6>
+
+        {/* Stat Cards */}
+        <div className=grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4>
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+            : statCards.map(card => (
+              <Card key={card.label}>
+                <CardContent className=pt-4>
+                  <div className=flex items-start justify-between>
+                    <div>
+                      <p className=text-xs font-medium text-muted-foreground uppercase tracking-wide>{card.label}</p>
+                      <p className=text-2xl font-bold text-foreground mt-1>{card.value}</p>
+                    </div>
+                    <div className=w-10 h-10 bg-muted rounded-lg flex items-center justify-center shrink-0>
+                      <card.icon className={'w-5 h-5 ' + card.iconColor} />
+                    </div>
+                  </div>
+                  {card.sub}
+                </CardContent>
+              </Card>
+            ))
+          }
         </div>
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          {/* Profile Completion */}
-          <Card className="bg-primary/10 dark:bg-primary/5 shadow-sm border border-primary/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Profile Complete</p>
-                  <p className="text-2xl font-bold text-foreground">{loading ? '...' : dashboardData.profileCompletion}%</p>
+        {/* Profile Banner */}
+        {!profileLoading && profilePct < 80 && profileMissing.length > 0 && (
+          <Card className=border-amber-500/40 bg-amber-500/5>
+            <CardContent className=flex items-center justify-between py-4 gap-4>
+              <div className=flex items-center gap-3>
+                <div className=w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0>
+                  <User className=w-4 h-4 text-amber-500 />
                 </div>
-                <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
-                  <User className="w-6 h-6 text-primary" />
+                <div>
+                  <p className=text-sm font-semibold text-foreground>Profile {profilePct}% complete — unlock better matches</p>
+                  <p className=text-xs text-muted-foreground mt-0.5>
+                    Missing: {profileMissing.slice(0, 3).join(', ')}{profileMissing.length > 3 ? ' +' + (profileMissing.length - 3) + ' more' : ''}
+                  </p>
                 </div>
               </div>
-              <Button 
-                variant="link" 
-                className="p-0 h-auto mt-2 text-primary hover:text-primary/80"
-                onClick={() => navigate('/profile')}
-              >
-                Complete Profile →
-              </Button>
+              <Button size=sm onClick={() => navigate('/profile')} className=shrink-0>Complete Now</Button>
             </CardContent>
           </Card>
+        )}
 
-          {/* AI Match Score */}
-          <Card className="bg-green-500/10 dark:bg-green-500/5 shadow-sm border border-green-500/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">AI Match Score</p>
-                  <p className="text-2xl font-bold text-foreground">{loading ? '...' : dashboardData.aiMatchScore}%</p>
-                </div>
-                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-green-400" />
-                </div>
-              </div>
-              <Button 
-                variant="link" 
-                className="p-0 h-auto mt-2 text-green-400 hover:text-green-300"
-                onClick={() => navigate('/')}
-              >
-                View Matches →
-              </Button>
-            </CardContent>
-          </Card>
+        <div className=grid grid-cols-1 lg:grid-cols-3 gap-6>
 
-          {/* Total Points */}
-          <Card className="bg-yellow-500/10 dark:bg-yellow-500/5 shadow-sm border border-yellow-500/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Points</p>
-                  <p className="text-2xl font-bold text-foreground">{loading ? '...' : dashboardData.points}</p>
-                </div>
-                <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                  <Award className="w-6 h-6 text-yellow-400" />
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2">Rank #{Math.floor(dashboardData.points / 30) || 42}</p>
-            </CardContent>
-          </Card>
+          {/* ── Left column ── */}
+          <div className=lg:col-span-2 space-y-6>
 
-          {/* Applications */}
-          <Card className="bg-purple-500/10 dark:bg-purple-500/5 shadow-sm border border-purple-500/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Applications</p>
-                  <p className="text-2xl font-bold text-foreground">{loading ? '...' : dashboardData.applications.applied}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-purple-400" />
-                </div>
-              </div>
-              <div className="flex gap-4 mt-2 text-sm">
-                <span className="text-yellow-600">Pending: {dashboardData.applications.pending}</span>
-                <span className="text-green-600">Accepted: {dashboardData.applications.accepted}</span>
-              </div>
-            </CardContent>
-          </Card>
-
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            
-            {/* Quick Apply Section */}
-            <Card className="bg-orange-500/10 dark:bg-orange-500/5 shadow-sm border border-orange-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center text-gray-900 dark:text-white">
-                  <Zap className="w-5 h-5 mr-2 text-orange-500" />
-                  Quick Apply
+            {/* Recent Applications */}
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center justify-between text-base font-semibold>
+                  <div className=flex items-center gap-2><Briefcase className=w-4 h-4 text-violet-500 />Recent Applications</div>
+                  {appStats.total > 0 && (
+                    <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/application-dashboard')}>
+                      View all <ChevronRight className=w-3 h-3 ml-1 />
+                    </Button>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {(loading ? [
-                    { company: 'Loading...', role: 'Please wait', match: '...', logo: '⏳' },
-                    { company: 'Loading...', role: 'Please wait', match: '...', logo: '⏳' },
-                    { company: 'Loading...', role: 'Please wait', match: '...', logo: '⏳' }
-                  ] : dashboardData.topInternships.length > 0 ? dashboardData.topInternships.map(internship => ({
-                    company: internship.company,
-                    role: internship.title || internship.role,
-                    match: Math.floor(Math.random() * 20 + 75) + '%',
-                    logo: internship.company === 'Google' ? '🔵' : internship.company === 'Microsoft' ? '🟦' : '🟠'
-                  })) : [
-                    { company: 'Google', role: 'SWE Intern', match: '95%', logo: '🔵' },
-                    { company: 'Microsoft', role: 'PM Intern', match: '88%', logo: '🟦' },
-                    { company: 'Amazon', role: 'Data Intern', match: '82%', logo: '🟠' }
-                  ]).map((job, index) => (
-                    <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">{job.logo}</span>
-                          <div>
-                            <p className="font-semibold text-gray-900 dark:text-white">{job.company}</p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{job.role}</p>
+                {appsLoading ? (
+                  <div className=space-y-3>{[1,2,3].map(i => <div key={i} className=h-14 bg-muted animate-pulse rounded-md />)}</div>
+                ) : recentApplications.length > 0 ? (
+                  <div className=space-y-2>
+                    {recentApplications.map((app: any) => (
+                      <div key={app.id} className=flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer onClick={() => navigate('/application-dashboard')}>
+                        <div className=flex items-center gap-3 min-w-0>
+                          <div className=w-9 h-9 rounded-lg bg-violet-500/10 flex items-center justify-center shrink-0 font-bold text-violet-500 text-sm>
+                            {(app.companyName || '?')[0].toUpperCase()}
+                          </div>
+                          <div className=min-w-0>
+                            <p className=font-semibold text-sm text-foreground truncate>{app.companyName}</p>
+                            <p className=text-xs text-muted-foreground truncate>{app.internshipTitle}</p>
                           </div>
                         </div>
-                        <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                          {job.match}
-                        </Badge>
-                      </div>
-                      <Button 
-                        size="sm" 
-                        className="w-full"
-                        onClick={() => navigate('/')}
-                      >
-                        Apply Now
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Skills Progress */}
-            <Card className="bg-blue-500/10 dark:bg-blue-500/5 shadow-sm border border-blue-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between text-gray-900 dark:text-white">
-                  <div className="flex items-center">
-                    <BookOpen className="w-5 h-5 mr-2 text-blue-500" />
-                    Skills Progress
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => navigate('/profile')}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {loading ? (
-                    <div className="text-center text-gray-500">Loading skills...</div>
-                  ) : dashboardData.skills.length > 0 ? (
-                    dashboardData.skills.map((skill, index) => (
-                      <div key={index}>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium text-gray-900 dark:text-white">{skill.name}</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">{skill.progress}%</span>
+                        <div className=flex flex-col items-end gap-1 shrink-0 ml-2>
+                          <StatusBadge status={app.status} />
+                          {app.appliedAt?.toDate && <span className=text-[10px] text-muted-foreground>{timeAgo(app.appliedAt.toDate().toISOString())}</span>}
                         </div>
-                        <Progress value={skill.progress} className="h-2" />
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center text-gray-500">
-                      <p>No skills added yet</p>
-                      <Button variant="link" onClick={() => navigate('/profile')}>Add Skills</Button>
-                    </div>
-                  )}
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full mt-4"
-                  onClick={() => navigate('/profile')}
-                >
-                  Add More Skills
-                </Button>
+                    ))}
+                    {appStats.total > 0 && (
+                      <div className=mt-4 pt-3 border-t border-border>
+                        <p className=text-xs text-muted-foreground mb-2 font-medium>Application Funnel</p>
+                        <div className=flex gap-2 text-[11px]>
+                          {[
+                            { label: 'Applied',   val: appStats.pending,   color: 'bg-blue-500' },
+                            { label: 'Review',    val: appStats.inReview,  color: 'bg-violet-500' },
+                            { label: 'Interview', val: appStats.interview, color: 'bg-primary' },
+                            { label: 'Accepted',  val: appStats.accepted,  color: 'bg-emerald-500' },
+                          ].map(item => (
+                            <div key={item.label} className=flex-1 text-center>
+                              <div className={'h-1.5 rounded-full mb-1 ' + item.color + (item.val > 0 ? '' : ' opacity-30')} />
+                              <div className=font-bold text-foreground>{item.val}</div>
+                              <div className=text-muted-foreground>{item.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <EmptyState icon={Briefcase} title=No applications yet description=Start applying to internships and track them here in real time. ctaLabel=Browse Internships ctaAction={() => navigate('/')} />
+                )}
               </CardContent>
             </Card>
 
-            {/* Career Roadmap */}
-            <Card className="bg-pink-500/10 dark:bg-pink-500/5 shadow-sm border border-pink-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center text-gray-900 dark:text-white">
-                  <MapPin className="w-5 h-5 mr-2 text-pink-500" />
-                  Career Roadmap
+            {/* Top Matches */}
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center justify-between text-base font-semibold>
+                  <div className=flex items-center gap-2><Zap className=w-4 h-4 text-amber-500 />Top Matches for You</div>
+                  <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/')}>See all <ChevronRight className=w-3 h-3 ml-1 /></Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between mb-6">
-                  {['Intern', 'Junior Dev', 'Senior Dev', 'Tech Lead'].map((stage, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-4 h-4 rounded-full ${index <= 0 ? 'bg-pink-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
-                        <span className={`text-sm mt-2 ${index <= 0 ? 'text-pink-500 font-semibold' : 'text-gray-500'}`}>
-                          {stage}
-                        </span>
+                {featuredLoading || trendingLoading ? (
+                  <div className=space-y-3>{[1,2,3].map(i => <div key={i} className=h-14 bg-muted animate-pulse rounded-md />)}</div>
+                ) : topInternships.length > 0 ? (
+                  <div className=space-y-2>
+                    {topInternships.map((internship: any, i: number) => (
+                      <div key={internship.id || i} className=flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted/40 transition-colors cursor-pointer group onClick={() => internship.id && navigate('/internships/' + internship.id)}>
+                        <div className=flex items-center gap-3 min-w-0>
+                          <div className=w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 font-bold text-amber-600 dark:text-amber-400 text-sm>
+                            {(internship.company || '?')[0].toUpperCase()}
+                          </div>
+                          <div className=min-w-0>
+                            <p className=font-semibold text-sm text-foreground truncate>{internship.company}</p>
+                            <p className=text-xs text-muted-foreground truncate>{internship.title || internship.role}</p>
+                          </div>
+                        </div>
+                        <div className=flex items-center gap-2 shrink-0>
+                          {internship.stipend && <span className=text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 hidden sm:block>₹{typeof internship.stipend === 'number' ? internship.stipend.toLocaleString() : internship.stipend}</span>}
+                          <ExternalLink className=w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity />
+                        </div>
                       </div>
-                      {index < 3 && <div className="w-8 h-px bg-gray-300 dark:bg-gray-600 mx-2"></div>}
-                    </div>
-                  ))}
-                </div>
-                <Button className="w-full bg-pink-500 hover:bg-pink-600">
-                  Explore Career Paths
-                </Button>
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState icon={Search} title=No matches yet description=Complete your profile to get personalised recommendations. ctaLabel=Set up Profile ctaAction={() => navigate('/profile')} />
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Skills */}
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center justify-between text-base font-semibold>
+                  <div className=flex items-center gap-2><BookOpen className=w-4 h-4 text-primary />Skills on Your Profile</div>
+                  <Button variant=ghost size=sm className=h-7 px-2 text-xs onClick={() => navigate('/profile')}>Manage →</Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {profileLoading ? (
+                  <div className=space-y-4>{[1,2,3].map(i => <div key={i} className=h-8 bg-muted animate-pulse rounded />)}</div>
+                ) : skills.length > 0 ? (
+                  <div className=space-y-4>
+                    {skills.map(skill => (
+                      <div key={skill.name}>
+                        <div className=flex justify-between items-center mb-1.5>
+                          <span className=text-sm font-medium text-foreground>{skill.name}</span>
+                          <span className=text-xs text-muted-foreground tabular-nums>{skill.progress}%</span>
+                        </div>
+                        <Progress value={skill.progress} className=h-1.5 />
+                      </div>
+                    ))}
+                    <p className=text-xs text-muted-foreground mt-1>
+                      Skill confidence is estimated from your profile.{' '}
+                      <button className=underline text-primary onClick={() => navigate('/profile')}>Add more skills</button> for better AI matches.
+                    </p>
+                  </div>
+                ) : (
+                  <EmptyState icon={BookOpen} title=No skills added yet description=Adding skills unlocks AI-powered internship matching. ctaLabel=Add Skills ctaAction={() => navigate('/profile')} />
+                )}
               </CardContent>
             </Card>
 
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-8">
-            
-            {/* Upcoming Deadlines */}
-            <Card className="bg-indigo-500/10 dark:bg-indigo-500/5 shadow-sm border border-indigo-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center text-gray-900 dark:text-white">
-                  <Calendar className="w-5 h-5 mr-2 text-indigo-500" />
-                  Upcoming Deadlines
+          {/* ── Right sidebar ── */}
+          <div className=space-y-6>
+
+            {/* Points & Badges */}
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center gap-2 text-base font-semibold>
+                  <Award className=w-4 h-4 text-amber-500 />Points & Badges
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {(dashboardData.topInternships.length > 0 ? dashboardData.topInternships.map(internship => ({
-                    company: internship.company,
-                    role: internship.title || internship.role,
-                    date: new Date(internship.deadline || Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                  })) : [
-                    { company: 'Google', role: 'SWE Intern', date: 'Dec 15, 2024' },
-                    { company: 'Microsoft', role: 'PM Intern', date: 'Dec 20, 2024' },
-                    { company: 'Amazon', role: 'Data Intern', date: 'Dec 25, 2024' }
-                  ]).map((item, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <Clock className="w-4 h-4 text-indigo-500" />
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-white">{item.company}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{item.role}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.date}</p>
+                {profileLoading ? <div className=h-20 bg-muted animate-pulse rounded /> : (
+                  <div className=space-y-3>
+                    <div className=flex items-center justify-between>
+                      <div>
+                        <p className=text-2xl font-bold text-foreground>{points.toLocaleString()}</p>
+                        <p className=text-xs text-muted-foreground>Total Points</p>
+                      </div>
+                      <div className=w-12 h-12 rounded-full bg-amber-500/15 flex items-center justify-center>
+                        <Star className=w-6 h-6 text-amber-500 />
                       </div>
                     </div>
-                  ))}
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full mt-4"
-                  onClick={() => navigate('/')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  View All
-                </Button>
+                    {badges.length > 0 && (
+                      <div className=flex flex-wrap gap-1.5 pt-1>
+                        {badges.map(b => <Badge key={b} variant=secondary className=text-[10px]>{b}</Badge>)}
+                      </div>
+                    )}
+                    <Button variant=outline size=sm className=w-full text-xs onClick={() => navigate('/referrals')}>
+                      View Leaderboard <ChevronRight className=w-3 h-3 ml-1 />
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Saved Internships */}
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center justify-between text-base font-semibold>
+                  <div className=flex items-center gap-2>
+                    <Heart className=w-4 h-4 text-rose-500 />Saved Internships
+                    {wishlist.length > 0 && <Badge variant=secondary className=text-[10px] ml-1>{wishlist.length}</Badge>}
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {savedInternships.length > 0 ? (
+                  <div className=space-y-2>
+                    {savedInternships.map((item: any) => (
+                      <div key={item.id} className=flex items-center gap-2 p-2.5 bg-muted/40 rounded-lg cursor-pointer hover:bg-muted/70 transition-colors onClick={() => navigate('/internships/' + item.id)}>
+                        <div className=w-7 h-7 rounded bg-rose-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-rose-500>
+                          {(item.company || '?')[0].toUpperCase()}
+                        </div>
+                        <div className=min-w-0>
+                          <p className=text-sm font-medium text-foreground truncate>{item.company}</p>
+                          <p className=text-xs text-muted-foreground truncate>{item.title || item.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <Button variant=ghost size=sm className=w-full mt-1 text-xs text-muted-foreground onClick={() => navigate('/wishlist')}>
+                      View all saved <ArrowRight className=w-3 h-3 ml-1 />
+                    </Button>
+                  </div>
+                ) : (
+                  <EmptyState icon={Heart} title=Nothing saved yet description=Heart an internship to save it here for later. ctaLabel=Browse Internships ctaAction={() => navigate('/')} />
+                )}
               </CardContent>
             </Card>
 
             {/* Market Trends */}
-            <Card className="bg-emerald-500/10 dark:bg-emerald-500/5 shadow-sm border border-emerald-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center text-gray-900 dark:text-white">
-                  <TrendingUp className="w-5 h-5 mr-2 text-green-500" />
-                  Market Trends
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=flex items-center gap-2 text-base font-semibold>
+                  <TrendingUp className=w-4 h-4 text-emerald-500 />Skill Demand Trends
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {(dashboardData.skills.length > 0 ? dashboardData.skills.map(skill => ({
-                    skill: skill.name,
-                    trend: `+${Math.floor(Math.random() * 20 + 5)}%`,
-                    color: 'text-green-600'
-                  })) : [
-                    { skill: 'AI/ML', trend: '+15%', color: 'text-green-600' },
-                    { skill: 'React', trend: '+8%', color: 'text-green-600' },
-                    { skill: 'Python', trend: '+5%', color: 'text-blue-600' }
-                  ]).map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <span className="font-medium text-gray-900 dark:text-white">{item.skill}</span>
-                      <div className="flex items-center gap-1">
-                        <TrendingUp className={`w-4 h-4 ${item.color}`} />
-                        <span className={`text-sm font-semibold ${item.color}`}>{item.trend}</span>
+                <div className=space-y-2>
+                  {marketTrends.map((item, i) => (
+                    <div key={i} className=flex items-center justify-between p-2 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer onClick={() => navigate('/?skill=' + encodeURIComponent(item.skill))}>
+                      <span className=text-sm font-medium text-foreground>{item.skill}</span>
+                      <div className=flex items-center gap-1>
+                        <TrendingUp className=w-3.5 h-3.5 text-emerald-500 />
+                        <span className=text-sm font-semibold text-emerald-600 dark:text-emerald-400>+{item.trend}%</span>
                       </div>
                     </div>
                   ))}
                 </div>
+                <p className=text-[10px] text-muted-foreground mt-3>
+                  Trends reflect your listed skills.{' '}
+                  <button className=underline text-primary onClick={() => navigate('/profile')}>Update skills</button> to personalise.
+                </p>
               </CardContent>
             </Card>
 
             {/* Quick Actions */}
-            <Card className="bg-teal-500/10 dark:bg-teal-500/5 shadow-sm border border-teal-500/20">
-              <CardHeader>
-                <CardTitle className="text-gray-900 dark:text-white">Quick Actions</CardTitle>
+            <Card>
+              <CardHeader className=pb-3>
+                <CardTitle className=text-base font-semibold>Quick Actions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-3">
+                <div className=grid grid-cols-2 gap-2>
                   {[
-                    { icon: BookOpen, label: 'Resume', action: () => navigate('/profile') },
-                    { icon: Users, label: 'Interview', action: () => navigate('/') },
-                    { icon: BarChart3, label: 'Skills Test', action: () => navigate('/') },
-                    { icon: Settings, label: 'Settings', action: () => navigate('/profile') }
-                  ].map((action, index) => (
-                    <Button 
-                      key={index} 
-                      variant="outline" 
-                      className="flex flex-col h-20 gap-2"
-                      onClick={action.action}
-                    >
-                      <action.icon className="w-5 h-5" />
-                      <span className="text-sm">{action.label}</span>
+                    { icon: FileText,  label: 'My Resume',    action: () => navigate('/resume') },
+                    { icon: Briefcase, label: 'Applications', action: () => navigate('/application-dashboard') },
+                    { icon: Search,    label: 'Find Jobs',    action: () => navigate('/') },
+                    { icon: BarChart3, label: 'Leaderboard',  action: () => navigate('/referrals') },
+                    { icon: Heart,     label: 'Wishlist',     action: () => navigate('/wishlist') },
+                    { icon: Activity,  label: 'AI Matches',   action: () => navigate('/') },
+                  ].map((a, i) => (
+                    <Button key={i} variant=outline className=flex flex-col h-14 gap-1 text-muted-foreground hover:text-foreground onClick={a.action}>
+                      <a.icon className=w-4 h-4 />
+                      <span className=text-[11px]>{a.label}</span>
                     </Button>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Notifications */}
-            <Card className="bg-red-500/10 dark:bg-red-500/5 shadow-sm border border-red-500/20">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between text-gray-900 dark:text-white">
-                  <div className="flex items-center">
-                    <Bell className="w-5 h-5 mr-2 text-red-500" />
-                    Notifications
-                  </div>
-                  <Badge className="bg-red-500 text-white">3</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {(dashboardData.notifications.length > 0 ? dashboardData.notifications : [
-                    { message: 'New match found!', time: '2 hours ago', icon: 'Target' },
-                    { message: 'Application accepted', time: '1 day ago', icon: 'CheckCircle' }
-                  ]).map((notification, index) => {
-                    const IconComponent = notification.icon === 'Target' ? Target : CheckCircle;
-                    return (
-                    <div key={index} className="flex items-start gap-3 p-2 bg-muted/30 rounded-lg">
-                      <IconComponent className="w-4 h-4 text-primary mt-0.5" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-foreground">{notification.message}</p>
-                        <p className="text-xs text-muted-foreground">{notification.time}</p>
-                      </div>
-                    </div>
-                  );
-                  })}
-                </div>
-                <Button variant="outline" size="sm" className="w-full mt-3">
-                  Mark All Read
-                </Button>
-              </CardContent>
-            </Card>
-
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -49,12 +49,12 @@ export const InternshipMigration = () => {
       await InternshipMigrationService.migrateFromJSON(internshipsData);
       
       setStats(prev => ({ ...prev, migrated: prev.total }));
-      setMessage(`✅ Successfully migrated ${internshipsData.length} internships!`);
+      setMessage(` Successfully migrated ${internshipsData.length} internships!`);
       setMigrationStatus('success');
       
     } catch (error) {
       console.error('Migration failed:', error);
-      setMessage(`❌ Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setMessage(` Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setMigrationStatus('error');
     }
   };
@@ -69,12 +69,12 @@ export const InternshipMigration = () => {
     
     try {
       await InternshipMigrationService.clearAllInternships();
-      setMessage('✅ Firebase data cleared successfully');
+      setMessage(' Firebase data cleared successfully');
       setMigrationStatus('success');
       setStats({ total: 0, migrated: 0, errors: 0 });
     } catch (error) {
       console.error('Clear failed:', error);
-      setMessage(`❌ Clear failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setMessage(` Clear failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setMigrationStatus('error');
     }
   };
@@ -85,12 +85,12 @@ export const InternshipMigration = () => {
     
     try {
       const internships = await InternshipMigrationService.getAllInternships();
-      setMessage(`✅ Firebase connected! Found ${internships.length} internships in database`);
+      setMessage(` Firebase connected! Found ${internships.length} internships in database`);
       setMigrationStatus('success');
       setStats(prev => ({ ...prev, total: internships.length }));
     } catch (error) {
       console.error('Firebase test failed:', error);
-      setMessage(`❌ Firebase connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setMessage(` Firebase connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setMigrationStatus('error');
     }
   };

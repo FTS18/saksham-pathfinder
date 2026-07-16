@@ -135,10 +135,10 @@ export class InternshipMigrationService {
       }
 
       console.log(
-        `✅ Migration completed! Total migrated: ${totalMigrated} internships`
+        ` Migration completed! Total migrated: ${totalMigrated} internships`
       );
     } catch (error) {
-      console.error("❌ Migration failed:", error);
+      console.error(" Migration failed:", error);
       throw error;
     }
   }
@@ -493,7 +493,7 @@ export class InternshipMigrationService {
       };
 
       await setDoc(docRef, firestoreInternship);
-      console.log("✅ Internship created:", docRef.id);
+      console.log(" Internship created:", docRef.id);
 
       // Invalidate cache after creating new internship
       try {
@@ -507,7 +507,7 @@ export class InternshipMigrationService {
 
       return docRef.id;
     } catch (error) {
-      console.error("❌ Error creating internship:", error);
+      console.error(" Error creating internship:", error);
       throw error;
     }
   }
@@ -525,7 +525,7 @@ export class InternshipMigrationService {
         ...updates,
         updatedAt: new Date(),
       });
-      console.log("✅ Internship updated:", id);
+      console.log(" Internship updated:", id);
 
       // Invalidate cache after updating internship
       try {
@@ -537,7 +537,7 @@ export class InternshipMigrationService {
         console.warn("Could not invalidate cache:", e);
       }
     } catch (error) {
-      console.error("❌ Error updating internship:", error);
+      console.error(" Error updating internship:", error);
       throw error;
     }
   }
@@ -549,9 +549,9 @@ export class InternshipMigrationService {
     try {
       const docRef = doc(this.getInternshipsCollection(), id);
       await deleteDoc(docRef);
-      console.log("✅ Internship deleted:", id);
+      console.log(" Internship deleted:", id);
     } catch (error) {
-      console.error("❌ Error deleting internship:", error);
+      console.error(" Error deleting internship:", error);
       throw error;
     }
   }
@@ -569,9 +569,9 @@ export class InternshipMigrationService {
       });
 
       await batch.commit();
-      console.log("✅ All internships cleared");
+      console.log(" All internships cleared");
     } catch (error) {
-      console.error("❌ Error clearing internships:", error);
+      console.error(" Error clearing internships:", error);
       throw error;
     }
   }

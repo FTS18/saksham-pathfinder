@@ -106,7 +106,7 @@ export const SkillGapAnalysis = ({ userProfile, internships }: SkillGapAnalysisP
   return (
     <div className="space-y-6">
       {/* Profile Completion */}
-      <Card className="glass-card">
+      <Card className="shadow-sm border-border/40">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -131,7 +131,7 @@ export const SkillGapAnalysis = ({ userProfile, internships }: SkillGapAnalysisP
       </Card>
 
       {/* Skill Gap Analysis */}
-      <Card className="glass-card">
+      <Card className="shadow-sm border-border/40">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5 text-primary" />

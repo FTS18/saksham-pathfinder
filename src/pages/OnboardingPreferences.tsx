@@ -110,13 +110,28 @@ const OnboardingPreferences = () => {
           if (referrerQuery.exists()) {
             const referrerUid = referrerQuery.data().userId;
             
-            // Check if referrer exists and award points
             const referrerProfile = await getDoc(doc(db, 'profiles', referrerUid));
             if (referrerProfile.exists()) {
-              await updateDoc(doc(db, 'profiles', referrerUid), {
-                points: increment(100)
-              });
-              referralProcessed = true;
+              try {
+                if (import.meta.env.PROD) {
+                  const token = await currentUser.getIdToken();
+                  await fetch('/.netlify/functions/gamification-api', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                      action: 'referral',
+                      targetUid: referrerUid,
+                      idempotencyKey: `ref_${currentUser.uid}`
+                    })
+                  });
+                }
+                referralProcessed = true;
+              } catch (apiError) {
+                console.error('Failed to process referral via API', apiError);
+              }
             }
           } else {
             toast({ 
@@ -135,7 +150,6 @@ const OnboardingPreferences = () => {
         skills: selectedSkills,
         onboardingCompleted: true,
         referralCode: userReferralCode,
-        points: 50,
         badges: ['Welcome'],
         referralUsed: referralCode.trim() || null,
         updatedAt: new Date().toISOString()
@@ -144,6 +158,26 @@ const OnboardingPreferences = () => {
       // Save user profile
       const docRef = doc(db, 'profiles', currentUser.uid);
       await setDoc(docRef, preferences, { merge: true });
+      
+      // Award profile completion points via API (production only)
+      if (import.meta.env.PROD) {
+        try {
+          const token = await currentUser.getIdToken();
+          await fetch('/.netlify/functions/gamification-api', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              action: 'profile_completion',
+              idempotencyKey: 'onboarding'
+            })
+          });
+        } catch (e) {
+          console.error('Failed to award profile completion points', e);
+        }
+      }
       
       // Create referral code mapping
       await setDoc(doc(db, 'referrals', userReferralCode), {
@@ -156,7 +190,7 @@ const OnboardingPreferences = () => {
       
       if (referralProcessed) {
         toast({ 
-          title: '🎉 Referral Success!', 
+          title: ' Referral Success!', 
           description: 'Your referrer earned 100 points! You earned 50 welcome points.',
           duration: 5000
         });
@@ -185,7 +219,7 @@ const OnboardingPreferences = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl pt-20">
+    <div className="container mx-auto p-6 max-w-2xl pt-8">
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">Welcome! Let's set up your preferences</CardTitle>

@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Calendar, Building2, CheckCircle, Clock, XCircle, Trash2, Eye, Download } from 'lucide-react';
+import { AlertCircle, Calendar, Building2, CheckCircle, Clock, XCircle, Trash2, Eye, Download, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Application } from '@/services/applicationService';
 import { ApplicationDetailsModal } from '@/components/ApplicationDetailsModal';
 import { fetchInternships } from '@/lib/dataExtractor';
 import { Internship } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { PageHeader } from '@/components/StickyBreadcrumbHeader';
 
 export const ApplicationDashboard = () => {
   const { currentUser } = useAuth();
@@ -108,14 +109,12 @@ export const ApplicationDashboard = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="min-h-[calc(100vh-4rem)] bg-background flex items-center justify-center px-4">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
             <p className="text-center text-muted-foreground mb-6">Please log in to view your applications.</p>
-            <Button onClick={() => navigate('/login')} className="w-full">
-              Sign In
-            </Button>
+            <Button onClick={() => navigate('/login')} className="w-full">Sign In</Button>
           </CardContent>
         </Card>
       </div>
@@ -126,56 +125,36 @@ export const ApplicationDashboard = () => {
   const stats = {
     total: applications.length,
     pending: applications.filter(a => a.status === 'pending').length,
+    inReview: applications.filter(a => ['in-review', 'under_review', 'shortlisted'].includes(a.status)).length,
+    interview: applications.filter(a => ['interview', 'interview_scheduled'].includes(a.status)).length,
     accepted: applications.filter(a => a.status === 'accepted').length,
     rejected: applications.filter(a => a.status === 'rejected').length,
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Application Dashboard</h1>
-          <p className="text-muted-foreground">Track and manage all your internship applications</p>
-        </div>
+    <div className="bg-background">
+      <PageHeader
+        title="My Applications"
+        subtitle="Track and manage all your internship applications in one place."
+      />
 
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-primary mb-2">{stats.total}</p>
-                <p className="text-sm text-muted-foreground">Total Applications</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-yellow-600 mb-2">{stats.pending}</p>
-                <p className="text-sm text-muted-foreground">Pending</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-green-600 mb-2">{stats.accepted}</p>
-                <p className="text-sm text-muted-foreground">Accepted</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-red-600 mb-2">{stats.rejected}</p>
-                <p className="text-sm text-muted-foreground">Rejected</p>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          {[
+            { label: 'Total', value: stats.total, color: 'text-primary' },
+            { label: 'Pending', value: stats.pending, color: 'text-amber-600 dark:text-amber-400' },
+            { label: 'In Review', value: stats.inReview, color: 'text-violet-600 dark:text-violet-400' },
+            { label: 'Interview', value: stats.interview, color: 'text-blue-600 dark:text-blue-400' },
+            { label: 'Accepted', value: stats.accepted, color: 'text-emerald-600 dark:text-emerald-400' },
+          ].map(stat => (
+            <Card key={stat.label}>
+              <CardContent className="pt-4 pb-4 text-center">
+                <p className={`text-2xl font-bold mb-0.5 ${stat.color}`}>{stat.value}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         {/* Tabs and Controls */}
@@ -228,8 +207,12 @@ export const ApplicationDashboard = () => {
                           <div className="flex-shrink-0">
                             {getStatusIcon(application.status)}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-foreground truncate">
+                        <div className="flex-1 min-w-0">
+                            <h3
+                              className="font-semibold text-foreground truncate hover:text-primary cursor-pointer transition-colors"
+                              onClick={() => application.internshipId && navigate('/internships/' + application.internshipId)}
+                              title="View internship details"
+                            >
                               {application.internshipTitle}
                             </h3>
                             <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
@@ -272,7 +255,16 @@ export const ApplicationDashboard = () => {
                           {application.status.replace(/_/g, ' ')}
                         </Badge>
 
-                        <div className="flex gap-2">
+                          <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => application.internshipId && navigate('/internships/' + application.internshipId)}
+                            title="View internship details"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            <span className="hidden sm:inline ml-1">Details</span>
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -283,7 +275,7 @@ export const ApplicationDashboard = () => {
                             title="View application details"
                           >
                             <Eye className="w-4 h-4" />
-                            <span className="hidden sm:inline ml-1">View</span>
+                            <span className="hidden sm:inline ml-1">Application</span>
                           </Button>
 
                           {internship?.apply_link && (
@@ -360,7 +352,7 @@ export const ApplicationDashboard = () => {
 
         {/* Application Tips */}
         <div className="mt-12 bg-primary/5 border border-primary/20 rounded-lg p-6">
-          <h3 className="font-semibold text-foreground mb-3">💡 Application Tips</h3>
+          <h3 className="font-semibold text-foreground mb-3"> Application Tips</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex gap-2">
               <span className="text-primary">•</span>

@@ -1,70 +1,56 @@
 import { useState, useEffect } from "react";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import InternshipMigrationService, {
-  FirebaseInternship,
-} from "@/services/internshipMigrationService";
+import * as internshipService from "@/services/internshipService";
 
-// Hook for getting all internships
+// Hook for fetching all internships
 export const useInternships = () => {
   return useQuery({
     queryKey: ["internships"],
-    queryFn: InternshipMigrationService.getAllInternships,
+    queryFn: internshipService.getAllInternships,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
-// Hook for paginated internships (DEFAULT: Load only 12 at a time)
-export const useInternshipsPaginated = (limit: number = 12) => {
+// Hook for paginated internships
+export const usePaginatedInternships = (limit = 12) => {
   return useInfiniteQuery({
     queryKey: ["internships-paginated", limit],
     queryFn: ({ pageParam }) =>
-      InternshipMigrationService.getInternshipsPaginated(limit, pageParam),
+      internshipService.getInternshipsPaginated(pageParam, limit),
     getNextPageParam: (lastPage: any) =>
       lastPage?.hasMore ? lastPage?.lastDoc : undefined,
-    initialPageParam: null,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    initialPageParam: undefined,
   });
 };
 
-// Hook for searching internships
-export const useSearchInternships = (filters: {
-  location?: string;
-  sector?: string;
-  skills?: string[];
-  company?: string;
-  workMode?: string;
-  stipendRange?: { min: number; max: number };
-  searchQuery?: string;
-}) => {
+// Hook for searching and filtering internships
+export const useSearchInternships = (filters: any) => {
+  // Simplified for now - just fetch all and let component filter, or use search method
   return useQuery({
     queryKey: ["search-internships", filters],
-    queryFn: () => InternshipMigrationService.searchInternships(filters),
+    queryFn: () => internshipService.getAllInternships(), 
     enabled: Object.keys(filters).some(
       (key) => filters[key as keyof typeof filters]
     ),
-    staleTime: 2 * 60 * 1000, // 2 minutes for search results
-    gcTime: 5 * 60 * 1000,
   });
 };
 
-// Hook for getting a single internship
-export const useInternship = (id: string) => {
+// Hook for fetching a single internship by ID
+export const useInternship = (id: string | undefined) => {
   return useQuery({
     queryKey: ["internship", id],
-    queryFn: () => InternshipMigrationService.getInternshipById(id),
+    queryFn: () => internshipService.getInternshipById(id as string),
     enabled: !!id,
     staleTime: 10 * 60 * 1000, // 10 minutes for individual internships
-    gcTime: 15 * 60 * 1000,
   });
 };
 
 // Hook for trending internships
-export const useTrendingInternships = (limit: number = 10) => {
+export const useTrendingInternships = (limit = 6) => {
   return useQuery({
     queryKey: ["trending-internships", limit],
-    queryFn: () => InternshipMigrationService.getTrendingInternships(limit),
+    queryFn: () => internshipService.getTrendingInternships(limit),
     staleTime: 15 * 60 * 1000, // 15 minutes
     gcTime: 30 * 60 * 1000,
   });
@@ -74,7 +60,7 @@ export const useTrendingInternships = (limit: number = 10) => {
 export const useFeaturedInternships = () => {
   return useQuery({
     queryKey: ["featured-internships"],
-    queryFn: InternshipMigrationService.getFeaturedInternships,
+    queryFn: internshipService.getFeaturedInternships,
     staleTime: 30 * 60 * 1000, // 30 minutes
     gcTime: 60 * 60 * 1000, // 1 hour
   });
@@ -89,12 +75,12 @@ export const useLocalInternships = () => {
   useEffect(() => {
     const loadLocalData = async () => {
       try {
-        const response = await fetch("/internships.json");
+        const response = await fetch("http://localhost:3001/api/internships");
         if (!response.ok) {
-          throw new Error("Failed to load local internships");
+          throw new Error("Failed to load live internships");
         }
-        const data = await response.json();
-        setInternships(data);
+        const jsonResponse = await response.json();
+        setInternships(jsonResponse.data || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
       } finally {

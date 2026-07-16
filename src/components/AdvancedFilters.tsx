@@ -104,7 +104,7 @@ export const AdvancedFilters = ({
     filters.sectors.length > 0;
 
   return (
-    <Card className="glass-card">
+    <Card className="shadow-sm border-border/40">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">

@@ -193,43 +193,45 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="text-center">
+          <div className="space-y-4 pt-2 pb-2">
+            <div className="text-center">
+              <Button
+                type="button"
+                variant="link"
+                className="text-sm text-primary hover:underline p-0 h-auto"
+                onClick={handleForgotPassword}
+                disabled={resetLoading}
+              >
+                {resetLoading ? 'Sending...' : 'Forgot your password?'}
+              </Button>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+
             <Button
               type="button"
-              variant="link"
-              className="text-sm text-primary hover:underline p-0"
-              onClick={handleForgotPassword}
-              disabled={resetLoading}
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleLogin}
+              disabled={loading}
             >
-              {resetLoading ? 'Sending...' : 'Forgot your password?'}
+              <FcGoogle className="w-5 h-5 mr-2" />
+              Sign in with Google
             </Button>
-          </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+            <div className="text-center text-sm pt-2">
+              <span className="text-muted-foreground">Don't have an account? </span>
+              <Link to={`/register?type=${userType}`} className="text-primary hover:underline font-medium">
+                Sign up
+              </Link>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleLogin}
-            disabled={loading}
-          >
-            <FcGoogle className="w-4 h-4 mr-2" />
-            Sign in with Google
-          </Button>
-
-          <div className="text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
-            <Link to={`/register?type=${userType}`} className="text-primary hover:underline">
-              Sign up
-            </Link>
           </div>
         </CardContent>
       </Card>

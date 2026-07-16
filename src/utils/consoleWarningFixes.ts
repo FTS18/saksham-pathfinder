@@ -19,11 +19,13 @@ if (process.env.NODE_ENV === 'development') {
       // React key warnings (already fixed)
       if (message.includes('Each child in a list should have a unique "key" prop')) return;
       
-      // Firebase warnings
-      if (message.includes('Firebase')) return;
+      // Firebase warnings (including permission errors from unauthenticated reads)
+      if (message.includes('Firebase') || message.includes('Missing or insufficient permissions')) return;
       
       // Vite HMR warnings
       if (message.includes('[vite]') || message.includes('HMR')) return;
+    } else if (message instanceof Error) {
+      if (message.message.includes('Missing or insufficient permissions') || message.message.includes('FirebaseError')) return;
     }
     
     originalWarn.apply(console, args);
@@ -39,6 +41,19 @@ if (process.env.NODE_ENV === 'development') {
       
       // ResizeObserver errors (common in development)
       if (message.includes('ResizeObserver loop limit exceeded')) return;
+
+      // Firebase permission errors (expected for unauthenticated/restricted reads)
+      if (message.includes('Missing or insufficient permissions') || message.includes('FirebaseError')) return;
+
+      // Netlify function errors in local dev (these only work in production)
+      if (message.includes('netlify/functions') || message.includes('Failed to fetch from Netlify')) return;
+      if (message.includes('gamification-api') || message.includes('Unexpected token') && message.includes('doctype')) return;
+
+      // Firebase COOP popup errors (expected with Google Auth popup)
+      if (message.includes('Cross-Origin-Opener-Policy')) return;
+    } else if (message instanceof Error) {
+      if (message.message.includes('Missing or insufficient permissions') || message.message.includes('FirebaseError')) return;
+      if (message.message.includes('netlify') || message.message.includes('Unexpected token')) return;
     }
     
     originalError.apply(console, args);
@@ -59,5 +74,6 @@ export const useStrictModeCompatibleEffect = (
     }
     hasRun.current = true;
     return effect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 };

@@ -6,7 +6,13 @@ import {
   browserLocalPersistence,
   connectAuthEmulator,
 } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  connectFirestoreEmulator,
+  CACHE_SIZE_UNLIMITED,
+} from "firebase/firestore";
 import { getStorage, connectStorageEmulator } from "firebase/storage";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -33,18 +39,33 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+// Explicitly set persistence to local (survives hard refresh)
+setPersistence(auth, browserLocalPersistence).catch((err) => {
+  console.error("Auth persistence error:", err);
+});
+
+// FIX #22: Enable Firestore offline persistence with IndexedDB.
+// persistentLocalCache + persistentMultipleTabManager = true PWA offline support
+// with multi-tab sync. Falls back to memory cache if IndexedDB unavailable.
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+    cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+  }),
+});
+
 export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 
 // Connect to Firebase Emulator Suite for local development
 if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true") {
-  console.log("🔥 Using Firebase Emulator Suite for local development");
+  console.log("[Firebase] Using Emulator Suite for local development");
 
   // Connect Firestore Emulator
   try {
     connectFirestoreEmulator(db, "localhost", 8080);
-    console.log("✓ Firestore Emulator connected on localhost:8080");
+    console.log("[Firebase] Firestore Emulator connected on localhost:8080");
   } catch (error) {
     // Already connected, ignore error
     if ((error as Error).message?.includes("duplicate app")) {
@@ -70,10 +91,5 @@ if (import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true") {
     // Already connected, ignore error
   }
 }
-
-// Set auth persistence to LOCAL (keeps user logged in across sessions)
-setPersistence(auth, browserLocalPersistence).catch((error) => {
-  console.error("Error setting auth persistence:", error);
-});
 
 export default app;

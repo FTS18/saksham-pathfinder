@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { NotificationService, Notification } from '@/services/notificationService';
 import { useAuth } from './AuthContext';
 
@@ -19,21 +19,30 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
   
-  const addNotification = async (notification: Omit<Notification, 'id' | 'userId'>) => {
+  const addNotification = useCallback(async (notification: Omit<Notification, 'id' | 'userId'>) => {
     if (!currentUser) return;
     
     try {
-      const newNotification = await NotificationService.createNotification({
+      const newNotificationId = await NotificationService.createNotification({
         ...notification,
         userId: currentUser.uid
       });
-      setNotifications(prev => [newNotification, ...prev]);
+      
+      const completeNotification = {
+        ...notification,
+        id: newNotificationId,
+        userId: currentUser.uid,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      } as unknown as Notification;
+      
+      setNotifications(prev => [completeNotification, ...prev]);
     } catch (error) {
       console.error('Error adding notification:', error);
     }
-  };
+  }, [currentUser]);
 
-  const refreshNotifications = async () => {
+  const refreshNotifications = useCallback(async () => {
     if (!currentUser) return;
     
     setLoading(true);
@@ -45,9 +54,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
 
-  const markAsRead = async (notificationId: string) => {
+  const markAsRead = useCallback(async (notificationId: string) => {
     try {
       await NotificationService.markAsRead(notificationId);
       setNotifications(prev => 
@@ -56,9 +65,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  };
+  }, []);
 
-  const markAllAsRead = async () => {
+  const markAllAsRead = useCallback(async () => {
     if (!currentUser) return;
     
     try {
@@ -67,9 +76,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
     }
-  };
+  }, [currentUser]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications]);
 
   useEffect(() => {
     if (currentUser) {
@@ -78,7 +87,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const interval = setInterval(refreshNotifications, 30000);
       return () => clearInterval(interval);
     }
-  }, [currentUser]);
+  }, [currentUser, refreshNotifications]);
   
   // Make addNotification available globally
   useEffect(() => {
@@ -88,16 +97,18 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
   }, [addNotification]);
 
+  const value = useMemo(() => ({
+    notifications,
+    unreadCount,
+    loading,
+    markAsRead,
+    markAllAsRead,
+    refreshNotifications,
+    addNotification,
+  }), [notifications, unreadCount, loading, markAsRead, markAllAsRead, refreshNotifications, addNotification]);
+
   return (
-    <NotificationContext.Provider value={{
-      notifications,
-      unreadCount,
-      loading,
-      markAsRead,
-      markAllAsRead,
-      refreshNotifications,
-      addNotification,
-    }}>
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   );

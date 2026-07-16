@@ -1,3 +1,4 @@
+import { ProfileData } from '@/types';
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,8 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Upload, Download, FileText, Plus, Trash2 } from 'lucide-react';
 
 interface ResumeSectionProps {
-  profile: any;
-  onUpdate: (key: string, value: any) => void;
+  profile: ProfileData;
+  onUpdate: (key: string, value: unknown) => void;
   isLoading: boolean;
 }
 
@@ -36,7 +37,7 @@ export const ResumeSection = ({ profile, onUpdate, isLoading }: ResumeSectionPro
   };
 
   return (
-    <Card className="glass-card">
+    <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -167,3 +168,4 @@ export const ResumeSection = ({ profile, onUpdate, isLoading }: ResumeSectionPro
 };
 
 export default ResumeSection;
+

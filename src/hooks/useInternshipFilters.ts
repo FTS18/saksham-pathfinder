@@ -293,7 +293,7 @@ export const useInternshipFilters = (internships: Internship[]) => {
   const sectors = useMemo(() => {
     const allSectors = new Set<string>();
     internships.forEach((internship) => {
-      internship.sector_tags.forEach((sector) => allSectors.add(sector));
+      (internship.sector_tags || []).forEach((sector) => allSectors.add(sector));
     });
     return Array.from(allSectors).sort();
   }, [internships]);

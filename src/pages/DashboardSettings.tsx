@@ -30,16 +30,14 @@ export default function DashboardSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-background px-6 py-8">
-      <div className="max-w-3xl mx-auto">
-        <Settings 
-          dashboardProfile={dashboardProfile} 
-          onProfileUpdate={(profile) => {
-            setDashboardProfile(profile);
-            loadDashboardProfile();
-          }}
-        />
-      </div>
+    <div className="bg-background">
+      <Settings 
+        dashboardProfile={dashboardProfile} 
+        onProfileUpdate={(profile) => {
+          setDashboardProfile(profile);
+          loadDashboardProfile();
+        }}
+      />
     </div>
   );
 }

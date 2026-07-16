@@ -1,4 +1,8 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// FIX #15: All Gemini requests now go through /.netlify/functions/ai-proxy.
+// The API key is stored server-side as GEMINI_API_KEY env var.
+// VITE_GEMINI_API_KEY is no longer needed on the client side.
+
+import { apiClient } from "@/lib/apiClient";
 
 interface QueueItem {
   prompt: string;
@@ -14,53 +18,36 @@ class AIQueueService {
   private readonly CACHE_DURATION = 1000 * 60 * 30; // 30 minutes
   private readonly MAX_RETRIES = 3;
   private readonly RETRY_DELAY = 2000; // 2 seconds
-  private genAI: GoogleGenerativeAI | null = null;
-
-  constructor() {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (apiKey) {
-      this.genAI = new GoogleGenerativeAI(apiKey);
-    }
-  }
+  private readonly AI_PROXY_URL = "/.netlify/functions/ai-proxy";
 
   private getCacheKey(prompt: string): string {
-    return btoa(prompt).slice(0, 50);
+    return btoa(encodeURIComponent(prompt)).slice(0, 50);
   }
 
   private getFromCache(prompt: string): string | null {
     const key = this.getCacheKey(prompt);
     const cached = this.cache.get(key);
-    
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
       return cached.response;
     }
-    
-    if (cached) {
-      this.cache.delete(key);
-    }
-    
+    if (cached) this.cache.delete(key);
     return null;
   }
 
   private setCache(prompt: string, response: string): void {
     const key = this.getCacheKey(prompt);
     this.cache.set(key, { response, timestamp: Date.now() });
-    
-    // Limit cache size
+    // Limit cache size to prevent memory leak
     if (this.cache.size > 100) {
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+      if (firstKey) this.cache.delete(firstKey);
     }
   }
 
   async generateResponse(prompt: string): Promise<string> {
-    // Check cache first
     const cached = this.getFromCache(prompt);
-    if (cached) {
-      return cached;
-    }
+    if (cached) return cached;
 
-    // Add to queue
     return new Promise((resolve, reject) => {
       this.queue.push({ prompt, resolve, reject, retries: 0 });
       this.processQueue();
@@ -68,9 +55,7 @@ class AIQueueService {
   }
 
   private async processQueue(): Promise<void> {
-    if (this.processing || this.queue.length === 0) {
-      return;
-    }
+    if (this.processing || this.queue.length === 0) return;
 
     this.processing = true;
 
@@ -84,58 +69,48 @@ class AIQueueService {
         item.resolve(response);
       } catch (error: any) {
         if (item.retries < this.MAX_RETRIES && this.shouldRetry(error)) {
-          // Exponential backoff
           const delay = this.RETRY_DELAY * Math.pow(2, item.retries);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          
+          await new Promise((r) => setTimeout(r, delay));
           item.retries++;
-          this.queue.unshift(item); // Add back to front of queue
+          this.queue.unshift(item);
         } else {
           item.reject(error);
         }
       }
 
-      // Rate limiting: wait between requests
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Throttle: 1 request per second to avoid hammering the backend
+      await new Promise((r) => setTimeout(r, 1000));
     }
 
     this.processing = false;
   }
 
   private shouldRetry(error: any): boolean {
-    const errorMessage = error?.message?.toLowerCase() || '';
+    const msg = error?.message?.toLowerCase() || "";
     return (
-      errorMessage.includes('rate limit') ||
-      errorMessage.includes('quota') ||
-      errorMessage.includes('429') ||
-      errorMessage.includes('503')
+      msg.includes("rate limit") ||
+      msg.includes("quota") ||
+      msg.includes("429") ||
+      msg.includes("503") ||
+      msg.includes("502")
     );
   }
 
   private async makeRequest(prompt: string): Promise<string> {
-    if (!this.genAI) {
-      throw new Error('Gemini API not configured');
+    // Force all requests through the secure proxy (no VITE_GEMINI_API_KEY fallback)
+    try {
+      const response = await fetch(this.AI_PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: prompt })
+      });
+      if (!response.ok) throw new Error("AI Proxy Error");
+      const data = await response.json();
+      return data.response || data.text || "";
+    } catch (e) {
+      console.error("AI Queue Error", e);
+      throw e;
     }
-
-    const model = this.genAI.getGenerativeModel({ 
-      model: 'gemini-2.0-flash-exp',
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 1024,
-      },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-      ],
-    });
-
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
   }
 
   clearCache(): void {
@@ -152,3 +127,4 @@ class AIQueueService {
 }
 
 export default new AIQueueService();
+

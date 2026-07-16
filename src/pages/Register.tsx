@@ -266,31 +266,33 @@ const Register = () => {
             </Button>
           </form>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+          <div className="space-y-4 pt-4 pb-2">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleLogin}
+              disabled={loading}
+            >
+              <FcGoogle className="w-5 h-5 mr-2" />
+              Sign up with Google
+            </Button>
+
+            <div className="text-center text-sm pt-2">
+              <span className="text-muted-foreground">Already have an account? </span>
+              <Link to={`/login?type=${userType}`} className="text-primary hover:underline font-medium">
+                Sign in
+              </Link>
             </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleLogin}
-            disabled={loading}
-          >
-            <FcGoogle className="w-4 h-4 mr-2" />
-            Sign up with Google
-          </Button>
-
-          <div className="text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
-            <Link to={`/login?type=${userType}`} className="text-primary hover:underline">
-              Sign in
-            </Link>
           </div>
         </CardContent>
       </Card>

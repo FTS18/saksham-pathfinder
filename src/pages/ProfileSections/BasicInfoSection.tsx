@@ -1,3 +1,4 @@
+import { ProfileData } from '@/types';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +13,8 @@ import { StateSelector } from '@/components/StateSelector';
 import { CitySelector } from '@/components/CitySelector';
 
 interface BasicInfoSectionProps {
-  profile: any;
-  onUpdate: (key: string, value: any) => Promise<void>;
+  profile: ProfileData;
+  onUpdate: (key: string, value: unknown) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -41,7 +42,7 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
     }
   };
 
-  const handleSave = async (field: string, value: any) => {
+  const handleSave = async (field: string, value: unknown) => {
     try {
       setIsSaving(true);
       await onUpdate(field, value);
@@ -54,7 +55,7 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
   };
 
   return (
-    <Card className="rounded-lg">
+    <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="w-5 h-5" />
@@ -182,3 +183,4 @@ export const BasicInfoSection = ({ profile, onUpdate, isLoading }: BasicInfoSect
 };
 
 export default BasicInfoSection;
+

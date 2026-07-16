@@ -49,9 +49,9 @@ const faqs = [
       { q: "What is the AI Score?", a: "The AI Score (1-100) indicates how well an internship matches your profile. Scores above 80 are excellent matches, 70-80 are great, 60-70 are good, and below 60 are fair matches." },
       { q: "How do I use the wishlist?", a: "Click the bookmark icon on any internship card to save it to your wishlist. Access your saved internships anytime from the Wishlist page in the sidebar." },
       { q: "Can I compare internships?", a: "Yes! Click the compare icon on internship cards to add them to comparison. You can compare up to 3 internships side-by-side to make informed decisions." },
-      { q: "What are the theme options?", a: "Saksham AI offers 5 color themes (Blue, Grey, Red, Yellow, Green) and light/dark modes. Your theme preference syncs across all your devices automatically." },
+      { q: "What are the theme options?", a: "Saksham AI supports both light and dark modes. Your theme preference is saved automatically and syncs across all your devices." },
       { q: "Is there a mobile app?", a: "Saksham AI is a Progressive Web App (PWA). You can install it on your mobile device for an app-like experience with offline capabilities and push notifications." },
-      { q: "What languages are supported?", a: "Currently, we support English and Hindi with Google Translate integration. We're working on adding more Indian languages including Tamil, Telugu, Bengali, and more." }
+      { q: "What is the Resume Hub?", a: "The Resume Hub lets you build professional LaTeX-style resumes and analyze existing resumes using AI. It checks ATS compatibility, identifies missing keywords, and suggests improvements based on job descriptions." }
     ]
   },
   {
